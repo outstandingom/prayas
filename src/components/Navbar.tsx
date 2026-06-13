@@ -37,10 +37,14 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="https://i.ibb.co/N6Cft6S3/IMG-20260614-015637.jpg" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald to-[#6366F1] flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform">
-              P
+          {/* Logo with Image */}
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-emerald to-[#6366F1] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <img 
+                src="https://i.ibb.co/N6Cft6S3/IMG-20260614-015637.jpg" 
+                alt="Prayas Logo" 
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="flex flex-col leading-tight">
               <span className="font-display font-bold text-xl tracking-tight text-navy group-hover:text-emerald transition-colors">
