@@ -93,22 +93,25 @@ const NGOWall3D = () => {
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden bg-gradient-hero">
+    <section className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden">
+      {/* Background with green gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/95 via-emerald-800/90 to-navy-900/95 z-0" />
+      
       {/* Background Effects */}
-      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-emerald/10 blur-[120px] animate-float-slow pointer-events-none" />
-      <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-gold/10 blur-[100px] animate-float-slower pointer-events-none" />
+      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/20 blur-[120px] animate-float-slow pointer-events-none z-0" />
+      <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-gold-500/20 blur-[100px] animate-float-slower pointer-events-none z-0" />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left side - Text Content */}
-          <div>
+          {/* Left side - Text Content with improved contrast */}
+          <div className="text-white">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-navy/5 border border-navy/10 text-navy font-bold font-mono text-xs uppercase tracking-widest mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white font-bold font-mono text-xs uppercase tracking-widest mb-6"
             >
-              <span className="w-2 h-2 rounded-full bg-emerald animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               Empowering Communities Globally
             </motion.div>
 
@@ -116,16 +119,16 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-navy leading-[1.05]"
+              className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05]"
             >
-              Together We Can Build A <span className="text-gold">Better World</span>
+              Together We Can Build A <span className="text-emerald-300">Better World</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="mt-6 text-lg md:text-xl text-navy/70 max-w-2xl leading-relaxed font-light"
+              className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl leading-relaxed font-light"
             >
               We are dedicated to creating sustainable impact through grassroots education, comprehensive healthcare, and community-led environmental initiatives.
             </motion.p>
@@ -138,13 +141,13 @@ export default function HeroSection() {
             >
               <Link
                 to="/donate"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald text-white px-8 py-4 rounded-full font-bold hover:bg-navy transition-colors duration-300 shadow-lg shadow-emerald/20 hover-lift"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-8 py-4 rounded-full font-bold hover:bg-emerald-600 transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-105"
               >
                 Donate Now <Heart size={18} />
               </Link>
               <Link
                 to="/about"
-                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-navy border border-navy/20 hover:bg-navy/5 transition-colors duration-300"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-white border-2 border-white/30 hover:bg-white/10 transition-all duration-300 hover:border-white/50"
               >
                 Get Involved
               </Link>
@@ -261,6 +264,25 @@ export default function HeroSection() {
           .column-wrapper {
             transform: scale(0.8);
           }
+        }
+
+        /* Animation keyframes if not already in global CSS */
+        @keyframes float-slow {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(20px, -30px) scale(1.05); }
+        }
+        
+        @keyframes float-slower {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-25px, 20px) scale(0.96); }
+        }
+        
+        .animate-float-slow {
+          animation: float-slow 14s ease-in-out infinite;
+        }
+        
+        .animate-float-slower {
+          animation: float-slower 18s ease-in-out infinite;
         }
       `}</style>
     </section>
