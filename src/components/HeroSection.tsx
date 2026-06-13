@@ -93,13 +93,14 @@ const NGOWall3D = () => {
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden">
-      {/* Background with green gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/95 via-emerald-800/90 to-navy-900/95 z-0" />
+    <section className="relative min-h-screen w-full flex items-center pt-24 pb-16 overflow-hidden">
+      {/* Full screen green gradient background */}
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-emerald-900 via-emerald-800 to-navy-900 z-0" />
       
-      {/* Background Effects */}
+      {/* Background decorative effects */}
       <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/20 blur-[120px] animate-float-slow pointer-events-none z-0" />
       <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-gold-500/20 blur-[100px] animate-float-slower pointer-events-none z-0" />
+      <div className="absolute top-[50%] left-[30%] w-[300px] h-[300px] rounded-full bg-emerald-400/10 blur-[80px] animate-float-slow pointer-events-none z-0" />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -128,7 +129,7 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl leading-relaxed font-light"
+              className="mt-6 text-lg md:text-xl text-white/90 max-w-2xl leading-relaxed font-light"
             >
               We are dedicated to creating sustainable impact through grassroots education, comprehensive healthcare, and community-led environmental initiatives.
             </motion.p>
@@ -166,7 +167,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Add required CSS styles for 3D wall */}
+      {/* Add required CSS styles for 3D wall and animations */}
       <style>{`
         :root {
           --column-height: 300px;
@@ -260,13 +261,6 @@ export default function HeroSection() {
           100% { transform: translateY(0); }
         }
 
-        @media (max-width: 1024px) {
-          .column-wrapper {
-            transform: scale(0.8);
-          }
-        }
-
-        /* Animation keyframes if not already in global CSS */
         @keyframes float-slow {
           0%, 100% { transform: translate(0, 0) scale(1); }
           50% { transform: translate(20px, -30px) scale(1.05); }
@@ -283,6 +277,12 @@ export default function HeroSection() {
         
         .animate-float-slower {
           animation: float-slower 18s ease-in-out infinite;
+        }
+
+        @media (max-width: 1024px) {
+          .column-wrapper {
+            transform: scale(0.8);
+          }
         }
       `}</style>
     </section>
