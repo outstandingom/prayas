@@ -74,7 +74,7 @@ export default function ScrollStory() {
         </header>
       </div>
 
-      {/* Complete CSS with all original features */}
+      {/* Complete CSS with white background */}
       <style>{`
         :root {
           --card-height: 40vw;
@@ -83,8 +83,8 @@ export default function ScrollStory() {
         }
 
         .scroll-story-container {
-          background: #111;
-          color: #fff;
+          background: #ffffff;
+          color: #000000;
           font-family: "Space Grotesk", sans-serif;
           margin: 0;
           padding-bottom: 10vh;
@@ -107,23 +107,23 @@ export default function ScrollStory() {
           line-height: 0.8;
           margin: 0;
           
-          /* Typography styles */
-          -webkit-text-stroke: 2px rgba(255, 255, 255, 0.5);
+          /* Typography styles for white background - darker stroke */
+          -webkit-text-stroke: 2px rgba(0, 0, 0, 0.3);
           color: transparent;
-          background: linear-gradient(to bottom, #fff 0%, transparent 100%);
+          background: linear-gradient(to bottom, #000000 0%, transparent 100%);
           background-clip: text;
           -webkit-background-clip: text;
           
           /* Scroll animation */
-          animation: fill-text linear both;
+          animation: fill-text-light linear both;
           animation-timeline: scroll();
           animation-range: 0 50vh;
         }
 
-        @keyframes fill-text {
+        @keyframes fill-text-light {
           to {
             -webkit-text-stroke: 0;
-            color: #fff;
+            color: #000000;
           }
         }
 
@@ -159,7 +159,7 @@ export default function ScrollStory() {
           flex-direction: column;
           justify-content: center;
           align-items: flex-start;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(0, 0, 0, 0.1);
           overflow: hidden;
           
           /* Transform config */
@@ -210,7 +210,7 @@ export default function ScrollStory() {
           font-size: clamp(0.9rem, 1.5vw, 1.5rem);
           max-width: 600px;
           line-height: 1.4;
-          opacity: 0.8;
+          opacity: 0.9;
           margin-top: 1rem;
         }
         
@@ -219,12 +219,12 @@ export default function ScrollStory() {
           position: absolute;
           right: 2rem;
           top: -2rem;
-          opacity: 0.3;
+          opacity: 0.2;
           font-weight: bold;
           pointer-events: none;
         }
         
-        /* Scroll Progress Circle */
+        /* Scroll Progress Circle - Dark version for white background */
         .progress-circle {
           position: fixed;
           bottom: 30px;
@@ -236,7 +236,7 @@ export default function ScrollStory() {
         
         .progress-circle circle {
           fill: none;
-          stroke: #fff;
+          stroke: #000000;
           stroke-width: 6;
           transform: rotate(-90deg);
           transform-origin: 50% 50%;
