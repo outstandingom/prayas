@@ -68,7 +68,7 @@ const columnsData = (() => {
 
 const columnClasses = ["up", "down", "up", "down", "up"]
 
-// 3D Photo Wall Component - Now as full background
+// 3D Photo Wall Component - As full background with smaller photos
 const NGOWall3DBackground = () => {
   return (
     <div className="ngo-photo-wall-background">
@@ -94,7 +94,7 @@ const NGOWall3DBackground = () => {
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen w-full flex items-center pt-24 pb-16 overflow-hidden">
-      {/* 3D Photo Wall as Full Background */}
+      {/* 3D Photo Wall as Full Background with smaller photos */}
       <div className="absolute inset-0 w-full h-full z-0">
         <NGOWall3DBackground />
         {/* Dark overlay for better text contrast */}
@@ -160,13 +160,14 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Add required CSS styles for full-screen 3D wall */}
+      {/* Add required CSS styles for full-screen 3D wall with smaller photos */}
       <style>{`
         :root {
-          --column-height: 300px;
-          --image-height: 200px;
+          --column-height: 400px;
+          --image-height: 120px;
           --row-gap: 0.5em;
           --column-gap: 0.25em;
+          --number-of-images: 10;
         }
 
         /* Full screen background 3D wall */
@@ -185,10 +186,10 @@ export default function HeroSection() {
         .column-wrapper-background {
           width: 100%;
           height: 100%;
-          perspective: 1000px;
+          perspective: 1200px;
           position: relative;
           overflow: hidden;
-          transform: scale(1.5);
+          transform: scale(1.8);
         }
 
         .columns-background {
@@ -209,7 +210,7 @@ export default function HeroSection() {
             #00000013 3.65%,
             #00000026 5.25%,
             #0000004d 7.5%,
-            #000 30%
+            #000 40%
           );
         }
 
@@ -221,13 +222,13 @@ export default function HeroSection() {
         }
 
         .column-background div {
-          height: 200px;
+          height: 120px;
           margin-bottom: var(--row-gap);
           background-repeat: no-repeat;
           background-size: cover;
           background-position: center;
-          border-radius: 12px;
-          box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
           transition: transform 0.3s ease, filter 0.3s ease;
         }
 
@@ -236,11 +237,11 @@ export default function HeroSection() {
           filter: brightness(1.08);
         }
 
-        .column-background:nth-child(1) { padding-top: 100px; }
-        .column-background:nth-child(2) { padding-top: 50px; }
+        .column-background:nth-child(1) { padding-top: 60px; }
+        .column-background:nth-child(2) { padding-top: 30px; }
         .column-background:nth-child(3) { padding-top: 0px; }
-        .column-background:nth-child(4) { padding-top: 100px; }
-        .column-background:nth-child(5) { padding-top: 50px; }
+        .column-background:nth-child(4) { padding-top: 60px; }
+        .column-background:nth-child(5) { padding-top: 30px; }
 
         .up {
           animation: imageScrollingUp 25s linear infinite alternate;
@@ -252,11 +253,11 @@ export default function HeroSection() {
 
         @keyframes imageScrollingUp {
           0% { transform: translateY(0); }
-          100% { transform: translateY(calc(-1 * (((200px + 0.5em) * 10) - 300px))); }
+          100% { transform: translateY(calc(-1 * (((120px + 0.5em) * 10) - 400px))); }
         }
 
         @keyframes imageScrollingDown {
-          0% { transform: translateY(calc(-1 * (((200px + 0.5em) * 10) - 300px))); }
+          0% { transform: translateY(calc(-1 * (((120px + 0.5em) * 10) - 400px))); }
           100% { transform: translateY(0); }
         }
 
@@ -281,7 +282,11 @@ export default function HeroSection() {
         /* Responsive adjustments */
         @media (max-width: 1024px) {
           .column-wrapper-background {
-            transform: scale(2);
+            transform: scale(2.2);
+          }
+          
+          .column-background div {
+            height: 100px;
           }
         }
       `}</style>
