@@ -94,15 +94,37 @@ const NGOWall3D = () => {
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen w-full flex items-center pt-24 pb-16 overflow-hidden">
-      {/* Full screen green gradient background */}
-      <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-emerald-900 via-emerald-800 to-navy-900 z-0" />
+      {/* Full screen video background */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          poster="https://images.pexels.com/photos/6646915/pexels-photo-6646915.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop"
+        >
+          <source 
+            src="https://player.vimeo.com/external/434045862.sd.mp4?s=c27ecc32c1ce7ed4c0f69bf62f4a6dbf0b0d2b2f&profile_id=164&oauth2_token_id=57447761" 
+            type="video/mp4" 
+          />
+          {/* Fallback video source - inspirational NGO style */}
+          <source 
+            src="https://cdn.pixabay.com/video/2022/02/27/108938-683898099_large.mp4" 
+            type="video/mp4" 
+          />
+        </video>
+        
+        {/* Dark overlay for better text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/85 via-emerald-800/75 to-navy-900/85 z-10" />
+      </div>
       
       {/* Background decorative effects */}
-      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/20 blur-[120px] animate-float-slow pointer-events-none z-0" />
-      <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-gold-500/20 blur-[100px] animate-float-slower pointer-events-none z-0" />
-      <div className="absolute top-[50%] left-[30%] w-[300px] h-[300px] rounded-full bg-emerald-400/10 blur-[80px] animate-float-slow pointer-events-none z-0" />
+      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/20 blur-[120px] animate-float-slow pointer-events-none z-10" />
+      <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-gold-500/20 blur-[100px] animate-float-slower pointer-events-none z-10" />
+      <div className="absolute top-[50%] left-[30%] w-[300px] h-[300px] rounded-full bg-emerald-400/10 blur-[80px] animate-float-slow pointer-events-none z-10" />
 
-      <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text Content with improved contrast */}
           <div className="text-white">
