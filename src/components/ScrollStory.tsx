@@ -34,44 +34,25 @@ const stories = [
 export default function ScrollStory() {
   return (
     <>
-      <section className="relative bg-black text-white overflow-hidden">
+      <div className="scroll-story-container">
         {/* Header Section */}
-        <header className="h-[80vh] flex items-center justify-center relative z-10">
-          <div className="text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="mb-4"
-            >
-              <span className="text-emerald font-mono text-xs uppercase tracking-widest font-semibold">Our Journey</span>
-            </motion.div>
-            <h1 className="hero-title text-6xl md:text-8xl lg:text-9xl font-bold uppercase leading-[0.8]">
-              Beautiful<br />Modern<br />Impact
-            </h1>
-          </div>
+        <header className="story-header">
+          <h1 className="story-title">Beautiful<br />Modern<br />Impact</h1>
         </header>
 
         {/* Stacking Cards Section */}
-        <ul id="cards" className="relative z-20">
+        <ul id="cards">
           {stories.map((story, index) => (
             <li 
               key={index} 
               className="card"
-              style={{ 
-                '--index': index + 1,
-                '--card-height': '40vw',
-                '--card-margin': '4vw',
-                '--card-top-offset': '1em',
-                '--shadow-color': `${story.bgColor}cc`
-              } as React.CSSProperties}
+              style={{ '--index': index + 1 } as React.CSSProperties}
             >
               <div 
                 className="card__content"
                 style={{
                   background: story.bgColor,
-                  color: story.textColor,
-                  '--shadow-color': story.bgColor
+                  color: story.textColor
                 } as React.CSSProperties}
               >
                 <span className="number">{story.number}</span>
@@ -82,13 +63,18 @@ export default function ScrollStory() {
           ))}
         </ul>
 
-        {/* End Section */}
-        <header className="h-[50vh] flex items-center justify-center">
-          <h1 className="text-6xl md:text-8xl font-bold uppercase">The Journey<br />Continues</h1>
-        </header>
-      </section>
+        {/* Circular Progress Indicator */}
+        <svg className="progress-circle" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" />
+        </svg>
 
-      {/* Styles for the stacking cards effect */}
+        {/* End Section */}
+        <header className="end-header">
+          <h1 className="end-title">The Journey<br />Continues</h1>
+        </header>
+      </div>
+
+      {/* Complete CSS with all original features */}
       <style>{`
         :root {
           --card-height: 40vw;
@@ -96,12 +82,39 @@ export default function ScrollStory() {
           --card-top-offset: 1em;
         }
 
-        .hero-title {
+        .scroll-story-container {
+          background: #111;
+          color: #fff;
+          font-family: "Space Grotesk", sans-serif;
+          margin: 0;
+          padding-bottom: 10vh;
+        }
+
+        .story-header, .end-header {
+          height: 80vh;
+          display: grid;
+          place-items: center;
+        }
+
+        .end-header {
+          height: 50vh;
+        }
+
+        .story-title, .end-title {
+          font-size: clamp(3rem, 10vw, 10rem);
+          text-transform: uppercase;
+          text-align: center;
+          line-height: 0.8;
+          margin: 0;
+          
+          /* Typography styles */
           -webkit-text-stroke: 2px rgba(255, 255, 255, 0.5);
           color: transparent;
           background: linear-gradient(to bottom, #fff 0%, transparent 100%);
           background-clip: text;
           -webkit-background-clip: text;
+          
+          /* Scroll animation */
           animation: fill-text linear both;
           animation-timeline: scroll();
           animation-range: 0 50vh;
@@ -125,8 +138,6 @@ export default function ScrollStory() {
           margin-bottom: var(--card-margin);
           max-width: 90vw;
           margin: 0 auto;
-          position: relative;
-          z-index: 20;
         }
 
         .card {
@@ -150,13 +161,33 @@ export default function ScrollStory() {
           align-items: flex-start;
           border: 1px solid rgba(255, 255, 255, 0.1);
           overflow: hidden;
+          
+          /* Transform config */
           transform-origin: 50% 0%;
           will-change: transform, filter;
           transform-style: preserve-3d;
+          
+          /* Animate based on viewport visibility */
           animation: scale-card linear forwards;
           animation-timeline: view();
           animation-range: exit-crossing 0% exit-crossing 100%;
-          position: relative;
+        }
+
+        /* Card variants with dynamic shadow colors */
+        .card:nth-child(1) .card__content {
+          --shadow-color: rgba(255, 42, 109, 0.8);
+        }
+        
+        .card:nth-child(2) .card__content {
+          --shadow-color: rgba(5, 217, 232, 0.8);
+        }
+        
+        .card:nth-child(3) .card__content {
+          --shadow-color: rgba(255, 230, 0, 0.8);
+        }
+        
+        .card:nth-child(4) .card__content {
+          --shadow-color: rgba(250, 250, 198, 0.8);
         }
 
         @keyframes scale-card {
@@ -168,22 +199,23 @@ export default function ScrollStory() {
           }
         }
 
+        /* Content Styling */
         .card__content h2 {
-          font-size: clamp(2rem, 4vw, 4rem);
+          font-size: clamp(1.5rem, 4vw, 4rem);
           margin: 0;
           font-weight: bold;
         }
-
+        
         .card__content p {
-          font-size: clamp(1rem, 1.5vw, 1.5rem);
+          font-size: clamp(0.9rem, 1.5vw, 1.5rem);
           max-width: 600px;
           line-height: 1.4;
-          opacity: 0.9;
+          opacity: 0.8;
           margin-top: 1rem;
         }
-
+        
         .number {
-          font-size: clamp(5rem, 10vw, 10rem);
+          font-size: clamp(3rem, 10vw, 10rem);
           position: absolute;
           right: 2rem;
           top: -2rem;
@@ -191,7 +223,38 @@ export default function ScrollStory() {
           font-weight: bold;
           pointer-events: none;
         }
-
+        
+        /* Scroll Progress Circle */
+        .progress-circle {
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
+          width: 80px;
+          height: 80px;
+          z-index: 100;
+        }
+        
+        .progress-circle circle {
+          fill: none;
+          stroke: #fff;
+          stroke-width: 6;
+          transform: rotate(-90deg);
+          transform-origin: 50% 50%;
+          
+          /* Scroll-linked dashoffset */
+          stroke-dasharray: 251;
+          stroke-dashoffset: 251;
+          
+          animation: progress-spin linear;
+          animation-timeline: scroll();
+        }
+        
+        @keyframes progress-spin {
+          to {
+            stroke-dashoffset: 0;
+          }
+        }
+        
         /* Responsive adjustments */
         @media (max-width: 768px) {
           :root {
@@ -208,8 +271,15 @@ export default function ScrollStory() {
             right: 1rem;
             top: -1rem;
           }
+          
+          .progress-circle {
+            width: 60px;
+            height: 60px;
+            bottom: 20px;
+            right: 20px;
+          }
         }
-
+        
         @media (max-width: 480px) {
           .card__content {
             padding: 20px;
@@ -223,7 +293,7 @@ export default function ScrollStory() {
             font-size: 1rem;
           }
         }
-
+        
         /* Smooth scrolling */
         html {
           scroll-behavior: smooth;
