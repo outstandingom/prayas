@@ -68,14 +68,14 @@ const columnsData = (() => {
 
 const columnClasses = ["up", "down", "up", "down", "up"]
 
-// 3D Photo Wall Component
-const NGOWall3D = () => {
+// 3D Photo Wall Component - Now as full background
+const NGOWall3DBackground = () => {
   return (
-    <div className="ngo-photo-wall">
-      <div className="column-wrapper">
-        <div className="columns">
+    <div className="ngo-photo-wall-background">
+      <div className="column-wrapper-background">
+        <div className="columns-background">
           {columnsData.map((colImages, colIndex) => (
-            <div key={colIndex} className={`column ${columnClasses[colIndex]}`}>
+            <div key={colIndex} className={`column-background ${columnClasses[colIndex]}`}>
               {colImages.map((imgUrl, imgIdx) => (
                 <div 
                   key={imgIdx} 
@@ -94,27 +94,9 @@ const NGOWall3D = () => {
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen w-full flex items-center pt-24 pb-16 overflow-hidden">
-      {/* Full screen video background */}
+      {/* 3D Photo Wall as Full Background */}
       <div className="absolute inset-0 w-full h-full z-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          poster="https://images.pexels.com/photos/6646915/pexels-photo-6646915.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop"
-        >
-          <source 
-            src="https://player.vimeo.com/external/434045862.sd.mp4?s=c27ecc32c1ce7ed4c0f69bf62f4a6dbf0b0d2b2f&profile_id=164&oauth2_token_id=57447761" 
-            type="video/mp4" 
-          />
-          {/* Fallback video source - inspirational NGO style */}
-          <source 
-            src="https://cdn.pixabay.com/video/2022/02/27/108938-683898099_large.mp4" 
-            type="video/mp4" 
-          />
-        </video>
-        
+        <NGOWall3DBackground />
         {/* Dark overlay for better text contrast */}
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/85 via-emerald-800/75 to-navy-900/85 z-10" />
       </div>
@@ -122,11 +104,10 @@ export default function HeroSection() {
       {/* Background decorative effects */}
       <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/20 blur-[120px] animate-float-slow pointer-events-none z-10" />
       <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-gold-500/20 blur-[100px] animate-float-slower pointer-events-none z-10" />
-      <div className="absolute top-[50%] left-[30%] w-[300px] h-[300px] rounded-full bg-emerald-400/10 blur-[80px] animate-float-slow pointer-events-none z-10" />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left side - Text Content with improved contrast */}
+        <div className="max-w-3xl">
+          {/* Text Content */}
           <div className="text-white">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -176,20 +157,10 @@ export default function HeroSection() {
               </Link>
             </motion.div>
           </div>
-
-          {/* Right side - 3D Photo Wall */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="hidden lg:flex justify-center items-center"
-          >
-            <NGOWall3D />
-          </motion.div>
         </div>
       </div>
 
-      {/* Add required CSS styles for 3D wall and animations */}
+      {/* Add required CSS styles for full-screen 3D wall */}
       <style>{`
         :root {
           --column-height: 300px;
@@ -198,28 +169,34 @@ export default function HeroSection() {
           --column-gap: 0.25em;
         }
 
-        .ngo-photo-wall {
+        /* Full screen background 3D wall */
+        .ngo-photo-wall-background {
+          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
+          height: 100%;
           display: flex;
           justify-content: center;
           align-items: center;
-          position: relative;
+          overflow: hidden;
         }
 
-        .column-wrapper {
-          width: 700px;
-          height: 300px;
+        .column-wrapper-background {
+          width: 100%;
+          height: 100%;
           perspective: 1000px;
           position: relative;
-          margin: 0 auto;
-          overflow: clip;
+          overflow: hidden;
+          transform: scale(1.5);
         }
 
-        .columns {
+        .columns-background {
           position: absolute;
-          width: 175%;
-          top: -300px;
-          right: -700px;
+          width: 200%;
+          height: 200%;
+          top: -50%;
+          left: -50%;
           display: grid;
           grid-template-columns: repeat(5, 1fr);
           transform: rotateX(45deg) rotateY(20deg) rotate(-25deg) translate3d(-6em, 8em, 8em);
@@ -232,18 +209,18 @@ export default function HeroSection() {
             #00000013 3.65%,
             #00000026 5.25%,
             #0000004d 7.5%,
-            #000 15%
+            #000 30%
           );
         }
 
-        .column {
+        .column-background {
           display: flex;
           flex-direction: column;
           margin-left: var(--column-gap);
           margin-right: var(--column-gap);
         }
 
-        .column div {
+        .column-background div {
           height: 200px;
           margin-bottom: var(--row-gap);
           background-repeat: no-repeat;
@@ -254,16 +231,16 @@ export default function HeroSection() {
           transition: transform 0.3s ease, filter 0.3s ease;
         }
 
-        .column div:hover {
+        .column-background div:hover {
           transform: scale(1.03);
           filter: brightness(1.08);
         }
 
-        .column:nth-child(1) { padding-top: 100px; }
-        .column:nth-child(2) { padding-top: 50px; }
-        .column:nth-child(3) { padding-top: 0px; }
-        .column:nth-child(4) { padding-top: 100px; }
-        .column:nth-child(5) { padding-top: 50px; }
+        .column-background:nth-child(1) { padding-top: 100px; }
+        .column-background:nth-child(2) { padding-top: 50px; }
+        .column-background:nth-child(3) { padding-top: 0px; }
+        .column-background:nth-child(4) { padding-top: 100px; }
+        .column-background:nth-child(5) { padding-top: 50px; }
 
         .up {
           animation: imageScrollingUp 25s linear infinite alternate;
@@ -301,9 +278,10 @@ export default function HeroSection() {
           animation: float-slower 18s ease-in-out infinite;
         }
 
+        /* Responsive adjustments */
         @media (max-width: 1024px) {
-          .column-wrapper {
-            transform: scale(0.8);
+          .column-wrapper-background {
+            transform: scale(2);
           }
         }
       `}</style>
