@@ -16,31 +16,22 @@ const NGO_SECTORS = [
   { tag: '12 — Global Impact', title: 'SCALING\nSOLUTIONS', desc: 'Partnering with international organizations to share knowledge, scale successful models, and create a worldwide network of change-makers.', align: 'right', img: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=800' }
 ]
 
-// Build stops for 12 sectors
-const buildStops = (n: number) => {
-  const stops = []
-  for (let i = 0; i <= n; i++) {
-    stops.push(i / n)
-  }
-  return stops
+// Map each sector to a cube face (循环6个面)
+const getFaceForIndex = (index: number) => {
+  const faces = ['front', 'back', 'right', 'left', 'top', 'bottom']
+  return faces[index % 6]
 }
-
-const STOPS = buildStops(NGO_SECTORS.length)
-const stopIndex = (s: number) => Math.min(NGO_SECTORS.length - 1, Math.floor(s * (NGO_SECTORS.length - 1)))
-
-// Map each stop to a face (front, top, back, bottom, left, right in a loop)
-const FACE_MAPPING = ['front', 'top', 'back', 'bottom', 'left', 'right']
 
 export default function CubeGallery() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [faceImages, setFaceImages] = useState<Record<string, string>>({
     front: NGO_SECTORS[0].img,
-    top: NGO_SECTORS[1].img,
-    back: NGO_SECTORS[2].img,
-    bottom: NGO_SECTORS[3].img,
-    left: NGO_SECTORS[4].img,
-    right: NGO_SECTORS[5].img,
+    back: NGO_SECTORS[1].img,
+    right: NGO_SECTORS[2].img,
+    left: NGO_SECTORS[3].img,
+    top: NGO_SECTORS[4].img,
+    bottom: NGO_SECTORS[5].img,
   })
 
   const { scrollYProgress } = useScroll({
@@ -48,198 +39,192 @@ export default function CubeGallery() {
     offset: ["start start", "end end"]
   })
 
-  const smoothProgress = useSpring(scrollYProgress, { damping: 20, stiffness: 40, restDelta: 0.001 })
+  const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 50, restDelta: 0.001 })
 
-  // Calculate active index and update face images
   useMotionValueEvent(smoothProgress, "change", (latest) => {
-    const idx = stopIndex(latest)
-    if (idx !== activeIndex) {
-      setActiveIndex(idx)
+    const totalSectors = NGO_SECTORS.length
+    const currentIndex = Math.min(totalSectors - 1, Math.floor(latest * totalSectors))
+    
+    if (currentIndex !== activeIndex) {
+      setActiveIndex(currentIndex)
       
-      // Update face images - load adjacent images
+      // Update face images for current and adjacent sectors
       setFaceImages(prev => {
         const next = { ...prev }
-        for (let i = Math.max(0, idx - 2); i <= Math.min(NGO_SECTORS.length - 1, idx + 2); i++) {
-          const faceIdx = i % 6
-          const faceName = FACE_MAPPING[faceIdx]
-          if (faceName && NGO_SECTORS[i]) {
-            next[faceName] = NGO_SECTORS[i].img
-          }
-        }
+        const sectorsToLoad = [currentIndex, (currentIndex + 1) % totalSectors, (currentIndex + 2) % totalSectors]
+        
+        sectorsToLoad.forEach(idx => {
+          const face = getFaceForIndex(idx)
+          next[face] = NGO_SECTORS[idx].img
+        })
         return next
       })
     }
   })
 
-  // Rotate X: full rotation through all 12 sectors (each 60 degrees = 720 degrees)
-  const rotateX = useTransform(smoothProgress, [0, 1], ["0deg", "-720deg"])
-  const finalRotateX = useSpring(rotateX, { damping: 20, stiffness: 50 })
+  // Calculate rotation - each sector is 60 degrees (360/6)
+  const rotationAngle = useTransform(smoothProgress, [0, 1], ["0deg", "-360deg"])
+  const finalRotation = useSpring(rotationAngle, { damping: 25, stiffness: 40 })
 
-  // Rotate Y: slight oscillation for 3D effect
-  const rotateY = useTransform(smoothProgress, [0, 0.33, 0.66, 1], ["0deg", "-10deg", "10deg", "0deg"])
-  const finalRotateY = useSpring(rotateY, { damping: 20, stiffness: 50 })
+  const percentage = Math.round((activeIndex / (NGO_SECTORS.length - 1)) * 100)
 
-  // Calculate percentage
-  const percentage = Math.round(activeIndex * (100 / (NGO_SECTORS.length - 1)))
+  // Responsive cube size
+  const cubeSize = "clamp(180px, 35vw, 300px)"
+  const translateZ = "clamp(90px, 18vw, 150px)"
 
   return (
-    <div ref={containerRef} className="relative w-full" style={{ backgroundColor: "var(--dark-bg, #1c1814)", height: `${NGO_SECTORS.length * 100}vh` }}>
+    <div ref={containerRef} className="relative w-full" style={{ backgroundColor: "#0B2E63", height: `${NGO_SECTORS.length * 100}vh` }}>
       
       {/* Sticky Cube Container */}
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-visible" style={{ perspective: "min(800px, 100vw)" }}>
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden" style={{ perspective: "1000px" }}>
         
-        {/* 3D Cube */}
-        <motion.div
-          className="cube-3d"
+        {/* 3D Cube Container */}
+        <div
+          className="relative"
           style={{
+            width: cubeSize,
+            height: cubeSize,
             transformStyle: 'preserve-3d',
-            rotateX: finalRotateX,
-            rotateY: finalRotateY,
-            width: 'clamp(200px, 40vw, 350px)',
-            height: 'clamp(200px, 40vw, 350px)',
-            position: 'relative',
           }}
         >
-          {/* Front Face */}
-          <div
-            className="cube-face"
+          {/* Rotating Cube Group */}
+          <motion.div
+            className="absolute inset-0"
             style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              background: `url(${faceImages.front}) center/cover no-repeat`,
-              transform: 'translateZ(clamp(80px, 15vw, 150px))',
-              border: '1px solid rgba(255,255,255,0.1)',
-              boxShadow: '0 0 30px rgba(0,0,0,0.3)',
+              transformStyle: 'preserve-3d',
+              rotateX: finalRotation,
+              rotateY: "25deg",
             }}
           >
-            <div className="absolute inset-0 bg-black/30" />
-          </div>
-          
-          {/* Back Face */}
-          <div
-            className="cube-face"
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              background: `url(${faceImages.back}) center/cover no-repeat`,
-              transform: 'rotateY(180deg) translateZ(clamp(80px, 15vw, 150px))',
-              border: '1px solid rgba(255,255,255,0.1)',
-              boxShadow: '0 0 30px rgba(0,0,0,0.3)',
-            }}
-          >
-            <div className="absolute inset-0 bg-black/30" />
-          </div>
-          
-          {/* Right Face */}
-          <div
-            className="cube-face"
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              background: `url(${faceImages.right}) center/cover no-repeat`,
-              transform: 'rotateY(90deg) translateZ(clamp(80px, 15vw, 150px))',
-              border: '1px solid rgba(255,255,255,0.1)',
-              boxShadow: '0 0 30px rgba(0,0,0,0.3)',
-            }}
-          >
-            <div className="absolute inset-0 bg-black/30" />
-          </div>
-          
-          {/* Left Face */}
-          <div
-            className="cube-face"
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              background: `url(${faceImages.left}) center/cover no-repeat`,
-              transform: 'rotateY(-90deg) translateZ(clamp(80px, 15vw, 150px))',
-              border: '1px solid rgba(255,255,255,0.1)',
-              boxShadow: '0 0 30px rgba(0,0,0,0.3)',
-            }}
-          >
-            <div className="absolute inset-0 bg-black/30" />
-          </div>
-          
-          {/* Top Face */}
-          <div
-            className="cube-face"
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              background: `url(${faceImages.top}) center/cover no-repeat`,
-              transform: 'rotateX(90deg) translateZ(clamp(80px, 15vw, 150px))',
-              border: '1px solid rgba(255,255,255,0.1)',
-              boxShadow: '0 0 30px rgba(0,0,0,0.3)',
-            }}
-          >
-            <div className="absolute inset-0 bg-black/30" />
-          </div>
-          
-          {/* Bottom Face */}
-          <div
-            className="cube-face"
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              background: `url(${faceImages.bottom}) center/cover no-repeat`,
-              transform: 'rotateX(-90deg) translateZ(clamp(80px, 15vw, 150px))',
-              border: '1px solid rgba(255,255,255,0.1)',
-              boxShadow: '0 0 30px rgba(0,0,0,0.3)',
-            }}
-          >
-            <div className="absolute inset-0 bg-black/30" />
-          </div>
-        </motion.div>
+            {/* Front Face */}
+            <div
+              className="absolute inset-0 overflow-hidden rounded-xl shadow-2xl"
+              style={{
+                backgroundImage: `url(${faceImages.front})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                transform: `translateZ(${translateZ})`,
+                border: '2px solid rgba(255,255,255,0.2)',
+              }}
+            >
+              <div className="absolute inset-0 bg-black/30" />
+            </div>
 
-        {/* HUD - Progress indicator */}
-        <div className="absolute bottom-8 right-4 md:bottom-8 md:right-8 z-50 text-right font-mono">
-          <div className="text-2xl md:text-3xl font-bold text-gold tracking-wider">
+            {/* Back Face */}
+            <div
+              className="absolute inset-0 overflow-hidden rounded-xl shadow-2xl"
+              style={{
+                backgroundImage: `url(${faceImages.back})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                transform: `rotateY(180deg) translateZ(${translateZ})`,
+                border: '2px solid rgba(255,255,255,0.2)',
+              }}
+            >
+              <div className="absolute inset-0 bg-black/30" />
+            </div>
+
+            {/* Right Face */}
+            <div
+              className="absolute inset-0 overflow-hidden rounded-xl shadow-2xl"
+              style={{
+                backgroundImage: `url(${faceImages.right})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                transform: `rotateY(90deg) translateZ(${translateZ})`,
+                border: '2px solid rgba(255,255,255,0.2)',
+              }}
+            >
+              <div className="absolute inset-0 bg-black/30" />
+            </div>
+
+            {/* Left Face */}
+            <div
+              className="absolute inset-0 overflow-hidden rounded-xl shadow-2xl"
+              style={{
+                backgroundImage: `url(${faceImages.left})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                transform: `rotateY(-90deg) translateZ(${translateZ})`,
+                border: '2px solid rgba(255,255,255,0.2)',
+              }}
+            >
+              <div className="absolute inset-0 bg-black/30" />
+            </div>
+
+            {/* Top Face */}
+            <div
+              className="absolute inset-0 overflow-hidden rounded-xl shadow-2xl"
+              style={{
+                backgroundImage: `url(${faceImages.top})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                transform: `rotateX(90deg) translateZ(${translateZ})`,
+                border: '2px solid rgba(255,255,255,0.2)',
+              }}
+            >
+              <div className="absolute inset-0 bg-black/30" />
+            </div>
+
+            {/* Bottom Face */}
+            <div
+              className="absolute inset-0 overflow-hidden rounded-xl shadow-2xl"
+              style={{
+                backgroundImage: `url(${faceImages.bottom})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                transform: `rotateX(-90deg) translateZ(${translateZ})`,
+                border: '2px solid rgba(255,255,255,0.2)',
+              }}
+            >
+              <div className="absolute inset-0 bg-black/30" />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* HUD - Progress Indicator */}
+        <div className="absolute bottom-6 right-4 md:bottom-8 md:right-8 z-50 text-right font-mono">
+          <div className="text-2xl md:text-3xl font-bold text-[#F9A825] tracking-wider">
             {String(percentage).padStart(3, '0')}%
           </div>
-          <div className="w-24 md:w-32 h-[2px] bg-white/20 mt-2 mb-1 relative overflow-hidden">
+          <div className="w-24 md:w-32 h-[2px] bg-white/20 mt-2 mb-1 relative overflow-hidden rounded-full">
             <motion.div 
-              className="absolute top-0 left-0 bottom-0 bg-gold"
+              className="absolute top-0 left-0 bottom-0 bg-[#F9A825] rounded-full"
               style={{ width: useTransform(smoothProgress, [0, 1], ['0%', '100%']) }}
             />
           </div>
-          <div className="text-[10px] md:text-xs text-emerald/80 uppercase tracking-wider">
+          <div className="text-[10px] md:text-xs text-[#2E8B57] uppercase tracking-wider font-semibold">
             {NGO_SECTORS[activeIndex]?.tag?.split('—')[1] || 'IMPACT'}
           </div>
         </div>
       </div>
 
       {/* Text Cards Overlay */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-30">
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20">
         {NGO_SECTORS.map((sector, i) => (
           <section 
             key={i} 
-            className="h-screen w-full flex items-end md:items-center pb-20 md:pb-0 px-4 md:px-10 lg:px-20"
+            className="h-screen w-full flex items-end md:items-center pb-24 md:pb-0 px-4 md:px-10 lg:px-20"
             style={{ justifyContent: sector.align === 'right' ? 'flex-end' : 'flex-start' }}
           >
             <motion.div 
               initial={{ opacity: 0, x: sector.align === 'right' ? 50 : -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="w-[85vw] sm:w-96 md:w-[420px] bg-white/95 backdrop-blur-md border border-navy/10 p-5 md:p-8 pointer-events-auto shadow-xl relative overflow-hidden rounded-2xl"
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="w-[85vw] sm:w-[380px] md:w-[420px] bg-white/95 backdrop-blur-md border border-[#0B2E63]/10 p-6 md:p-8 pointer-events-auto shadow-2xl relative overflow-hidden rounded-2xl"
             >
-              <div className={`absolute top-0 ${sector.align === 'right' ? 'right-0' : 'left-0'} w-20 md:w-24 h-1 bg-gold`} />
-              <div className="text-emerald font-mono text-[10px] md:text-xs uppercase tracking-wider mb-3 md:mb-4 font-semibold">
+              <div className={`absolute top-0 ${sector.align === 'right' ? 'right-0' : 'left-0'} w-20 md:w-24 h-1 bg-[#F9A825]`} />
+              <div className="text-[#2E8B57] font-mono text-[10px] md:text-xs uppercase tracking-wider mb-3 md:mb-4 font-bold">
                 {sector.tag}
               </div>
-              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy leading-tight md:leading-[1.1] mb-3 md:mb-6 whitespace-pre-line">
+              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#0B2E63] leading-tight mb-3 md:mb-6 whitespace-pre-line">
                 {sector.title}
               </h2>
-              <p className="text-navy/70 text-xs sm:text-sm leading-relaxed mb-5 md:mb-8 font-light">
+              <p className="text-[#0B2E63]/70 text-xs sm:text-sm leading-relaxed mb-5 md:mb-8 font-light">
                 {sector.desc}
               </p>
-              <button className="flex items-center gap-2 text-gold font-mono text-[10px] md:text-xs uppercase tracking-wider hover:text-emerald transition-colors group font-semibold">
+              <button className="flex items-center gap-2 text-[#F9A825] font-mono text-[10px] md:text-xs uppercase tracking-wider hover:text-[#2E8B57] transition-colors group font-bold">
                 Discover More
                 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" className="w-3 h-3 group-hover:translate-x-1 transition-transform">
                   <path d="M1 6h10M6 1l5 5-5 5" />
@@ -250,35 +235,23 @@ export default function CubeGallery() {
         ))}
       </div>
 
-      {/* CSS Styles */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap');
-        
-        .cube-3d {
-          transform-style: preserve-3d;
-          will-change: transform;
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
         }
         
         .cube-face {
           backface-visibility: visible;
-          overflow: hidden;
-          border-radius: 12px;
         }
         
-        .cube-face::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 100%);
-          pointer-events: none;
-        }
-        
-        @media (max-width: 640px) {
-          .cube-3d {
-            transform: scale(0.9);
+        @media (max-width: 768px) {
+          .sticky {
+            perspective: 800px;
           }
         }
       `}</style>
     </div>
   )
-            }
+}
