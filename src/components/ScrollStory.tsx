@@ -6,7 +6,7 @@ const stories = [
     title: "From Remote Villages",
     description: "From the remote villages of rural India to bustling urban slums, our dedicated team of volunteers works tirelessly to bring education, healthcare, and livelihood opportunities to those who need them most.",
     bgColor: "#b9f5b0",
-    textColor: "#fff"
+    textColor: "#000"
   },
   {
     number: "02",
