@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion'
 
-// New Data Source based on the provided snippet
+// Data Source
 const GALLERY_DATA = [
   { tag: '01', title: 'DESCENT', desc: 'The beginning of the fall into the creative unknown.', align: 'left', img: 'https://assets.codepen.io/573855/demo-raw-01.webp' },
   { tag: '02', title: 'REBELLION', desc: 'Breaking the established rules of design and layout.', align: 'right', img: 'https://assets.codepen.io/573855/demo-raw-02.webp' },
@@ -153,7 +153,7 @@ export default function CubeGallery() {
                   {item.desc}
                 </p>
 
-                {/* If it's the last section, show the specific CTAs you requested */}
+                {/* Last Section CTAs */}
                 {isLast ? (
                   <div className="flex items-center gap-4 mt-6">
                     <button onClick={scrollBack} className="cta-back">
@@ -183,7 +183,7 @@ export default function CubeGallery() {
         })}
       </div>
 
-      {/* Credit Element positioned exactly as requested */}
+      {/* Credit Element */}
       <div id="credit" className="fixed bottom-6 left-6 z-50">
         <a 
           href="https://www.linkedin.com/posts/luis-martinez-lr_ai-creativity-reversecreativity-activity-7366853269517651970-zeUD?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFq1dzgByK1x_NMrcq582OMbK-_3q0DthYY" 
@@ -196,23 +196,22 @@ export default function CubeGallery() {
       </div>
 
       <style>{`
-        @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;700&display=swap");
 
-       .theme-wrapper {
-  /* Flipped: Now acts as the main LIGHT theme */
-  --dark-bg: #fcfaf8;       /* Very soft, warm off-white background */
-  --dark-fg: #2d3748;       /* Soft charcoal/slate for highly readable text */
-  --dark-muted: #718096;    /* Readable gray for secondary text */
-  
-  /* Flipped: Now acts as the inverted/dark sections */
-  --light-bg: #276749;      /* Deep forest green for dark footer/sections */
-  --light-fg: #f0fff4;      /* Minty white text for dark backgrounds */
-  --light-muted: #9ae6b4;   /* Soft mint for secondary dark background text */
-  
-  /* Accents */
-  --accent-dark: #2f855a;   /* Strong, trustworthy primary green */
-  --accent-light: #ecc94b;  /* Warm sunflower yellow for contrasting CTAs */
-}
+        .theme-wrapper {
+          /* Flipped: Acts as the main LIGHT theme */
+          --dark-bg: #fcfaf8;       
+          --dark-fg: #2d3748;       
+          --dark-muted: #718096;    
+          
+          /* Flipped: Acts as the inverted/dark sections */
+          --light-bg: #276749;      
+          --light-fg: #f0fff4;      
+          --light-muted: #9ae6b4;   
+          
+          /* Accents */
+          --accent-dark: #2f855a;   
+          --accent-light: #ecc94b;  
 
           background-color: var(--dark-bg);
           color: var(--dark-fg);
@@ -231,8 +230,8 @@ export default function CubeGallery() {
           overflow: hidden;
           background-size: cover;
           background-position: center;
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 25px 50px -12px rgba(0,0,0,0.5);
+          border: 1px solid rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 0 40px rgba(0,0,0,0.05), 0 25px 50px -12px rgba(0,0,0,0.1);
           backface-visibility: hidden;
         }
         
@@ -240,21 +239,20 @@ export default function CubeGallery() {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6));
+          background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.3));
         }
 
         .info-card {
           width: 85vw;
           max-width: 420px;
-          background: rgba(28, 24, 20, 0.6);
+          background: rgba(255, 255, 255, 0.85);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(138, 123, 110, 0.2);
+          border: 1px solid rgba(113, 128, 150, 0.2);
           padding: 2rem;
           border-radius: 4px;
         }
 
-        /* Buttons matching requested HTML setup */
         .cta-explore {
           display: flex;
           align-items: center;
