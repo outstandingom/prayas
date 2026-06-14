@@ -198,15 +198,21 @@ export default function CubeGallery() {
       <style>{`
         @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap");
 
-        .theme-wrapper {
-          --dark-bg: #1c1814;
-          --dark-fg: #ede8df;
-          --dark-muted: #8a7b6e;
-          --light-bg: #f0ece3;
-          --light-fg: #0d0d14;
-          --light-muted: #9a9aaa;
-          --accent-dark: #d4a84b;
-          --accent-light: #3a6e00;
+       .theme-wrapper {
+  /* Flipped: Now acts as the main LIGHT theme */
+  --dark-bg: #fcfaf8;       /* Very soft, warm off-white background */
+  --dark-fg: #2d3748;       /* Soft charcoal/slate for highly readable text */
+  --dark-muted: #718096;    /* Readable gray for secondary text */
+  
+  /* Flipped: Now acts as the inverted/dark sections */
+  --light-bg: #276749;      /* Deep forest green for dark footer/sections */
+  --light-fg: #f0fff4;      /* Minty white text for dark backgrounds */
+  --light-muted: #9ae6b4;   /* Soft mint for secondary dark background text */
+  
+  /* Accents */
+  --accent-dark: #2f855a;   /* Strong, trustworthy primary green */
+  --accent-light: #ecc94b;  /* Warm sunflower yellow for contrasting CTAs */
+}
 
           background-color: var(--dark-bg);
           color: var(--dark-fg);
