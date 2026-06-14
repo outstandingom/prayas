@@ -2,7 +2,14 @@ import { useEffect, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 
-function Counter({ end, suffix = '', label }: { end: number, suffix?: string, label: string }) {
+interface CounterProps {
+  end: number
+  suffix?: string
+  label: string
+  duration?: number
+}
+
+function Counter({ end, suffix = '', label, duration = 2000 }: CounterProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [count, setCount] = useState(0)
@@ -10,7 +17,6 @@ function Counter({ end, suffix = '', label }: { end: number, suffix?: string, la
   useEffect(() => {
     if (isInView) {
       let start = 0
-      const duration = 2000
       const increment = end / (duration / 16)
       const timer = setInterval(() => {
         start += increment
@@ -23,15 +29,15 @@ function Counter({ end, suffix = '', label }: { end: number, suffix?: string, la
       }, 16)
       return () => clearInterval(timer)
     }
-  }, [isInView, end])
+  }, [isInView, end, duration])
 
   return (
-    <div ref={ref} className="flex flex-col items-center p-6 bg-navy rounded-2xl hover-lift shadow-xl border border-navy/10 relative overflow-hidden group">
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="font-display text-4xl md:text-6xl font-bold text-gold mb-2 drop-shadow-md relative z-10">
+    <div ref={ref} className="flex flex-col items-center p-6 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gold/20 relative overflow-hidden group hover:shadow-2xl transition-all duration-300">
+      <div className="absolute inset-0 bg-gradient-to-br from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-gold mb-2 drop-shadow-md relative z-10">
         {count.toLocaleString()}{suffix}
       </div>
-      <div className="text-white/80 font-mono text-sm uppercase tracking-widest text-center relative z-10">
+      <div className="text-navy/70 font-mono text-xs md:text-sm uppercase tracking-widest text-center relative z-10 font-semibold">
         {label}
       </div>
     </div>
@@ -39,14 +45,78 @@ function Counter({ end, suffix = '', label }: { end: number, suffix?: string, la
 }
 
 export default function ImpactCounter() {
+  const counters = [
+    { end: 25000, suffix: "+", label: "Lives Impacted", duration: 2000 },
+    { end: 1200, suffix: "+", label: "Active Volunteers", duration: 1800 },
+    { end: 350, suffix: "+", label: "Projects Completed", duration: 1500 },
+    { end: 500, suffix: "+", label: "Regular Donors", duration: 1700 }
+  ]
+
   return (
-    <section className="py-20 relative z-20 -mt-10 max-w-7xl mx-auto px-4 md:px-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-        <Counter end={25000} suffix="+" label="Lives Impacted" />
-        <Counter end={1200} suffix="+" label="Volunteers" />
-        <Counter end={350} suffix="+" label="Projects" />
-        <Counter end={500} suffix="+" label="Donors" />
+    <section className="py-16 md:py-20 relative z-20">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <span className="text-gold font-mono text-xs uppercase tracking-widest font-semibold bg-gold/10 px-4 py-2 rounded-full inline-block">
+            Our Impact in Numbers
+          </span>
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-navy mt-4">
+            Making a Difference Together
+          </h2>
+          <div className="w-20 h-1 bg-gold mx-auto mt-4 rounded-full"></div>
+          <p className="text-navy/60 mt-4 max-w-2xl mx-auto">
+            Every number represents a life touched, a community empowered, and hope restored.
+          </p>
+        </motion.div>
+
+        {/* Counters Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          {counters.map((counter, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+            >
+              <Counter 
+                end={counter.end}
+                suffix={counter.suffix}
+                label={counter.label}
+                duration={counter.duration}
+              />
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Bottom Decorative Line */}
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="mt-12 flex justify-center"
+        >
+          <div className="w-32 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent rounded-full"></div>
+        </motion.div>
       </div>
+
+      <style>{`
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+        
+        .counter-number {
+          animation: pulse-glow 2s ease-in-out infinite;
+        }
+      `}</style>
     </section>
   )
 }
