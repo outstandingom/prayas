@@ -16,7 +16,6 @@ const NGO_SECTORS = [
   { tag: '12 — Global Impact', title: 'SCALING\nSOLUTIONS', desc: 'Partnering with international organizations to share knowledge, scale successful models, and create a worldwide network of change-makers.', align: 'right', img: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=800' }
 ]
 
-// For a continuous downward rotation, we only use 4 faces in a loop.
 const FACE_MAPPING = [
   'front', 'top', 'back', 'bottom',
   'front', 'top', 'back', 'bottom',
@@ -31,13 +30,8 @@ export default function CubeGallery() {
     offset: ["start start", "end end"]
   })
 
-  // Smooth scroll progress to make the cube rotation buttery smooth
   const smoothProgress = useSpring(scrollYProgress, { damping: 20, stiffness: 40, restDelta: 0.001 })
-
-  // Active section index (0 to 11)
   const [activeIndex, setActiveIndex] = useState(0)
-
-  // Track the images assigned to the 4 physical faces of the vertical loop
   const [faceImages, setFaceImages] = useState<Record<string, string>>({
     front: NGO_SECTORS[0].img,
     top: NGO_SECTORS[1].img,
@@ -52,8 +46,6 @@ export default function CubeGallery() {
     
     if (currentIndex !== activeIndex) {
       setActiveIndex(currentIndex)
-      
-      // Update the face images dynamically for current, prev, and next faces.
       setFaceImages(prev => {
         const next = { ...prev }
         for (let i = Math.max(0, currentIndex - 1); i <= Math.min(totalStops, currentIndex + 1); i++) {
@@ -65,40 +57,31 @@ export default function CubeGallery() {
     }
   })
 
-  // Rotate continuously downward based on scroll progress.
-  // 11 transitions, each 90 degrees = 990 degrees total.
   const rotateX = useTransform(smoothProgress, [0, 1], ["0deg", "-990deg"])
 
-  // Responsive cube size: clamp between 220px and 400px, or use viewport units
-  const cubeSize = "min(75vw, min(400px, 50vh))"
-  const translateZ = "min(25vw, 120px)"
+  // Responsive cube size – much smaller on mobile, larger on desktop
+  // Use CSS clamp with different values at different breakpoints via a media query inside style
+  // Or we can use a React state + useEffect to read window width, but simpler: use CSS variables with media queries.
+  // We'll define a CSS class that sets --cube-size and --cube-translate-z based on screen size.
 
   return (
     <div ref={containerRef} className="relative w-full" style={{ backgroundColor: "var(--navy, #0B2E63)", height: `${NGO_SECTORS.length * 100}vh` }}>
       
-      {/* Sticky Cube Scene */}
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden" style={{ perspective: "min(1200px, 80vw)" }}>
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden" style={{ perspective: "clamp(800px, 80vw, 1200px)" }}>
         
-        {/* HUD Elements - hidden on mobile, visible on tablet+ */}
+        {/* HUD - hidden on mobile */}
         <div className="absolute top-4 right-4 md:top-8 md:right-8 z-50 text-right font-mono text-[10px] md:text-xs text-gold/60 uppercase tracking-widest hidden sm:block">
           <div>{Math.round(activeIndex * (100 / (NGO_SECTORS.length - 1)))}%</div>
           <div className="w-20 md:w-32 h-[1px] bg-white/20 mt-2 mb-1 relative overflow-hidden">
-            <motion.div 
-              className="absolute top-0 left-0 bottom-0 bg-gold"
-              style={{ width: useTransform(smoothProgress, [0, 1], ['0%', '100%']) }}
-            />
+            <motion.div className="absolute top-0 left-0 bottom-0 bg-gold" style={{ width: useTransform(smoothProgress, [0, 1], ['0%', '100%']) }} />
           </div>
           <div className="text-[9px] md:text-[10px] text-emerald">{NGO_SECTORS[activeIndex].tag.split('—')[1]}</div>
         </div>
 
-        {/* The 3D Cube - responsive size */}
+        {/* 3D Cube with device‑aware size */}
         <motion.div
-          className="relative pointer-events-none -translate-y-12 md:-translate-y-0"
+          className="cube-device-sized pointer-events-none -translate-y-12 md:-translate-y-0"
           style={{
-            width: cubeSize,
-            height: cubeSize,
-            maxWidth: "400px",
-            maxHeight: "400px",
             transformStyle: 'preserve-3d',
             rotateX,
             rotateY: "0deg"
@@ -106,8 +89,8 @@ export default function CubeGallery() {
         >
           {['front', 'top', 'back', 'bottom', 'left', 'right'].map((faceId) => {
             const getTransform = () => {
-              // Use clamp to ensure translateZ is never too large or too small
-              const tz = `translateZ(clamp(80px, ${translateZ}, 180px))`
+              // translateZ uses CSS variable that changes with media query
+              const tz = `translateZ(clamp(60px, var(--cube-translate-z, 100px), 150px))`
               switch (faceId) {
                 case 'front': return `${tz}`
                 case 'top': return `rotateX(90deg) ${tz}`
@@ -139,12 +122,11 @@ export default function CubeGallery() {
                     className="absolute inset-0 w-full h-full object-cover opacity-80" 
                   />
                 )}
-                {/* Decorative Grid */}
                 <div 
                   className="absolute inset-0 pointer-events-none"
                   style={{
-                    background: `repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent min(30px, 5vw)), 
-                                 repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent min(30px, 5vw))`
+                    background: `repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, clamp(20px, 5vw, 40px)), 
+                                 repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, clamp(20px, 5vw, 40px))`
                   }}
                 />
                 {!isSideFace && <div className="absolute inset-0 bg-navy/40 mix-blend-multiply" />}
@@ -154,7 +136,7 @@ export default function CubeGallery() {
         </motion.div>
       </div>
 
-      {/* Scrollable Text Cards Overlay - fully responsive */}
+      {/* Text Cards Overlay (unchanged) */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {NGO_SECTORS.map((sector, i) => (
           <section 
@@ -169,18 +151,10 @@ export default function CubeGallery() {
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="w-[85vw] sm:w-96 md:w-[420px] bg-white/95 backdrop-blur-md border border-navy/10 p-5 md:p-8 pointer-events-auto shadow-xl relative overflow-hidden"
             >
-              {/* Highlight bar */}
               <div className={`absolute top-0 ${sector.align === 'right' ? 'right-0' : 'left-0'} w-16 md:w-24 h-1 bg-gold`} />
-              
-              <div className="text-emerald font-mono text-[10px] md:text-xs uppercase tracking-widest mb-3 md:mb-4">
-                {sector.tag}
-              </div>
-              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy leading-tight md:leading-[0.95] mb-3 md:mb-6 whitespace-pre-line">
-                {sector.title}
-              </h2>
-              <p className="text-navy/70 text-xs sm:text-sm leading-relaxed mb-5 md:mb-8 font-light">
-                {sector.desc}
-              </p>
+              <div className="text-emerald font-mono text-[10px] md:text-xs uppercase tracking-widest mb-3 md:mb-4">{sector.tag}</div>
+              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy leading-tight md:leading-[0.95] mb-3 md:mb-6 whitespace-pre-line">{sector.title}</h2>
+              <p className="text-navy/70 text-xs sm:text-sm leading-relaxed mb-5 md:mb-8 font-light">{sector.desc}</p>
               <button className="flex items-center gap-2 text-gold font-mono text-[10px] md:text-xs uppercase tracking-widest hover:text-emerald transition-colors group">
                 Discover More
                 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-3 h-3 group-hover:translate-x-1 transition-transform">
@@ -192,22 +166,28 @@ export default function CubeGallery() {
         ))}
       </div>
 
-      {/* Inject custom CSS variables to match your design system */}
+      {/* Inline CSS to set cube size and translateZ based on device */}
       <style>{`
-        .cube-gallery-root {
-          --navy: #0B2E63;
-          --emerald: #2E8B57;
-          --gold: #F9A825;
-          --surface: #F5F8F6;
+        .cube-device-sized {
+          width: clamp(140px, 40vw, 220px);
+          height: clamp(140px, 40vw, 220px);
+          --cube-translate-z: clamp(60px, 15vw, 90px);
         }
-        .bg-navy { background-color: var(--navy); }
-        .bg-surface { background-color: var(--surface); }
-        .text-emerald { color: var(--emerald); }
-        .text-gold { color: var(--gold); }
-        .border-navy\\/10 { border-color: rgba(11, 46, 99, 0.1); }
-        .bg-white\\/95 { background-color: rgba(255, 255, 255, 0.95); }
-        .backdrop-blur-md { backdrop-filter: blur(12px); }
+        @media (min-width: 640px) {
+          .cube-device-sized {
+            width: clamp(220px, 35vw, 320px);
+            height: clamp(220px, 35vw, 320px);
+            --cube-translate-z: clamp(90px, 20vw, 130px);
+          }
+        }
+        @media (min-width: 1024px) {
+          .cube-device-sized {
+            width: clamp(320px, 28vw, 400px);
+            height: clamp(320px, 28vw, 400px);
+            --cube-translate-z: clamp(120px, 22vw, 180px);
+          }
+        }
       `}</style>
     </div>
   )
-                }
+}
