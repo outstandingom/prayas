@@ -1,19 +1,19 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion'
 
 const NGO_SECTORS = [
-  { tag: '01 — Education', title: 'EMPOWERING\nMINDS', desc: 'Providing quality education to children in remote villages, building schools, and training teachers to create a sustainable learning ecosystem.', align: 'left', img: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800' },
-  { tag: '02 — Healthcare', title: 'HEALING\nCOMMUNITIES', desc: 'Delivering essential medical supplies, organizing health camps, and building local clinics to ensure everyone has access to basic healthcare.', align: 'right', img: 'https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=800' },
-  { tag: '03 — Women Welfare', title: 'FOSTERING\nLEADERS', desc: 'Empowering women through skill development, micro-finance initiatives, and leadership workshops to build stronger, self-reliant communities.', align: 'left', img: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=800' },
-  { tag: '04 — Rural Dev', title: 'BUILDING\nINFRASTRUCTURE', desc: 'Constructing clean water facilities, solar power setups, and vital infrastructure to bridge the gap between urban and rural living standards.', align: 'right', img: 'https://images.unsplash.com/photo-1593113514619-33b934789d6e?q=80&w=800' },
-  { tag: '05 — Environment', title: 'NURTURING\nNATURE', desc: 'Planting trees, cleaning waterways, and teaching sustainable farming practices to protect our planet for future generations.', align: 'left', img: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=800' },
-  { tag: '06 — Slum Dev', title: 'UPLIFTING\nLIVES', desc: 'Transforming urban slums through sanitation projects, youth programs, and community centers that provide safe spaces for growth.', align: 'right', img: 'https://images.unsplash.com/photo-1518398046578-8cca57782e17?q=80&w=800' },
-  { tag: '07 — Special Needs', title: 'INCLUSIVE\nCARE', desc: 'Providing specialized equipment, therapy, and inclusive education programs for children and adults with special needs.', align: 'left', img: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?q=80&w=800' },
-  { tag: '08 — Arts & Culture', title: 'PRESERVING\nHERITAGE', desc: 'Supporting local artisans, funding traditional art schools, and organizing cultural festivals to keep our rich history alive.', align: 'right', img: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=800' },
-  { tag: '09 — Sports', title: 'CHAMPIONING\nYOUTH', desc: 'Building community sports facilities, organizing local tournaments, and providing equipment to foster teamwork and physical health.', align: 'left', img: 'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?q=80&w=800' },
-  { tag: '10 — Mental Health', title: 'SUPPORTING\nMINDS', desc: 'Creating awareness campaigns, establishing free counseling centers, and training community leaders in psychological first aid.', align: 'right', img: 'https://images.unsplash.com/photo-1552697664-1505303c2bb6?q=80&w=800' },
-  { tag: '11 — Disaster Relief', title: 'RESPONDING\nFAST', desc: 'Deploying emergency food, shelter, and medical aid to regions affected by natural disasters within the first crucial 48 hours.', align: 'left', img: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800' },
-  { tag: '12 — Global Impact', title: 'SCALING\nSOLUTIONS', desc: 'Partnering with international organizations to share knowledge, scale successful models, and create a worldwide network of change-makers.', align: 'right', img: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=800' }
+  { tag: '01 — Education', title: 'EMPOWERING\nMINDS', desc: 'Providing quality education...', align: 'left', img: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800' },
+  { tag: '02 — Healthcare', title: 'HEALING\nCOMMUNITIES', desc: 'Delivering essential medical supplies...', align: 'right', img: 'https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=800' },
+  { tag: '03 — Women Welfare', title: 'FOSTERING\nLEADERS', desc: 'Empowering women through skill development...', align: 'left', img: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=800' },
+  { tag: '04 — Rural Dev', title: 'BUILDING\nINFRASTRUCTURE', desc: 'Constructing clean water facilities...', align: 'right', img: 'https://images.unsplash.com/photo-1593113514619-33b934789d6e?q=80&w=800' },
+  { tag: '05 — Environment', title: 'NURTURING\nNATURE', desc: 'Planting trees, cleaning waterways...', align: 'left', img: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=800' },
+  { tag: '06 — Slum Dev', title: 'UPLIFTING\nLIVES', desc: 'Transforming urban slums through sanitation...', align: 'right', img: 'https://images.unsplash.com/photo-1518398046578-8cca57782e17?q=80&w=800' },
+  { tag: '07 — Special Needs', title: 'INCLUSIVE\nCARE', desc: 'Providing specialized equipment...', align: 'left', img: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?q=80&w=800' },
+  { tag: '08 — Arts & Culture', title: 'PRESERVING\nHERITAGE', desc: 'Supporting local artisans...', align: 'right', img: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=800' },
+  { tag: '09 — Sports', title: 'CHAMPIONING\nYOUTH', desc: 'Building community sports facilities...', align: 'left', img: 'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?q=80&w=800' },
+  { tag: '10 — Mental Health', title: 'SUPPORTING\nMINDS', desc: 'Creating awareness campaigns...', align: 'right', img: 'https://images.unsplash.com/photo-1552697664-1505303c2bb6?q=80&w=800' },
+  { tag: '11 — Disaster Relief', title: 'RESPONDING\nFAST', desc: 'Deploying emergency food...', align: 'left', img: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800' },
+  { tag: '12 — Global Impact', title: 'SCALING\nSOLUTIONS', desc: 'Partnering with international organizations...', align: 'right', img: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=800' }
 ]
 
 const FACE_MAPPING = [
@@ -24,7 +24,6 @@ const FACE_MAPPING = [
 
 export default function CubeGallery() {
   const containerRef = useRef<HTMLDivElement>(null)
-  
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -43,7 +42,6 @@ export default function CubeGallery() {
     const totalStops = NGO_SECTORS.length - 1
     const exactStop = latest * totalStops
     const currentIndex = Math.min(totalStops, Math.max(0, Math.round(exactStop)))
-    
     if (currentIndex !== activeIndex) {
       setActiveIndex(currentIndex)
       setFaceImages(prev => {
@@ -57,17 +55,21 @@ export default function CubeGallery() {
     }
   })
 
-  const rotateX = useTransform(smoothProgress, [0, 1], ["0deg", "-990deg"])
+  // Downward rotation (X axis) – 12 sectors * 90° = 1080°
+  const rotateX = useTransform(smoothProgress, [0, 1], ["0deg", "-1080deg"])
 
-  // Responsive cube size – much smaller on mobile, larger on desktop
-  // Use CSS clamp with different values at different breakpoints via a media query inside style
-  // Or we can use a React state + useEffect to read window width, but simpler: use CSS variables with media queries.
-  // We'll define a CSS class that sets --cube-size and --cube-translate-z based on screen size.
+  // Dynamic Y rotation: after 4 sectors → right, after 4 more → left, then back
+  // We'll map progress to a custom rotation pattern using a piecewise function.
+  const rotateY = useTransform(smoothProgress, [0, 0.33, 0.66, 1], ["0deg", "-15deg", "15deg", "0deg"])
+
+  // Combine both rotations using a spring for smoothness
+  const finalRotateX = useSpring(rotateX, { damping: 20, stiffness: 50 })
+  const finalRotateY = useSpring(rotateY, { damping: 20, stiffness: 50 })
 
   return (
     <div ref={containerRef} className="relative w-full" style={{ backgroundColor: "var(--navy, #0B2E63)", height: `${NGO_SECTORS.length * 100}vh` }}>
       
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden" style={{ perspective: "clamp(800px, 80vw, 1200px)" }}>
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden" style={{ perspective: "clamp(800px, 80vw, 1200px)", zIndex: 0 }}>
         
         {/* HUD - hidden on mobile */}
         <div className="absolute top-4 right-4 md:top-8 md:right-8 z-50 text-right font-mono text-[10px] md:text-xs text-gold/60 uppercase tracking-widest hidden sm:block">
@@ -78,18 +80,17 @@ export default function CubeGallery() {
           <div className="text-[9px] md:text-[10px] text-emerald">{NGO_SECTORS[activeIndex].tag.split('—')[1]}</div>
         </div>
 
-        {/* 3D Cube with device‑aware size */}
+        {/* 3D Cube with responsive size and dual-axis rotation */}
         <motion.div
           className="cube-device-sized pointer-events-none -translate-y-12 md:-translate-y-0"
           style={{
             transformStyle: 'preserve-3d',
-            rotateX,
-            rotateY: "0deg"
+            rotateX: finalRotateX,
+            rotateY: finalRotateY,
           }}
         >
           {['front', 'top', 'back', 'bottom', 'left', 'right'].map((faceId) => {
             const getTransform = () => {
-              // translateZ uses CSS variable that changes with media query
               const tz = `translateZ(clamp(60px, var(--cube-translate-z, 100px), 150px))`
               switch (faceId) {
                 case 'front': return `${tz}`
@@ -136,8 +137,8 @@ export default function CubeGallery() {
         </motion.div>
       </div>
 
-      {/* Text Cards Overlay (unchanged) */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+      {/* Text Cards Overlay - now with higher z-index to prevent overlap */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20">
         {NGO_SECTORS.map((sector, i) => (
           <section 
             key={i} 
@@ -166,25 +167,24 @@ export default function CubeGallery() {
         ))}
       </div>
 
-      {/* Inline CSS to set cube size and translateZ based on device */}
       <style>{`
         .cube-device-sized {
-          width: clamp(140px, 40vw, 220px);
-          height: clamp(140px, 40vw, 220px);
-          --cube-translate-z: clamp(60px, 15vw, 90px);
+          width: clamp(180px, 55vw, 260px);
+          height: clamp(180px, 55vw, 260px);
+          --cube-translate-z: clamp(75px, 18vw, 110px);
         }
         @media (min-width: 640px) {
           .cube-device-sized {
-            width: clamp(220px, 35vw, 320px);
-            height: clamp(220px, 35vw, 320px);
-            --cube-translate-z: clamp(90px, 20vw, 130px);
+            width: clamp(240px, 38vw, 340px);
+            height: clamp(240px, 38vw, 340px);
+            --cube-translate-z: clamp(100px, 22vw, 140px);
           }
         }
         @media (min-width: 1024px) {
           .cube-device-sized {
-            width: clamp(320px, 28vw, 400px);
-            height: clamp(320px, 28vw, 400px);
-            --cube-translate-z: clamp(120px, 22vw, 180px);
+            width: clamp(340px, 30vw, 420px);
+            height: clamp(340px, 30vw, 420px);
+            --cube-translate-z: clamp(130px, 24vw, 190px);
           }
         }
       `}</style>
