@@ -27,12 +27,15 @@ export default function Navbar() {
     setIsMobileOpen(false)
   }, [location])
 
+  // Check if we're on gallery page or other dark pages
+  const isDarkPage = location.pathname === '/gallery' || location.pathname === '/stories'
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled
-          ? 'glass shadow-[0_10px_30px_-20px_rgba(10,37,64,0.5)] py-3'
-          : 'bg-transparent py-5'
+        isScrolled || isDarkPage
+          ? 'bg-white/95 backdrop-blur-md shadow-[0_10px_30px_-20px_rgba(10,37,64,0.5)] py-3'
+          : 'bg-white/80 backdrop-blur-sm py-5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -104,7 +107,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass border-t border-black/5 mt-3"
+            className="md:hidden bg-white/95 backdrop-blur-md border-t border-black/5 mt-3"
           >
             <nav className="flex flex-col px-4 py-4 gap-3">
               {navLinks.map((link) => (
