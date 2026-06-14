@@ -54,8 +54,6 @@ export default function CubeGallery() {
       setActiveIndex(currentIndex)
       
       // Update the face images dynamically for current, prev, and next faces.
-      // We only update the immediately visible adjacent faces so that the opposite (hidden) face 
-      // can be hot-swapped seamlessly without popping.
       setFaceImages(prev => {
         const next = { ...prev }
         for (let i = Math.max(0, currentIndex - 1); i <= Math.min(totalStops, currentIndex + 1); i++) {
@@ -71,32 +69,45 @@ export default function CubeGallery() {
   // 11 transitions, each 90 degrees = 990 degrees total.
   const rotateX = useTransform(smoothProgress, [0, 1], ["0deg", "-990deg"])
 
+  // Responsive cube size: clamp between 220px and 400px, or use viewport units
+  const cubeSize = "min(75vw, min(400px, 50vh))"
+  const translateZ = "min(25vw, 120px)"
+
   return (
-    <div ref={containerRef} className="relative w-full bg-navy" style={{ height: `${NGO_SECTORS.length * 100}vh` }}>
+    <div ref={containerRef} className="relative w-full" style={{ backgroundColor: "var(--navy, #0B2E63)", height: `${NGO_SECTORS.length * 100}vh` }}>
       
       {/* Sticky Cube Scene */}
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden perspective-[1200px]">
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden" style={{ perspective: "min(1200px, 80vw)" }}>
         
-        {/* HUD Elements */}
-        <div className="absolute top-8 right-8 z-50 text-right font-mono text-xs text-gold/60 uppercase tracking-widest hidden md:block">
+        {/* HUD Elements - hidden on mobile, visible on tablet+ */}
+        <div className="absolute top-4 right-4 md:top-8 md:right-8 z-50 text-right font-mono text-[10px] md:text-xs text-gold/60 uppercase tracking-widest hidden sm:block">
           <div>{Math.round(activeIndex * (100 / (NGO_SECTORS.length - 1)))}%</div>
-          <div className="w-32 h-[1px] bg-white/20 mt-2 mb-1 relative overflow-hidden">
+          <div className="w-20 md:w-32 h-[1px] bg-white/20 mt-2 mb-1 relative overflow-hidden">
             <motion.div 
               className="absolute top-0 left-0 bottom-0 bg-gold"
               style={{ width: useTransform(smoothProgress, [0, 1], ['0%', '100%']) }}
             />
           </div>
-          <div className="text-[10px] text-emerald">{NGO_SECTORS[activeIndex].tag.split('—')[1]}</div>
+          <div className="text-[9px] md:text-[10px] text-emerald">{NGO_SECTORS[activeIndex].tag.split('—')[1]}</div>
         </div>
 
-        {/* The 3D Cube */}
+        {/* The 3D Cube - responsive size */}
         <motion.div
-          className="relative w-[65vw] md:w-[50vw] max-w-[400px] aspect-square pointer-events-none -translate-y-16 md:translate-y-0"
-          style={{ rotateX, rotateY: "0deg", transformStyle: 'preserve-3d' }}
+          className="relative pointer-events-none -translate-y-12 md:-translate-y-0"
+          style={{
+            width: cubeSize,
+            height: cubeSize,
+            maxWidth: "400px",
+            maxHeight: "400px",
+            transformStyle: 'preserve-3d',
+            rotateX,
+            rotateY: "0deg"
+          }}
         >
           {['front', 'top', 'back', 'bottom', 'left', 'right'].map((faceId) => {
             const getTransform = () => {
-              const tz = 'translateZ(clamp(100px, 25vw, 200px))'
+              // Use clamp to ensure translateZ is never too large or too small
+              const tz = `translateZ(clamp(80px, ${translateZ}, 180px))`
               switch (faceId) {
                 case 'front': return `${tz}`
                 case 'top': return `rotateX(90deg) ${tz}`
@@ -113,8 +124,13 @@ export default function CubeGallery() {
             return (
               <div
                 key={faceId}
-                className={`absolute inset-0 bg-surface border border-white/5 overflow-hidden ${isSideFace ? 'opacity-90 bg-navy' : ''}`}
-                style={{ transform: getTransform(), backfaceVisibility: 'hidden' } as any}
+                className="absolute inset-0 overflow-hidden"
+                style={{
+                  background: isSideFace ? "var(--navy, #0B2E63)" : "var(--surface, #F5F8F6)",
+                  border: "1px solid rgba(255,255,255,0.05)",
+                  transform: getTransform(),
+                  backfaceVisibility: 'hidden'
+                }}
               >
                 {!isSideFace && (
                   <img 
@@ -127,8 +143,8 @@ export default function CubeGallery() {
                 <div 
                   className="absolute inset-0 pointer-events-none"
                   style={{
-                    background: `repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 40px), 
-                                 repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 40px)`
+                    background: `repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent min(30px, 5vw)), 
+                                 repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent min(30px, 5vw))`
                   }}
                 />
                 {!isSideFace && <div className="absolute inset-0 bg-navy/40 mix-blend-multiply" />}
@@ -138,34 +154,34 @@ export default function CubeGallery() {
         </motion.div>
       </div>
 
-      {/* Scrollable Text Cards Overlay */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none flex flex-col">
+      {/* Scrollable Text Cards Overlay - fully responsive */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {NGO_SECTORS.map((sector, i) => (
           <section 
             key={i} 
-            className="h-screen w-full flex items-end md:items-center pb-24 md:pb-0 px-6 md:px-20 max-w-7xl mx-auto"
+            className="h-screen w-full flex items-end md:items-center pb-20 md:pb-0 px-4 md:px-10 lg:px-20"
             style={{ justifyContent: sector.align === 'right' ? 'flex-end' : 'flex-start' }}
           >
             <motion.div 
-              initial={{ opacity: 0, x: sector.align === 'right' ? 50 : -50 }}
+              initial={{ opacity: 0, x: sector.align === 'right' ? 40 : -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="w-full max-w-md bg-white/90 backdrop-blur-md border border-navy/10 p-8 md:p-10 pointer-events-auto shadow-2xl relative overflow-hidden"
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="w-[85vw] sm:w-96 md:w-[420px] bg-white/95 backdrop-blur-md border border-navy/10 p-5 md:p-8 pointer-events-auto shadow-xl relative overflow-hidden"
             >
               {/* Highlight bar */}
-              <div className={`absolute top-0 ${sector.align === 'right' ? 'right-0' : 'left-0'} w-24 h-1 bg-gold`} />
+              <div className={`absolute top-0 ${sector.align === 'right' ? 'right-0' : 'left-0'} w-16 md:w-24 h-1 bg-gold`} />
               
-              <div className="text-emerald font-mono text-xs uppercase tracking-widest mb-4">
+              <div className="text-emerald font-mono text-[10px] md:text-xs uppercase tracking-widest mb-3 md:mb-4">
                 {sector.tag}
               </div>
-              <h2 className="font-display text-4xl md:text-5xl font-bold text-navy leading-[0.95] mb-6 whitespace-pre-line">
+              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy leading-tight md:leading-[0.95] mb-3 md:mb-6 whitespace-pre-line">
                 {sector.title}
               </h2>
-              <p className="text-navy/70 text-sm leading-relaxed mb-8 font-light">
+              <p className="text-navy/70 text-xs sm:text-sm leading-relaxed mb-5 md:mb-8 font-light">
                 {sector.desc}
               </p>
-              <button className="flex items-center gap-2 text-gold font-mono text-xs uppercase tracking-widest hover:text-emerald transition-colors group">
+              <button className="flex items-center gap-2 text-gold font-mono text-[10px] md:text-xs uppercase tracking-widest hover:text-emerald transition-colors group">
                 Discover More
                 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-3 h-3 group-hover:translate-x-1 transition-transform">
                   <path d="M1 6h10M6 1l5 5-5 5" />
@@ -176,6 +192,22 @@ export default function CubeGallery() {
         ))}
       </div>
 
+      {/* Inject custom CSS variables to match your design system */}
+      <style>{`
+        .cube-gallery-root {
+          --navy: #0B2E63;
+          --emerald: #2E8B57;
+          --gold: #F9A825;
+          --surface: #F5F8F6;
+        }
+        .bg-navy { background-color: var(--navy); }
+        .bg-surface { background-color: var(--surface); }
+        .text-emerald { color: var(--emerald); }
+        .text-gold { color: var(--gold); }
+        .border-navy\\/10 { border-color: rgba(11, 46, 99, 0.1); }
+        .bg-white\\/95 { background-color: rgba(255, 255, 255, 0.95); }
+        .backdrop-blur-md { backdrop-filter: blur(12px); }
+      `}</style>
     </div>
   )
-}
+                }
