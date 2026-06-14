@@ -5,28 +5,28 @@ const stories = [
     number: "01",
     title: "From Remote Villages",
     description: "From the remote villages of rural India to bustling urban slums, our dedicated team of volunteers works tirelessly to bring education, healthcare, and livelihood opportunities to those who need them most.",
-    bgColor: "#ff2a6d",
+    bgColor: "#b9f5b0",
     textColor: "#fff"
   },
   {
     number: "02",
     title: "Access Creates Change",
     description: "We believe that true empowerment begins with access. Access to a classroom. Access to clean drinking water. Access to a doctor who understands. By addressing these foundational needs, we create a ripple effect of change that lifts entire communities.",
-    bgColor: "#05d9e8",
+    bgColor: "#a6d9e3",
     textColor: "#000"
   },
   {
     number: "03",
     title: "Environmental Impact",
     description: "Over the last decade, our focus has expanded to include critical environmental interventions. Through grassroots awareness and direct action, we are planting trees, cleaning waterways, and teaching the next generation to be stewards of the earth.",
-    bgColor: "#ffe600",
+    bgColor: "#dabdf2",
     textColor: "#000"
   },
   {
     number: "04",
     title: "Building Resilience",
     description: "We don't just build infrastructure; we build resilience. By partnering with local leaders and training community members, we ensure that every initiative we start is sustainable long after we leave. This is not charity—this is partnership.",
-    bgColor: "#fafac6",
+    bgColor: "#eaedd1",
     textColor: "#000"
   }
 ]
