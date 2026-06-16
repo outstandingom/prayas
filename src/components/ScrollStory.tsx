@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState } from 'react'
-import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion'
+
+import { motion } from 'framer-motion'
 
 const stories = [
   {
@@ -33,100 +33,56 @@ const stories = [
 ]
 
 export default function ScrollStory() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [cardHeights, setCardHeights] = useState<string[]>([])
-  const [isMobile, setIsMobile] = useState(false)
-
-  // Responsive: detect mobile for adjusted heights
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768)
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
-  // Update card heights on resize (CSS variables)
-  useEffect(() => {
-    const updateHeights = () => {
-      const vh = window.innerHeight
-      const vw = window.innerWidth
-      let cardHeight = ''
-      if (vw < 480) cardHeight = '55vh'
-      else if (vw < 768) cardHeight = '70vh'
-      else cardHeight = '40vw'
-      setCardHeights(stories.map(() => cardHeight))
-    }
-    updateHeights()
-    window.addEventListener('resize', updateHeights)
-    return () => window.removeEventListener('resize', updateHeights)
-  }, [])
-
-  // Scroll progress for the whole container
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  })
-  const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 50 })
-  
-  // Circle progress: map scroll 0..1 to stroke-dashoffset 251..0
-  const circleDashoffset = useTransform(smoothProgress, [0, 1], [251, 0])
-
-  // Header title fill effect: map scroll from 0 to 0.3 (first 30% of scroll)
-  const titleFill = useTransform(scrollYProgress, [0, 0.3], ['transparent', '#000000'])
-  const titleStroke = useTransform(scrollYProgress, [0, 0.3], ['2px rgba(0,0,0,0.3)', '0px'])
-
   return (
-    <div ref={containerRef} className="scroll-story-container">
-      {/* Header Section */}
-      <header className="story-header">
-        <motion.h1 
-          className="story-title"
-          style={{ color: titleFill, WebkitTextStroke: titleStroke }}
-        >
-          Beautiful<br />Modern<br />Impact
-        </motion.h1>
-      </header>
+    <>
+      <div className="scroll-story-container">
+        {/* Header Section */}
+        <header className="story-header">
+          <h1 className="story-title">Beautiful<br />Modern<br />Impact</h1>
+        </header>
 
-      {/* Stacking Cards Section */}
-      <ul id="cards" style={{ gridTemplateRows: cardHeights.map(h => h).join(' ') }}>
-        {stories.map((story, index) => (
-          <Card 
-            key={index}
-            story={story}
-            index={index}
-            isMobile={isMobile}
-          />
-        ))}
-      </ul>
+        {/* Stacking Cards Section */}
+        <ul id="cards">
+          {stories.map((story, index) => (
+            <li 
+              key={index} 
+              className="card"
+              style={{ '--index': index + 1 } as React.CSSProperties}
+            >
+              <div 
+                className="card__content"
+                style={{
+                  background: story.bgColor,
+                  color: story.textColor
+                } as React.CSSProperties}
+              >
+                <span className="number">{story.number}</span>
+                <h2>{story.title}</h2>
+                <p>{story.description}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
 
-      {/* Circular Progress Indicator - animated via Framer Motion */}
-      <svg className="progress-circle" viewBox="0 0 100 100">
-        <motion.circle
-          cx="50"
-          cy="50"
-          r="40"
-          fill="none"
-          stroke="#000000"
-          strokeWidth="6"
-          transform="rotate(-90 50 50)"
-          style={{ strokeDasharray: 251, strokeDashoffset: circleDashoffset }}
-        />
-      </svg>
+        {/* Circular Progress Indicator */}
+        <svg className="progress-circle" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" />
+        </svg>
 
-      {/* End Section */}
-      <header className="end-header">
-        <motion.h1 
-          className="end-title"
-          initial={{ WebkitTextStroke: '2px rgba(0,0,0,0.3)', color: 'transparent' }}
-          whileInView={{ WebkitTextStroke: '0px', color: '#000000' }}
-          viewport={{ once: false, amount: 0.5 }}
-          transition={{ duration: 0.8 }}
-        >
-          The Journey<br />Continues
-        </motion.h1>
-      </header>
+        {/* End Section */}
+        <header className="end-header">
+          <h1 className="end-title">The Journey<br />Continues</h1>
+        </header>
+      </div>
 
+      {/* Complete CSS with white background */}
       <style>{`
+        :root {
+          --card-height: 40vw;
+          --card-margin: 4vw;
+          --card-top-offset: 1em;
+        }
+
         .scroll-story-container {
           background: #ffffff;
           color: #000000;
@@ -134,163 +90,216 @@ export default function ScrollStory() {
           margin: 0;
           padding-bottom: 10vh;
         }
+
         .story-header, .end-header {
-          min-height: 80vh;
+          height: 80vh;
           display: grid;
           place-items: center;
         }
+
         .end-header {
           height: 50vh;
-          min-height: 300px;
         }
+
         .story-title, .end-title {
-          font-size: clamp(2.5rem, 10vw, 10rem);
+          font-size: clamp(3rem, 10vw, 10rem);
           text-transform: uppercase;
           text-align: center;
-          line-height: 0.85;
+          line-height: 0.8;
           margin: 0;
-          padding: 0 1rem;
-          -webkit-text-stroke: 2px rgba(0,0,0,0.3);
+          
+          /* Typography styles for white background - darker stroke */
+          -webkit-text-stroke: 2px rgba(0, 0, 0, 0.3);
+          color: transparent;
           background: linear-gradient(to bottom, #000000 0%, transparent 100%);
           background-clip: text;
           -webkit-background-clip: text;
-          transition: -webkit-text-stroke 0.2s, color 0.2s;
+          
+          /* Scroll animation */
+          animation: fill-text-light linear both;
+          animation-timeline: scroll();
+          animation-range: 0 50vh;
         }
+
+        @keyframes fill-text-light {
+          to {
+            -webkit-text-stroke: 0;
+            color: #000000;
+          }
+        }
+
         #cards {
           list-style: none;
           padding: 0;
           display: grid;
           grid-template-columns: 1fr;
-          gap: 4vw;
-          padding-bottom: 16vw;
-          margin: 0 auto;
+          grid-template-rows: repeat(4, var(--card-height));
+          gap: var(--card-margin);
+          padding-bottom: calc(4 * var(--card-margin));
+          margin-bottom: var(--card-margin);
           max-width: 90vw;
+          margin: 0 auto;
         }
+
         .card {
           position: sticky;
           top: 10vh;
-          height: 100%;
-          padding-top: calc(var(--index, 1) * 1em);
+          height: var(--card-height);
+          padding-top: calc(var(--index) * var(--card-top-offset));
           perspective: 1000px;
         }
+
         .card__content {
           box-sizing: border-box;
-          padding: clamp(1rem, 5vw, 3rem);
+          padding: 50px;
           width: 100%;
           height: 100%;
-          border-radius: clamp(1rem, 5vw, 3rem);
+          border-radius: 50px;
+          background: #1c1c1c;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: flex-start;
-          border: 1px solid rgba(0,0,0,0.1);
+          border: 1px solid rgba(0, 0, 0, 0.1);
           overflow: hidden;
+          
+          /* Transform config */
           transform-origin: 50% 0%;
-          will-change: transform;
+          will-change: transform, filter;
+          transform-style: preserve-3d;
+          
+          /* Animate based on viewport visibility */
+          animation: scale-card linear forwards;
+          animation-timeline: view();
+          animation-range: exit-crossing 0% exit-crossing 100%;
         }
+
+        /* Card variants with dynamic shadow colors */
+        .card:nth-child(1) .card__content {
+          --shadow-color: rgba(255, 42, 109, 0.8);
+        }
+        
+        .card:nth-child(2) .card__content {
+          --shadow-color: rgba(5, 217, 232, 0.8);
+        }
+        
+        .card:nth-child(3) .card__content {
+          --shadow-color: rgba(255, 230, 0, 0.8);
+        }
+        
+        .card:nth-child(4) .card__content {
+          --shadow-color: rgba(250, 250, 198, 0.8);
+        }
+
+        @keyframes scale-card {
+          to {
+            transform: scale(0.8) translateY(-10vh) rotateX(-20deg);
+            filter: brightness(0.6);
+            border-radius: 20px;
+            box-shadow: 0 50px 80px -10px var(--shadow-color);
+          }
+        }
+
+        /* Content Styling */
         .card__content h2 {
-          font-size: clamp(1.3rem, 4vw, 3.5rem);
-          margin: 0 0 0.5rem 0;
+          font-size: clamp(1.5rem, 4vw, 4rem);
+          margin: 0;
           font-weight: bold;
-          line-height: 1.2;
         }
+        
         .card__content p {
-          font-size: clamp(0.85rem, 1.5vw, 1.2rem);
-          max-width: 80%;
-          line-height: 1.5;
+          font-size: clamp(0.9rem, 1.5vw, 1.5rem);
+          max-width: 600px;
+          line-height: 1.4;
           opacity: 0.9;
-          margin-top: 0.5rem;
+          margin-top: 1rem;
         }
-        @media (max-width: 640px) {
-          .card__content p { max-width: 100%; }
-        }
+        
         .number {
-          font-size: clamp(3rem, 15vw, 8rem);
+          font-size: clamp(3rem, 10vw, 10rem);
           position: absolute;
-          right: clamp(0.5rem, 3vw, 2rem);
-          top: clamp(-1rem, -2vw, -1.5rem);
+          right: 2rem;
+          top: -2rem;
           opacity: 0.2;
           font-weight: bold;
           pointer-events: none;
-          line-height: 1;
         }
+        
+        /* Scroll Progress Circle - Dark version for white background */
         .progress-circle {
           position: fixed;
-          bottom: max(20px, 3vh);
-          right: max(20px, 3vw);
-          width: clamp(50px, 8vw, 80px);
-          height: clamp(50px, 8vw, 80px);
+          bottom: 30px;
+          right: 30px;
+          width: 80px;
+          height: 80px;
           z-index: 100;
-          cursor: pointer;
         }
+        
+        .progress-circle circle {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 6;
+          transform: rotate(-90deg);
+          transform-origin: 50% 50%;
+          
+          /* Scroll-linked dashoffset */
+          stroke-dasharray: 251;
+          stroke-dashoffset: 251;
+          
+          animation: progress-spin linear;
+          animation-timeline: scroll();
+        }
+        
+        @keyframes progress-spin {
+          to {
+            stroke-dashoffset: 0;
+          }
+        }
+        
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-          #cards { gap: 6vw; }
-          .card__content { padding: 30px; }
-          .number { font-size: 5rem; right: 1rem; top: -1rem; }
+          :root {
+            --card-height: 70vh;
+            --card-margin: 6vw;
+          }
+          
+          .card__content {
+            padding: 30px;
+          }
+          
+          .number {
+            font-size: 5rem;
+            right: 1rem;
+            top: -1rem;
+          }
+          
+          .progress-circle {
+            width: 60px;
+            height: 60px;
+            bottom: 20px;
+            right: 20px;
+          }
         }
+        
         @media (max-width: 480px) {
-          .card__content { padding: 20px; }
-          .card__content h2 { font-size: 1.8rem; }
-          .card__content p { font-size: 1rem; }
+          .card__content {
+            padding: 20px;
+          }
+          
+          .card__content h2 {
+            font-size: 1.8rem;
+          }
+          
+          .card__content p {
+            font-size: 1rem;
+          }
         }
-        html { scroll-behavior: smooth; }
+        
+        /* Smooth scrolling */
+        html {
+          scroll-behavior: smooth;
+        }
       `}</style>
-    </div>
-  )
-}
-
-// Individual Card with scroll‑based transform
-function Card({ story, index, isMobile }: { story: any, index: number, isMobile: boolean }) {
-  const cardRef = useRef<HTMLLIElement>(null)
-  const isInView = useInView(cardRef, { amount: 0.2, once: false })
-  
-  // Transform values based on scroll exit (when card leaves viewport)
-  // Use useTransform with scrollYProgress relative to this card's position
-  // For simplicity, we'll animate based on viewport exit using whileInView and exit variants.
-  // But to match the original "scale down and rotateX as it exits", we'll use a scroll-linked scale.
-  // Since each card's exit range is different, we'll use Framer Motion's useScroll on the card's ref.
-  
-  const { scrollYProgress: cardScroll } = useScroll({
-    target: cardRef,
-    offset: ["start end", "end start"] // when card enters viewport to when it leaves
-  })
-  
-  const scale = useTransform(cardScroll, [0, 0.5, 1], [0.95, 1, 0.85])
-  const rotateX = useTransform(cardScroll, [0, 0.5, 1], [5, 0, -15])
-  const filter = useTransform(cardScroll, [0, 0.5, 1], ['brightness(0.9)', 'brightness(1)', 'brightness(0.6)'])
-  const borderRadius = useTransform(cardScroll, [0, 0.5, 1], ['clamp(1rem,5vw,3rem)', 'clamp(1rem,5vw,3rem)', '20px'])
-  const shadowOpacity = useTransform(cardScroll, [0.7, 1], [0, 0.8])
-  
-  // Dynamic shadow color based on card index
-  const shadowColors = [
-    'rgba(255,42,109,0.8)',
-    'rgba(5,217,232,0.8)',
-    'rgba(255,230,0,0.8)',
-    'rgba(250,250,198,0.8)'
-  ]
-  
-  return (
-    <li 
-      ref={cardRef}
-      className="card"
-      style={{ '--index': index + 1 } as React.CSSProperties}
-    >
-      <motion.div 
-        className="card__content"
-        style={{
-          background: story.bgColor,
-          color: story.textColor,
-          scale,
-          rotateX,
-          filter,
-          borderRadius,
-          boxShadow: `0 50px 80px -10px ${shadowColors[index]}`
-        }}
-      >
-        <span className="number">{story.number}</span>
-        <h2>{story.title}</h2>
-        <p>{story.description}</p>
-      </motion.div>
-    </li>
+    </>
   )
 }
