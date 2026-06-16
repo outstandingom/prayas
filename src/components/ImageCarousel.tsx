@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react'
-import { motion, useAnimationFrame, useMotionValue, useTransform, animate } from 'framer-motion'
+import { useState, useRef, useEffect } from 'react'
+import { motion, useAnimationFrame, useMotionValue, useTransform, animate, useSpring } from 'framer-motion'
 import type { PanInfo } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 
@@ -16,91 +16,132 @@ const ASSETS = [
   { src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=500&auto=format&fit=crop', title: 'Slum Development' },
 ]
 
-const ITEM_WIDTH = 200
-const TOTAL_ITEMS = ASSETS.length
-const TOTAL_WIDTH = TOTAL_ITEMS * ITEM_WIDTH
+// Helper hook to get current item width based on viewport
+function useResponsiveItemWidth() {
+  const [itemWidth, setItemWidth] = useState(200) // default desktop
+
+  useEffect(() => {
+    const updateWidth = () => {
+      const width = window.innerWidth
+      if (width < 480) setItemWidth(130)      // small mobile
+      else if (width < 640) setItemWidth(150) // mobile landscape
+      else if (width < 768) setItemWidth(170) // tablet portrait
+      else if (width < 1024) setItemWidth(190) // tablet landscape
+      else setItemWidth(220)                  // desktop
+    }
+    updateWidth()
+    window.addEventListener('resize', updateWidth)
+    return () => window.removeEventListener('resize', updateWidth)
+  }, [])
+
+  return itemWidth
+}
 
 export default function ImageCarousel() {
   const [isPaused, setIsPaused] = useState(false)
   const isInteracting = useRef(false)
   const xOffset = useMotionValue(0)
+  const itemWidth = useResponsiveItemWidth()
+  const totalItems = ASSETS.length
+  const totalWidth = totalItems * itemWidth
 
-  // Continuous Marquee Animation Loop
+  // Use spring for smoother dragging on touch devices
+  const dragXSpring = useSpring(xOffset, { damping: 30, stiffness: 300 })
+
+  // Continuous marquee animation (only when not paused and not interacting)
   useAnimationFrame((time, delta) => {
     if (isPaused || isInteracting.current) return
-    // Marquee speed: ~60 pixels per second
-    const moveBy = 60 * (delta / 1000)
+    // Speed adapted to item width: ~30% of item width per second (feels natural on all sizes)
+    const speed = itemWidth * 0.3
+    const moveBy = speed * (delta / 1000)
     xOffset.set(xOffset.get() - moveBy)
   })
 
-  // Drag handlers
-  const handleDragStart = () => {
-    isInteracting.current = true
-  }
-  const handleDragEnd = () => {
-    isInteracting.current = false
-  }
+  const handleDragStart = () => { isInteracting.current = true }
+  const handleDragEnd = () => { isInteracting.current = false }
   const handleDrag = (e: any, info: PanInfo) => {
     xOffset.set(xOffset.get() + info.delta.x)
   }
 
-  // Button handlers
   const toNext = () => {
     isInteracting.current = true
-    animate(xOffset, xOffset.get() - ITEM_WIDTH, { 
-      type: "spring", bounce: 0, duration: 0.5,
+    animate(xOffset, xOffset.get() - itemWidth, {
+      type: "spring",
+      bounce: 0,
+      duration: 0.5,
       onComplete: () => isInteracting.current = false
     })
   }
+
   const toPrev = () => {
     isInteracting.current = true
-    animate(xOffset, xOffset.get() + ITEM_WIDTH, { 
-      type: "spring", bounce: 0, duration: 0.5,
+    animate(xOffset, xOffset.get() + itemWidth, {
+      type: "spring",
+      bounce: 0,
+      duration: 0.5,
       onComplete: () => isInteracting.current = false
     })
   }
 
   return (
-    <div className="relative py-32 bg-surface/50 border-y border-white/5 overflow-hidden select-none">
-      <div className="text-center mb-24 px-6">
-        <span className="text-emerald font-mono text-xs uppercase tracking-widest font-semibold">Our Reach</span>
-        <h2 className="font-display text-4xl md:text-5xl font-bold mt-4 text-navy">Explore Our Core Sectors</h2>
+    <div className="relative py-16 sm:py-24 md:py-32 bg-surface/50 border-y border-white/5 overflow-hidden select-none">
+      <div className="text-center mb-12 sm:mb-16 md:mb-24 px-4 sm:px-6">
+        <span className="text-emerald font-mono text-[10px] sm:text-xs uppercase tracking-widest font-semibold">Our Reach</span>
+        <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold mt-4 text-navy px-2">
+          Explore Our Core Sectors
+        </h2>
       </div>
 
-      <div 
+      <div
         className="w-full relative flex justify-center items-center"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        <motion.div 
-          className="relative h-[320px] w-full max-w-5xl cursor-grab active:cursor-grabbing flex items-center justify-center perspective-[1200px]"
+        <motion.div
+          className="relative h-[280px] sm:h-[320px] md:h-[380px] w-full max-w-7xl mx-auto cursor-grab active:cursor-grabbing flex items-center justify-center perspective-[1200px]"
           drag="x"
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
           onDrag={handleDrag}
           dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0} // Override default elasticity so it perfectly follows the pointer
+          dragElastic={0.1} // slight elasticity for better touch feel
+          dragTransition={{ bounceStiffness: 300, bounceDamping: 20 }}
         >
           {ASSETS.map((item, i) => (
-            <CarouselItem key={i} index={i} item={item} xOffset={xOffset} />
+            <CarouselItem
+              key={i}
+              index={i}
+              item={item}
+              xOffset={dragXSpring}
+              itemWidth={itemWidth}
+              totalWidth={totalWidth}
+            />
           ))}
         </motion.div>
       </div>
 
-      <div className="relative mt-16 flex items-center justify-center gap-6 text-navy z-20">
-        <button onClick={toPrev} className="p-3 rounded-full glass hover:bg-emerald hover:text-white transition-all cursor-pointer">
+      <div className="relative mt-12 sm:mt-16 flex items-center justify-center gap-4 sm:gap-6 text-navy z-20">
+        <button
+          onClick={toPrev}
+          className="p-2 sm:p-3 rounded-full glass hover:bg-emerald hover:text-white transition-all cursor-pointer touch-manipulation"
+          aria-label="Previous slide"
+        >
           <ChevronLeft size={20} />
         </button>
-        
-        <button 
-          onClick={() => setIsPaused(!isPaused)} 
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-navy/5 hover:bg-navy/10 border border-navy/10 transition-colors text-emerald"
+
+        <button
+          onClick={() => setIsPaused(!isPaused)}
+          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-navy/5 hover:bg-navy/10 border border-navy/10 transition-colors text-emerald touch-manipulation"
           aria-label={isPaused ? "Play" : "Pause"}
         >
-          {isPaused ? <Play size={16} className="ml-1" /> : <Pause size={16} />}
+          {isPaused ? <Play size={16} className="ml-0.5 sm:ml-1" /> : <Pause size={16} />}
         </button>
 
-        <button onClick={toNext} className="p-3 rounded-full glass hover:bg-emerald hover:text-white transition-all cursor-pointer">
+        <button
+          onClick={toNext}
+          className="p-2 sm:p-3 rounded-full glass hover:bg-emerald hover:text-white transition-all cursor-pointer touch-manipulation"
+          aria-label="Next slide"
+        >
           <ChevronRight size={20} />
         </button>
       </div>
@@ -108,36 +149,76 @@ export default function ImageCarousel() {
   )
 }
 
-function CarouselItem({ index, item, xOffset }: { index: number, item: any, xOffset: any }) {
-  // Map continuous global xOffset into a perfectly wrapped local position for this item
+function CarouselItem({ index, item, xOffset, itemWidth, totalWidth }: {
+  index: number
+  item: any
+  xOffset: any
+  itemWidth: number
+  totalWidth: number
+}) {
+  // Map continuous global xOffset into a perfectly wrapped local position
   const rawOffset = useTransform(xOffset, (val: number) => {
-    const basePos = val + index * ITEM_WIDTH
-    const w = TOTAL_WIDTH
-    let wrapped = ((basePos % w) + w) % w
-    if (wrapped > w / 2) wrapped -= w
+    const basePos = val + index * itemWidth
+    let wrapped = ((basePos % totalWidth) + totalWidth) % totalWidth
+    if (wrapped > totalWidth / 2) wrapped -= totalWidth
     return wrapped
   })
 
-  // Dynamic 3D Coverflow properties based strictly on its physical X position
+  // Dynamic 3D properties based on position (values tuned for responsive width)
   const x = rawOffset
-  const scale = useTransform(rawOffset, [-600, -200, 0, 200, 600], [0.75, 0.9, 1.15, 0.9, 0.75])
-  const rotateY = useTransform(rawOffset, [-600, -200, 0, 200, 600], [45, 25, 0, -25, -45])
-  const zIndex = useTransform(rawOffset, [-600, -200, 0, 200, 600], [0, 5, 20, 5, 0])
-  const filter = useTransform(rawOffset, [-400, -200, 0, 200, 400], ['blur(4px)', 'blur(2px)', 'blur(0px)', 'blur(2px)', 'blur(4px)'])
-  const opacity = useTransform(rawOffset, [-800, -600, -200, 0, 200, 600, 800], [0, 0.3, 0.8, 1, 0.8, 0.3, 0])
+  const scale = useTransform(
+    rawOffset,
+    [-itemWidth * 3, -itemWidth, 0, itemWidth, itemWidth * 3],
+    [0.65, 0.85, 1.15, 0.85, 0.65]
+  )
+  const rotateY = useTransform(
+    rawOffset,
+    [-itemWidth * 3, -itemWidth, 0, itemWidth, itemWidth * 3],
+    [45, 25, 0, -25, -45]
+  )
+  const zIndex = useTransform(
+    rawOffset,
+    [-itemWidth * 3, -itemWidth, 0, itemWidth, itemWidth * 3],
+    [0, 5, 20, 5, 0]
+  )
+  const filter = useTransform(
+    rawOffset,
+    [-itemWidth * 2, -itemWidth, 0, itemWidth, itemWidth * 2],
+    ['blur(4px)', 'blur(2px)', 'blur(0px)', 'blur(2px)', 'blur(4px)']
+  )
+  const opacity = useTransform(
+    rawOffset,
+    [-itemWidth * 4, -itemWidth * 3, -itemWidth, 0, itemWidth, itemWidth * 3, itemWidth * 4],
+    [0, 0.3, 0.8, 1, 0.8, 0.3, 0]
+  )
+
+  // Responsive card aspect ratio stays 3:4
+  const cardWidth = itemWidth
+  const cardHeight = itemWidth * (4 / 3)
 
   return (
-    <motion.div 
-      className="absolute w-[200px]"
-      style={{ x, zIndex }}
+    <motion.div
+      className="absolute"
+      style={{ x, zIndex, width: cardWidth }}
     >
-      <motion.div 
-         className="w-48 aspect-[3/4] mx-auto flex flex-col items-center gap-4"
-         style={{ scale, rotateY, filter, opacity }}
+      <motion.div
+        className="mx-auto flex flex-col items-center gap-3 sm:gap-4"
+        style={{ scale, rotateY, filter, opacity, width: cardWidth }}
       >
-        <img src={item.src} alt={item.title} className="w-full h-full object-cover rounded-2xl shadow-xl border border-navy/10 pointer-events-none" />
-        <motion.div 
-          className="text-sm font-medium text-gold whitespace-nowrap bg-navy/95 px-4 py-2 rounded-full border border-navy/20 pointer-events-none" 
+        <div
+          className="relative rounded-2xl shadow-xl border border-navy/10 overflow-hidden bg-navy/5"
+          style={{ width: cardWidth, height: cardHeight }}
+        >
+          <img
+            src={item.src}
+            alt={item.title}
+            className="w-full h-full object-cover pointer-events-none"
+            loading="lazy"
+          />
+        </div>
+        <motion.div
+          className="text-xs sm:text-sm font-medium text-gold whitespace-nowrap bg-navy/95 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-navy/20 pointer-events-none shadow-sm"
+          style={{ maxWidth: cardWidth + 20, overflow: 'hidden', textOverflow: 'ellipsis' }}
         >
           {item.title}
         </motion.div>
