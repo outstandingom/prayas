@@ -74,12 +74,43 @@ export default function ScrollStory() {
         </header>
       </div>
 
-      {/* Complete CSS with white background */}
+      {/* Complete CSS with white background – fully responsive */}
       <style>{`
         :root {
+          /* Default desktop values */
           --card-height: 40vw;
           --card-margin: 4vw;
           --card-top-offset: 1em;
+          --header-min-height: 80vh;
+          --sticky-top: 10vh;
+        }
+
+        /* Tablet (portrait) */
+        @media (max-width: 768px) {
+          :root {
+            --card-height: 70vh;
+            --card-margin: 6vw;
+            --header-min-height: 70vh;
+            --sticky-top: 8vh;
+          }
+        }
+
+        /* Mobile landscape & small tablets */
+        @media (max-width: 640px) {
+          :root {
+            --card-height: 60vh;
+            --card-margin: 8vw;
+            --sticky-top: 5vh;
+          }
+        }
+
+        /* Mobile portrait */
+        @media (max-width: 480px) {
+          :root {
+            --card-height: 55vh;
+            --card-margin: 10vw;
+            --header-min-height: 60vh;
+          }
         }
 
         .scroll-story-container {
@@ -91,21 +122,23 @@ export default function ScrollStory() {
         }
 
         .story-header, .end-header {
-          height: 80vh;
+          min-height: var(--header-min-height);
           display: grid;
           place-items: center;
         }
 
         .end-header {
           height: 50vh;
+          min-height: 300px; /* ensure visibility on very small screens */
         }
 
         .story-title, .end-title {
-          font-size: clamp(3rem, 10vw, 10rem);
+          font-size: clamp(2.5rem, 10vw, 10rem);
           text-transform: uppercase;
           text-align: center;
-          line-height: 0.8;
+          line-height: 0.85;
           margin: 0;
+          padding: 0 1rem;
           
           /* Typography styles for white background - darker stroke */
           -webkit-text-stroke: 2px rgba(0, 0, 0, 0.3);
@@ -142,7 +175,7 @@ export default function ScrollStory() {
 
         .card {
           position: sticky;
-          top: 10vh;
+          top: var(--sticky-top);
           height: var(--card-height);
           padding-top: calc(var(--index) * var(--card-top-offset));
           perspective: 1000px;
@@ -150,10 +183,10 @@ export default function ScrollStory() {
 
         .card__content {
           box-sizing: border-box;
-          padding: 50px;
+          padding: clamp(1rem, 5vw, 3rem);
           width: 100%;
           height: 100%;
-          border-radius: 50px;
+          border-radius: clamp(1rem, 5vw, 3rem);
           background: #1c1c1c;
           display: flex;
           flex-direction: column;
@@ -192,46 +225,61 @@ export default function ScrollStory() {
 
         @keyframes scale-card {
           to {
-            transform: scale(0.8) translateY(-10vh) rotateX(-20deg);
+            transform: scale(0.85) translateY(-8vh) rotateX(-20deg);
             filter: brightness(0.6);
             border-radius: 20px;
             box-shadow: 0 50px 80px -10px var(--shadow-color);
           }
         }
 
-        /* Content Styling */
+        /* Content Styling – fully responsive */
         .card__content h2 {
-          font-size: clamp(1.5rem, 4vw, 4rem);
-          margin: 0;
+          font-size: clamp(1.3rem, 4vw, 3.5rem);
+          margin: 0 0 0.5rem 0;
           font-weight: bold;
+          line-height: 1.2;
         }
         
         .card__content p {
-          font-size: clamp(0.9rem, 1.5vw, 1.5rem);
-          max-width: 600px;
-          line-height: 1.4;
+          font-size: clamp(0.85rem, 1.5vw, 1.2rem);
+          max-width: 80%;
+          line-height: 1.5;
           opacity: 0.9;
-          margin-top: 1rem;
+          margin-top: 0.5rem;
+        }
+        
+        /* On narrow screens, description takes full width */
+        @media (max-width: 640px) {
+          .card__content p {
+            max-width: 100%;
+          }
         }
         
         .number {
-          font-size: clamp(3rem, 10vw, 10rem);
+          font-size: clamp(3rem, 15vw, 8rem);
           position: absolute;
-          right: 2rem;
-          top: -2rem;
+          right: clamp(0.5rem, 3vw, 2rem);
+          top: clamp(-1rem, -2vw, -1.5rem);
           opacity: 0.2;
           font-weight: bold;
           pointer-events: none;
+          line-height: 1;
         }
         
-        /* Scroll Progress Circle - Dark version for white background */
+        /* Scroll Progress Circle – larger touch target on mobile */
         .progress-circle {
           position: fixed;
-          bottom: 30px;
-          right: 30px;
-          width: 80px;
-          height: 80px;
+          bottom: max(20px, 3vh);
+          right: max(20px, 3vw);
+          width: clamp(50px, 8vw, 80px);
+          height: clamp(50px, 8vw, 80px);
           z-index: 100;
+          cursor: pointer;
+          transition: transform 0.2s ease;
+        }
+        
+        .progress-circle:hover {
+          transform: scale(1.05);
         }
         
         .progress-circle circle {
@@ -255,42 +303,36 @@ export default function ScrollStory() {
           }
         }
         
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-          :root {
-            --card-height: 70vh;
-            --card-margin: 6vw;
+        /* Additional small screen optimizations */
+        @media (max-width: 480px) {
+          .card {
+            padding-top: calc(var(--index) * 0.5em); /* reduce stacking offset */
           }
           
           .card__content {
-            padding: 30px;
+            border-radius: 24px;
           }
           
-          .number {
-            font-size: 5rem;
-            right: 1rem;
-            top: -1rem;
-          }
-          
-          .progress-circle {
-            width: 60px;
-            height: 60px;
-            bottom: 20px;
-            right: 20px;
+          @keyframes scale-card {
+            to {
+              transform: scale(0.9) translateY(-5vh) rotateX(-10deg);
+              border-radius: 16px;
+            }
           }
         }
         
-        @media (max-width: 480px) {
-          .card__content {
-            padding: 20px;
+        /* Landscape orientation fix */
+        @media (max-width: 900px) and (orientation: landscape) {
+          :root {
+            --card-height: 85vh;
+            --sticky-top: 5vh;
           }
-          
-          .card__content h2 {
-            font-size: 1.8rem;
+          .story-header, .end-header {
+            min-height: 90vh;
           }
-          
           .card__content p {
-            font-size: 1rem;
+            max-width: 70%;
+            font-size: 0.9rem;
           }
         }
         
