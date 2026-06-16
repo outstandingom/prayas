@@ -232,7 +232,7 @@ export default function CubeGallery() {
         </a>
       </div>
 
-      <style>{`
+      <style>{
         @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;700&display=swap");
 
         .theme-wrapper {
@@ -301,7 +301,7 @@ export default function CubeGallery() {
         @media (max-width: 768px) {
           .cta-back, .cta { padding: 0.5rem 0.9rem; font-size: 0.7rem; }
         }
-      `}</style>
+      }</style>
     </div>
   )
                   }
