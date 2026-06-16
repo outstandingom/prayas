@@ -1,6 +1,7 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion'
 
+// 12 locations (use your own data)
 const GALLERY_DATA = [
   { tag: '01', title: 'INDORE SLUMS', desc: 'Education & health outreach in 15+ urban slums, reaching 2,000+ children.', align: 'left', img: 'https://i.ibb.co/TMvbMFY6/IMG-0224.avif' },
   { tag: '02', title: 'UJJAIN RURAL', desc: 'Women self-help groups and livelihood training in 30 villages.', align: 'right', img: 'https://i.ibb.co/wndvFC1/IMG-0238.avif' },
@@ -16,9 +17,12 @@ const GALLERY_DATA = [
   { tag: '12', title: 'INDORE URBAN', desc: 'Slum redevelopment – housing, water connection, and legal aid.', align: 'right', img: 'https://i.ibb.co/TMvbMFY6/IMG-0224.avif' }
 ]
 
-const getFaceForIndex = (index: number) => {
+const TOTAL_SECTIONS = GALLERY_DATA.length
+
+// Map section index to cube face (0–5)
+const getFaceForIndex = (idx: number) => {
   const faces = ['front', 'back', 'right', 'left', 'top', 'bottom']
-  return faces[index % 6]
+  return faces[idx % 6]
 }
 
 export default function CubeGallery() {
@@ -33,25 +37,22 @@ export default function CubeGallery() {
     bottom: GALLERY_DATA[5].img,
   })
 
-  // Use default window scroll – no target needed, works on all devices
+  // Use window scroll – no TypeScript error
   const { scrollYProgress } = useScroll({
     offset: ["start start", "end end"]
   })
 
   const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 50, restDelta: 0.001 })
 
+  // Update active index and preload face images
   useMotionValueEvent(smoothProgress, "change", (latest) => {
-    const totalSectors = GALLERY_DATA.length
-    const currentIndex = Math.min(totalSectors - 1, Math.floor(latest * totalSectors))
-    
+    const currentIndex = Math.min(TOTAL_SECTIONS - 1, Math.floor(latest * TOTAL_SECTIONS))
     if (currentIndex !== activeIndex) {
       setActiveIndex(currentIndex)
-      
       setFaceImages(prev => {
         const next = { ...prev }
-        const sectorsToLoad = [currentIndex, (currentIndex + 1) % totalSectors, (currentIndex + 2) % totalSectors]
-        
-        sectorsToLoad.forEach(idx => {
+        const toLoad = [currentIndex, (currentIndex + 1) % TOTAL_SECTIONS, (currentIndex + 2) % TOTAL_SECTIONS]
+        toLoad.forEach(idx => {
           const face = getFaceForIndex(idx)
           next[face] = GALLERY_DATA[idx].img
         })
@@ -60,22 +61,23 @@ export default function CubeGallery() {
     }
   })
 
+  // Cube rotation: 0° → -360° over full scroll
   const rotationAngle = useTransform(smoothProgress, [0, 1], ["0deg", "-360deg"])
   const finalRotation = useSpring(rotationAngle, { damping: 25, stiffness: 40 })
 
-  const percentage = Math.round((activeIndex / (GALLERY_DATA.length - 1)) * 100)
+  const percentage = Math.round((activeIndex / (TOTAL_SECTIONS - 1)) * 100)
 
-  // Responsive cube dimensions – recompute on resize
+  // Responsive cube size (pixel values for stable 3D transforms)
   const [cubeSize, setCubeSize] = useState("280px")
   const [translateZ, setTranslateZ] = useState("140px")
 
   useEffect(() => {
     const updateSize = () => {
-      const width = window.innerWidth
-      if (width < 640) {
+      const w = window.innerWidth
+      if (w < 640) {
         setCubeSize("160px")
         setTranslateZ("80px")
-      } else if (width < 1024) {
+      } else if (w < 1024) {
         setCubeSize("220px")
         setTranslateZ("110px")
       } else {
@@ -88,14 +90,22 @@ export default function CubeGallery() {
     return () => window.removeEventListener('resize', updateSize)
   }, [])
 
+  // Dot navigation: scroll to section
+  const scrollToSection = useCallback((index: number) => {
+    const sectionTop = index * window.innerHeight
+    window.scrollTo({ top: sectionTop, behavior: 'smooth' })
+  }, [])
+
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
   const scrollBack = () => window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' })
 
   return (
-    <div ref={containerRef} className="theme-wrapper relative w-full" style={{ height: `${GALLERY_DATA.length * 100}vh` }}>
+    <div ref={containerRef} className="theme-wrapper" style={{ height: `${TOTAL_SECTIONS * 100}vh` }}>
       
+      {/* Sticky cube container */}
       <div className="sticky top-0 h-screen w-full flex items-center justify-center" style={{ perspective: "clamp(600px, 80vw, 1000px)" }}>
         
+        {/* 3D Cube */}
         <div className="relative" style={{ width: cubeSize, height: cubeSize, transformStyle: 'preserve-3d' }}>
           <motion.div
             className="absolute inset-0"
@@ -116,7 +126,7 @@ export default function CubeGallery() {
               return (
                 <div
                   key={face}
-                  className="cube-face absolute inset-0"
+                  className="cube-face"
                   style={{ backgroundImage: `url(${faceImages[face]})`, transform: rotation }}
                 />
               )
@@ -124,34 +134,48 @@ export default function CubeGallery() {
           </motion.div>
         </div>
 
-        {/* HUD - responsive */}
-        <div className="fixed md:absolute bottom-4 left-0 right-0 md:bottom-8 md:right-8 md:left-auto z-50 text-right font-mono bg-black/30 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none py-2 md:py-0 rounded-full mx-auto w-fit md:w-auto px-4 md:px-0">
+        {/* Progress HUD */}
+        <div className="fixed md:absolute bottom-4 left-0 right-0 md:bottom-8 md:right-8 md:left-auto z-50 text-right font-mono bg-black/30 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none py-2 md:py-0 rounded-full w-fit mx-auto md:mx-0 px-4">
           <div className="text-xl md:text-3xl font-bold text-[var(--accent-dark)] tracking-wider text-center md:text-right">
             {String(percentage).padStart(3, '0')}%
           </div>
-          <div className="w-32 md:w-32 h-[2px] bg-[var(--dark-muted)] mt-2 mb-1 relative overflow-hidden rounded-full mx-auto md:mx-0">
+          <div className="w-32 h-[2px] bg-[var(--dark-muted)] mt-2 mb-1 relative overflow-hidden rounded-full mx-auto md:mx-0">
             <motion.div 
-              className="absolute top-0 left-0 bottom-0 bg-[var(--accent-dark)] rounded-full"
+              className="absolute inset-0 bg-[var(--accent-dark)] rounded-full"
               style={{ width: useTransform(smoothProgress, [0, 1], ['0%', '100%']) }}
             />
           </div>
-          <div className="text-[10px] md:text-xs text-[var(--dark-muted)] uppercase tracking-wider font-semibold font-dm text-center md:text-right">
+          <div className="text-[10px] md:text-xs text-[var(--dark-muted)] uppercase tracking-wider font-semibold text-center md:text-right">
             {GALLERY_DATA[activeIndex]?.title || 'SCROLL'}
           </div>
         </div>
+
+        {/* Scene strip (dot navigation) */}
+        <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3">
+          {GALLERY_DATA.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => scrollToSection(idx)}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                idx === activeIndex ? 'bg-[var(--accent-dark)] scale-125' : 'bg-[var(--dark-muted)] opacity-50 hover:opacity-100'
+              }`}
+              aria-label={`Go to section ${idx + 1}`}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* Text Cards */}
+      {/* Text cards – one per section */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20">
         {GALLERY_DATA.map((item, i) => {
-          const isLast = i === GALLERY_DATA.length - 1;
+          const isLast = i === TOTAL_SECTIONS - 1
           return (
-            <section 
-              key={i} 
+            <section
+              key={i}
               className="h-screen w-full flex items-end md:items-center pb-20 md:pb-0 px-4 md:px-10 lg:px-20"
               style={{ justifyContent: item.align === 'right' ? 'flex-end' : 'flex-start' }}
             >
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: item.align === 'right' ? 40 : -40 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
@@ -167,7 +191,6 @@ export default function CubeGallery() {
                 <p className="text-[var(--dark-muted)] font-dm text-xs sm:text-sm leading-relaxed mb-4 md:mb-8 max-w-sm">
                   {item.desc}
                 </p>
-
                 {isLast ? (
                   <div className="flex items-center gap-3 mt-4 flex-wrap">
                     <button onClick={scrollBack} className="cta-back">
@@ -197,6 +220,7 @@ export default function CubeGallery() {
         })}
       </div>
 
+      {/* Credit (optional) */}
       <div id="credit" className="fixed bottom-4 left-4 z-50">
         <a 
           href="https://www.linkedin.com/posts/luis-martinez-lr_ai-creativity-reversecreativity-activity-7366853269517651970-zeUD" 
@@ -212,14 +236,10 @@ export default function CubeGallery() {
         @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;700&display=swap");
 
         .theme-wrapper {
-          --dark-bg: #fcfaf8;       
-          --dark-fg: #2d3748;       
-          --dark-muted: #718096;    
-          --light-bg: #276749;      
-          --light-fg: #f0fff4;      
-          --light-muted: #9ae6b4;   
-          --accent-dark: #2f855a;   
-          --accent-light: #ecc94b;  
+          --dark-bg: #fcfaf8;
+          --dark-fg: #2d3748;
+          --dark-muted: #718096;
+          --accent-dark: #2f855a;
           background-color: var(--dark-bg);
           color: var(--dark-fg);
         }
@@ -231,7 +251,7 @@ export default function CubeGallery() {
           overflow: hidden;
           background-size: cover;
           background-position: center;
-          border: 1px solid rgba(0, 0, 0, 0.05);
+          border: 1px solid rgba(0,0,0,0.05);
           box-shadow: inset 0 0 40px rgba(0,0,0,0.05), 0 25px 50px -12px rgba(0,0,0,0.1);
           backface-visibility: hidden;
           border-radius: 8px;
@@ -247,84 +267,41 @@ export default function CubeGallery() {
         .info-card {
           width: 85vw;
           max-width: 380px;
-          background: rgba(255, 255, 255, 0.9);
+          background: rgba(255,255,255,0.9);
           backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(113, 128, 150, 0.2);
+          border: 1px solid rgba(113,128,150,0.2);
           padding: 1.5rem;
           border-radius: 16px;
           box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
-
         @media (max-width: 640px) {
-          .info-card {
-            max-width: 90vw;
-            padding: 1.2rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-          }
+          .info-card { max-width: 90vw; padding: 1.2rem; border-radius: 12px; }
         }
 
-        .cta-explore {
+        .cta-explore, .cta-back, .cta {
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          color: var(--accent-dark);
           font-family: "DM Mono", monospace;
           font-size: 0.7rem;
           text-transform: uppercase;
           letter-spacing: 0.1em;
           font-weight: bold;
-          transition: color 0.3s ease;
-          background: none;
-          border: none;
-          cursor: pointer;
-        }
-        .cta-explore svg { width: 12px; height: 12px; }
-
-        .cta-back, .cta {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          padding: 0.6rem 1rem;
-          font-family: "DM Mono", monospace;
-          font-size: 0.75rem;
-          text-transform: uppercase;
-          text-decoration: none;
-          letter-spacing: 0.05em;
-          border-radius: 6px;
-          cursor: pointer;
           transition: all 0.3s ease;
           background: none;
           border: none;
+          cursor: pointer;
         }
-
-        .cta-back {
-          background: transparent;
-          color: var(--dark-muted);
-          border: 1px solid var(--dark-muted);
-        }
-        .cta-back:hover {
-          color: var(--dark-fg);
-          border-color: var(--dark-fg);
-        }
-        .cta {
-          background: var(--dark-fg);
-          color: var(--dark-bg);
-          border: 1px solid var(--dark-fg);
-          font-weight: bold;
-        }
-        .cta:hover {
-          background: var(--accent-dark);
-          border-color: var(--accent-dark);
-        }
-
+        .cta-explore { color: var(--accent-dark); }
+        .cta-back, .cta { padding: 0.6rem 1rem; border-radius: 6px; font-size: 0.75rem; }
+        .cta-back { color: var(--dark-muted); border: 1px solid var(--dark-muted); }
+        .cta-back:hover { color: var(--dark-fg); border-color: var(--dark-fg); }
+        .cta { background: var(--dark-fg); color: var(--dark-bg); border: 1px solid var(--dark-fg); }
+        .cta:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
         @media (max-width: 768px) {
           .cta-back, .cta { padding: 0.5rem 0.9rem; font-size: 0.7rem; }
-          .cta svg, .cta-back svg { width: 12px; height: 12px; }
         }
       `}</style>
     </div>
   )
-}
+                  }
