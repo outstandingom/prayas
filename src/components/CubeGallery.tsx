@@ -33,9 +33,8 @@ export default function CubeGallery() {
     bottom: GALLERY_DATA[5].img,
   })
 
-  // Use window scroll instead of container ref for better mobile reliability
+  // Use default window scroll – no target needed, works on all devices
   const { scrollYProgress } = useScroll({
-    target: window,
     offset: ["start start", "end end"]
   })
 
@@ -66,17 +65,17 @@ export default function CubeGallery() {
 
   const percentage = Math.round((activeIndex / (GALLERY_DATA.length - 1)) * 100)
 
-  // Responsive cube dimensions – recalc on resize to avoid glitches
-  const [cubeSize, setCubeSize] = useState("clamp(160px, 30vw, 280px)")
-  const [translateZ, setTranslateZ] = useState("clamp(80px, 15vw, 140px)")
+  // Responsive cube dimensions – recompute on resize
+  const [cubeSize, setCubeSize] = useState("280px")
+  const [translateZ, setTranslateZ] = useState("140px")
 
   useEffect(() => {
     const updateSize = () => {
-      const vw = window.innerWidth
-      if (vw < 640) {
+      const width = window.innerWidth
+      if (width < 640) {
         setCubeSize("160px")
         setTranslateZ("80px")
-      } else if (vw < 1024) {
+      } else if (width < 1024) {
         setCubeSize("220px")
         setTranslateZ("110px")
       } else {
@@ -95,10 +94,8 @@ export default function CubeGallery() {
   return (
     <div ref={containerRef} className="theme-wrapper relative w-full" style={{ height: `${GALLERY_DATA.length * 100}vh` }}>
       
-      {/* Sticky Cube Container – no overflow hidden on the container itself */}
       <div className="sticky top-0 h-screen w-full flex items-center justify-center" style={{ perspective: "clamp(600px, 80vw, 1000px)" }}>
         
-        {/* 3D Cube */}
         <div className="relative" style={{ width: cubeSize, height: cubeSize, transformStyle: 'preserve-3d' }}>
           <motion.div
             className="absolute inset-0"
@@ -127,7 +124,7 @@ export default function CubeGallery() {
           </motion.div>
         </div>
 
-        {/* HUD – responsive */}
+        {/* HUD - responsive */}
         <div className="fixed md:absolute bottom-4 left-0 right-0 md:bottom-8 md:right-8 md:left-auto z-50 text-right font-mono bg-black/30 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none py-2 md:py-0 rounded-full mx-auto w-fit md:w-auto px-4 md:px-0">
           <div className="text-xl md:text-3xl font-bold text-[var(--accent-dark)] tracking-wider text-center md:text-right">
             {String(percentage).padStart(3, '0')}%
@@ -144,7 +141,7 @@ export default function CubeGallery() {
         </div>
       </div>
 
-      {/* Text Cards Overlay – unchanged */}
+      {/* Text Cards */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20">
         {GALLERY_DATA.map((item, i) => {
           const isLast = i === GALLERY_DATA.length - 1;
@@ -330,4 +327,4 @@ export default function CubeGallery() {
       `}</style>
     </div>
   )
-          }
+}
