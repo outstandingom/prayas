@@ -1,7 +1,6 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion'
 
-// 12 locations with actual NGO work areas + your provided images
 const GALLERY_DATA = [
   { tag: '01', title: 'INDORE SLUMS', desc: 'Education & health outreach in 15+ urban slums, reaching 2,000+ children.', align: 'left', img: 'https://i.ibb.co/TMvbMFY6/IMG-0224.avif' },
   { tag: '02', title: 'UJJAIN RURAL', desc: 'Women self-help groups and livelihood training in 30 villages.', align: 'right', img: 'https://i.ibb.co/wndvFC1/IMG-0238.avif' },
@@ -14,7 +13,7 @@ const GALLERY_DATA = [
   { tag: '09', title: 'RATLAM', desc: 'Sports academies for underprivileged youth – football, athletics.', align: 'left', img: 'https://i.ibb.co/hxSBSXYX/IMG-0339.avif' },
   { tag: '10', title: 'BADWAH', desc: 'Special child support – therapy centres & inclusive education.', align: 'right', img: 'https://i.ibb.co/zTK3gdhL/d22833f6-f7be-410d-b7cc-79135da776b9.jpg' },
   { tag: '11', title: 'SANWER BLOCK', desc: 'Digital literacy for rural women – 20 computer kiosks.', align: 'left', img: 'https://i.ibb.co/0jXXjMGw/IMG-2199.jpg' },
-  { tag: '12', title: 'INDORE URBAN', desc: 'Slum redevelopment – housing, water connection, and legal aid.', align: 'right', img: 'https://i.ibb.co/TMvbMFY6/IMG-0224.avif' } // repeated first image
+  { tag: '12', title: 'INDORE URBAN', desc: 'Slum redevelopment – housing, water connection, and legal aid.', align: 'right', img: 'https://i.ibb.co/TMvbMFY6/IMG-0224.avif' }
 ]
 
 const getFaceForIndex = (index: number) => {
@@ -34,8 +33,9 @@ export default function CubeGallery() {
     bottom: GALLERY_DATA[5].img,
   })
 
+  // Use window scroll instead of container ref for better mobile reliability
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: window,
     offset: ["start start", "end end"]
   })
 
@@ -50,7 +50,6 @@ export default function CubeGallery() {
       
       setFaceImages(prev => {
         const next = { ...prev }
-        // Load current + next two sets of images (6 faces total)
         const sectorsToLoad = [currentIndex, (currentIndex + 1) % totalSectors, (currentIndex + 2) % totalSectors]
         
         sectorsToLoad.forEach(idx => {
@@ -67,9 +66,28 @@ export default function CubeGallery() {
 
   const percentage = Math.round((activeIndex / (GALLERY_DATA.length - 1)) * 100)
 
-  // Responsive cube dimensions
-  const cubeSize = "clamp(160px, 30vw, 280px)"
-  const translateZ = "clamp(80px, 15vw, 140px)"
+  // Responsive cube dimensions – recalc on resize to avoid glitches
+  const [cubeSize, setCubeSize] = useState("clamp(160px, 30vw, 280px)")
+  const [translateZ, setTranslateZ] = useState("clamp(80px, 15vw, 140px)")
+
+  useEffect(() => {
+    const updateSize = () => {
+      const vw = window.innerWidth
+      if (vw < 640) {
+        setCubeSize("160px")
+        setTranslateZ("80px")
+      } else if (vw < 1024) {
+        setCubeSize("220px")
+        setTranslateZ("110px")
+      } else {
+        setCubeSize("280px")
+        setTranslateZ("140px")
+      }
+    }
+    updateSize()
+    window.addEventListener('resize', updateSize)
+    return () => window.removeEventListener('resize', updateSize)
+  }, [])
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
   const scrollBack = () => window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' })
@@ -77,8 +95,8 @@ export default function CubeGallery() {
   return (
     <div ref={containerRef} className="theme-wrapper relative w-full" style={{ height: `${GALLERY_DATA.length * 100}vh` }}>
       
-      {/* Sticky Cube Container */}
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden" style={{ perspective: "clamp(600px, 80vw, 1000px)" }}>
+      {/* Sticky Cube Container – no overflow hidden on the container itself */}
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center" style={{ perspective: "clamp(600px, 80vw, 1000px)" }}>
         
         {/* 3D Cube */}
         <div className="relative" style={{ width: cubeSize, height: cubeSize, transformStyle: 'preserve-3d' }}>
@@ -90,7 +108,7 @@ export default function CubeGallery() {
               rotateY: "25deg",
             }}
           >
-            {['front', 'back', 'right', 'left', 'top', 'bottom'].map((face, idx) => {
+            {['front', 'back', 'right', 'left', 'top', 'bottom'].map((face) => {
               let rotation = ''
               if (face === 'front') rotation = `translateZ(${translateZ})`
               if (face === 'back') rotation = `rotateY(180deg) translateZ(${translateZ})`
@@ -109,7 +127,7 @@ export default function CubeGallery() {
           </motion.div>
         </div>
 
-        {/* HUD – responsive position: bottom-center on mobile, bottom-right on larger screens */}
+        {/* HUD – responsive */}
         <div className="fixed md:absolute bottom-4 left-0 right-0 md:bottom-8 md:right-8 md:left-auto z-50 text-right font-mono bg-black/30 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none py-2 md:py-0 rounded-full mx-auto w-fit md:w-auto px-4 md:px-0">
           <div className="text-xl md:text-3xl font-bold text-[var(--accent-dark)] tracking-wider text-center md:text-right">
             {String(percentage).padStart(3, '0')}%
@@ -126,7 +144,7 @@ export default function CubeGallery() {
         </div>
       </div>
 
-      {/* Text Cards Overlay – 12 locations */}
+      {/* Text Cards Overlay – unchanged */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20">
         {GALLERY_DATA.map((item, i) => {
           const isLast = i === GALLERY_DATA.length - 1;
@@ -182,7 +200,6 @@ export default function CubeGallery() {
         })}
       </div>
 
-      {/* Credit – unchanged */}
       <div id="credit" className="fixed bottom-4 left-4 z-50">
         <a 
           href="https://www.linkedin.com/posts/luis-martinez-lr_ai-creativity-reversecreativity-activity-7366853269517651970-zeUD" 
@@ -313,4 +330,4 @@ export default function CubeGallery() {
       `}</style>
     </div>
   )
-}
+          }
