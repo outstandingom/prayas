@@ -88,7 +88,7 @@ export default function BookGallery() {
         ))}
       </div>
 
-      <div className="book-hint">Click a page to flip</div>
+      <div className="book-hint">📖 Click a page to flip</div>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@800&display=swap');
@@ -114,8 +114,8 @@ export default function BookGallery() {
           align-items: center;
           flex-direction: column;
           overflow: hidden;
-          background: radial-gradient(circle at center, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-          padding: 80px 20px 60px;
+          background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0f3460 100%);
+          padding: 100px 20px 80px;
           position: relative;
         }
 
@@ -128,18 +128,19 @@ export default function BookGallery() {
           align-items: center;
           pointer-events: none;
           z-index: 1;
-          opacity: 0.05;
+          opacity: 0.04;
+          transform: rotate(-5deg) scale(1.1);
         }
 
         .bg-typography span {
           font-family: "Outfit", system-ui, sans-serif;
           font-weight: 800;
-          font-size: clamp(4rem, 15vw, 12rem);
+          font-size: clamp(4rem, 15vw, 14rem);
           color: #fff;
           text-transform: uppercase;
           letter-spacing: 0.05em;
           margin: 0 -0.05em;
-          text-shadow: 0 0 40px rgba(255,255,255,0.1);
+          text-shadow: 0 0 60px rgba(255,255,255,0.1);
         }
 
         /* Book Gallery Container */
@@ -148,12 +149,12 @@ export default function BookGallery() {
           display: flex;
           justify-content: center;
           align-items: center;
-          gap: 20px;
+          gap: 25px;
           flex-wrap: wrap;
           z-index: 2;
-          padding: 20px 0;
+          padding: 30px 0;
           transition: all 0.5s ease;
-          max-width: 1000px;
+          max-width: 1100px;
           width: 100%;
         }
 
@@ -167,27 +168,29 @@ export default function BookGallery() {
           --spine-shift: 0px;
           
           position: relative;
-          width: 200px;
-          height: 280px;
+          width: 220px;
+          height: 300px;
           flex-shrink: 0;
           transform-style: preserve-3d;
-          transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
           cursor: pointer;
-          border-radius: 4px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+          border-radius: 6px;
+          box-shadow: 
+            0 15px 40px rgba(0, 0, 0, 0.6),
+            0 0 0 1px rgba(255, 255, 255, 0.05);
         }
 
         .galeria-book-3d__item:hover {
-          transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+          transform: translateY(-12px) scale(1.03);
+          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
         }
 
         .galeria-book-3d__item.is-open {
           --page-rotate: -180deg;
-          --spine-shift: 10px;
-          transform: translateX(calc(var(--i) * 30px - 30px)) scale(1.08);
+          --spine-shift: 12px;
+          transform: translateX(calc(var(--i) * 35px - 35px)) scale(1.1);
           z-index: 10;
-          box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+          box-shadow: 0 35px 80px rgba(0, 0, 0, 0.9);
         }
 
         /* Front and Back Images */
@@ -197,83 +200,92 @@ export default function BookGallery() {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          border-radius: 4px;
+          border-radius: 6px;
           backface-visibility: hidden;
           box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
         }
 
+        /* Front image (visible when closed) */
         .galeria-book-3d__item img:first-child {
           transform: rotateY(var(--page-rotate));
           z-index: 2;
         }
 
+        /* Back image (visible when open) */
         .galeria-book-3d__item img:last-child {
           transform: rotateY(calc(var(--page-rotate) - 180deg));
           z-index: 1;
         }
 
-        /* Book Spine Effect */
+        /* Book Spine Effect - creates the book look */
         .galeria-book-3d__item::before {
           content: '';
           position: absolute;
           inset: 0;
-          border-radius: 4px;
+          border-radius: 6px;
           background: linear-gradient(
             to right,
-            rgba(0, 0, 0, 0.5) 0%,
-            transparent 20%,
-            transparent 80%,
-            rgba(0, 0, 0, 0.5) 100%
+            rgba(0, 0, 0, 0.6) 0%,
+            rgba(0, 0, 0, 0.1) 15%,
+            rgba(0, 0, 0, 0.05) 30%,
+            rgba(0, 0, 0, 0.05) 70%,
+            rgba(0, 0, 0, 0.1) 85%,
+            rgba(0, 0, 0, 0.6) 100%
           );
           pointer-events: none;
           z-index: 3;
-          opacity: 0.4;
+          opacity: 0.5;
           transition: opacity 0.4s ease;
         }
 
         .galeria-book-3d__item.is-open::before {
-          opacity: 0.1;
+          opacity: 0.15;
         }
 
         /* Book Shadow */
         .galeria-book-3d__item::after {
           content: '';
           position: absolute;
-          bottom: -20px;
+          bottom: -25px;
           left: 10%;
           width: 80%;
-          height: 20px;
+          height: 25px;
           background: radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%);
-          filter: blur(10px);
+          filter: blur(15px);
           opacity: 0.4;
-          transition: all 0.4s ease;
+          transition: all 0.5s ease;
           z-index: -1;
         }
 
         .galeria-book-3d__item.is-open::after {
-          opacity: 0.7;
-          transform: scale(1.2);
+          opacity: 0.8;
+          transform: scale(1.3);
+        }
+
+        /* Book page edge effect - makes it look like a book */
+        .galeria-book-3d__item .page-edge {
+          display: none;
         }
 
         /* Hint Text */
         .book-hint {
           position: absolute;
-          bottom: 30px;
+          bottom: 40px;
           left: 50%;
           transform: translateX(-50%);
-          color: rgba(255, 255, 255, 0.5);
+          color: rgba(255, 255, 255, 0.6);
           font-family: "Outfit", system-ui, sans-serif;
-          font-size: 0.9rem;
+          font-size: 1rem;
           letter-spacing: 0.1em;
           text-transform: uppercase;
           z-index: 10;
-          background: rgba(0, 0, 0, 0.3);
-          padding: 8px 24px;
-          border-radius: 20px;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(0, 0, 0, 0.4);
+          padding: 10px 28px;
+          border-radius: 30px;
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
           pointer-events: none;
-          animation: pulse 2s ease-in-out infinite;
+          animation: pulse 2.5s ease-in-out infinite;
         }
 
         @keyframes pulse {
@@ -288,56 +300,59 @@ export default function BookGallery() {
         /* Large Tablets & Small Desktops */
         @media (max-width: 1024px) {
           .galeria-book-3d__item {
-            width: 160px;
-            height: 220px;
+            width: 180px;
+            height: 250px;
           }
           .galeria-book-3d {
-            gap: 15px;
+            gap: 18px;
           }
           .galeria-book-3d.book-open {
             gap: 4px;
           }
           .galeria-book-3d__item.is-open {
-            transform: translateX(calc(var(--i) * 25px - 25px)) scale(1.06);
+            transform: translateX(calc(var(--i) * 28px - 28px)) scale(1.08);
+          }
+          .bg-typography span {
+            font-size: clamp(3rem, 12vw, 10rem);
           }
         }
 
         /* Tablets */
         @media (max-width: 768px) {
           .book-scene {
-            padding: 70px 15px 50px;
+            padding: 80px 15px 60px;
             min-height: 100vh;
           }
 
           .galeria-book-3d {
-            gap: 12px;
-            padding: 15px 0;
+            gap: 14px;
+            padding: 20px 0;
           }
           .galeria-book-3d.book-open {
             gap: 3px;
           }
 
           .galeria-book-3d__item {
-            width: 130px;
-            height: 180px;
+            width: 140px;
+            height: 190px;
           }
 
           .galeria-book-3d__item.is-open {
-            transform: translateX(calc(var(--i) * 20px - 20px)) scale(1.08);
+            transform: translateX(calc(var(--i) * 22px - 22px)) scale(1.08);
           }
 
           .bg-typography span {
-            font-size: clamp(3rem, 10vw, 6rem);
+            font-size: clamp(2.5rem, 8vw, 6rem);
           }
 
           .book-hint {
-            font-size: 0.75rem;
-            padding: 6px 16px;
-            bottom: 20px;
+            font-size: 0.8rem;
+            padding: 8px 20px;
+            bottom: 25px;
           }
         }
 
-        /* Mobile Landscape & Small Tablets */
+        /* Mobile Landscape */
         @media (max-width: 600px) {
           .galeria-book-3d {
             gap: 10px;
@@ -347,75 +362,76 @@ export default function BookGallery() {
           }
 
           .galeria-book-3d__item {
-            width: 110px;
-            height: 150px;
+            width: 120px;
+            height: 160px;
           }
 
           .galeria-book-3d__item.is-open {
-            transform: translateX(calc(var(--i) * 16px - 16px)) scale(1.1);
+            transform: translateX(calc(var(--i) * 18px - 18px)) scale(1.1);
           }
         }
 
         /* Mobile Portrait */
         @media (max-width: 480px) {
           .book-scene {
-            padding: 60px 10px 40px;
+            padding: 70px 10px 50px;
             min-height: 100svh;
           }
 
           .galeria-book-3d {
             gap: 8px;
-            padding: 10px 0;
+            padding: 15px 0;
           }
           .galeria-book-3d.book-open {
             gap: 2px;
           }
 
           .galeria-book-3d__item {
-            width: 80px;
-            height: 110px;
-            border-radius: 3px;
+            width: 85px;
+            height: 115px;
+            border-radius: 4px;
           }
 
           .galeria-book-3d__item.is-open {
-            transform: translateX(calc(var(--i) * 12px - 12px)) scale(1.12);
-          }
-
-          .bg-typography span {
-            font-size: clamp(1.8rem, 6vw, 3.5rem);
+            transform: translateX(calc(var(--i) * 14px - 14px)) scale(1.12);
           }
 
           .bg-typography {
-            opacity: 0.04;
+            opacity: 0.03;
+          }
+
+          .bg-typography span {
+            font-size: clamp(1.5rem, 6vw, 3.5rem);
           }
 
           .book-hint {
-            font-size: 0.6rem;
-            padding: 4px 12px;
-            bottom: 12px;
+            font-size: 0.65rem;
+            padding: 6px 14px;
+            bottom: 16px;
             letter-spacing: 0.05em;
           }
 
           .galeria-book-3d__item::after {
-            bottom: -12px;
-            height: 12px;
+            bottom: -14px;
+            height: 14px;
             opacity: 0.3;
           }
 
           .galeria-book-3d__item:hover {
-            transform: translateY(-4px) scale(1.02);
+            transform: translateY(-5px) scale(1.02);
           }
 
           .galeria-book-3d__item.is-open::after {
-            opacity: 0.5;
+            opacity: 0.6;
           }
         }
 
         /* Extra Small Devices */
         @media (max-width: 380px) {
           .galeria-book-3d__item {
-            width: 65px;
-            height: 90px;
+            width: 70px;
+            height: 95px;
+            border-radius: 3px;
           }
 
           .galeria-book-3d {
@@ -426,13 +442,13 @@ export default function BookGallery() {
           }
 
           .galeria-book-3d__item.is-open {
-            transform: translateX(calc(var(--i) * 10px - 10px)) scale(1.15);
+            transform: translateX(calc(var(--i) * 11px - 11px)) scale(1.15);
           }
 
           .book-hint {
             font-size: 0.5rem;
-            padding: 3px 10px;
-            bottom: 10px;
+            padding: 4px 10px;
+            bottom: 12px;
           }
         }
 
@@ -451,10 +467,11 @@ export default function BookGallery() {
           background: rgba(255, 255, 255, 0.3);
         }
 
-        /* Touch-friendly adjustments */
+        /* Touch-friendly */
         .galeria-book-3d__item {
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
+          user-select: none;
         }
       `}</style>
     </div>
