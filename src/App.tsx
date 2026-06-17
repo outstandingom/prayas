@@ -12,6 +12,9 @@ import Contact from './pages/Contact';
 import Auth from './pages/Auth';
 import Profile from './pages/Profile';
 import Volunteer from './pages/Volunteer';
+import AdminDashboard from './pages/AdminDashboard';
+
+// Inside the <Route element={<Layout />}> block, add:
 
 // Inside the <Route element={<Layout />}> block add:
 
@@ -33,6 +36,8 @@ export default function App() {
           <Route path="/donate" element={<Donate />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/volunteer" element={<Volunteer />} />
+          <Route path="/admin/*" element={<AdminDashboard />} />
+          
           {/* Profile now lives inside Layout, so it gets Navbar & Footer */}
           <Route path="/profile" element={<Profile />} />
         </Route>
