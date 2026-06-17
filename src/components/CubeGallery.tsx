@@ -2,7 +2,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion';
 
-// NGO Work Categories (12 categories based on the proposal)
+// 12 NGO Categories
 const GALLERY_DATA = [
   { 
     tag: '01', 
@@ -90,58 +90,44 @@ const GALLERY_DATA = [
   },
 ];
 
-const getFaceForIndex = (index: number) => {
-  const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
-  return faces[index % 6];
+// Face mapping for cube rotation
+const getFaceImage = (index: number) => {
+  return GALLERY_DATA[index % GALLERY_DATA.length].img;
 };
 
 export default function CubeGallery() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [faceImages, setFaceImages] = useState<Record<string, string>>({
-    front: GALLERY_DATA[0].img,
-    back: GALLERY_DATA[1].img,
-    right: GALLERY_DATA[2].img,
-    left: GALLERY_DATA[3].img,
-    top: GALLERY_DATA[4].img,
-    bottom: GALLERY_DATA[5].img,
-  });
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
 
-  const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 50, restDelta: 0.001 });
+  const smoothProgress = useSpring(scrollYProgress, { 
+    damping: 30, 
+    stiffness: 50, 
+    restDelta: 0.001 
+  });
 
+  // Track active index
   useMotionValueEvent(smoothProgress, "change", (latest) => {
     const totalSectors = GALLERY_DATA.length;
     const currentIndex = Math.min(totalSectors - 1, Math.floor(latest * totalSectors));
-    
     if (currentIndex !== activeIndex) {
       setActiveIndex(currentIndex);
-      
-      setFaceImages(prev => {
-        const next = { ...prev };
-        const sectorsToLoad = [currentIndex, (currentIndex + 1) % totalSectors, (currentIndex + 2) % totalSectors];
-        
-        sectorsToLoad.forEach(idx => {
-          const face = getFaceForIndex(idx);
-          next[face] = GALLERY_DATA[idx].img;
-        });
-        return next;
-      });
     }
   });
 
+  // Calculate cube rotation based on scroll
   const rotationAngle = useTransform(smoothProgress, [0, 1], ["0deg", "-360deg"]);
   const finalRotation = useSpring(rotationAngle, { damping: 25, stiffness: 40 });
 
   const percentage = Math.round((activeIndex / (GALLERY_DATA.length - 1)) * 100);
 
-  // Responsive cube size
-  const cubeSize = "clamp(200px, 35vw, 320px)";
-  const translateZ = "clamp(100px, 18vw, 160px)";
+  // Cube size
+  const cubeSize = "clamp(200px, 35vw, 350px)";
+  const translateZ = "clamp(100px, 18vw, 175px)";
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -151,16 +137,27 @@ export default function CubeGallery() {
     window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
   };
 
+  // Get current 6 faces for the cube
+  const getFaceImages = () => {
+    const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
+    const faceImages: Record<string, string> = {};
+    faces.forEach((face, i) => {
+      const idx = (activeIndex + i) % GALLERY_DATA.length;
+      faceImages[face] = GALLERY_DATA[idx].img;
+    });
+    return faceImages;
+  };
+
+  const faceImages = getFaceImages();
+
   return (
     <div ref={containerRef} className="cube-gallery-wrapper" style={{ height: `${GALLERY_DATA.length * 100}vh` }}>
       
       {/* Sticky Cube Container */}
-      <div className="cube-sticky-container" style={{ perspective: "1000px" }}>
+      <div className="cube-sticky-container">
         
-        {/* 3D Cube Container */}
-        <div className="cube-container" style={{ width: cubeSize, height: cubeSize, transformStyle: 'preserve-3d' }}>
-          
-          {/* Rotating Cube Group */}
+        {/* 3D Cube */}
+        <div className="cube-container" style={{ width: cubeSize, height: cubeSize }}>
           <motion.div
             className="cube-group"
             style={{
@@ -202,28 +199,36 @@ export default function CubeGallery() {
           </motion.div>
         </div>
 
-        {/* Progress Indicator */}
-        <div className="cube-progress">
-          <div className="cube-percentage">
-            {String(percentage).padStart(3, '0')}%
-          </div>
+        {/* HUD - Progress */}
+        <div className="cube-hud">
+          <div className="cube-percentage">{String(percentage).padStart(3, '0')}%</div>
           <div className="cube-progress-bar">
             <motion.div 
               className="cube-progress-fill"
               style={{ width: useTransform(smoothProgress, [0, 1], ['0%', '100%']) }}
             />
           </div>
-          <div className="cube-category-label">
-            {GALLERY_DATA[activeIndex]?.title || 'SCROLL'}
-          </div>
+          <div className="cube-label">{GALLERY_DATA[activeIndex]?.title || 'SCROLL'}</div>
+        </div>
+
+        {/* Dot Navigation */}
+        <div className="cube-dots">
+          {GALLERY_DATA.map((_, i) => (
+            <div key={i} className={`cube-dot ${i === activeIndex ? 'active' : ''}`} />
+          ))}
+        </div>
+
+        {/* Face Caption */}
+        <div className="cube-caption">
+          <div className="cube-caption-num">{String(activeIndex + 1).padStart(2, '0')}</div>
+          <div className="cube-caption-name">{GALLERY_DATA[activeIndex]?.title || ''}</div>
         </div>
       </div>
 
-      {/* Text Cards Overlay */}
+      {/* Text Cards */}
       <div className="cube-text-overlay">
         {GALLERY_DATA.map((item, i) => {
           const isLast = i === GALLERY_DATA.length - 1;
-
           return (
             <section 
               key={i} 
@@ -231,25 +236,18 @@ export default function CubeGallery() {
               style={{ justifyContent: item.align === 'right' ? 'flex-end' : 'flex-start' }}
             >
               <motion.div 
-                initial={{ opacity: 0, x: item.align === 'right' ? 50 : -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
                 className="cube-info-card"
               >
-                <div className="cube-card-tag">
-                  {item.tag} — {item.title}
-                </div>
-                <h2 className="cube-card-title">
-                  {item.title}
-                </h2>
-                <p className="cube-card-desc">
-                  {item.desc}
-                </p>
+                <div className="cube-tag">{item.tag} — {item.title}</div>
+                <h2 className="cube-title">{item.title}</h2>
+                <p className="cube-desc">{item.desc}</p>
 
-                {/* Last Section CTAs */}
                 {isLast ? (
-                  <div className="cube-card-actions">
+                  <div className="cube-actions">
                     <button onClick={scrollBack} className="cube-btn-back">
                       <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <path d="M11 6H1M6 11L1 6l5-5" />
@@ -288,8 +286,8 @@ export default function CubeGallery() {
         .cube-gallery-wrapper {
           position: relative;
           width: 100%;
-          background: #fcfaf8;
-          color: #2d3748;
+          background: #1c1814;
+          color: #ede8df;
           overflow: hidden;
         }
 
@@ -302,6 +300,8 @@ export default function CubeGallery() {
           align-items: center;
           justify-content: center;
           overflow: hidden;
+          background: #1c1814;
+          perspective: 1200px;
         }
 
         .cube-container {
@@ -319,22 +319,24 @@ export default function CubeGallery() {
           overflow: hidden;
           background-size: cover;
           background-position: center;
-          border: 1px solid rgba(0, 0, 0, 0.05);
-          box-shadow: inset 0 0 40px rgba(0,0,0,0.05), 0 25px 50px -12px rgba(0,0,0,0.1);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          box-shadow: inset 0 0 60px rgba(0,0,0,0.3);
           backface-visibility: hidden;
           border-radius: 4px;
+          background-color: #14100d;
         }
 
         .cube-face::after {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.2));
+          background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.4));
         }
 
-        .cube-progress {
-          position: absolute;
-          bottom: 30px;
+        /* HUD */
+        .cube-hud {
+          position: fixed;
+          top: 30px;
           right: 30px;
           z-index: 50;
           text-align: right;
@@ -344,34 +346,85 @@ export default function CubeGallery() {
         .cube-percentage {
           font-size: clamp(1.5rem, 3vw, 2.5rem);
           font-weight: 700;
-          color: #2f855a;
+          color: #d4a84b;
           letter-spacing: 0.05em;
         }
 
         .cube-progress-bar {
           width: clamp(80px, 15vw, 120px);
-          height: 2px;
-          background: rgba(0,0,0,0.1);
+          height: 1px;
+          background: rgba(255, 255, 255, 0.15);
           margin-top: 6px;
           margin-bottom: 4px;
-          border-radius: 2px;
+          margin-left: auto;
           overflow: hidden;
         }
 
         .cube-progress-fill {
           height: 100%;
-          background: #2f855a;
-          border-radius: 2px;
+          background: #d4a84b;
         }
 
-        .cube-category-label {
+        .cube-label {
           font-size: clamp(8px, 1vw, 11px);
-          color: #718096;
+          color: #8a7b6e;
           text-transform: uppercase;
-          letter-spacing: 0.1em;
-          font-weight: 600;
+          letter-spacing: 0.15em;
+          font-weight: 400;
         }
 
+        /* Dots */
+        .cube-dots {
+          position: fixed;
+          left: 35px;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 50;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .cube-dot {
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.2);
+          transition: all 0.3s ease;
+        }
+
+        .cube-dot.active {
+          background: #d4a84b;
+          transform: scale(2);
+        }
+
+        /* Caption */
+        .cube-caption {
+          position: fixed;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 50;
+          text-align: center;
+          pointer-events: none;
+        }
+
+        .cube-caption-num {
+          font-size: 0.6rem;
+          letter-spacing: 0.3em;
+          color: #d4a84b;
+          text-transform: uppercase;
+          margin-bottom: 4px;
+        }
+
+        .cube-caption-name {
+          font-family: "Bebas Neue", sans-serif;
+          font-size: clamp(1.5rem, 4vw, 3rem);
+          color: rgba(255, 255, 255, 0.15);
+          letter-spacing: 0.08em;
+        }
+
+        /* Text Cards */
         .cube-text-overlay {
           position: absolute;
           top: 0;
@@ -386,133 +439,130 @@ export default function CubeGallery() {
           height: 100vh;
           width: 100%;
           display: flex;
-          align-items: flex-end;
-          padding: 0 20px 100px 20px;
+          align-items: center;
+          padding: 0 40px 40px 40px;
         }
 
-        @media (min-width: 768px) {
+        @media (max-width: 768px) {
           .cube-text-section {
-            align-items: center;
-            padding: 0 40px 0 40px;
+            padding: 0 20px 80px 20px;
+            align-items: flex-end;
           }
         }
 
         .cube-info-card {
-          width: min(85vw, 420px);
-          background: rgba(255, 255, 255, 0.9);
+          width: min(400px, 85vw);
+          padding: 30px 28px;
+          background: rgba(28, 24, 20, 0.85);
           backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(113, 128, 150, 0.15);
-          padding: clamp(1.25rem, 3vw, 2rem);
-          border-radius: 8px;
+          border-left: 1px solid rgba(212, 168, 75, 0.2);
           pointer-events: auto;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+          transition: background 0.3s ease;
         }
 
-        .cube-card-tag {
-          color: #2f855a;
+        .cube-info-card:has(.right) {
+          border-left: none;
+          border-right: 1px solid rgba(212, 168, 75, 0.2);
+        }
+
+        .cube-tag {
           font-family: "DM Mono", monospace;
           font-size: clamp(8px, 1vw, 11px);
+          color: #d4a84b;
           text-transform: uppercase;
-          letter-spacing: 0.15em;
-          font-weight: 700;
-          margin-bottom: clamp(8px, 1.5vw, 16px);
+          letter-spacing: 0.2em;
+          margin-bottom: 16px;
         }
 
-        .cube-card-title {
+        .cube-title {
           font-family: "Bebas Neue", sans-serif;
-          font-size: clamp(2rem, 6vw, 4.5rem);
-          color: #2d3748;
-          line-height: 1.1;
+          font-size: clamp(2rem, 5vw, 4rem);
+          color: #ede8df;
+          line-height: 0.95;
           letter-spacing: 0.03em;
-          margin-bottom: clamp(8px, 1.5vw, 16px);
+          margin-bottom: 12px;
         }
 
-        .cube-card-desc {
+        .cube-desc {
           font-family: "DM Mono", monospace;
-          font-size: clamp(0.7rem, 1vw, 0.9rem);
-          color: #718096;
-          line-height: 1.6;
+          font-size: clamp(0.7rem, 1vw, 0.85rem);
+          color: rgba(237, 232, 223, 0.55);
+          line-height: 1.7;
           max-width: 320px;
         }
 
-        .cube-card-actions {
+        .cube-actions {
           display: flex;
           align-items: center;
           gap: 12px;
-          margin-top: clamp(16px, 3vw, 30px);
+          margin-top: 24px;
+          flex-wrap: wrap;
         }
 
         .cube-btn-back {
           display: inline-flex;
           align-items: center;
-          justify-content: center;
           gap: 6px;
           padding: 8px 16px;
           font-family: "DM Mono", monospace;
-          font-size: 0.75rem;
+          font-size: 0.65rem;
           text-transform: uppercase;
-          text-decoration: none;
-          letter-spacing: 0.05em;
-          border-radius: 4px;
-          cursor: pointer;
+          letter-spacing: 0.15em;
           background: transparent;
-          color: #718096;
-          border: 1px solid #718096;
+          color: #8a7b6e;
+          border: 1px solid rgba(138, 123, 110, 0.3);
+          border-radius: 0;
+          cursor: pointer;
           transition: all 0.3s ease;
         }
 
         .cube-btn-back:hover {
-          color: #2d3748;
-          border-color: #2d3748;
+          color: #ede8df;
+          border-color: #8a7b6e;
         }
 
         .cube-btn-back svg {
-          width: 14px;
-          height: 14px;
+          width: 12px;
+          height: 12px;
         }
 
         .cube-btn-primary {
           display: inline-flex;
           align-items: center;
-          justify-content: center;
           gap: 6px;
           padding: 8px 20px;
           font-family: "DM Mono", monospace;
-          font-size: 0.75rem;
+          font-size: 0.65rem;
           text-transform: uppercase;
-          text-decoration: none;
-          letter-spacing: 0.05em;
-          border-radius: 4px;
+          letter-spacing: 0.15em;
+          background: #d4a84b;
+          color: #1c1814;
+          border: none;
+          border-radius: 0;
           cursor: pointer;
-          background: #2d3748;
-          color: #fcfaf8;
-          border: 1px solid #2d3748;
           font-weight: 700;
           transition: all 0.3s ease;
         }
 
         .cube-btn-primary:hover {
-          background: #2f855a;
-          border-color: #2f855a;
+          background: #c49a3e;
         }
 
         .cube-btn-primary svg {
-          width: 14px;
-          height: 14px;
+          width: 12px;
+          height: 12px;
         }
 
         .cube-btn-explore {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          margin-top: clamp(12px, 2vw, 20px);
-          color: #2f855a;
+          margin-top: 16px;
+          color: #d4a84b;
           font-family: "DM Mono", monospace;
-          font-size: clamp(0.6rem, 0.8vw, 0.75rem);
+          font-size: 0.65rem;
           text-transform: uppercase;
-          letter-spacing: 0.1em;
-          font-weight: 700;
+          letter-spacing: 0.15em;
           background: none;
           border: none;
           cursor: pointer;
@@ -520,7 +570,7 @@ export default function CubeGallery() {
         }
 
         .cube-btn-explore:hover {
-          color: #1a4735;
+          color: #c49a3e;
         }
 
         .cube-btn-icon {
@@ -535,44 +585,52 @@ export default function CubeGallery() {
 
         .cube-credit {
           position: fixed;
-          bottom: 30px;
-          left: 30px;
+          right: 30px;
+          top: 50%;
+          transform: translateY(-50%) rotate(-90deg);
+          transform-origin: right center;
           z-index: 50;
           font-family: "DM Mono", monospace;
-          font-size: clamp(8px, 1vw, 11px);
-          color: #718096;
-          letter-spacing: 0.05em;
+          font-size: 0.6rem;
+          color: rgba(138, 123, 110, 0.5);
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          pointer-events: none;
         }
 
         @media (max-width: 768px) {
-          .cube-text-section {
-            padding: 0 16px 80px 16px;
+          .cube-hud {
+            top: 16px;
+            right: 16px;
           }
-          .cube-progress {
-            bottom: 20px;
-            right: 20px;
+          .cube-dots {
+            display: none;
+          }
+          .cube-caption {
+            bottom: 16px;
           }
           .cube-credit {
-            bottom: 20px;
-            left: 20px;
-            font-size: 8px;
+            display: none;
           }
-          .cube-btn-back, .cube-btn-primary {
-            font-size: 0.6rem;
-            padding: 6px 12px;
+          .cube-info-card {
+            padding: 20px 18px;
+            width: 90vw;
+          }
+          .cube-actions {
+            flex-wrap: wrap;
           }
         }
 
         @media (max-width: 480px) {
-          .cube-info-card {
-            padding: 16px;
-            width: 90vw;
+          .cube-hud {
+            top: 12px;
+            right: 12px;
           }
           .cube-text-section {
             padding: 0 12px 60px 12px;
           }
-          .cube-card-actions {
-            flex-wrap: wrap;
+          .cube-info-card {
+            padding: 16px 14px;
           }
         }
       `}</style>
