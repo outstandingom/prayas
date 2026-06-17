@@ -1,3 +1,4 @@
+// src/App.tsx
 import { Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Layout from './components/Layout';
@@ -9,17 +10,16 @@ import Stories from './pages/Stories';
 import Donate from './pages/Donate';
 import Contact from './pages/Contact';
 import Auth from './pages/Auth';
-import Profile from './pages/Profile';  // <-- import
+import Profile from './pages/Profile';
 
 export default function App() {
   return (
     <AnimatePresence mode="wait">
       <Routes>
-        {/* Standalone pages (no Layout) */}
+        {/* Auth page – standalone (no layout) */}
         <Route path="/auth" element={<Auth />} />
-        <Route path="/profile" element={<Profile />} />
 
-        {/* Pages with Layout */}
+        {/* All other pages with the common Layout (includes Navbar & Footer) */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -28,6 +28,8 @@ export default function App() {
           <Route path="/stories" element={<Stories />} />
           <Route path="/donate" element={<Donate />} />
           <Route path="/contact" element={<Contact />} />
+          {/* Profile now lives inside Layout, so it gets Navbar & Footer */}
+          <Route path="/profile" element={<Profile />} />
         </Route>
       </Routes>
     </AnimatePresence>
