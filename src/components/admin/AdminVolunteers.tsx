@@ -1,8 +1,7 @@
 // src/components/admin/AdminVolunteers.tsx
 import { useState, useEffect } from 'react';
-
 import { supabase } from '@/lib/supabase';
-import { Phone, MessageCircle, CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react';
+import { Phone, MessageCircle, CheckCircle, XCircle, Clock, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
 
 type Volunteer = {
   id: string;
@@ -26,6 +25,7 @@ export default function AdminVolunteers({ isSuperAdmin }: AdminVolunteersProps) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
+  const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
   useEffect(() => {
     fetchVolunteers();
@@ -56,7 +56,6 @@ export default function AdminVolunteers({ isSuperAdmin }: AdminVolunteersProps) 
         .update({ status: newStatus })
         .eq('id', id);
       if (error) throw error;
-      // Refresh
       fetchVolunteers();
     } catch (err: any) {
       alert('Failed to update status: ' + err.message);
@@ -111,52 +110,139 @@ export default function AdminVolunteers({ isSuperAdmin }: AdminVolunteersProps) 
       {volunteers.length === 0 ? (
         <p className="text-muted-foreground">No volunteer applications yet.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-muted-foreground">
-              <tr>
-                <th className="text-left p-3">Name</th>
-                <th className="text-left p-3">Email</th>
-                <th className="text-left p-3">Phone</th>
-                <th className="text-left p-3">Skills</th>
-                <th className="text-left p-3">Status</th>
-                <th className="text-left p-3">Actions</th>
-                {isSuperAdmin && <th className="text-left p-3">Manage</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {volunteers.map((v) => (
-                <tr key={v.id} className="border-t border-border/50 hover:bg-muted/30">
-                  <td className="p-3 font-medium">{v.full_name}</td>
-                  <td className="p-3">{v.email}</td>
-                  <td className="p-3">{v.phone}</td>
-                  <td className="p-3">{v.skills || '—'}</td>
-                  <td className="p-3">{getStatusBadge(v.status)}</td>
-                  <td className="p-3">
-                    <div className="flex gap-2">
+        <>
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 text-muted-foreground">
+                <tr>
+                  <th className="text-left p-3">Name</th>
+                  <th className="text-left p-3">Email</th>
+                  <th className="text-left p-3">Phone</th>
+                  <th className="text-left p-3">Skills</th>
+                  <th className="text-left p-3">Status</th>
+                  <th className="text-left p-3">Actions</th>
+                  {isSuperAdmin && <th className="text-left p-3">Manage</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {volunteers.map((v) => (
+                  <tr key={v.id} className="border-t border-border/50 hover:bg-muted/30">
+                    <td className="p-3 font-medium">{v.full_name}</td>
+                    <td className="p-3">{v.email}</td>
+                    <td className="p-3">{v.phone}</td>
+                    <td className="p-3">{v.skills || '—'}</td>
+                    <td className="p-3">{getStatusBadge(v.status)}</td>
+                    <td className="p-3">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleCall(v.phone)}
+                          className="p-1.5 rounded-full bg-green-100 text-green-600 hover:bg-green-200 transition"
+                          title="Call"
+                        >
+                          <Phone className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleWhatsApp(v.phone)}
+                          className="p-1.5 rounded-full bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition"
+                          title="WhatsApp"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                    {isSuperAdmin && (
+                      <td className="p-3">
+                        <div className="flex gap-1">
+                          {v.status !== 'approved' && (
+                            <button
+                              onClick={() => updateStatus(v.id, 'approved')}
+                              className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200"
+                            >
+                              Approve
+                            </button>
+                          )}
+                          {v.status !== 'rejected' && (
+                            <button
+                              onClick={() => updateStatus(v.id, 'rejected')}
+                              className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+                            >
+                              Reject
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-4">
+            {volunteers.map((v) => (
+              <div key={v.id} className="bg-card border border-border/50 rounded-lg p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold">{v.full_name}</span>
+                      {getStatusBadge(v.status)}
+                    </div>
+                    <p className="text-sm text-muted-foreground">{v.email}</p>
+                    <p className="text-sm text-muted-foreground">{v.phone}</p>
+                    {v.skills && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        <span className="font-medium">Skills:</span> {v.skills}
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setExpandedRow(expandedRow === v.id ? null : v.id)}
+                    className="p-1 rounded-lg hover:bg-muted transition"
+                  >
+                    {expandedRow === v.id ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  </button>
+                </div>
+
+                {/* Expandable Details */}
+                {expandedRow === v.id && (
+                  <div className="mt-3 pt-3 border-t border-border/50 space-y-2">
+                    {v.address && (
+                      <p className="text-sm">
+                        <span className="font-medium">Address:</span> {v.address}
+                      </p>
+                    )}
+                    {v.availability && (
+                      <p className="text-sm">
+                        <span className="font-medium">Availability:</span> {v.availability}
+                      </p>
+                    )}
+                    {v.message && (
+                      <p className="text-sm">
+                        <span className="font-medium">Message:</span> {v.message}
+                      </p>
+                    )}
+                    <div className="flex gap-2 pt-2">
                       <button
                         onClick={() => handleCall(v.phone)}
-                        className="p-1.5 rounded-full bg-green-100 text-green-600 hover:bg-green-200 transition"
-                        title="Call"
+                        className="flex-1 px-3 py-1.5 bg-green-100 text-green-600 rounded-md text-sm hover:bg-green-200 transition flex items-center justify-center gap-1"
                       >
-                        <Phone className="w-4 h-4" />
+                        <Phone className="w-4 h-4" /> Call
                       </button>
                       <button
                         onClick={() => handleWhatsApp(v.phone)}
-                        className="p-1.5 rounded-full bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition"
-                        title="WhatsApp"
+                        className="flex-1 px-3 py-1.5 bg-emerald-100 text-emerald-600 rounded-md text-sm hover:bg-emerald-200 transition flex items-center justify-center gap-1"
                       >
-                        <MessageCircle className="w-4 h-4" />
+                        <MessageCircle className="w-4 h-4" /> WhatsApp
                       </button>
                     </div>
-                  </td>
-                  {isSuperAdmin && (
-                    <td className="p-3">
-                      <div className="flex gap-1">
+                    {isSuperAdmin && (
+                      <div className="flex gap-1 pt-1">
                         {v.status !== 'approved' && (
                           <button
                             onClick={() => updateStatus(v.id, 'approved')}
-                            className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200"
+                            className="flex-1 px-3 py-1.5 bg-green-100 text-green-700 rounded-md text-sm hover:bg-green-200"
                           >
                             Approve
                           </button>
@@ -164,20 +250,20 @@ export default function AdminVolunteers({ isSuperAdmin }: AdminVolunteersProps) 
                         {v.status !== 'rejected' && (
                           <button
                             onClick={() => updateStatus(v.id, 'rejected')}
-                            className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+                            className="flex-1 px-3 py-1.5 bg-red-100 text-red-700 rounded-md text-sm hover:bg-red-200"
                           >
                             Reject
                           </button>
                         )}
                       </div>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
-          }
+                }
