@@ -11,6 +11,10 @@ import Donate from './pages/Donate';
 import Contact from './pages/Contact';
 import Auth from './pages/Auth';
 import Profile from './pages/Profile';
+import Volunteer from './pages/Volunteer';
+
+// Inside the <Route element={<Layout />}> block add:
+
 
 export default function App() {
   return (
@@ -28,6 +32,7 @@ export default function App() {
           <Route path="/stories" element={<Stories />} />
           <Route path="/donate" element={<Donate />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/volunteer" element={<Volunteer />} />
           {/* Profile now lives inside Layout, so it gets Navbar & Footer */}
           <Route path="/profile" element={<Profile />} />
         </Route>
