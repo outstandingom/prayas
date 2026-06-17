@@ -7,7 +7,6 @@ type User = {
   id: string;
   full_name: string;
   phone: string;
-  email?: string; // optional, because we might not have it in profiles
   created_at: string;
 };
 
@@ -23,22 +22,12 @@ export default function AdminUsers() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      // Fetch from profiles table (we might not have email there)
       const { data, error } = await supabase
         .from('profiles')
         .select('id, full_name, phone, created_at')
         .order('created_at', { ascending: false });
       if (error) throw error;
-
-      // Map data to User type (email will be empty)
-      const mappedUsers: User[] = (data || []).map((row: any) => ({
-        id: row.id,
-        full_name: row.full_name || '—',
-        phone: row.phone || '—',
-        email: '', // placeholder
-        created_at: row.created_at,
-      }));
-      setUsers(mappedUsers);
+      setUsers(data || []);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -60,26 +49,42 @@ export default function AdminUsers() {
       {users.length === 0 ? (
         <p className="text-muted-foreground">No users registered yet.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-muted-foreground">
-              <tr>
-                <th className="text-left p-3">Name</th>
-                <th className="text-left p-3">Phone</th>
-                <th className="text-left p-3">Registered</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => (
-                <tr key={u.id} className="border-t border-border/50">
-                  <td className="p-3 font-medium">{u.full_name}</td>
-                  <td className="p-3">{u.phone}</td>
-                  <td className="p-3">{new Date(u.created_at).toLocaleDateString()}</td>
+        <>
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 text-muted-foreground">
+                <tr>
+                  <th className="text-left p-3">Name</th>
+                  <th className="text-left p-3">Phone</th>
+                  <th className="text-left p-3">Registered</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {users.map((u) => (
+                  <tr key={u.id} className="border-t border-border/50 hover:bg-muted/30">
+                    <td className="p-3 font-medium">{u.full_name || '—'}</td>
+                    <td className="p-3">{u.phone || '—'}</td>
+                    <td className="p-3">{new Date(u.created_at).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-3">
+            {users.map((u) => (
+              <div key={u.id} className="bg-card border border-border/50 rounded-lg p-4">
+                <p className="font-semibold">{u.full_name || '—'}</p>
+                <p className="text-sm text-muted-foreground">{u.phone || '—'}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Registered: {new Date(u.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
