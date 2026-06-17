@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Heart, User } from 'lucide-react';
+import { Menu, X, Heart, User, Shield } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 const navLinks = [
@@ -11,7 +11,7 @@ const navLinks = [
   { name: 'Programs', path: '/programs' },
   { name: 'Gallery', path: '/gallery' },
   { name: 'Stories', path: '/stories' },
-  { name: 'Volunteer', path: '/volunteer' }, // <-- NEW
+  { name: 'Volunteer', path: '/volunteer' },
   { name: 'Contact', path: '/contact' },
 ];
 
@@ -19,6 +19,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
 
   // Check auth state on mount and on changes
@@ -26,11 +27,33 @@ export default function Navbar() {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
+      
+      // Check if user is admin
+      if (session?.user) {
+        const { data } = await supabase
+          .from('admin_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single();
+        setIsAdmin(!!data);
+      } else {
+        setIsAdmin(false);
+      }
     };
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setIsAuthenticated(!!session);
+      if (session?.user) {
+        const { data } = await supabase
+          .from('admin_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single();
+        setIsAdmin(!!data);
+      } else {
+        setIsAdmin(false);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -60,7 +83,6 @@ export default function Navbar() {
   }, [location]);
 
   const isDarkPage = location.pathname === '/gallery' || location.pathname === '/stories';
-  const isHomePage = location.pathname === '/';
   const isAuthPage = location.pathname === '/auth';
 
   // Don't show sign-in link on auth page (avoid self-link)
@@ -127,6 +149,17 @@ export default function Navbar() {
               <Heart className="w-4 h-4" />
             </Link>
 
+            {/* Admin Dashboard Link - only for admins */}
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border border-primary/30 text-primary hover:bg-primary/10 transition-all hover:scale-105"
+              >
+                <Shield className="w-4 h-4" />
+                Admin
+              </Link>
+            )}
+
             {/* Sign In / Profile Link */}
             {showAuthLink && (
               <Link
@@ -181,6 +214,17 @@ export default function Navbar() {
                 Donate Now <Heart className="w-5 h-5" />
               </Link>
 
+              {/* Mobile Admin Dashboard Link */}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="w-full text-center rounded-full border border-primary/30 px-6 py-3.5 font-semibold text-primary flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+                >
+                  <Shield className="w-5 h-5" />
+                  Admin Dashboard
+                </Link>
+              )}
+
               {/* Mobile Sign In / Profile Link */}
               {showAuthLink && (
                 <Link
@@ -197,4 +241,4 @@ export default function Navbar() {
       </AnimatePresence>
     </header>
   );
-}
+            }
