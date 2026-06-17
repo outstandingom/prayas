@@ -24,7 +24,6 @@ export default function AdminDashboard() {
         return;
       }
 
-      // Fetch role from admin_roles
       const { data, error } = await supabase
         .from('admin_roles')
         .select('role')
@@ -32,7 +31,6 @@ export default function AdminDashboard() {
         .single();
 
       if (error || !data) {
-        // Not an admin
         navigate('/');
         return;
       }
@@ -54,7 +52,7 @@ export default function AdminDashboard() {
   }
 
   if (!role) {
-    return null; // will redirect
+    return null;
   }
 
   const isSuperAdmin = role === 'super_admin';
