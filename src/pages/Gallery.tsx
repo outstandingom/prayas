@@ -2,7 +2,6 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-
 // Replace these with your actual NGO photos
 const imageUrls = [
   'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80',
@@ -21,15 +20,6 @@ const imageUrls = [
 
 export default function Gallery() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const spiralGroupRef = useRef<THREE.Group | null>(null);
-  const scrollOffsetRef = useRef(0);
-  const isDraggingRef = useRef(false);
-  const previousMouseRef = useRef({ x: 0, y: 0 });
-  const targetRotationRef = useRef({ x: 0, z: 0 });
-  const currentRotationRef = useRef({ x: 0, z: 0 });
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -38,62 +28,47 @@ export default function Gallery() {
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // --- Setup Scene ---
+    // Scene setup
     const scene = new THREE.Scene();
-    sceneRef.current = scene;
+    scene.background = new THREE.Color(0x0a0a1a);
 
-    // --- Setup Camera ---
+    // Camera setup
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 18);
-    cameraRef.current = camera;
+    camera.position.set(0, 0, 20);
 
-    // --- Setup Renderer ---
-    const renderer = new THREE.WebGLRenderer({ 
-      antialias: true,
-      alpha: true 
-    });
+    // Renderer setup
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
+    renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
 
-    // --- Create Spiral ---
+    // --- Create Infinite Spiral ---
     const group = new THREE.Group();
-    spiralGroupRef.current = group;
     scene.add(group);
 
     const textureLoader = new THREE.TextureLoader();
     const images = imageUrls;
     const count = images.length;
-    const radius = 4.5;
-    const turns = 4;
+    const radius = 6;
+    const turns = 3.5;
+    const imageWidth = 2.8;
+    const imageHeight = 2;
 
-    // Create a placeholder texture while images load
-    const placeholderCanvas = document.createElement('canvas');
-    placeholderCanvas.width = 512;
-    placeholderCanvas.height = 512;
-    const ctx = placeholderCanvas.getContext('2d')!;
-    ctx.fillStyle = '#1a1a2e';
-    ctx.fillRect(0, 0, 512, 512);
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '24px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('Loading...', 256, 256);
-    const placeholderTexture = new THREE.CanvasTexture(placeholderCanvas);
+    // Store all meshes for animation
+    const meshes: THREE.Mesh[] = [];
 
     images.forEach((url, i) => {
       const angle = (i / count) * Math.PI * 2 * turns;
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
-      const y = (i / count - 0.5) * 6;
+      const y = (i / count - 0.5) * 8;
 
-      const geometry = new THREE.PlaneGeometry(3, 2);
+      const geometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
       
-      // Create material with placeholder texture
+      // Create material with placeholder
       const material = new THREE.MeshBasicMaterial({
-        map: placeholderTexture,
+        color: 0x1a1a2e,
         side: THREE.DoubleSide,
         transparent: true,
         opacity: 0.9,
@@ -105,81 +80,101 @@ export default function Gallery() {
       // Face outward from center
       mesh.lookAt(0, y, 0);
       
-      mesh.userData = { index: i, url };
+      // Add slight random rotation for organic feel
+      mesh.rotation.z += (Math.random() - 0.5) * 0.1;
+      
       group.add(mesh);
+      meshes.push(mesh);
 
       // Load actual texture
-      textureLoader.load(url, (texture) => {
+      textureLoader.load(url, (texture: THREE.Texture) => {
         material.map = texture;
+        material.color.set(0xffffff);
         material.needsUpdate = true;
         material.opacity = 1;
       });
     });
 
-    // --- Lighting ---
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
+    // --- Add Glow Particles ---
+    const particleCount = 2000;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePos = new Float32Array(particleCount * 3);
+    const particleColors = new Float32Array(particleCount * 3);
+    const particleSizes = new Float32Array(particleCount);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 10, 7);
-    scene.add(directionalLight);
-
-    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight2.position.set(-5, -5, -5);
-    scene.add(directionalLight2);
-
-    // --- Particles Background ---
-    const particleCount = 1500;
-    const particleGeometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount * 3; i++) {
-      positions[i] = (Math.random() - 0.5) * 40;
+    for (let i = 0; i < particleCount; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = 8 + Math.random() * 12;
+      
+      particlePos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      particlePos[i * 3 + 1] = r * Math.cos(phi);
+      particlePos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+      
+      const color = new THREE.Color().setHSL(0.7 + Math.random() * 0.2, 0.8, 0.5 + Math.random() * 0.3);
+      particleColors[i * 3] = color.r;
+      particleColors[i * 3 + 1] = color.g;
+      particleColors[i * 3 + 2] = color.b;
+      
+      particleSizes[i] = 0.02 + Math.random() * 0.05;
     }
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    
-    const particleMaterial = new THREE.PointsMaterial({
-      color: 0x6366f1,
-      size: 0.04,
+
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+    particleGeo.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+    particleGeo.setAttribute('size', new THREE.BufferAttribute(particleSizes, 1));
+
+    const particleMat = new THREE.PointsMaterial({
+      size: 0.06,
+      vertexColors: true,
       transparent: true,
-      opacity: 0.4,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending,
+      sizeAttenuation: true,
     });
-    const particles = new THREE.Points(particleGeometry, particleMaterial);
+    const particles = new THREE.Points(particleGeo, particleMat);
     scene.add(particles);
 
-    // --- Mouse Events ---
+    // --- Mouse Interaction ---
+    let isDragging = false;
+    let previousMouse = { x: 0, y: 0 };
+    let targetRotationX = 0;
+    let targetRotationY = 0;
+    let currentRotationX = 0;
+    let currentRotationY = 0;
+    let autoRotate = true;
+    let velocityX = 0;
+    let velocityY = 0;
+
     const handleMouseDown = (e: MouseEvent | TouchEvent) => {
-      isDraggingRef.current = true;
+      isDragging = true;
+      autoRotate = false;
       const pos = getMousePosition(e);
-      previousMouseRef.current = pos;
+      previousMouse = pos;
     };
 
     const handleMouseMove = (e: MouseEvent | TouchEvent) => {
       const pos = getMousePosition(e);
       
-      if (isDraggingRef.current) {
-        const deltaX = pos.x - previousMouseRef.current.x;
-        const deltaY = pos.y - previousMouseRef.current.y;
+      if (isDragging) {
+        const deltaX = pos.x - previousMouse.x;
+        const deltaY = pos.y - previousMouse.y;
         
-        targetRotationRef.current.x += deltaY * 0.01;
-        targetRotationRef.current.z += deltaX * 0.01;
+        velocityY += deltaX * 0.02;
+        velocityX += deltaY * 0.02;
         
-        previousMouseRef.current = pos;
-      }
-      
-      // Hover effect - slight follow
-      if (!isDraggingRef.current) {
-        targetRotationRef.current.x += (pos.y * 0.005 - targetRotationRef.current.x) * 0.02;
-        targetRotationRef.current.z += (pos.x * 0.005 - targetRotationRef.current.z) * 0.02;
+        previousMouse = pos;
       }
     };
 
     const handleMouseUp = () => {
-      isDraggingRef.current = false;
+      isDragging = false;
+      setTimeout(() => { autoRotate = true; }, 2000);
     };
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      scrollOffsetRef.current += e.deltaY * 0.005;
+      const zoom = camera.position.z + e.deltaY * 0.01;
+      camera.position.z = Math.max(8, Math.min(30, zoom));
     };
 
     const getMousePosition = (e: MouseEvent | TouchEvent) => {
@@ -202,22 +197,36 @@ export default function Gallery() {
     const animate = () => {
       requestAnimationFrame(animate);
 
-      // Smooth rotation
-      currentRotationRef.current.x += (targetRotationRef.current.x - currentRotationRef.current.x) * 0.05;
-      currentRotationRef.current.z += (targetRotationRef.current.z - currentRotationRef.current.z) * 0.05;
+      // Smooth rotation with inertia
+      currentRotationX += (targetRotationX - currentRotationX) * 0.05;
+      currentRotationY += (targetRotationY - currentRotationY) * 0.05;
 
-      if (group) {
-        group.rotation.x = currentRotationRef.current.x + scrollOffsetRef.current;
-        group.rotation.z = currentRotationRef.current.z;
+      // Apply rotation with inertia
+      if (autoRotate) {
+        // Auto rotate slowly
+        group.rotation.y += 0.003;
+        group.rotation.x = Math.sin(Date.now() * 0.0003) * 0.1;
+      } else {
+        // Apply drag rotation with inertia
+        velocityX *= 0.95;
+        velocityY *= 0.95;
         
-        // Auto-rotate slowly when not interacting
-        if (!isDraggingRef.current && Math.abs(scrollOffsetRef.current) < 0.01) {
-          group.rotation.y += 0.001;
-        }
+        targetRotationX += velocityX;
+        targetRotationY += velocityY;
+        
+        group.rotation.x = currentRotationX;
+        group.rotation.y = currentRotationY;
       }
 
       // Animate particles
-      particles.rotation.y += 0.0005;
+      particles.rotation.y += 0.0003;
+      particles.rotation.x += 0.0001;
+
+      // Pulse individual meshes slightly
+      meshes.forEach((mesh, i) => {
+        const scale = 1 + Math.sin(Date.now() * 0.001 + i) * 0.02;
+        mesh.scale.set(scale, scale, 1);
+      });
 
       renderer.render(scene, camera);
     };
@@ -233,7 +242,6 @@ export default function Gallery() {
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('resize', handleResize);
 
-    // Start animation
     animate();
 
     // --- Cleanup ---
@@ -255,22 +263,16 @@ export default function Gallery() {
   }, []);
 
   return (
-    <div className="spiral-gallery-wrapper">
-      <div className="spiral-title">
-        <span>Our</span>
-        <span>Gallery</span>
+    <div className="gallery-wrapper">
+      <div className="gallery-overlay">
+        <h1 className="gallery-title">Our Gallery</h1>
+        <p className="gallery-subtitle">Drag to explore • Scroll to zoom</p>
       </div>
       
-      <div className="spiral-container" ref={containerRef}>
-        <div className="spiral-hint">
-          🖱️ Drag to rotate • Scroll to zoom
-        </div>
-      </div>
+      <div className="gallery-container" ref={containerRef}></div>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
-
-        .spiral-gallery-wrapper {
+        .gallery-wrapper {
           position: relative;
           width: 100%;
           height: 100vh;
@@ -278,88 +280,86 @@ export default function Gallery() {
           overflow: hidden;
         }
 
-        .spiral-title {
-          position: absolute;
-          top: 30px;
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 10;
-          font-family: 'Monoton', cursive;
-          font-size: clamp(2rem, 5vw, 4.5rem);
-          color: rgba(255, 255, 255, 0.08);
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          pointer-events: none;
-          text-shadow: 0 0 40px rgba(99, 102, 241, 0.3);
-        }
-
-        .spiral-title span {
-          display: inline-block;
-          margin: 0 0.1em;
-        }
-
-        .spiral-container {
+        .gallery-container {
           width: 100%;
           height: 100vh;
           position: relative;
         }
 
-        .spiral-container canvas {
+        .gallery-container canvas {
           display: block;
           width: 100%;
           height: 100%;
         }
 
-        .spiral-hint {
+        .gallery-overlay {
           position: absolute;
-          bottom: 30px;
+          top: 50%;
           left: 50%;
-          transform: translateX(-50%);
+          transform: translate(-50%, -50%);
           z-index: 10;
-          color: rgba(255, 255, 255, 0.3);
-          font-family: 'Segoe UI', sans-serif;
-          font-size: clamp(0.7rem, 1.2vw, 0.9rem);
-          letter-spacing: 0.1em;
-          background: rgba(0, 0, 0, 0.5);
-          padding: 8px 20px;
-          border-radius: 20px;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.05);
+          text-align: center;
           pointer-events: none;
-          animation: hintPulse 3s ease-in-out infinite;
-          white-space: nowrap;
+          opacity: 0.15;
+          transition: opacity 1s ease;
         }
 
-        @keyframes hintPulse {
-          0%, 100% { opacity: 0.3; transform: translateX(-50%) scale(1); }
-          50% { opacity: 0.8; transform: translateX(-50%) scale(1.05); }
+        .gallery-overlay:hover {
+          opacity: 0.3;
+        }
+
+        .gallery-title {
+          font-family: 'Georgia', serif;
+          font-size: clamp(3rem, 8vw, 8rem);
+          color: rgba(255, 255, 255, 0.1);
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          text-shadow: 0 0 60px rgba(99, 102, 241, 0.2);
+          margin: 0;
+          font-weight: 700;
+        }
+
+        .gallery-subtitle {
+          font-family: 'Segoe UI', sans-serif;
+          font-size: clamp(0.8rem, 1.2vw, 1.2rem);
+          color: rgba(255, 255, 255, 0.2);
+          letter-spacing: 0.2em;
+          margin-top: 10px;
+          text-transform: uppercase;
+        }
+
+        /* Hide scrollbar */
+        .gallery-container::-webkit-scrollbar {
+          display: none;
+        }
+        .gallery-container {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-          .spiral-title {
-            top: 20px;
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
+          .gallery-title {
+            font-size: clamp(2rem, 6vw, 4rem);
           }
-          .spiral-hint {
-            bottom: 20px;
+          .gallery-subtitle {
             font-size: 0.6rem;
-            padding: 6px 14px;
+            letter-spacing: 0.1em;
+          }
+          .gallery-overlay {
+            opacity: 0.1;
           }
         }
 
         @media (max-width: 480px) {
-          .spiral-title {
-            top: 15px;
-            font-size: clamp(1.2rem, 3.5vw, 2rem);
+          .gallery-title {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
           }
-          .spiral-hint {
-            bottom: 15px;
+          .gallery-subtitle {
             font-size: 0.5rem;
-            padding: 4px 12px;
           }
         }
       `}</style>
     </div>
   );
-        }
+}
