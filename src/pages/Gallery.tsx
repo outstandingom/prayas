@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+
 // Replace these with your actual NGO photos
 const imageUrls = [
   'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80',
