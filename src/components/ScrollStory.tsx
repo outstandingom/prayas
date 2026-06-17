@@ -36,7 +36,7 @@ export default function ScrollStory() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [cardHeights, setCardHeights] = useState<string[]>([])
 
-  // Responsive card heights
+  // Responsive card heights (exactly as in original CSS)
   useEffect(() => {
     const updateHeights = () => {
       const vw = window.innerWidth
@@ -51,7 +51,7 @@ export default function ScrollStory() {
     return () => window.removeEventListener('resize', updateHeights)
   }, [])
 
-  // Global scroll progress for progress circle
+  // Global scroll for progress circle
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -59,7 +59,7 @@ export default function ScrollStory() {
   const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 50 })
   const circleDashoffset = useTransform(smoothProgress, [0, 1], [251, 0])
 
-  // Header & end text fill effect (dark theme on white bg)
+  // Header & end text fill (white background, dark text)
   const titleFill = useTransform(scrollYProgress, [0, 0.3], ['transparent', '#000000'])
   const titleStroke = useTransform(scrollYProgress, [0, 0.3], ['2px rgba(0,0,0,0.3)', '0px'])
   const endFill = useTransform(scrollYProgress, [0.7, 1], ['transparent', '#000000'])
@@ -179,7 +179,8 @@ export default function ScrollStory() {
           border: 1px solid rgba(0,0,0,0.05);
           overflow: hidden;
           transform-origin: 50% 0%;
-          will-change: transform;
+          will-change: transform, filter;
+          transform-style: preserve-3d;
         }
         .card__content h2 {
           font-size: clamp(1.5rem, 4vw, 2.5rem);
@@ -221,28 +222,29 @@ export default function ScrollStory() {
   )
 }
 
-// Individual Card with scroll‑based transforms (exact replica of the HTML demo animation)
+// Individual Card – exact replica of CSS @keyframes scale-card
 function Card({ story, index }: { story: any; index: number }) {
   const cardRef = useRef<HTMLLIElement>(null)
 
-  // Track this card's progress as it enters and exits viewport
+  // Track when the card exits the viewport (exactly like animation-timeline: view())
+  // Offset: "start end" = card starts entering, "end start" = card leaves
   const { scrollYProgress: cardScroll } = useScroll({
     target: cardRef,
-    offset: ["start end", "end start"] // triggers when card enters viewport to when it leaves
+    offset: ["start end", "end start"]
   })
 
-  // Transforms matching the CSS keyframes exactly:
-  // scale(0.85) translateY(-10vh) rotateX(-15deg), brightness(0.7), border-radius 20px, shadow appears
-  const scale = useTransform(cardScroll, [0, 0.5, 1], [0.95, 1, 0.85])
-  const translateY = useTransform(cardScroll, [0, 0.5, 1], ['0vh', '0vh', '-10vh'])
-  const rotateX = useTransform(cardScroll, [0, 0.5, 1], [5, 0, -15])
-  const filter = useTransform(cardScroll, [0, 0.5, 1], ['brightness(1)', 'brightness(1)', 'brightness(0.7)'])
-  const borderRadius = useTransform(cardScroll, [0, 0.5, 1], ['32px', '32px', '20px'])
-  // Shadow: dark shadow with 0.6 opacity – we'll use a generic dark shadow
-  const shadow = useTransform(
+  // Map scroll progress to transform values – only animate during exit (0.5 → 1)
+  // This matches the CSS keyframes which apply the "to" state as the card exits.
+  const scale = useTransform(cardScroll, [0.5, 1], [1, 0.85])
+  const y = useTransform(cardScroll, [0.5, 1], ['0vh', '-10vh'])
+  const rotateX = useTransform(cardScroll, [0.5, 1], [0, -15])
+  const filter = useTransform(cardScroll, [0.5, 1], ['brightness(1)', 'brightness(0.7)'])
+  const borderRadius = useTransform(cardScroll, [0.5, 1], ['32px', '20px'])
+  // Shadow appears only at the end (from 0.7 to 1)
+  const boxShadow = useTransform(
     cardScroll,
     [0.7, 1],
-    ['0px 0px 0px 0px rgba(0,0,0,0)', '0 50px 80px -20px rgba(0,0,0,0.3)']
+    ['none', '0 50px 80px -20px rgba(0,0,0,0.25)']
   )
 
   return (
@@ -253,11 +255,11 @@ function Card({ story, index }: { story: any; index: number }) {
           background: story.bgColor,
           color: story.textColor,
           scale,
-          y: translateY,
+          y,
           rotateX,
           filter,
           borderRadius,
-          boxShadow: shadow,
+          boxShadow,
         }}
       >
         <span className="number">{story.number}</span>
