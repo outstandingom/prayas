@@ -1,30 +1,7 @@
 // src/pages/Auth.tsx
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
-import { useToast } from "@/hooks/use-toast";
-import {
-  ArrowRight,
-  Eye,
-  EyeOff,
-  KeyRound,
-  LogIn,
-  Mail,
-  Phone,
-  User,
-  UserPlus,
-  Loader2,
-} from "lucide-react";
 import { z } from "zod";
 
 // --- Validation schemas ---
@@ -49,7 +26,6 @@ interface PendingUser {
 
 export default function Auth() {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const mounted = useRef(true);
   const authCompleted = useRef(false);
 
@@ -62,18 +38,18 @@ export default function Auth() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
 
-  // Sign-up OTP state
+  // Sign-up OTP
   const [showSignupOtp, setShowSignupOtp] = useState(false);
   const [signupOtpCode, setSignupOtpCode] = useState("");
   const [pendingUser, setPendingUser] = useState<PendingUser | null>(null);
   const [signupOtpTimer, setSignupOtpTimer] = useState(0);
 
-  // Forgot password dialog
+  // Forgot password
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
 
-  // Login OTP dialog
+  // Login OTP
   const [loginOtpOpen, setLoginOtpOpen] = useState(false);
   const [loginOtpEmail, setLoginOtpEmail] = useState("");
   const [loginOtpCode, setLoginOtpCode] = useState("");
@@ -84,7 +60,6 @@ export default function Auth() {
   useEffect(() => {
     mounted.current = true;
 
-    // If user is already signed in, redirect
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user && mounted.current && window.location.pathname === "/auth") {
         navigate("/");
@@ -139,9 +114,13 @@ export default function Auth() {
     }
   }, [isLogin, email, password, fullName, phone]);
 
-  // --- Sign In (email + password) ---
+  const showToast = (title: string, description?: string, isError = false) => {
+    alert(`${isError ? '❌ ' : '✅ '}${title}\n${description || ''}`);
+  };
+
+  // --- Sign In ---
   const handleSignIn = useCallback(
-    async (e: React.FormEvent) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (!validateMainForm()) return;
       setLoading(true);
@@ -150,28 +129,28 @@ export default function Auth() {
       try {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast({ title: "Welcome back!", description: "You have successfully logged in." });
+        showToast("Welcome back!", "You have successfully logged in.");
         navigate("/");
       } catch (error: any) {
         authCompleted.current = false;
         if (!mounted.current) return;
-        toast({
-          title: "Sign In Failed",
-          description: error?.message?.includes("Invalid login credentials")
+        showToast(
+          "Sign In Failed",
+          error?.message?.includes("Invalid login credentials")
             ? "Invalid email or password."
             : error?.message || "Unable to sign in.",
-          variant: "destructive",
-        });
+          true
+        );
       } finally {
         if (mounted.current) setLoading(false);
       }
     },
-    [email, password, navigate, toast, validateMainForm]
+    [email, password, navigate, validateMainForm]
   );
 
-  // --- Sign Up (send OTP) ---
+  // --- Sign Up ---
   const handleSignUp = useCallback(
-    async (e: React.FormEvent) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (!validateMainForm()) return;
 
@@ -199,27 +178,20 @@ export default function Auth() {
         setSignupOtpCode("");
         setShowSignupOtp(true);
         setSignupOtpTimer(45);
-        toast({
-          title: "Verification Code Sent",
-          description: `Enter the 6-digit code sent to ${email.trim()}`,
-        });
+        showToast("Verification Code Sent", `Enter the 6-digit code sent to ${email.trim()}`);
       } catch (error: any) {
         if (!mounted.current) return;
-        toast({
-          title: "Sign Up Failed",
-          description: error?.message || "Unable to send OTP.",
-          variant: "destructive",
-        });
+        showToast("Sign Up Failed", error?.message || "Unable to send OTP.", true);
       } finally {
         if (mounted.current) setLoading(false);
       }
     },
-    [email, fullName, password, phone, toast, validateMainForm]
+    [email, fullName, password, phone, validateMainForm]
   );
 
   // --- Verify sign-up OTP ---
   const handleVerifySignupOtp = useCallback(
-    async (e?: React.FormEvent) => {
+    async (e?: React.FormEvent<HTMLFormElement>) => {
       e?.preventDefault();
       if (!pendingUser || signupOtpCode.length !== 6) return;
 
@@ -232,36 +204,31 @@ export default function Auth() {
         });
         if (otpError) throw otpError;
 
-        // Set password for the new user
         if (pendingUser.password) {
           const { error: updateError } = await supabase.auth.updateUser({
             password: pendingUser.password,
           });
           if (updateError) {
-            toast({
-              title: "Account created",
-              description: "Account verified but password setup failed. You can set password later.",
-              variant: "destructive",
-            });
+            showToast(
+              "Account created",
+              "Account verified but password setup failed. You can set password later.",
+              true
+            );
           }
         }
 
         authCompleted.current = true;
-        toast({ title: "Account Created", description: "Your email is verified and account is ready." });
+        showToast("Account Created", "Your email is verified and account is ready.");
         navigate("/");
       } catch (error: any) {
         if (!mounted.current) return;
-        toast({
-          title: "Verification Failed",
-          description: error?.message || "Invalid or expired code.",
-          variant: "destructive",
-        });
+        showToast("Verification Failed", error?.message || "Invalid or expired code.", true);
         setSignupOtpCode("");
       } finally {
         if (mounted.current) setLoading(false);
       }
     },
-    [navigate, pendingUser, signupOtpCode, toast]
+    [navigate, pendingUser, signupOtpCode]
   );
 
   // --- Resend sign-up OTP ---
@@ -282,22 +249,22 @@ export default function Auth() {
       if (error) throw error;
       setSignupOtpTimer(45);
       setSignupOtpCode("");
-      toast({ title: "Code Resent", description: "A new verification code has been sent." });
+      showToast("Code Resent", "A new verification code has been sent.");
     } catch (error: any) {
       if (!mounted.current) return;
-      toast({ title: "Resend Failed", description: error?.message || "Please try again.", variant: "destructive" });
+      showToast("Resend Failed", error?.message || "Please try again.", true);
     } finally {
       if (mounted.current) setLoading(false);
     }
-  }, [pendingUser, signupOtpTimer, toast]);
+  }, [pendingUser, signupOtpTimer]);
 
-  // --- Login OTP flow ---
+  // --- Login OTP ---
   const sendLoginOtp = useCallback(async () => {
     const targetEmail = loginOtpEmail.trim();
     try {
       z.string().email().parse(targetEmail);
     } catch {
-      toast({ title: "Invalid Email", description: "Please enter a valid email address.", variant: "destructive" });
+      showToast("Invalid Email", "Please enter a valid email address.", true);
       return;
     }
 
@@ -312,14 +279,14 @@ export default function Auth() {
       setLoginOtpStep("verify");
       setLoginOtpTimer(45);
       setLoginOtpCode("");
-      toast({ title: "OTP Sent", description: "Enter the 6-digit code sent to your email." });
+      showToast("OTP Sent", "Enter the 6-digit code sent to your email.");
     } catch (error: any) {
       if (!mounted.current) return;
-      toast({ title: "OTP Failed", description: error?.message || "Unable to send OTP.", variant: "destructive" });
+      showToast("OTP Failed", error?.message || "Unable to send OTP.", true);
     } finally {
       if (mounted.current) setResetLoading(false);
     }
-  }, [loginOtpEmail, toast]);
+  }, [loginOtpEmail]);
 
   const verifyLoginOtp = useCallback(async () => {
     if (loginOtpCode.length !== 6 || !loginOtpEmail.trim()) return;
@@ -334,18 +301,18 @@ export default function Auth() {
       });
       if (error) throw error;
 
-      toast({ title: "Signed In", description: "OTP verification successful." });
+      showToast("Signed In", "OTP verification successful.");
       setLoginOtpOpen(false);
       navigate("/");
     } catch (error: any) {
       authCompleted.current = false;
       if (!mounted.current) return;
-      toast({ title: "Verification Failed", description: error?.message || "Invalid OTP.", variant: "destructive" });
+      showToast("Verification Failed", error?.message || "Invalid OTP.", true);
       setLoginOtpCode("");
     } finally {
       if (mounted.current) setResetLoading(false);
     }
-  }, [loginOtpCode, loginOtpEmail, navigate, toast]);
+  }, [loginOtpCode, loginOtpEmail, navigate]);
 
   const openLoginOtpDialog = () => {
     setLoginOtpOpen(true);
@@ -357,7 +324,7 @@ export default function Auth() {
   // --- Forgot Password ---
   const handleResetPassword = useCallback(async () => {
     if (!resetEmail.trim()) {
-      toast({ title: "Email required", description: "Please enter your email address.", variant: "destructive" });
+      showToast("Email required", "Please enter your email address.", true);
       return;
     }
     setResetLoading(true);
@@ -366,24 +333,16 @@ export default function Auth() {
         redirectTo: `${window.location.origin}/auth?reset=true`,
       });
       if (error) throw error;
-      toast({
-        title: "Reset link sent",
-        description: `Check ${resetEmail} for password reset instructions.`,
-      });
+      showToast("Reset link sent", `Check ${resetEmail} for password reset instructions.`);
       setResetPasswordOpen(false);
       setResetEmail("");
     } catch (error: any) {
-      toast({
-        title: "Reset failed",
-        description: error?.message || "Unable to send reset email.",
-        variant: "destructive",
-      });
+      showToast("Reset failed", error?.message || "Unable to send reset email.", true);
     } finally {
       setResetLoading(false);
     }
-  }, [resetEmail, toast]);
+  }, [resetEmail]);
 
-  // --- Switch between login / signup ---
   const switchMode = useCallback(() => {
     setIsLogin((prev) => !prev);
     setErrors({});
@@ -400,47 +359,44 @@ export default function Auth() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-card/40 backdrop-blur-sm mb-6">
-              <Mail className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-primary">Verify Email</span>
             </div>
             <h1 className="text-3xl font-bold mb-4">
-              Enter <span className="gradient-text">OTP</span>
+              Enter <span className="text-primary">OTP</span>
             </h1>
             <p className="text-muted-foreground text-sm">
               We sent a 6-digit code to<br />
-              <span className="font-medium text-foreground">{pendingUser.email}</span>
+              <span className="font-medium">{pendingUser.email}</span>
             </p>
           </div>
 
           <div className="p-6 rounded-xl border border-primary/20 bg-card/50 backdrop-blur-sm space-y-6">
             <form onSubmit={handleVerifySignupOtp} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="signup-otp" className="text-xs text-muted-foreground">
+                <label htmlFor="signup-otp" className="text-xs text-muted-foreground">
                   Verification Code
-                </Label>
-                <Input
+                </label>
+                <input
                   id="signup-otp"
+                  type="text"
                   inputMode="numeric"
                   pattern="[0-9]*"
                   autoComplete="one-time-code"
                   placeholder="Enter 6-digit code"
                   value={signupOtpCode}
                   onChange={(e) => setSignupOtpCode(normalizeOtp(e.target.value))}
-                  className="bg-background/50 border-border/50 text-center text-lg tracking-[0.35em] h-12"
+                  className="w-full bg-background/50 border border-border/50 text-center text-lg tracking-[0.35em] h-12 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary"
                   maxLength={6}
                 />
               </div>
 
-              <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading || signupOtpCode.length !== 6}>
-                {loading ? (
-                  <span className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Verifying...
-                  </span>
-                ) : (
-                  <>Verify & Create Account</>
-                )}
-              </Button>
+              <button
+                type="submit"
+                className="w-full py-2.5 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                disabled={loading || signupOtpCode.length !== 6}
+              >
+                {loading ? "Verifying..." : "Verify & Create Account"}
+              </button>
             </form>
 
             <div className="text-center space-y-2">
@@ -448,7 +404,7 @@ export default function Auth() {
                 type="button"
                 onClick={handleResendSignupOtp}
                 disabled={signupOtpTimer > 0}
-                className="text-xs text-primary font-medium hover:underline disabled:opacity-50 disabled:no-underline"
+                className="text-xs text-primary font-medium hover:underline disabled:opacity-50"
               >
                 {signupOtpTimer > 0 ? `Resend in ${signupOtpTimer}s` : "Resend Code"}
               </button>
@@ -473,40 +429,24 @@ export default function Auth() {
   }
 
   // --- Main Auth Form ---
-          return (
+return (
     <section className="section-container min-h-[80vh] flex items-center justify-center">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-6 backdrop-blur-sm ${
-              isLogin
-                ? "bg-primary/10 border-primary/20"
-                : "bg-gradient-to-r from-amber-500/10 to-primary/10 border-amber-500/30"
-            }`}
-          >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-card/40 backdrop-blur-sm mb-6">
             {isLogin ? (
               <>
-                <LogIn className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">Welcome Back</span>
               </>
             ) : (
               <>
-                <UserPlus className="w-4 h-4 text-accent" />
                 <span className="text-sm font-medium text-accent">Join GROWHAZ</span>
               </>
             )}
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            {isLogin ? (
-              <>
-                Sign <span className="gradient-text">In</span>
-              </>
-            ) : (
-              <>
-                Create <span className="gradient-text">Account</span>
-              </>
-            )}
+            {isLogin ? "Sign In" : "Create Account"}
           </h1>
           <p className="text-muted-foreground text-sm">
             {isLogin
@@ -515,45 +455,37 @@ export default function Auth() {
           </p>
         </div>
 
-        <div
-          className={`p-6 rounded-xl backdrop-blur-sm border transition-all duration-300 ${
-            isLogin
-              ? "bg-card/50 border-primary/20"
-              : "bg-gradient-to-r from-amber-500/5 via-card to-primary/5 border-amber-500/30"
-          }`}
-        >
+        <div className="p-6 rounded-xl backdrop-blur-sm border border-primary/20 bg-card/50">
           <form onSubmit={isLogin ? handleSignIn : handleSignUp} className="space-y-5">
             {!isLogin && (
               <>
                 <div className="space-y-1.5">
-                  <Label htmlFor="fullName" className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <User className="w-3.5 h-3.5" />
+                  <label htmlFor="fullName" className="flex items-center gap-2 text-xs text-muted-foreground">
                     Full Name <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     id="fullName"
                     type="text"
                     placeholder="John Doe"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required
-                    className={`bg-background/50 border-border/50 text-sm h-9 ${errors.fullName ? "border-destructive" : ""}`}
+                    className={`w-full bg-background/50 border ${errors.fullName ? 'border-destructive' : 'border-border/50'} text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary`}
                   />
                   {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="phone" className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Phone className="w-3.5 h-3.5" />
+                  <label htmlFor="phone" className="flex items-center gap-2 text-xs text-muted-foreground">
                     Phone Number
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     id="phone"
                     type="tel"
                     placeholder="+91 9876543210"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className={`bg-background/50 border-border/50 text-sm h-9 ${errors.phone ? "border-destructive" : ""}`}
+                    className={`w-full bg-background/50 border ${errors.phone ? 'border-destructive' : 'border-border/50'} text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary`}
                   />
                   {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
                 </div>
@@ -563,29 +495,27 @@ export default function Auth() {
             )}
 
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Mail className="w-3.5 h-3.5" />
+              <label htmlFor="email" className="flex items-center gap-2 text-xs text-muted-foreground">
                 Email <span className="text-destructive">*</span>
-              </Label>
-              <Input
+              </label>
+              <input
                 id="email"
                 type="email"
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className={`bg-background/50 border-border/50 text-sm h-9 ${errors.email ? "border-destructive" : ""}`}
+                className={`w-full bg-background/50 border ${errors.email ? 'border-destructive' : 'border-border/50'} text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary`}
               />
               {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="password" className="flex items-center gap-2 text-xs text-muted-foreground">
-                <KeyRound className="w-3.5 h-3.5" />
+              <label htmlFor="password" className="flex items-center gap-2 text-xs text-muted-foreground">
                 Password {isLogin && <span className="text-destructive">*</span>}
-              </Label>
+              </label>
               <div className="relative">
-                <Input
+                <input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
@@ -593,7 +523,7 @@ export default function Auth() {
                   onChange={(e) => setPassword(e.target.value)}
                   required={isLogin}
                   minLength={isLogin ? 6 : undefined}
-                  className={`bg-background/50 border-border/50 text-sm h-9 pr-9 ${errors.password ? "border-destructive" : ""}`}
+                  className={`w-full bg-background/50 border ${errors.password ? 'border-destructive' : 'border-border/50'} text-sm h-9 rounded-md px-3 pr-9 focus:outline-none focus:ring-2 focus:ring-primary`}
                 />
                 <button
                   type="button"
@@ -601,7 +531,7 @@ export default function Auth() {
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  {showPassword ? "👁️" : "👁️‍🗨️"}
                 </button>
               </div>
               {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
@@ -632,22 +562,23 @@ export default function Auth() {
               </div>
             )}
 
-            <Button type="submit" variant="hero" size="lg" className="w-full mt-4" disabled={loading}>
+            <button
+              type="submit"
+              className="w-full py-2.5 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              disabled={loading}
+            >
               {loading ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  {isLogin ? "Signing in..." : "Sending OTP..."}
-                </span>
+                <span>Loading...</span>
               ) : isLogin ? (
                 <>
-                  Sign In <ArrowRight className="w-4 h-4" />
+                  Sign In <span>→</span>
                 </>
               ) : (
                 <>
-                  Send Signup OTP <ArrowRight className="w-4 h-4" />
+                  Send Signup OTP <span>→</span>
                 </>
               )}
-            </Button>
+            </button>
           </form>
 
           <div className="mt-5 pt-4 border-t border-border/30 text-center">
@@ -656,9 +587,7 @@ export default function Auth() {
               <button
                 type="button"
                 onClick={switchMode}
-                className={`ml-2 font-medium hover:underline text-xs ${
-                  isLogin ? "text-primary" : "text-accent"
-                }`}
+                className={`ml-2 font-medium hover:underline text-xs ${isLogin ? "text-primary" : "text-accent"}`}
               >
                 {isLogin ? "Sign Up" : "Sign In"}
               </button>
@@ -671,116 +600,125 @@ export default function Auth() {
         </p>
       </div>
 
-      {/* ---- Forgot Password Dialog ---- */}
-      <Dialog open={resetPasswordOpen} onOpenChange={setResetPasswordOpen}>
-        <DialogContent className="sm:max-w-md bg-card/80 backdrop-blur-sm border-primary/20">
-          <DialogHeader>
-            <DialogTitle>Reset Password</DialogTitle>
-            <DialogDescription>
+      {/* --- Forgot Password Dialog (simple modal) --- */}
+      {resetPasswordOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card p-6 rounded-xl w-full max-w-md border border-primary/20">
+            <h2 className="text-lg font-semibold mb-2">Reset Password</h2>
+            <p className="text-sm text-muted-foreground mb-4">
               Enter the email address associated with your account, and we'll send you a reset link.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="reset-email" className="text-xs">Email</Label>
-              <Input
+            </p>
+            <div className="space-y-4">
+              <input
                 id="reset-email"
                 type="email"
                 placeholder="you@example.com"
                 value={resetEmail}
                 onChange={(e) => setResetEmail(e.target.value)}
-                className="bg-background/50 border-border/50 text-sm h-9"
+                className="w-full bg-background/50 border border-border/50 text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary"
               />
+              <div className="flex gap-2 justify-end">
+                <button
+                  onClick={() => setResetPasswordOpen(false)}
+                  className="px-4 py-2 text-sm border border-border/50 rounded-md hover:bg-muted"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleResetPassword}
+                  disabled={resetLoading || !resetEmail.trim()}
+                  className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+                >
+                  {resetLoading ? "Sending..." : "Send Reset Link"}
+                </button>
+              </div>
             </div>
-            <Button
-              className="w-full"
-              onClick={handleResetPassword}
-              disabled={resetLoading || !resetEmail.trim()}
-            >
-              {resetLoading ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : null}
-              Send Reset Link
-            </Button>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
-      {/* ---- Login OTP Dialog ---- */}
-      <Dialog
-        open={loginOtpOpen}
-        onOpenChange={(open) => {
-          setLoginOtpOpen(open);
-          if (!open) {
-            setLoginOtpStep("email");
-            setLoginOtpCode("");
-            setLoginOtpTimer(0);
-          }
-        }}
-      >
-        <DialogContent className="sm:max-w-md bg-card/80 backdrop-blur-sm border-primary/20">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-lg">
-              <LogIn className="w-5 h-5 text-primary" />
-              Login with OTP
-            </DialogTitle>
-            <DialogDescription className="text-xs">
+      {/* --- Login OTP Dialog (simple modal) --- */}
+      {loginOtpOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card p-6 rounded-xl w-full max-w-md border border-primary/20">
+            <h2 className="text-lg font-semibold mb-2">Login with OTP</h2>
+            <p className="text-sm text-muted-foreground mb-4">
               {loginOtpStep === "email"
                 ? "Enter your registered email to receive a one-time code."
                 : `Enter the 6-digit code sent to ${loginOtpEmail}`}
-            </DialogDescription>
-          </DialogHeader>
+            </p>
 
-          {loginOtpStep === "email" ? (
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="loginOtpEmail" className="text-xs">Email</Label>
-                <Input
-                  id="loginOtpEmail"
+            {loginOtpStep === "email" ? (
+              <div className="space-y-4">
+                <input
                   type="email"
+                  placeholder="you@example.com"
                   value={loginOtpEmail}
                   onChange={(e) => setLoginOtpEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="bg-background/50 border-border/50 text-sm h-9"
+                  className="w-full bg-background/50 border border-border/50 text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
+                <div className="flex gap-2 justify-end">
+                  <button
+                    onClick={() => setLoginOtpOpen(false)}
+                    className="px-4 py-2 text-sm border border-border/50 rounded-md hover:bg-muted"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={sendLoginOtp}
+                    disabled={resetLoading || !loginOtpEmail.trim()}
+                    className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+                  >
+                    Send OTP
+                  </button>
+                </div>
               </div>
-              <Button className="w-full" onClick={sendLoginOtp} disabled={resetLoading || !loginOtpEmail.trim()}>
-                {resetLoading ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : null}
-                Send OTP
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="loginOtpCode" className="text-xs">Verification Code</Label>
-                <Input
-                  id="loginOtpCode"
+            ) : (
+              <div className="space-y-4">
+                <input
+                  type="text"
                   inputMode="numeric"
                   pattern="[0-9]*"
                   autoComplete="one-time-code"
                   placeholder="Enter 6-digit OTP"
                   value={loginOtpCode}
                   onChange={(e) => setLoginOtpCode(normalizeOtp(e.target.value))}
-                  className="bg-background/50 border-border/50 text-center text-lg tracking-[0.35em] h-11"
+                  className="w-full bg-background/50 border border-border/50 text-center text-lg tracking-[0.35em] h-11 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary"
                   maxLength={6}
                 />
+                <div className="flex justify-between items-center">
+                  <button
+                    onClick={sendLoginOtp}
+                    disabled={loginOtpTimer > 0 || resetLoading}
+                    className="text-xs text-primary hover:underline disabled:opacity-50"
+                  >
+                    {loginOtpTimer > 0 ? `Resend in ${loginOtpTimer}s` : "Resend OTP"}
+                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setLoginOtpOpen(false);
+                        setLoginOtpStep("email");
+                        setLoginOtpCode("");
+                      }}
+                      className="px-4 py-2 text-sm border border-border/50 rounded-md hover:bg-muted"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={verifyLoginOtp}
+                      disabled={resetLoading || loginOtpCode.length !== 6}
+                      className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+                    >
+                      Verify & Login
+                    </button>
+                  </div>
+                </div>
               </div>
-
-              <button
-                type="button"
-                onClick={sendLoginOtp}
-                disabled={loginOtpTimer > 0 || resetLoading}
-                className="text-xs text-primary font-medium hover:underline disabled:opacity-50 disabled:no-underline"
-              >
-                {loginOtpTimer > 0 ? `Resend in ${loginOtpTimer}s` : "Resend OTP"}
-              </button>
-
-              <Button className="w-full" onClick={verifyLoginOtp} disabled={resetLoading || loginOtpCode.length !== 6}>
-                {resetLoading ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : null}
-                Verify OTP & Login
-              </Button>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
-              }          
+                  }
