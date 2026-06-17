@@ -1,4 +1,4 @@
-// src/components/SpiralGallery.tsx
+// src/pages/Gallery.tsx
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
@@ -18,7 +18,7 @@ const imageUrls = [
   'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=800&q=80',
 ];
 
-export default function SpiralGallery() {
+export default function Gallery() {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
@@ -128,7 +128,7 @@ export default function SpiralGallery() {
     scene.add(directionalLight2);
 
     // --- Particles Background ---
-    const particleCount = 1000;
+    const particleCount = 1500;
     const particleGeometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount * 3; i++) {
@@ -138,9 +138,9 @@ export default function SpiralGallery() {
     
     const particleMaterial = new THREE.PointsMaterial({
       color: 0x6366f1,
-      size: 0.05,
+      size: 0.04,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.4,
     });
     const particles = new THREE.Points(particleGeometry, particleMaterial);
     scene.add(particles);
@@ -361,4 +361,4 @@ export default function SpiralGallery() {
       `}</style>
     </div>
   );
-}
+        }
