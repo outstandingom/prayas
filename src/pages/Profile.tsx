@@ -1,8 +1,9 @@
-// src/pages/Profile.tsx
+
+  // src/pages/Profile.tsx
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
-import { User, Mail, Phone, Edit, LogOut, Loader2 } from 'lucide-react';
+import { User, Mail, Phone, Edit, LogOut, Loader2, Shield } from 'lucide-react';
 
 interface ProfileData {
   full_name: string;
@@ -20,9 +21,11 @@ export default function Profile() {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [updating, setUpdating] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     fetchProfile();
+    checkAdminStatus();
   }, []);
 
   const fetchProfile = async () => {
@@ -61,6 +64,25 @@ export default function Profile() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkAdminStatus = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data, error } = await supabase
+          .from('admin_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (!error && data) {
+          setIsAdmin(true);
+        }
+      }
+    } catch (err) {
+      console.error('Error checking admin status:', err);
     }
   };
 
@@ -137,6 +159,17 @@ export default function Profile() {
           </div>
         </div>
 
+        {/* Admin Dashboard Button */}
+        {isAdmin && (
+          <Link
+            to="/admin"
+            className="mb-4 flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-primary/10 text-primary border border-primary/30 rounded-md hover:bg-primary/20 transition font-medium text-sm"
+          >
+            <Shield className="w-4 h-4" />
+            Go to Admin Dashboard
+          </Link>
+        )}
+
         {error && (
           <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive rounded-md text-sm">
             {error}
@@ -158,6 +191,11 @@ export default function Profile() {
                 {profile.phone && (
                   <p className="text-sm text-muted-foreground flex items-center gap-1">
                     <Phone className="w-4 h-4" /> {profile.phone}
+                  </p>
+                )}
+                {isAdmin && (
+                  <p className="text-xs text-primary font-medium mt-1 flex items-center gap-1">
+                    <Shield className="w-3 h-3" /> Administrator
                   </p>
                 )}
               </div>
@@ -230,4 +268,4 @@ export default function Profile() {
       </div>
     </section>
   );
-  }
+      }
