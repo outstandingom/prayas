@@ -190,7 +190,7 @@ export default function Auth() {
             {isLogin ? (
               <span className="text-sm font-medium text-primary">Welcome Back</span>
             ) : (
-              <span className="text-sm font-medium text-accent">Join GROWHAZ</span>
+              <span className="text-sm font-medium text-accent">Join Prayas Samaj Sevi Sanstha</span>
             )}
           </div>
 
