@@ -40,7 +40,6 @@ export default function Auth() {
   useEffect(() => {
     mounted.current = true;
 
-    // If user is already signed in, redirect
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user && mounted.current && window.location.pathname === "/auth") {
         navigate("/");
@@ -72,7 +71,8 @@ export default function Auth() {
     } catch (error) {
       if (error instanceof z.ZodError) {
         const nextErrors: Record<string, string> = {};
-        error.errors.forEach((issue: z.ZodIssue) => {
+        // Use `issues` instead of `errors` (standard in Zod)
+        error.issues.forEach((issue) => {
           if (issue.path[0]) {
             nextErrors[issue.path[0] as string] = issue.message;
           }
@@ -374,4 +374,4 @@ export default function Auth() {
       )}
     </section>
   );
-                  }
+                                                                                             }
