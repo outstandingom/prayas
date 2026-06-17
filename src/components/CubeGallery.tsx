@@ -220,10 +220,8 @@ export default function CubeGallery() {
     if (currentIndex !== activeIndex) {
       setActiveIndex(currentIndex);
       
-      // Update all 6 faces with images from the current category
       const category = GALLERY_DATA[currentIndex];
       if (category && category.images) {
-        // Use the 6 images from the category (or cycle if less than 6)
         const images = category.images;
         const faceCount = 6;
         const newFaceImages = [];
@@ -249,9 +247,13 @@ export default function CubeGallery() {
     }
   }, []);
 
-  // Cube rotation based on scroll
+  // Cube rotation based on scroll (full 360 rotation)
   const rotationAngle = useTransform(smoothProgress, [0, 1], ["0deg", "-360deg"]);
   const finalRotation = useSpring(rotationAngle, { damping: 25, stiffness: 40 });
+
+  // Cube Y position - moves down as you scroll (like a ball rolling)
+  const cubeY = useTransform(smoothProgress, [0, 1], ["0vh", "80vh"]);
+  const finalY = useSpring(cubeY, { damping: 20, stiffness: 30 });
 
   const percentage = Math.round((activeIndex / (GALLERY_DATA.length - 1)) * 100);
 
@@ -275,48 +277,56 @@ export default function CubeGallery() {
       {/* Sticky Cube Container */}
       <div className="cube-sticky-container">
         
-        {/* 3D Cube */}
-        <div className="cube-container" style={{ width: cubeSize, height: cubeSize }}>
-          <motion.div
-            className="cube-group"
-            style={{
-              transformStyle: 'preserve-3d',
-              rotateX: finalRotation,
-              rotateY: "25deg",
-            }}
-          >
-            {/* Front */}
-            <div className="cube-face" style={{ 
-              backgroundImage: `url(${faceImages[0] || ''})`, 
-              transform: `translateZ(${translateZ})` 
-            }} />
-            {/* Back */}
-            <div className="cube-face" style={{ 
-              backgroundImage: `url(${faceImages[1] || ''})`, 
-              transform: `rotateY(180deg) translateZ(${translateZ})` 
-            }} />
-            {/* Right */}
-            <div className="cube-face" style={{ 
-              backgroundImage: `url(${faceImages[2] || ''})`, 
-              transform: `rotateY(90deg) translateZ(${translateZ})` 
-            }} />
-            {/* Left */}
-            <div className="cube-face" style={{ 
-              backgroundImage: `url(${faceImages[3] || ''})`, 
-              transform: `rotateY(-90deg) translateZ(${translateZ})` 
-            }} />
-            {/* Top */}
-            <div className="cube-face" style={{ 
-              backgroundImage: `url(${faceImages[4] || ''})`, 
-              transform: `rotateX(90deg) translateZ(${translateZ})` 
-            }} />
-            {/* Bottom */}
-            <div className="cube-face" style={{ 
-              backgroundImage: `url(${faceImages[5] || ''})`, 
-              transform: `rotateX(-90deg) translateZ(${translateZ})` 
-            }} />
-          </motion.div>
-        </div>
+        {/* 3D Cube with Y movement */}
+        <motion.div 
+          className="cube-wrapper"
+          style={{
+            y: finalY,
+            transition: "y 0.1s ease-out"
+          }}
+        >
+          <div className="cube-container" style={{ width: cubeSize, height: cubeSize }}>
+            <motion.div
+              className="cube-group"
+              style={{
+                transformStyle: 'preserve-3d',
+                rotateX: finalRotation,
+                rotateY: "25deg",
+              }}
+            >
+              {/* Front */}
+              <div className="cube-face" style={{ 
+                backgroundImage: `url(${faceImages[0] || ''})`, 
+                transform: `translateZ(${translateZ})` 
+              }} />
+              {/* Back */}
+              <div className="cube-face" style={{ 
+                backgroundImage: `url(${faceImages[1] || ''})`, 
+                transform: `rotateY(180deg) translateZ(${translateZ})` 
+              }} />
+              {/* Right */}
+              <div className="cube-face" style={{ 
+                backgroundImage: `url(${faceImages[2] || ''})`, 
+                transform: `rotateY(90deg) translateZ(${translateZ})` 
+              }} />
+              {/* Left */}
+              <div className="cube-face" style={{ 
+                backgroundImage: `url(${faceImages[3] || ''})`, 
+                transform: `rotateY(-90deg) translateZ(${translateZ})` 
+              }} />
+              {/* Top */}
+              <div className="cube-face" style={{ 
+                backgroundImage: `url(${faceImages[4] || ''})`, 
+                transform: `rotateX(90deg) translateZ(${translateZ})` 
+              }} />
+              {/* Bottom */}
+              <div className="cube-face" style={{ 
+                backgroundImage: `url(${faceImages[5] || ''})`, 
+                transform: `rotateX(-90deg) translateZ(${translateZ})` 
+              }} />
+            </motion.div>
+          </div>
+        </motion.div>
 
         {/* HUD - Progress */}
         <div className="cube-hud">
@@ -431,6 +441,13 @@ export default function CubeGallery() {
           z-index: 10;
         }
 
+        .cube-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
         .cube-container {
           position: relative;
         }
@@ -447,7 +464,7 @@ export default function CubeGallery() {
           background-size: cover;
           background-position: center;
           border: 1px solid rgba(0, 0, 0, 0.06);
-          box-shadow: inset 0 0 60px rgba(0,0,0,0.05);
+          box-shadow: inset 0 0 60px rgba(0,0,0,0.03);
           backface-visibility: hidden;
           border-radius: 4px;
           background-color: #f5f5f5;
@@ -457,7 +474,7 @@ export default function CubeGallery() {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.05));
+          background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.04));
         }
 
         /* HUD */
@@ -477,10 +494,17 @@ export default function CubeGallery() {
           letter-spacing: 0.05em;
         }
 
+          .cube-percentage {
+          font-size: clamp(1.2rem, 3vw, 2.5rem);
+          font-weight: 700;
+          color: #2f855a;
+          letter-spacing: 0.05em;
+        }
+
         .cube-progress-bar {
           width: clamp(60px, 15vw, 120px);
           height: 2px;
-          background: rgba(0, 0, 0, 0.1);
+          background: rgba(0, 0, 0, 0.08);
           margin-top: 6px;
           margin-bottom: 4px;
           margin-left: auto;
@@ -500,7 +524,7 @@ export default function CubeGallery() {
           font-weight: 600;
         }
 
-          /* Dots */
+        /* Dots */
         .desktop-only {
           display: block;
         }
@@ -520,7 +544,7 @@ export default function CubeGallery() {
           width: 4px;
           height: 4px;
           border-radius: 50%;
-          background: rgba(0, 0, 0, 0.15);
+          background: rgba(0, 0, 0, 0.12);
           transition: all 0.3s ease;
         }
 
@@ -552,7 +576,7 @@ export default function CubeGallery() {
         .cube-caption-name {
           font-family: "Bebas Neue", sans-serif;
           font-size: clamp(1.2rem, 4vw, 3rem);
-          color: rgba(0, 0, 0, 0.08);
+          color: rgba(0, 0, 0, 0.06);
           letter-spacing: 0.08em;
         }
 
@@ -563,7 +587,7 @@ export default function CubeGallery() {
           left: 50%;
           transform: translateX(-50%);
           z-index: 40;
-          color: rgba(0, 0, 0, 0.2);
+          color: rgba(0, 0, 0, 0.15);
           font-family: "DM Mono", monospace;
           font-size: 0.6rem;
           letter-spacing: 0.15em;
@@ -598,13 +622,13 @@ export default function CubeGallery() {
         .cube-info-card {
           width: min(400px, 85vw);
           padding: clamp(20px, 3vw, 30px) clamp(18px, 2.5vw, 28px);
-          background: rgba(255, 255, 255, 0.92);
+          background: rgba(255, 255, 255, 0.95);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
           border-left: 3px solid #2f855a;
           pointer-events: auto;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-          transition: background 0.3s ease;
+          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+          border-radius: 4px;
         }
 
         .cube-info-card:has(.right) {
@@ -658,8 +682,8 @@ export default function CubeGallery() {
           letter-spacing: 0.15em;
           background: transparent;
           color: #718096;
-          border: 1px solid rgba(113, 128, 150, 0.3);
-          border-radius: 0;
+          border: 1px solid rgba(113, 128, 150, 0.25);
+          border-radius: 4px;
           cursor: pointer;
           transition: all 0.3s ease;
         }
@@ -686,7 +710,7 @@ export default function CubeGallery() {
           background: #2f855a;
           color: #ffffff;
           border: none;
-          border-radius: 0;
+          border-radius: 4px;
           cursor: pointer;
           font-weight: 700;
           transition: all 0.3s ease;
@@ -741,7 +765,7 @@ export default function CubeGallery() {
           z-index: 50;
           font-family: "DM Mono", monospace;
           font-size: clamp(0.5rem, 0.8vw, 0.6rem);
-          color: rgba(113, 128, 150, 0.4);
+          color: rgba(113, 128, 150, 0.35);
           letter-spacing: 0.15em;
           text-transform: uppercase;
           pointer-events: none;
@@ -828,3 +852,4 @@ export default function CubeGallery() {
     </div>
   );
 }
+     
