@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion'
 
+// Data Source
 const GALLERY_DATA = [
   { tag: '01', title: 'DESCENT', desc: 'The beginning of the fall into the creative unknown.', align: 'left', img: 'https://assets.codepen.io/573855/demo-raw-01.webp' },
   { tag: '02', title: 'REBELLION', desc: 'Breaking the established rules of design and layout.', align: 'right', img: 'https://assets.codepen.io/573855/demo-raw-02.webp' },
@@ -10,89 +11,106 @@ const GALLERY_DATA = [
   { tag: '06', title: 'SUPER', desc: 'The climax of creative expression and structural form.', align: 'right', img: 'https://assets.codepen.io/573855/demo-raw-06.webp' }
 ]
 
+const getFaceForIndex = (index: number) => {
+  const faces = ['front', 'back', 'right', 'left', 'top', 'bottom']
+  return faces[index % 6]
+}
+
 export default function CubeGallery() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
-  
-  const TOTAL_ITEMS = GALLERY_DATA.length
-  const ANGLE_STEP = 360 / TOTAL_ITEMS // 60 degrees per item
+  const [faceImages, setFaceImages] = useState<Record<string, string>>({
+    front: GALLERY_DATA[0].img,
+    back: GALLERY_DATA[1].img,
+    right: GALLERY_DATA[2].img,
+    left: GALLERY_DATA[3].img,
+    top: GALLERY_DATA[4].img,
+    bottom: GALLERY_DATA[5].img,
+  })
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   })
 
-  // Smooth out the scroll physics
-  const smoothProgress = useSpring(scrollYProgress, { 
-    damping: 25, 
-    stiffness: 45, 
-    restDelta: 0.001 
-  })
+  const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 50, restDelta: 0.001 })
 
-  // Track the active index for the UI HUD
   useMotionValueEvent(smoothProgress, "change", (latest) => {
-    const currentIndex = Math.min(TOTAL_ITEMS - 1, Math.round(latest * (TOTAL_ITEMS - 1)))
+    const totalSectors = GALLERY_DATA.length
+    const currentIndex = Math.min(totalSectors - 1, Math.floor(latest * totalSectors))
+    
     if (currentIndex !== activeIndex) {
       setActiveIndex(currentIndex)
+      
+      setFaceImages(prev => {
+        const next = { ...prev }
+        const sectorsToLoad = [currentIndex, (currentIndex + 1) % totalSectors, (currentIndex + 2) % totalSectors]
+        
+        sectorsToLoad.forEach(idx => {
+          const face = getFaceForIndex(idx)
+          next[face] = GALLERY_DATA[idx].img
+        })
+        return next
+      })
     }
   })
 
-  // Map the 0-1 scroll progress to the exact negative rotation required to view the final face
-  const rotationAngle = useTransform(
-    smoothProgress, 
-    [0, 1], 
-    ["0deg", `-${ANGLE_STEP * (TOTAL_ITEMS - 1)}deg`]
-  )
+  // Calculate rotation mapping progress to a full 360deg spin
+  const rotationAngle = useTransform(smoothProgress, [0, 1], ["0deg", "-360deg"])
+  const finalRotation = useSpring(rotationAngle, { damping: 25, stiffness: 40 })
 
-  const percentage = Math.round((activeIndex / (TOTAL_ITEMS - 1)) * 100)
+  const percentage = Math.round((activeIndex / (GALLERY_DATA.length - 1)) * 100)
 
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
-  const scrollBack = () => window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' })
+  // Responsive cube size
+  const cubeSize = "clamp(180px, 35vw, 300px)"
+  const translateZ = "clamp(90px, 18vw, 150px)"
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const scrollBack = () => {
+    window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' })
+  }
 
   return (
-    <div ref={containerRef} className="theme-wrapper relative w-full" style={{ height: `${TOTAL_ITEMS * 100}vh` }}>
+    <div ref={containerRef} className="theme-wrapper relative w-full" style={{ height: `${GALLERY_DATA.length * 100}vh` }}>
       
-      {/* Sticky 3D Viewport */}
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden" style={{ perspective: "1200px" }}>
+      {/* Sticky Cube Container */}
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden" style={{ perspective: "1000px" }}>
         
-        {/* Container positioned with an isometric tilt */}
+        {/* 3D Cube Container */}
         <div
           className="relative"
-          style={{ 
-            width: 'var(--cube-size)', 
-            height: 'var(--cube-size)', 
-            transformStyle: 'preserve-3d',
-            rotateY: "-15deg", // Gives the 3D showcase perspective
-            rotateZ: "-2deg",
-          } as React.CSSProperties}
+          style={{ width: cubeSize, height: cubeSize, transformStyle: 'preserve-3d' }}
         >
-          {/* The Rotating Hexagonal Drum */}
+          {/* Rotating Cube Group */}
           <motion.div
             className="absolute inset-0"
             style={{
               transformStyle: 'preserve-3d',
-              rotateX: rotationAngle,
+              rotateX: finalRotation,
+              rotateY: "25deg",
             }}
           >
-            {GALLERY_DATA.map((item, i) => (
-              <div 
-                key={i}
-                className="cube-face absolute inset-0 rounded-lg shadow-2xl" 
-                style={{ 
-                  backgroundImage: `url(${item.img})`, 
-                  // Math: Rotate to slot, then push outward by the hexagon apothem (radius)
-                  transform: `rotateX(${i * ANGLE_STEP}deg) translateZ(var(--radius))` 
-                }} 
-              >
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80" />
-              </div>
-            ))}
+            {/* Front */}
+            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.front})`, transform: `translateZ(${translateZ})` }} />
+            {/* Back */}
+            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.back})`, transform: `rotateY(180deg) translateZ(${translateZ})` }} />
+            {/* Right */}
+            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.right})`, transform: `rotateY(90deg) translateZ(${translateZ})` }} />
+            {/* Left */}
+            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.left})`, transform: `rotateY(-90deg) translateZ(${translateZ})` }} />
+            {/* Top */}
+            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.top})`, transform: `rotateX(90deg) translateZ(${translateZ})` }} />
+            {/* Bottom */}
+            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.bottom})`, transform: `rotateX(-90deg) translateZ(${translateZ})` }} />
           </motion.div>
         </div>
 
         {/* HUD - Progress Indicator */}
         <div className="absolute bottom-6 right-4 md:bottom-8 md:right-8 z-50 text-right font-mono">
-          <div className="text-2xl md:text-3xl font-bold text-[var(--accent-dark)] tracking-wider drop-shadow-md">
+          <div className="text-2xl md:text-3xl font-bold text-[var(--accent-dark)] tracking-wider">
             {String(percentage).padStart(3, '0')}%
           </div>
           <div className="w-24 md:w-32 h-[2px] bg-[var(--dark-muted)] mt-2 mb-1 relative overflow-hidden rounded-full">
@@ -107,10 +125,10 @@ export default function CubeGallery() {
         </div>
       </div>
 
-      {/* Text Cards Overlay - Triggers naturally via scroll */}
+      {/* Text Cards Overlay */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20">
         {GALLERY_DATA.map((item, i) => {
-          const isLast = i === TOTAL_ITEMS - 1;
+          const isLast = i === GALLERY_DATA.length - 1;
 
           return (
             <section 
@@ -119,13 +137,12 @@ export default function CubeGallery() {
               style={{ justifyContent: item.align === 'right' ? 'flex-end' : 'flex-start' }}
             >
               <motion.div 
-                initial={{ opacity: 0, x: item.align === 'right' ? 40 : -40, scale: 0.95 }}
-                whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                viewport={{ once: false, margin: "-30% 0px -30% 0px" }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} // Custom easing
-                className="info-card pointer-events-auto shadow-2xl relative overflow-hidden"
+                initial={{ opacity: 0, x: item.align === 'right' ? 50 : -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="info-card pointer-events-auto"
               >
-                <div className={`absolute top-0 ${item.align === 'right' ? 'right-0' : 'left-0'} w-16 h-1 bg-[var(--accent-dark)]`} />
                 <div className="text-[var(--accent-dark)] font-dm text-[10px] md:text-xs uppercase tracking-wider mb-3 md:mb-4 font-bold">
                   {item.tag} — {item.title}
                 </div>
@@ -136,7 +153,7 @@ export default function CubeGallery() {
                   {item.desc}
                 </p>
 
-                {/* Exactly matches your provided CTA HTML structure */}
+                {/* Last Section CTAs */}
                 {isLast ? (
                   <div className="flex items-center gap-4 mt-6">
                     <button onClick={scrollBack} className="cta-back">
@@ -166,7 +183,7 @@ export default function CubeGallery() {
         })}
       </div>
 
-      {/* Persistent Credit Element */}
+      {/* Credit Element */}
       <div id="credit" className="fixed bottom-6 left-6 z-50">
         <a 
           href="https://www.linkedin.com/posts/luis-martinez-lr_ai-creativity-reversecreativity-activity-7366853269517651970-zeUD?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFq1dzgByK1x_NMrcq582OMbK-_3q0DthYY" 
@@ -179,22 +196,22 @@ export default function CubeGallery() {
       </div>
 
       <style>{`
-        @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;700&display=swap");
 
         .theme-wrapper {
-          --dark-bg: #1c1814;
-          --dark-fg: #ede8df;
-          --dark-muted: #8a7b6e;
-          --light-bg: #f0ece3;
-          --light-fg: #0d0d14;
-          --light-muted: #9a9aaa;
-          --accent-dark: #d4a84b;
-          --accent-light: #3a6e00;
-
-          /* Hexagon specific math */
-          --cube-size: clamp(200px, 35vw, 360px);
-          /* Calculate Apothem for 60 degrees: size * 0.866 */
-          --radius: calc(var(--cube-size) * 0.866);
+          /* Flipped: Acts as the main LIGHT theme */
+          --dark-bg: #fcfaf8;       
+          --dark-fg: #2d3748;       
+          --dark-muted: #718096;    
+          
+          /* Flipped: Acts as the inverted/dark sections */
+          --light-bg: #276749;      
+          --light-fg: #f0fff4;      
+          --light-muted: #9ae6b4;   
+          
+          /* Accents */
+          --accent-dark: #2f855a;   
+          --accent-light: #ecc94b;  
 
           background-color: var(--dark-bg);
           color: var(--dark-fg);
@@ -213,21 +230,27 @@ export default function CubeGallery() {
           overflow: hidden;
           background-size: cover;
           background-position: center;
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          box-shadow: inset 0 0 60px rgba(0,0,0,0.6), 0 25px 50px -12px rgba(0,0,0,0.8);
-          /* Prevents seeing the "inside" of faces facing away */
+          border: 1px solid rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 0 40px rgba(0,0,0,0.05), 0 25px 50px -12px rgba(0,0,0,0.1);
           backface-visibility: hidden;
+        }
+        
+        .cube-face::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.3));
         }
 
         .info-card {
           width: 85vw;
-          max-width: 440px;
-          background: rgba(28, 24, 20, 0.7);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(138, 123, 110, 0.15);
-          padding: 2.5rem;
-          border-radius: 6px;
+          max-width: 420px;
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(113, 128, 150, 0.2);
+          padding: 2rem;
+          border-radius: 4px;
         }
 
         .cta-explore {
@@ -242,7 +265,6 @@ export default function CubeGallery() {
           font-weight: bold;
           transition: color 0.3s ease;
         }
-        
         .cta-explore svg { width: 12px; height: 12px; }
 
         .cta-back, .cta {
@@ -266,12 +288,10 @@ export default function CubeGallery() {
           color: var(--dark-muted);
           border: 1px solid var(--dark-muted);
         }
-        
         .cta-back:hover {
           color: var(--dark-fg);
           border-color: var(--dark-fg);
         }
-        
         .cta-back svg { width: 14px; height: 14px; }
 
         .cta {
@@ -280,12 +300,10 @@ export default function CubeGallery() {
           border: 1px solid var(--dark-fg);
           font-weight: bold;
         }
-        
         .cta:hover {
           background: var(--accent-dark);
           border-color: var(--accent-dark);
         }
-        
         .cta svg { width: 14px; height: 14px; }
 
         @media (max-width: 768px) {
