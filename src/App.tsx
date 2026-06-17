@@ -9,12 +9,17 @@ import Stories from './pages/Stories';
 import Donate from './pages/Donate';
 import Contact from './pages/Contact';
 import Auth from './pages/Auth';
+import Profile from './pages/Profile';  // <-- import
 
 export default function App() {
   return (
     <AnimatePresence mode="wait">
       <Routes>
+        {/* Standalone pages (no Layout) */}
         <Route path="/auth" element={<Auth />} />
+        <Route path="/profile" element={<Profile />} />
+
+        {/* Pages with Layout */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
