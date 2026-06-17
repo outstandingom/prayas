@@ -1,352 +1,151 @@
-// src/components/CubeGallery.tsx
-import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion';
+import { useRef, useState } from 'react'
+import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion'
 
-// 12 NGO Categories with specific images
 const GALLERY_DATA = [
-  { 
-    id: 0,
-    tag: '01', 
-    title: 'EDUCATION', 
-    desc: 'Providing quality education to underprivileged children through schools and learning centers.', 
-    align: 'left',
-    images: [
-      'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=600&h=400&fit=crop&q=80'
-    ]
-  },
-  { 
-    id: 1,
-    tag: '02', 
-    title: 'HEALTHCARE', 
-    desc: 'Free medical camps, health awareness programs, and support for patients in need.', 
-    align: 'right',
-    images: [
-      'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=600&h=400&fit=crop&q=80'
-    ]
-  },
-  { 
-    id: 2,
-    tag: '03', 
-    title: 'WOMEN EMPOWERMENT', 
-    desc: 'Skill development, self-help groups, and financial independence for women.', 
-    align: 'left',
-    images: [
-      'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&h=400&fit=crop&q=80'
-    ]
-  },
-  { 
-    id: 3,
-    tag: '04', 
-    title: 'CHILD WELFARE', 
-    desc: 'Protecting children\'s rights, nutrition programs, and safe shelter initiatives.', 
-    align: 'right',
-    images: [
-      'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1516627145497-ae6969145dae?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=400&fit=crop&q=80'
-    ]
-  },
-  { 
-    id: 4,
-    tag: '05', 
-    title: 'ENVIRONMENT', 
-    desc: 'Tree plantation drives, waste management, and environmental awareness campaigns.', 
-    align: 'left',
-    images: [
-      'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1470071459604-7b3ec3e27f1d?w=600&h=400&fit=crop&q=80'
-    ]
-  },
-  { 
-    id: 5,
-    tag: '06', 
-    title: 'RURAL DEVELOPMENT', 
-    desc: 'Infrastructure development, clean water access, and livelihood programs for rural communities.', 
-    align: 'right',
-    images: [
-      'https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1548839143-5e75c9bca701?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1528323273322-d81458248d40?w=600&h=400&fit=crop&q=80'
-    ]
-  },
-  { 
-    id: 6,
-    tag: '07', 
-    title: 'SKILL TRAINING', 
-    desc: 'Vocational training and skill development programs for youth and adults.', 
-    align: 'left',
-    images: [
-      'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop&q=80'
-    ]
-  },
-  { 
-    id: 7,
-    tag: '08', 
-    title: 'DISASTER RELIEF', 
-    desc: 'Emergency response, relief distribution, and rehabilitation for disaster-affected communities.', 
-    align: 'right',
-    images: [
-      'https://images.unsplash.com/photo-1536643155-33d268924c93?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1507908708918-778587c9e563?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1557425493-6f90ae4659fc?w=600&h=400&fit=crop&q=80'
-    ]
-  },
-  { 
-    id: 8,
-    tag: '09', 
-    title: 'ANIMAL WELFARE', 
-    desc: 'Rescue, shelter, and medical care for stray and injured animals.', 
-    align: 'left',
-    images: [
-      'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1574958269340-fa927503f3dd?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=400&fit=crop&q=80'
-    ]
-  },
-  { 
-    id: 9,
-    tag: '10', 
-    title: 'ELDERLY CARE', 
-    desc: 'Support, healthcare, and dignity for senior citizens through dedicated programs.', 
-    align: 'right',
-    images: [
-      'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1543948549-6b4e7c5b9c4a?w=600&h=400&fit=crop&q=80'
-    ]
-  },
-  { 
-    id: 10,
-    tag: '11', 
-    title: 'COMMUNITY HEALTH', 
-    desc: 'Mental health awareness, hygiene education, and accessible healthcare for all.', 
-    align: 'left',
-    images: [
-      'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop&q=80'
-    ]
-  },
-  { 
-    id: 11,
-    tag: '12', 
-    title: 'FOOD SECURITY', 
-    desc: 'Food distribution, nutrition programs, and sustainable agriculture for vulnerable communities.', 
-    align: 'right',
-    images: [
-      'https://images.unsplash.com/photo-1593113514619-33b934789d6e?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop&q=80'
-    ]
-  }
-];
+  { tag: '01', title: 'DESCENT', desc: 'The beginning of the fall into the creative unknown.', align: 'left', img: 'https://assets.codepen.io/573855/demo-raw-01.webp' },
+  { tag: '02', title: 'REBELLION', desc: 'Breaking the established rules of design and layout.', align: 'right', img: 'https://assets.codepen.io/573855/demo-raw-02.webp' },
+  { tag: '03', title: 'MOO WALK', desc: 'A surreal journey through unconventional spaces.', align: 'left', img: 'https://assets.codepen.io/573855/demo-raw-03.webp' },
+  { tag: '04', title: 'BAD ART', desc: 'Embracing imperfections to find unique aesthetics.', align: 'right', img: 'https://assets.codepen.io/573855/demo-raw-04.webp' },
+  { tag: '05', title: 'NO RULES', desc: 'Shattering the grid to redefine user experience.', align: 'left', img: 'https://assets.codepen.io/573855/demo-raw-05.webp' },
+  { tag: '06', title: 'SUPER', desc: 'The climax of creative expression and structural form.', align: 'right', img: 'https://assets.codepen.io/573855/demo-raw-06.webp' }
+]
 
 export default function CubeGallery() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-  const [faceImages, setFaceImages] = useState<string[]>([]);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
+  
+  const TOTAL_ITEMS = GALLERY_DATA.length
+  const ANGLE_STEP = 360 / TOTAL_ITEMS // 60 degrees per item
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
-  });
+  })
 
+  // Smooth out the scroll physics
   const smoothProgress = useSpring(scrollYProgress, { 
-    damping: 30, 
-    stiffness: 50, 
+    damping: 25, 
+    stiffness: 45, 
     restDelta: 0.001 
-  });
+  })
 
-  // Update active index and face images based on scroll
+  // Track the active index for the UI HUD
   useMotionValueEvent(smoothProgress, "change", (latest) => {
-    const totalSectors = GALLERY_DATA.length;
-    const currentIndex = Math.min(totalSectors - 1, Math.floor(latest * totalSectors));
-    
+    const currentIndex = Math.min(TOTAL_ITEMS - 1, Math.round(latest * (TOTAL_ITEMS - 1)))
     if (currentIndex !== activeIndex) {
-      setActiveIndex(currentIndex);
-      
-      const category = GALLERY_DATA[currentIndex];
-      if (category && category.images) {
-        const images = category.images;
-        const faceCount = 6;
-        const newFaceImages = [];
-        for (let i = 0; i < faceCount; i++) {
-          newFaceImages.push(images[i % images.length]);
-        }
-        setFaceImages(newFaceImages);
-      }
+      setActiveIndex(currentIndex)
     }
-  });
+  })
 
-  // Initialize face images
-  useEffect(() => {
-    const category = GALLERY_DATA[0];
-    if (category && category.images) {
-      const images = category.images;
-      const faceCount = 6;
-      const initialImages = [];
-      for (let i = 0; i < faceCount; i++) {
-        initialImages.push(images[i % images.length]);
-      }
-      setFaceImages(initialImages);
-    }
-  }, []);
+  // Map the 0-1 scroll progress to the exact negative rotation required to view the final face
+  const rotationAngle = useTransform(
+    smoothProgress, 
+    [0, 1], 
+    ["0deg", `-${ANGLE_STEP * (TOTAL_ITEMS - 1)}deg`]
+  )
 
-  // Cube rotation based on scroll (full 360 rotation)
-  const rotationAngle = useTransform(smoothProgress, [0, 1], ["0deg", "-360deg"]);
-  const finalRotation = useSpring(rotationAngle, { damping: 25, stiffness: 40 });
+  const percentage = Math.round((activeIndex / (TOTAL_ITEMS - 1)) * 100)
 
-  // Cube Y position - moves down as you scroll
-  const cubeY = useTransform(smoothProgress, [0, 1], ["-20vh", "60vh"]);
-  const finalY = useSpring(cubeY, { damping: 20, stiffness: 30 });
-
-  const percentage = Math.round((activeIndex / (GALLERY_DATA.length - 1)) * 100);
-
-  // Responsive cube size
-  const cubeSize = isMobile ? "clamp(180px, 55vw, 280px)" : "clamp(220px, 35vw, 350px)";
-  const translateZ = isMobile ? "clamp(90px, 28vw, 140px)" : "clamp(110px, 18vw, 175px)";
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const scrollBack = () => {
-    window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
-  };
-
-  const currentCategory = GALLERY_DATA[activeIndex];
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
+  const scrollBack = () => window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' })
 
   return (
-    <div ref={containerRef} className="cube-gallery-wrapper" style={{ height: `${GALLERY_DATA.length * 100}vh` }}>
+    <div ref={containerRef} className="theme-wrapper relative w-full" style={{ height: `${TOTAL_ITEMS * 100}vh` }}>
       
-      {/* Sticky Cube Container */}
-      <div className="cube-sticky-container">
+      {/* Sticky 3D Viewport */}
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden" style={{ perspective: "1200px" }}>
         
-        {/* 3D Cube with Y movement */}
-        <motion.div 
-          className="cube-wrapper"
-          style={{
-            y: finalY,
-          }}
+        {/* Container positioned with an isometric tilt */}
+        <div
+          className="relative"
+          style={{ 
+            width: 'var(--cube-size)', 
+            height: 'var(--cube-size)', 
+            transformStyle: 'preserve-3d',
+            rotateY: "-15deg", // Gives the 3D showcase perspective
+            rotateZ: "-2deg",
+          } as React.CSSProperties}
         >
-          <div className="cube-container" style={{ width: cubeSize, height: cubeSize }}>
-            <motion.div
-              className="cube-group"
-              style={{
-                transformStyle: 'preserve-3d',
-                rotateX: finalRotation,
-                rotateY: "25deg",
-              }}
-            >
-              {faceImages.length === 6 && faceImages.map((img, idx) => {
-                const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
-                const transforms = [
-                  `translateZ(${translateZ})`,
-                  `rotateY(180deg) translateZ(${translateZ})`,
-                  `rotateY(90deg) translateZ(${translateZ})`,
-                  `rotateY(-90deg) translateZ(${translateZ})`,
-                  `rotateX(90deg) translateZ(${translateZ})`,
-                  `rotateX(-90deg) translateZ(${translateZ})`
-                ];
-                return (
-                  <div 
-                    key={idx} 
-                    className="cube-face" 
-                    style={{ 
-                      backgroundImage: `url(${img})`, 
-                      transform: transforms[idx],
-                      backgroundColor: '#f0f0f0',
-                      border: '1px solid rgba(0,0,0,0.05)',
-                    }} 
-                  />
-                );
-              })}
-            </motion.div>
-          </div>
-        </motion.div>
+          {/* The Rotating Hexagonal Drum */}
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              transformStyle: 'preserve-3d',
+              rotateX: rotationAngle,
+            }}
+          >
+            {GALLERY_DATA.map((item, i) => (
+              <div 
+                key={i}
+                className="cube-face absolute inset-0 rounded-lg shadow-2xl" 
+                style={{ 
+                  backgroundImage: `url(${item.img})`, 
+                  // Math: Rotate to slot, then push outward by the hexagon apothem (radius)
+                  transform: `rotateX(${i * ANGLE_STEP}deg) translateZ(var(--radius))` 
+                }} 
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80" />
+              </div>
+            ))}
+          </motion.div>
+        </div>
 
-        {/* HUD - Progress */}
-        <div className="cube-hud">
-          <div className="cube-percentage">{String(percentage).padStart(3, '0')}%</div>
-          <div className="cube-progress-bar">
+        {/* HUD - Progress Indicator */}
+        <div className="absolute bottom-6 right-4 md:bottom-8 md:right-8 z-50 text-right font-mono">
+          <div className="text-2xl md:text-3xl font-bold text-[var(--accent-dark)] tracking-wider drop-shadow-md">
+            {String(percentage).padStart(3, '0')}%
+          </div>
+          <div className="w-24 md:w-32 h-[2px] bg-[var(--dark-muted)] mt-2 mb-1 relative overflow-hidden rounded-full">
             <motion.div 
-              className="cube-progress-fill"
+              className="absolute top-0 left-0 bottom-0 bg-[var(--accent-dark)] rounded-full"
               style={{ width: useTransform(smoothProgress, [0, 1], ['0%', '100%']) }}
             />
           </div>
-          <div className="cube-label">{currentCategory?.title || 'SCROLL'}</div>
-        </div>
-
-        {/* Dot Navigation */}
-        <div className="cube-dots desktop-only">
-          {GALLERY_DATA.map((_, i) => (
-            <div key={i} className={`cube-dot ${i === activeIndex ? 'active' : ''}`} />
-          ))}
-        </div>
-
-        {/* Face Caption */}
-        <div className="cube-caption">
-          <div className="cube-caption-num">{currentCategory?.tag || '01'}</div>
-          <div className="cube-caption-name">{currentCategory?.title || ''}</div>
-        </div>
-
-        {/* Mobile Hint */}
-        {isMobile && (
-          <div className="cube-mobile-hint">
-            <span>↓ Scroll to explore</span>
+          <div className="text-[10px] md:text-xs text-[var(--dark-muted)] uppercase tracking-wider font-semibold font-dm">
+            {GALLERY_DATA[activeIndex]?.title || 'SCROLL'}
           </div>
-        )}
+        </div>
       </div>
 
-      {/* Text Cards */}
-      <div className="cube-text-overlay">
+      {/* Text Cards Overlay - Triggers naturally via scroll */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20">
         {GALLERY_DATA.map((item, i) => {
-          const isLast = i === GALLERY_DATA.length - 1;
+          const isLast = i === TOTAL_ITEMS - 1;
+
           return (
             <section 
               key={i} 
-              className="cube-text-section"
+              className="h-screen w-full flex items-end md:items-center pb-24 md:pb-0 px-4 md:px-10 lg:px-20"
               style={{ justifyContent: item.align === 'right' ? 'flex-end' : 'flex-start' }}
             >
               <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="cube-info-card"
+                initial={{ opacity: 0, x: item.align === 'right' ? 40 : -40, scale: 0.95 }}
+                whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                viewport={{ once: false, margin: "-30% 0px -30% 0px" }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} // Custom easing
+                className="info-card pointer-events-auto shadow-2xl relative overflow-hidden"
               >
-                <div className="cube-tag">{item.tag} — {item.title}</div>
-                <h2 className="cube-title">{item.title}</h2>
-                <p className="cube-desc">{item.desc}</p>
+                <div className={`absolute top-0 ${item.align === 'right' ? 'right-0' : 'left-0'} w-16 h-1 bg-[var(--accent-dark)]`} />
+                <div className="text-[var(--accent-dark)] font-dm text-[10px] md:text-xs uppercase tracking-wider mb-3 md:mb-4 font-bold">
+                  {item.tag} — {item.title}
+                </div>
+                <h2 className="font-bebas text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[var(--dark-fg)] leading-tight mb-3 md:mb-6">
+                  {item.title}
+                </h2>
+                <p className="text-[var(--dark-muted)] font-dm text-xs sm:text-sm leading-relaxed mb-5 md:mb-8 max-w-sm">
+                  {item.desc}
+                </p>
 
+                {/* Exactly matches your provided CTA HTML structure */}
                 {isLast ? (
-                  <div className="cube-actions">
-                    <button onClick={scrollBack} className="cube-btn-back">
+                  <div className="flex items-center gap-4 mt-6">
+                    <button onClick={scrollBack} className="cta-back">
                       <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <path d="M11 6H1M6 11L1 6l5-5" />
                       </svg>
                       Back
                     </button>
-                    <button onClick={scrollToTop} className="cube-btn-primary">
+                    <button onClick={scrollToTop} className="cta">
                       Begin again
                       <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <path d="M1 6h10M6 1l5 5-5 5" />
@@ -354,452 +153,145 @@ export default function CubeGallery() {
                     </button>
                   </div>
                 ) : (
-                  <button className="cube-btn-explore">
+                  <button className="cta-explore group">
                     Discover More
-                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" className="cube-btn-icon">
+                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform">
                       <path d="M1 6h10M6 1l5 5-5 5" />
                     </svg>
                   </button>
                 )}
               </motion.div>
             </section>
-          );
+          )
         })}
       </div>
 
-      {/* Credit */}
-      <div className="cube-credit desktop-only">
-        <span>Prayas Samaj Sevi Sanstha · 12 Impact Areas</span>
+      {/* Persistent Credit Element */}
+      <div id="credit" className="fixed bottom-6 left-6 z-50">
+        <a 
+          href="https://www.linkedin.com/posts/luis-martinez-lr_ai-creativity-reversecreativity-activity-7366853269517651970-zeUD?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFq1dzgByK1x_NMrcq582OMbK-_3q0DthYY" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-[var(--dark-muted)] font-dm text-xs hover:text-[var(--accent-dark)] transition-colors underline decoration-[var(--dark-muted)] underline-offset-4"
+        >
+          Reverse Creativity
+        </a>
       </div>
 
       <style>{`
-        @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;700&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap");
 
-        .cube-gallery-wrapper {
-          position: relative;
-          width: 100%;
-          background: #ffffff;
-          color: #1a1a2e;
-          overflow: hidden;
+        .theme-wrapper {
+          --dark-bg: #1c1814;
+          --dark-fg: #ede8df;
+          --dark-muted: #8a7b6e;
+          --light-bg: #f0ece3;
+          --light-fg: #0d0d14;
+          --light-muted: #9a9aaa;
+          --accent-dark: #d4a84b;
+          --accent-light: #3a6e00;
+
+          /* Hexagon specific math */
+          --cube-size: clamp(200px, 35vw, 360px);
+          /* Calculate Apothem for 60 degrees: size * 0.866 */
+          --radius: calc(var(--cube-size) * 0.866);
+
+          background-color: var(--dark-bg);
+          color: var(--dark-fg);
         }
 
-        .cube-sticky-container {
-          position: sticky;
-          top: 0;
-          height: 100vh;
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-          background: #ffffff;
-          perspective: 1200px;
-          z-index: 10;
-        }
-
-        .cube-wrapper {
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
-        }
-
-        .cube-container {
-          position: relative;
-        }
-
-        .cube-group {
-          position: absolute;
-          inset: 0;
-        }
-
-        .cube-face {
-          position: absolute;
-          inset: 0;
-          overflow: hidden;
-          background-size: cover;
-          background-position: center;
-          backface-visibility: hidden;
-          border-radius: 4px;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-          background-color: #f5f5f5;
-        }
-
-        .cube-face::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.03));
-          pointer-events: none;
-        }
-
-        /* HUD */
-        .cube-hud {
-          position: fixed;
-          top: clamp(16px, 3vh, 30px);
-          right: clamp(16px, 3vw, 30px);
-          z-index: 50;
-          text-align: right;
-          font-family: "DM Mono", monospace;
-        }
-
-        .cube-percentage {
-          font-size: clamp(1.2rem, 3vw, 2.5rem);
-          font-weight: 700;
-          color: #2f855a;
+        .font-bebas {
+          font-family: "Bebas Neue", sans-serif;
           letter-spacing: 0.05em;
         }
 
-        .cube-progress-bar {
-          width: clamp(60px, 15vw, 120px);
-          height: 2px;
-          background: rgba(0, 0, 0, 0.08);
-          margin-top: 6px;
-          margin-bottom: 4px;
-          margin-left: auto;
+        .font-dm {
+          font-family: "DM Mono", monospace;
+        }
+
+        .cube-face {
           overflow: hidden;
+          background-size: cover;
+          background-position: center;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          box-shadow: inset 0 0 60px rgba(0,0,0,0.6), 0 25px 50px -12px rgba(0,0,0,0.8);
+          /* Prevents seeing the "inside" of faces facing away */
+          backface-visibility: hidden;
         }
 
-        .cube-progress-fill {
-          height: 100%;
-          background: #2f855a;
+        .info-card {
+          width: 85vw;
+          max-width: 440px;
+          background: rgba(28, 24, 20, 0.7);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(138, 123, 110, 0.15);
+          padding: 2.5rem;
+          border-radius: 6px;
         }
 
-        .cube-label {
-          font-size: clamp(7px, 1vw, 11px);
-          color: #718096;
-          text-transform: uppercase;
-          letter-spacing: 0.15em;
-          font-weight: 600;
-        }
-
-        /* Dots */
-        .desktop-only {
-          display: block;
-        }
-
-        .cube-dots {
-          position: fixed;
-          left: clamp(20px, 3vw, 35px);
-          top: 50%;
-          transform: translateY(-50%);
-          z-index: 50;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-
-        .cube-dot {
-          width: 4px;
-          height: 4px;
-          border-radius: 50%;
-          background: rgba(0, 0, 0, 0.12);
-          transition: all 0.3s ease;
-        }
-
-        .cube-dot.active {
-          background: #2f855a;
-          transform: scale(2);
-        }
-
-        /* Caption */
-        .cube-caption {
-          position: fixed;
-          bottom: clamp(16px, 3vh, 30px);
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 50;
-          text-align: center;
-          pointer-events: none;
-        }
-
-        .cube-caption-num {
-          font-size: clamp(0.5rem, 1vw, 0.6rem);
-          letter-spacing: 0.3em;
-          color: #2f855a;
-          text-transform: uppercase;
-          margin-bottom: 4px;
-          font-weight: 600;
-        }
-
-        .cube-caption-name {
-          font-family: "Bebas Neue", sans-serif;
-          font-size: clamp(1.2rem, 4vw, 3rem);
-          color: rgba(0, 0, 0, 0.06);
-          letter-spacing: 0.08em;
-        }
-
-        /* Mobile Hint */
-        .cube-mobile-hint {
-          position: fixed;
-          bottom: 70px;
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 40;
-          color: rgba(0, 0, 0, 0.15);
-          font-family: "DM Mono", monospace;
-          font-size: 0.6rem;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          animation: bounce 2s ease-in-out infinite;
-        }
-
-        @keyframes bounce {
-          0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.3; }
-          50% { transform: translateX(-50%) translateY(-8px); opacity: 1; }
-        }
-
-        /* Text Cards */
-        .cube-text-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          z-index: 20;
-        }
-
-        .cube-text-section {
-          height: 100vh;
-          width: 100%;
+        .cta-explore {
           display: flex;
           align-items: center;
-          padding: 0 clamp(16px, 4vw, 40px) clamp(60px, 8vh, 40px) clamp(16px, 4vw, 40px);
-        }
-
-        .cube-info-card {
-          width: min(400px, 85vw);
-          padding: clamp(20px, 3vw, 30px) clamp(18px, 2.5vw, 28px);
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border-left: 3px solid #2f855a;
-          pointer-events: auto;
-          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-          border-radius: 4px;
-        }
-
-        .cube-info-card:has(.right) {
-          border-left: none;
-          border-right: 3px solid #2f855a;
-        }
-
-        .cube-tag {
+          gap: 0.5rem;
+          color: var(--accent-dark);
           font-family: "DM Mono", monospace;
-          font-size: clamp(7px, 1vw, 11px);
-          color: #2f855a;
+          font-size: 0.75rem;
           text-transform: uppercase;
-          letter-spacing: 0.2em;
-          margin-bottom: clamp(10px, 1.5vw, 16px);
-          font-weight: 600;
-        }
-
-         .cube-title {
-          font-family: "Bebas Neue", sans-serif;
-          font-size: clamp(1.8rem, 5vw, 4rem);
-          color: #1a1a2e;
-          line-height: 0.95;
-          letter-spacing: 0.03em;
-          margin-bottom: clamp(8px, 1.5vw, 12px);
-        }
-
-        .cube-desc {
-          font-family: "DM Mono", monospace;
-          font-size: clamp(0.65rem, 1vw, 0.85rem);
-          color: rgba(26, 26, 46, 0.6);
-          line-height: 1.7;
-          max-width: 320px;
-        }
-
-        .cube-actions {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin-top: clamp(16px, 2.5vw, 24px);
-          flex-wrap: wrap;
-        }
-
-        .cube-btn-back {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          padding: clamp(6px, 1vw, 8px) clamp(12px, 1.5vw, 16px);
-          font-family: "DM Mono", monospace;
-          font-size: clamp(0.55rem, 0.8vw, 0.65rem);
-          text-transform: uppercase;
-          letter-spacing: 0.15em;
-          background: transparent;
-          color: #718096;
-          border: 1px solid rgba(113, 128, 150, 0.25);
-          border-radius: 4px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .cube-btn-back:hover {
-          color: #1a1a2e;
-          border-color: #718096;
-        }
-
-        .cube-btn-back svg {
-          width: 12px;
-          height: 12px;
-        }
-
-        .cube-btn-primary {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          padding: clamp(6px, 1vw, 8px) clamp(16px, 2vw, 20px);
-          font-family: "DM Mono", monospace;
-          font-size: clamp(0.55rem, 0.8vw, 0.65rem);
-          text-transform: uppercase;
-          letter-spacing: 0.15em;
-          background: #2f855a;
-          color: #ffffff;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-weight: 700;
-          transition: all 0.3s ease;
-        }
-
-        .cube-btn-primary:hover {
-          background: #276749;
-        }
-
-        .cube-btn-primary svg {
-          width: 12px;
-          height: 12px;
-        }
-
-        .cube-btn-explore {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          margin-top: clamp(12px, 2vw, 16px);
-          color: #2f855a;
-          font-family: "DM Mono", monospace;
-          font-size: clamp(0.55rem, 0.8vw, 0.65rem);
-          text-transform: uppercase;
-          letter-spacing: 0.15em;
-          background: none;
-          border: none;
-          cursor: pointer;
+          letter-spacing: 0.1em;
+          font-weight: bold;
           transition: color 0.3s ease;
-          font-weight: 600;
         }
+        
+        .cta-explore svg { width: 12px; height: 12px; }
 
-        .cube-btn-explore:hover {
-          color: #276749;
-        }
-
-        .cube-btn-icon {
-          width: 12px;
-          height: 12px;
-          transition: transform 0.3s ease;
-        }
-
-        .cube-btn-explore:hover .cube-btn-icon {
-          transform: translateX(4px);
-        }
-
-        .cube-credit {
-          position: fixed;
-          right: clamp(20px, 3vw, 30px);
-          top: 50%;
-          transform: translateY(-50%) rotate(-90deg);
-          transform-origin: right center;
-          z-index: 50;
+        .cta-back, .cta {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: 0.75rem 1.25rem;
           font-family: "DM Mono", monospace;
-          font-size: clamp(0.5rem, 0.8vw, 0.6rem);
-          color: rgba(113, 128, 150, 0.35);
-          letter-spacing: 0.15em;
+          font-size: 0.85rem;
           text-transform: uppercase;
-          pointer-events: none;
+          text-decoration: none;
+          letter-spacing: 0.05em;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.3s ease;
         }
 
-        /* Responsive - Mobile */
+        .cta-back {
+          background: transparent;
+          color: var(--dark-muted);
+          border: 1px solid var(--dark-muted);
+        }
+        
+        .cta-back:hover {
+          color: var(--dark-fg);
+          border-color: var(--dark-fg);
+        }
+        
+        .cta-back svg { width: 14px; height: 14px; }
+
+        .cta {
+          background: var(--dark-fg);
+          color: var(--dark-bg);
+          border: 1px solid var(--dark-fg);
+          font-weight: bold;
+        }
+        
+        .cta:hover {
+          background: var(--accent-dark);
+          border-color: var(--accent-dark);
+        }
+        
+        .cta svg { width: 14px; height: 14px; }
+
         @media (max-width: 768px) {
-          .cube-sticky-container {
-            perspective: 800px;
-          }
-          
-          .cube-hud {
-            top: 12px;
-            right: 12px;
-          }
-          
-          .cube-dots {
-            display: none;
-          }
-          
-          .desktop-only {
-            display: none !important;
-          }
-          
-          .cube-caption {
-            bottom: 12px;
-          }
-          
-          .cube-text-section {
-            padding: 0 12px 80px 12px;
-            align-items: flex-end;
-          }
-          
-          .cube-info-card {
-            padding: 16px 14px;
-            width: 92vw;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-          }
-          
-          .cube-actions {
-            flex-wrap: wrap;
-          }
-          
-          .cube-btn-back, .cube-btn-primary {
-            font-size: 0.5rem;
-            padding: 6px 12px;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .cube-text-section {
-            padding: 0 10px 70px 10px;
-          }
-          
-          .cube-info-card {
-            padding: 14px 12px;
-            width: 94vw;
-          }
-          
-          .cube-title {
-            font-size: 1.5rem;
-          }
-          
-          .cube-desc {
-            font-size: 0.6rem;
-          }
-          
-          .cube-tag {
-            font-size: 0.55rem;
-          }
-          
-          .cube-caption-name {
-            font-size: 1rem;
-          }
-        }
-
-        /* Touch-friendly */
-        .cube-btn-back, .cube-btn-primary, .cube-btn-explore {
-          -webkit-tap-highlight-color: transparent;
-          touch-action: manipulation;
+          .sticky { perspective: 800px; }
         }
       `}</style>
     </div>
-  );
+  )
 }
