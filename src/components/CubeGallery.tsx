@@ -2,7 +2,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion';
 
-// 12 NGO Categories with specific images for each face
+// 12 NGO Categories with specific images
 const GALLERY_DATA = [
   { 
     id: 0,
@@ -13,10 +13,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1523050854058-8df90110c7f1?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=600&h=400&fit=crop&q=80'
     ]
   },
   { 
@@ -28,10 +25,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=600&h=400&fit=crop&q=80'
     ]
   },
   { 
@@ -43,10 +37,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1544717297-fa4c8b6df2e8?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1558904541-efa843a96f01?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&h=400&fit=crop&q=80'
     ]
   },
   { 
@@ -58,10 +49,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1516627145497-ae6969145dae?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1593113514619-33b934789d6e?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=400&fit=crop&q=80'
     ]
   },
   { 
@@ -73,10 +61,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1470071459604-7b3ec3e27f1d?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1470071459604-7b3ec3e27f1d?w=600&h=400&fit=crop&q=80'
     ]
   },
   { 
@@ -88,10 +73,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1548839143-5e75c9bca701?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1528323273322-d81458248d40?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1528323273322-d81458248d40?w=600&h=400&fit=crop&q=80'
     ]
   },
   { 
@@ -103,10 +85,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop&q=80'
     ]
   },
   { 
@@ -118,10 +97,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1536643155-33d268924c93?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1507908708918-778587c9e563?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1557425493-6f90ae4659fc?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1543353071-873f17a7a088?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1495592822108-9e6261896da8?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1557425493-6f90ae4659fc?w=600&h=400&fit=crop&q=80'
     ]
   },
   { 
@@ -133,10 +109,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1574958269340-fa927503f3dd?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1535241749838-299277b6305f?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=400&fit=crop&q=80'
     ]
   },
   { 
@@ -148,10 +121,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1543948549-6b4e7c5b9c4a?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1517433670263-6d0b7c2e81c8?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1494363247633-927487f5911a?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1544717297-fa4c8b6df2e8?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1543948549-6b4e7c5b9c4a?w=600&h=400&fit=crop&q=80'
     ]
   },
   { 
@@ -163,10 +133,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop&q=80'
     ]
   },
   { 
@@ -178,10 +145,7 @@ const GALLERY_DATA = [
     images: [
       'https://images.unsplash.com/photo-1593113514619-33b934789d6e?w=600&h=400&fit=crop&q=80',
       'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=400&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&h=400&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop&q=80'
     ]
   }
 ];
@@ -251,15 +215,15 @@ export default function CubeGallery() {
   const rotationAngle = useTransform(smoothProgress, [0, 1], ["0deg", "-360deg"]);
   const finalRotation = useSpring(rotationAngle, { damping: 25, stiffness: 40 });
 
-  // Cube Y position - moves down as you scroll (like a ball rolling)
-  const cubeY = useTransform(smoothProgress, [0, 1], ["0vh", "80vh"]);
+  // Cube Y position - moves down as you scroll
+  const cubeY = useTransform(smoothProgress, [0, 1], ["-20vh", "60vh"]);
   const finalY = useSpring(cubeY, { damping: 20, stiffness: 30 });
 
   const percentage = Math.round((activeIndex / (GALLERY_DATA.length - 1)) * 100);
 
   // Responsive cube size
-  const cubeSize = isMobile ? "clamp(160px, 55vw, 280px)" : "clamp(200px, 35vw, 350px)";
-  const translateZ = isMobile ? "clamp(80px, 28vw, 140px)" : "clamp(100px, 18vw, 175px)";
+  const cubeSize = isMobile ? "clamp(180px, 55vw, 280px)" : "clamp(220px, 35vw, 350px)";
+  const translateZ = isMobile ? "clamp(90px, 28vw, 140px)" : "clamp(110px, 18vw, 175px)";
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -282,7 +246,6 @@ export default function CubeGallery() {
           className="cube-wrapper"
           style={{
             y: finalY,
-            transition: "y 0.1s ease-out"
           }}
         >
           <div className="cube-container" style={{ width: cubeSize, height: cubeSize }}>
@@ -294,36 +257,29 @@ export default function CubeGallery() {
                 rotateY: "25deg",
               }}
             >
-              {/* Front */}
-              <div className="cube-face" style={{ 
-                backgroundImage: `url(${faceImages[0] || ''})`, 
-                transform: `translateZ(${translateZ})` 
-              }} />
-              {/* Back */}
-              <div className="cube-face" style={{ 
-                backgroundImage: `url(${faceImages[1] || ''})`, 
-                transform: `rotateY(180deg) translateZ(${translateZ})` 
-              }} />
-              {/* Right */}
-              <div className="cube-face" style={{ 
-                backgroundImage: `url(${faceImages[2] || ''})`, 
-                transform: `rotateY(90deg) translateZ(${translateZ})` 
-              }} />
-              {/* Left */}
-              <div className="cube-face" style={{ 
-                backgroundImage: `url(${faceImages[3] || ''})`, 
-                transform: `rotateY(-90deg) translateZ(${translateZ})` 
-              }} />
-              {/* Top */}
-              <div className="cube-face" style={{ 
-                backgroundImage: `url(${faceImages[4] || ''})`, 
-                transform: `rotateX(90deg) translateZ(${translateZ})` 
-              }} />
-              {/* Bottom */}
-              <div className="cube-face" style={{ 
-                backgroundImage: `url(${faceImages[5] || ''})`, 
-                transform: `rotateX(-90deg) translateZ(${translateZ})` 
-              }} />
+              {faceImages.length === 6 && faceImages.map((img, idx) => {
+                const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
+                const transforms = [
+                  `translateZ(${translateZ})`,
+                  `rotateY(180deg) translateZ(${translateZ})`,
+                  `rotateY(90deg) translateZ(${translateZ})`,
+                  `rotateY(-90deg) translateZ(${translateZ})`,
+                  `rotateX(90deg) translateZ(${translateZ})`,
+                  `rotateX(-90deg) translateZ(${translateZ})`
+                ];
+                return (
+                  <div 
+                    key={idx} 
+                    className="cube-face" 
+                    style={{ 
+                      backgroundImage: `url(${img})`, 
+                      transform: transforms[idx],
+                      backgroundColor: '#f0f0f0',
+                      border: '1px solid rgba(0,0,0,0.05)',
+                    }} 
+                  />
+                );
+              })}
             </motion.div>
           </div>
         </motion.div>
@@ -446,6 +402,8 @@ export default function CubeGallery() {
           display: flex;
           align-items: center;
           justify-content: center;
+          width: 100%;
+          height: 100%;
         }
 
         .cube-container {
@@ -463,10 +421,9 @@ export default function CubeGallery() {
           overflow: hidden;
           background-size: cover;
           background-position: center;
-          border: 1px solid rgba(0, 0, 0, 0.06);
-          box-shadow: inset 0 0 60px rgba(0,0,0,0.03);
           backface-visibility: hidden;
           border-radius: 4px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.06);
           background-color: #f5f5f5;
         }
 
@@ -474,7 +431,8 @@ export default function CubeGallery() {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.04));
+          background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.03));
+          pointer-events: none;
         }
 
         /* HUD */
@@ -488,13 +446,6 @@ export default function CubeGallery() {
         }
 
         .cube-percentage {
-          font-size: clamp(1.2rem, 3vw, 2.5rem);
-          font-weight: 700;
-          color: #2f855a;
-          letter-spacing: 0.05em;
-        }
-
-          .cube-percentage {
           font-size: clamp(1.2rem, 3vw, 2.5rem);
           font-weight: 700;
           color: #2f855a;
@@ -646,7 +597,7 @@ export default function CubeGallery() {
           font-weight: 600;
         }
 
-        .cube-title {
+         .cube-title {
           font-family: "Bebas Neue", sans-serif;
           font-size: clamp(1.8rem, 5vw, 4rem);
           color: #1a1a2e;
@@ -852,4 +803,3 @@ export default function CubeGallery() {
     </div>
   );
 }
-     
