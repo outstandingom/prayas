@@ -1,5 +1,4 @@
-
-  // src/pages/Profile.tsx
+// src/pages/Profile.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
@@ -22,6 +21,7 @@ export default function Profile() {
   const [phone, setPhone] = useState('');
   const [updating, setUpdating] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminCheckDone, setAdminCheckDone] = useState(false);
 
   useEffect(() => {
     fetchProfile();
@@ -69,7 +69,10 @@ export default function Profile() {
 
   const checkAdminStatus = async () => {
     try {
+      console.log('Checking admin status...');
       const { data: { user } } = await supabase.auth.getUser();
+      console.log('Current user:', user?.email);
+      
       if (user) {
         const { data, error } = await supabase
           .from('admin_roles')
@@ -77,12 +80,24 @@ export default function Profile() {
           .eq('user_id', user.id)
           .maybeSingle();
 
+        console.log('Admin check result:', { data, error });
+
         if (!error && data) {
           setIsAdmin(true);
+          console.log('User IS admin! Role:', data.role);
+        } else {
+          setIsAdmin(false);
+          console.log('User is NOT admin. Error:', error);
         }
+      } else {
+        console.log('No user logged in');
+        setIsAdmin(false);
       }
     } catch (err) {
       console.error('Error checking admin status:', err);
+      setIsAdmin(false);
+    } finally {
+      setAdminCheckDone(true);
     }
   };
 
@@ -134,6 +149,9 @@ export default function Profile() {
     );
   }
 
+  // Debug log
+  console.log('Profile render - isAdmin:', isAdmin, 'adminCheckDone:', adminCheckDone);
+
   return (
     <section className="min-h-[80vh] flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-2xl bg-card/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 md:p-8">
@@ -159,8 +177,8 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Admin Dashboard Button */}
-        {isAdmin && (
+        {/* Admin Dashboard Button - Show only if admin */}
+        {adminCheckDone && isAdmin && (
           <Link
             to="/admin"
             className="mb-4 flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-primary/10 text-primary border border-primary/30 rounded-md hover:bg-primary/20 transition font-medium text-sm"
@@ -268,4 +286,4 @@ export default function Profile() {
       </div>
     </section>
   );
-      }
+                  }
