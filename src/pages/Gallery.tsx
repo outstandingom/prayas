@@ -2,8 +2,20 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-// Replace these with your actual NGO photos
+// Replace these with your actual NGO photos - Added more images for fuller spiral
 const imageUrls = [
+  'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80',
+  'https://images.unsplash.com/photo-1584515933487-779824d29309?w=800&q=80',
+  'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=800&q=80',
+  'https://images.unsplash.com/photo-1593113514619-33b934789d6e?w=800&q=80',
+  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
+  'https://images.unsplash.com/photo-1518398046578-8cca57782e17?w=800&q=80',
+  'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=800&q=80',
+  'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800&q=80',
+  'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=800&q=80',
+  'https://images.unsplash.com/photo-1552697664-1505303c2bb6?w=800&q=80',
+  'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&q=80',
+  'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=800&q=80',
   'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80',
   'https://images.unsplash.com/photo-1584515933487-779824d29309?w=800&q=80',
   'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=800&q=80',
@@ -28,13 +40,13 @@ export default function Gallery() {
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // Scene setup
+    // Scene setup with WHITE background
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0a1a);
+    scene.background = new THREE.Color(0xf5f5f5); // Light gray/white background
 
     // Camera setup
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 20);
+    camera.position.set(0, 0, 22);
 
     // Renderer setup
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -50,8 +62,8 @@ export default function Gallery() {
     const textureLoader = new THREE.TextureLoader();
     const images = imageUrls;
     const count = images.length;
-    const radius = 6;
-    const turns = 3.5;
+    const radius = 7;
+    const turns = 4.5; // More turns for fuller spiral
     const imageWidth = 2.8;
     const imageHeight = 2;
 
@@ -62,13 +74,13 @@ export default function Gallery() {
       const angle = (i / count) * Math.PI * 2 * turns;
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
-      const y = (i / count - 0.5) * 8;
+      const y = (i / count - 0.5) * 9;
 
       const geometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
       
-      // Create material with placeholder
+      // Create material with placeholder - white background
       const material = new THREE.MeshBasicMaterial({
-        color: 0x1a1a2e,
+        color: 0xffffff,
         side: THREE.DoubleSide,
         transparent: true,
         opacity: 0.9,
@@ -95,40 +107,37 @@ export default function Gallery() {
       });
     });
 
-    // --- Add Glow Particles ---
-    const particleCount = 2000;
+    // --- Add Decorative Light Particles ---
+    const particleCount = 800;
     const particleGeo = new THREE.BufferGeometry();
     const particlePos = new Float32Array(particleCount * 3);
     const particleColors = new Float32Array(particleCount * 3);
-    const particleSizes = new Float32Array(particleCount);
 
     for (let i = 0; i < particleCount; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      const r = 8 + Math.random() * 12;
+      const r = 10 + Math.random() * 15;
       
       particlePos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       particlePos[i * 3 + 1] = r * Math.cos(phi);
       particlePos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
       
-      const color = new THREE.Color().setHSL(0.7 + Math.random() * 0.2, 0.8, 0.5 + Math.random() * 0.3);
+      // Pastel colors for light background
+      const color = new THREE.Color().setHSL(0.6 + Math.random() * 0.2, 0.6, 0.7 + Math.random() * 0.2);
       particleColors[i * 3] = color.r;
       particleColors[i * 3 + 1] = color.g;
       particleColors[i * 3 + 2] = color.b;
-      
-      particleSizes[i] = 0.02 + Math.random() * 0.05;
     }
 
     particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
     particleGeo.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
-    particleGeo.setAttribute('size', new THREE.BufferAttribute(particleSizes, 1));
 
     const particleMat = new THREE.PointsMaterial({
-      size: 0.06,
+      size: 0.08,
       vertexColors: true,
       transparent: true,
-      opacity: 0.6,
-      blending: THREE.AdditiveBlending,
+      opacity: 0.4,
+      blending: THREE.NormalBlending,
       sizeAttenuation: true,
     });
     const particles = new THREE.Points(particleGeo, particleMat);
@@ -174,7 +183,7 @@ export default function Gallery() {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       const zoom = camera.position.z + e.deltaY * 0.01;
-      camera.position.z = Math.max(8, Math.min(30, zoom));
+      camera.position.z = Math.max(10, Math.min(35, zoom));
     };
 
     const getMousePosition = (e: MouseEvent | TouchEvent) => {
@@ -204,8 +213,8 @@ export default function Gallery() {
       // Apply rotation with inertia
       if (autoRotate) {
         // Auto rotate slowly
-        group.rotation.y += 0.003;
-        group.rotation.x = Math.sin(Date.now() * 0.0003) * 0.1;
+        group.rotation.y += 0.004;
+        group.rotation.x = Math.sin(Date.now() * 0.0003) * 0.08;
       } else {
         // Apply drag rotation with inertia
         velocityX *= 0.95;
@@ -224,7 +233,7 @@ export default function Gallery() {
 
       // Pulse individual meshes slightly
       meshes.forEach((mesh, i) => {
-        const scale = 1 + Math.sin(Date.now() * 0.001 + i) * 0.02;
+        const scale = 1 + Math.sin(Date.now() * 0.001 + i * 0.5) * 0.02;
         mesh.scale.set(scale, scale, 1);
       });
 
@@ -276,7 +285,7 @@ export default function Gallery() {
           position: relative;
           width: 100%;
           height: 100vh;
-          background: radial-gradient(ellipse at center, #0a0a1a 0%, #000000 100%);
+          background: #f5f5f5;
           overflow: hidden;
         }
 
@@ -300,21 +309,21 @@ export default function Gallery() {
           z-index: 10;
           text-align: center;
           pointer-events: none;
-          opacity: 0.15;
-          transition: opacity 1s ease;
+          opacity: 0.12;
+          transition: opacity 0.5s ease;
         }
 
         .gallery-overlay:hover {
-          opacity: 0.3;
+          opacity: 0.2;
         }
 
         .gallery-title {
           font-family: 'Georgia', serif;
           font-size: clamp(3rem, 8vw, 8rem);
-          color: rgba(255, 255, 255, 0.1);
+          color: rgba(0, 0, 0, 0.08);
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          text-shadow: 0 0 60px rgba(99, 102, 241, 0.2);
+          text-shadow: 0 0 60px rgba(99, 102, 241, 0.05);
           margin: 0;
           font-weight: 700;
         }
@@ -322,7 +331,7 @@ export default function Gallery() {
         .gallery-subtitle {
           font-family: 'Segoe UI', sans-serif;
           font-size: clamp(0.8rem, 1.2vw, 1.2rem);
-          color: rgba(255, 255, 255, 0.2);
+          color: rgba(0, 0, 0, 0.15);
           letter-spacing: 0.2em;
           margin-top: 10px;
           text-transform: uppercase;
@@ -347,7 +356,7 @@ export default function Gallery() {
             letter-spacing: 0.1em;
           }
           .gallery-overlay {
-            opacity: 0.1;
+            opacity: 0.08;
           }
         }
 
