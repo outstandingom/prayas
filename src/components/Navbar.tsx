@@ -20,40 +20,67 @@ export default function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
 
-  // Check auth state on mount and on changes
+  // Check auth and admin status
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-      
-      // Check if user is admin
-      if (session?.user) {
-        const { data } = await supabase
-          .from('admin_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .single();
-        setIsAdmin(!!data);
-      } else {
+    const checkAuthAndAdmin = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const isAuth = !!session;
+        setIsAuthenticated(isAuth);
+
+        if (isAuth && session?.user) {
+          // Check if user is admin
+          const { data, error } = await supabase
+            .from('admin_roles')
+            .select('role')
+            .eq('user_id', session.user.id)
+            .maybeSingle(); // Use maybeSingle() to avoid error if no row found
+
+          if (!error && data) {
+            setIsAdmin(true);
+            console.log('User is admin:', data.role);
+          } else {
+            setIsAdmin(false);
+            console.log('User is NOT admin');
+          }
+        } else {
+          setIsAdmin(false);
+        }
+      } catch (err) {
+        console.error('Error checking admin status:', err);
         setIsAdmin(false);
+      } finally {
+        setLoading(false);
       }
     };
-    checkAuth();
 
+    checkAuthAndAdmin();
+
+    // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setIsAuthenticated(!!session);
-      if (session?.user) {
-        const { data } = await supabase
+      const isAuth = !!session;
+      setIsAuthenticated(isAuth);
+
+      if (isAuth && session?.user) {
+        const { data, error } = await supabase
           .from('admin_roles')
           .select('role')
           .eq('user_id', session.user.id)
-          .single();
-        setIsAdmin(!!data);
+          .maybeSingle();
+
+        if (!error && data) {
+          setIsAdmin(true);
+          console.log('Auth change - User is admin:', data.role);
+        } else {
+          setIsAdmin(false);
+        }
       } else {
         setIsAdmin(false);
       }
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -88,6 +115,9 @@ export default function Navbar() {
   // Don't show sign-in link on auth page (avoid self-link)
   const showAuthLink = !isAuthPage;
 
+  // Debug logging
+  console.log('Navbar state:', { isAuthenticated, isAdmin, loading });
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -98,7 +128,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between gap-3">
-          {/* Logo - Responsive text handling */}
+          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gradient-to-br from-emerald to-[#6366F1] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <img
@@ -150,7 +180,7 @@ export default function Navbar() {
             </Link>
 
             {/* Admin Dashboard Link - only for admins */}
-            {isAdmin && (
+            {!loading && isAdmin && (
               <Link
                 to="/admin"
                 className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border border-primary/30 text-primary hover:bg-primary/10 transition-all hover:scale-105"
@@ -161,7 +191,7 @@ export default function Navbar() {
             )}
 
             {/* Sign In / Profile Link */}
-            {showAuthLink && (
+            {showAuthLink && !loading && (
               <Link
                 to={isAuthenticated ? "/profile" : "/auth"}
                 className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border border-emerald/30 text-emerald hover:bg-emerald/10 transition-all hover:scale-105"
@@ -215,7 +245,7 @@ export default function Navbar() {
               </Link>
 
               {/* Mobile Admin Dashboard Link */}
-              {isAdmin && (
+              {!loading && isAdmin && (
                 <Link
                   to="/admin"
                   className="w-full text-center rounded-full border border-primary/30 px-6 py-3.5 font-semibold text-primary flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
@@ -226,7 +256,7 @@ export default function Navbar() {
               )}
 
               {/* Mobile Sign In / Profile Link */}
-              {showAuthLink && (
+              {showAuthLink && !loading && (
                 <Link
                   to={isAuthenticated ? "/profile" : "/auth"}
                   className="mt-2 w-full text-center rounded-full border border-emerald/30 px-6 py-3.5 font-semibold text-emerald flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
@@ -241,4 +271,4 @@ export default function Navbar() {
       </AnimatePresence>
     </header>
   );
-            }
+                  }
