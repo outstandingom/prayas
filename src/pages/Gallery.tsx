@@ -1,5 +1,5 @@
 // src/components/BookGallery.tsx
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 // Replace these with your actual NGO photos
 const GALLERY_IMAGES = [
@@ -30,22 +30,18 @@ const GALLERY_IMAGES = [
 ];
 
 export default function BookGallery() {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
-    const items = document.querySelectorAll(".book-gallery__item");
-    const container = containerRef.current;
+    const items = document.querySelectorAll(".galeria-book-3d__item");
+    const container = document.querySelector(".galeria-book-3d");
 
     function updateContainerState() {
       const anyOpen = Array.from(items).some((item) =>
         item.classList.contains("is-open")
       );
-      if (container) {
-        if (anyOpen) {
-          container.classList.add("book-open");
-        } else {
-          container.classList.remove("book-open");
-        }
+      if (anyOpen) {
+        container?.classList.add("book-open");
+      } else {
+        container?.classList.remove("book-open");
       }
     }
 
@@ -79,14 +75,14 @@ export default function BookGallery() {
         <span>Gallery</span>
       </div>
 
-      <div className="book-gallery" ref={containerRef}>
+      <div className="galeria-book-3d">
         {GALLERY_IMAGES.map((image, index) => (
           <div
             key={index}
-            className="book-gallery__item"
+            className="galeria-book-3d__item"
             style={{ "--i": index } as React.CSSProperties}
           >
-            <img src={image.front} alt={`Gallery ${index + 1} - Front`} />
+            <img src={image.front} alt={`Gallery ${index + 1}`} />
             <img src={image.back} alt={`Gallery ${index + 1} - Back`} />
           </div>
         ))}
@@ -111,7 +107,7 @@ export default function BookGallery() {
         .book-scene {
           width: 100%;
           min-height: 100vh;
-          perspective: 1000px;
+          perspective: 1200px;
           transform-style: preserve-3d;
           display: flex;
           justify-content: center;
@@ -119,7 +115,7 @@ export default function BookGallery() {
           flex-direction: column;
           overflow: hidden;
           background: radial-gradient(circle at center, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-          padding: 40px 20px;
+          padding: 80px 20px 60px;
           position: relative;
         }
 
@@ -132,14 +128,13 @@ export default function BookGallery() {
           align-items: center;
           pointer-events: none;
           z-index: 1;
-          opacity: 0.06;
-          transform: rotate(-8deg) scale(1.2);
+          opacity: 0.05;
         }
 
         .bg-typography span {
           font-family: "Outfit", system-ui, sans-serif;
           font-weight: 800;
-          font-size: clamp(6rem, 20vw, 18rem);
+          font-size: clamp(4rem, 15vw, 12rem);
           color: #fff;
           text-transform: uppercase;
           letter-spacing: 0.05em;
@@ -148,10 +143,8 @@ export default function BookGallery() {
         }
 
         /* Book Gallery Container */
-        .book-gallery {
+        .galeria-book-3d {
           position: relative;
-          width: 100%;
-          max-width: 800px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -160,14 +153,16 @@ export default function BookGallery() {
           z-index: 2;
           padding: 20px 0;
           transition: all 0.5s ease;
+          max-width: 1000px;
+          width: 100%;
         }
 
-        .book-gallery.book-open {
-          gap: 0px;
+        .galeria-book-3d.book-open {
+          gap: 5px;
         }
 
         /* Individual Book Items */
-        .book-gallery__item {
+        .galeria-book-3d__item {
           --page-rotate: 0deg;
           --spine-shift: 0px;
           
@@ -179,24 +174,24 @@ export default function BookGallery() {
           transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
           cursor: pointer;
           border-radius: 4px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .book-gallery__item:hover {
-          transform: translateY(-10px) scale(1.02);
-          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        .galeria-book-3d__item:hover {
+          transform: translateY(-8px) scale(1.02);
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
         }
 
-        .book-gallery__item.is-open {
+        .galeria-book-3d__item.is-open {
           --page-rotate: -180deg;
           --spine-shift: 10px;
-          transform: translateX(calc(var(--i) * 40px - 40px)) scale(1.05);
+          transform: translateX(calc(var(--i) * 30px - 30px)) scale(1.08);
           z-index: 10;
-          box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+          box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
         }
 
         /* Front and Back Images */
-        .book-gallery__item img {
+        .galeria-book-3d__item img {
           position: absolute;
           inset: 0;
           width: 100%;
@@ -207,56 +202,56 @@ export default function BookGallery() {
           box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
         }
 
-        .book-gallery__item img:first-child {
+        .galeria-book-3d__item img:first-child {
           transform: rotateY(var(--page-rotate));
           z-index: 2;
         }
 
-        .book-gallery__item img:last-child {
+        .galeria-book-3d__item img:last-child {
           transform: rotateY(calc(var(--page-rotate) - 180deg));
           z-index: 1;
         }
 
         /* Book Spine Effect */
-        .book-gallery__item::before {
+        .galeria-book-3d__item::before {
           content: '';
           position: absolute;
           inset: 0;
           border-radius: 4px;
           background: linear-gradient(
             to right,
-            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.5) 0%,
             transparent 20%,
             transparent 80%,
-            rgba(0, 0, 0, 0.4) 100%
+            rgba(0, 0, 0, 0.5) 100%
           );
           pointer-events: none;
           z-index: 3;
-          opacity: 0.3;
+          opacity: 0.4;
           transition: opacity 0.4s ease;
         }
 
-        .book-gallery__item.is-open::before {
+        .galeria-book-3d__item.is-open::before {
           opacity: 0.1;
         }
 
-        /* Book Shadow/Depth */
-        .book-gallery__item::after {
+        /* Book Shadow */
+        .galeria-book-3d__item::after {
           content: '';
           position: absolute;
           bottom: -20px;
           left: 10%;
           width: 80%;
           height: 20px;
-          background: radial-gradient(ellipse, rgba(0,0,0,0.4) 0%, transparent 70%);
+          background: radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%);
           filter: blur(10px);
-          opacity: 0.5;
+          opacity: 0.4;
           transition: all 0.4s ease;
           z-index: -1;
         }
 
-        .book-gallery__item.is-open::after {
-          opacity: 0.8;
+        .galeria-book-3d__item.is-open::after {
+          opacity: 0.7;
           transform: scale(1.2);
         }
 
@@ -273,7 +268,7 @@ export default function BookGallery() {
           text-transform: uppercase;
           z-index: 10;
           background: rgba(0, 0, 0, 0.3);
-          padding: 8px 20px;
+          padding: 8px 24px;
           border-radius: 20px;
           backdrop-filter: blur(10px);
           border: 1px solid rgba(255, 255, 255, 0.1);
@@ -282,80 +277,184 @@ export default function BookGallery() {
         }
 
         @keyframes pulse {
-          0%, 100% { opacity: 0.5; }
-          50% { opacity: 1; }
+          0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+          50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
         }
 
-        /* Responsive Design */
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+
+        /* Large Tablets & Small Desktops */
         @media (max-width: 1024px) {
-          .book-gallery__item {
+          .galeria-book-3d__item {
             width: 160px;
             height: 220px;
           }
-          .book-gallery__item.is-open {
-            transform: translateX(calc(var(--i) * 30px - 30px)) scale(1.08);
+          .galeria-book-3d {
+            gap: 15px;
           }
-          .bg-typography span {
-            font-size: clamp(4rem, 15vw, 12rem);
+          .galeria-book-3d.book-open {
+            gap: 4px;
+          }
+          .galeria-book-3d__item.is-open {
+            transform: translateX(calc(var(--i) * 25px - 25px)) scale(1.06);
           }
         }
 
+        /* Tablets */
         @media (max-width: 768px) {
-          .book-gallery {
-            gap: 10px;
-            padding: 10px 0;
+          .book-scene {
+            padding: 70px 15px 50px;
+            min-height: 100vh;
           }
-          .book-gallery__item {
-            width: 120px;
-            height: 170px;
+
+          .galeria-book-3d {
+            gap: 12px;
+            padding: 15px 0;
           }
-          .book-gallery__item.is-open {
-            transform: translateX(calc(var(--i) * 20px - 20px)) scale(1.1);
+          .galeria-book-3d.book-open {
+            gap: 3px;
           }
-          .book-gallery.book-open {
-            gap: 0px;
+
+          .galeria-book-3d__item {
+            width: 130px;
+            height: 180px;
           }
+
+          .galeria-book-3d__item.is-open {
+            transform: translateX(calc(var(--i) * 20px - 20px)) scale(1.08);
+          }
+
           .bg-typography span {
-            font-size: clamp(2.5rem, 10vw, 8rem);
+            font-size: clamp(3rem, 10vw, 6rem);
           }
+
           .book-hint {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             padding: 6px 16px;
             bottom: 20px;
           }
         }
 
+        /* Mobile Landscape & Small Tablets */
+        @media (max-width: 600px) {
+          .galeria-book-3d {
+            gap: 10px;
+          }
+          .galeria-book-3d.book-open {
+            gap: 2px;
+          }
+
+          .galeria-book-3d__item {
+            width: 110px;
+            height: 150px;
+          }
+
+          .galeria-book-3d__item.is-open {
+            transform: translateX(calc(var(--i) * 16px - 16px)) scale(1.1);
+          }
+        }
+
+        /* Mobile Portrait */
         @media (max-width: 480px) {
-          .book-gallery__item {
-            width: 90px;
-            height: 130px;
+          .book-scene {
+            padding: 60px 10px 40px;
+            min-height: 100svh;
           }
-          .book-gallery__item.is-open {
-            transform: translateX(calc(var(--i) * 15px - 15px)) scale(1.15);
+
+          .galeria-book-3d {
+            gap: 8px;
+            padding: 10px 0;
           }
+          .galeria-book-3d.book-open {
+            gap: 2px;
+          }
+
+          .galeria-book-3d__item {
+            width: 80px;
+            height: 110px;
+            border-radius: 3px;
+          }
+
+          .galeria-book-3d__item.is-open {
+            transform: translateX(calc(var(--i) * 12px - 12px)) scale(1.12);
+          }
+
           .bg-typography span {
-            font-size: clamp(1.8rem, 8vw, 5rem);
+            font-size: clamp(1.8rem, 6vw, 3.5rem);
           }
+
+          .bg-typography {
+            opacity: 0.04;
+          }
+
           .book-hint {
             font-size: 0.6rem;
             padding: 4px 12px;
             bottom: 12px;
+            letter-spacing: 0.05em;
+          }
+
+          .galeria-book-3d__item::after {
+            bottom: -12px;
+            height: 12px;
+            opacity: 0.3;
+          }
+
+          .galeria-book-3d__item:hover {
+            transform: translateY(-4px) scale(1.02);
+          }
+
+          .galeria-book-3d__item.is-open::after {
+            opacity: 0.5;
           }
         }
 
-        /* Custom Scrollbar for the scene */
+        /* Extra Small Devices */
+        @media (max-width: 380px) {
+          .galeria-book-3d__item {
+            width: 65px;
+            height: 90px;
+          }
+
+          .galeria-book-3d {
+            gap: 6px;
+          }
+          .galeria-book-3d.book-open {
+            gap: 1px;
+          }
+
+          .galeria-book-3d__item.is-open {
+            transform: translateX(calc(var(--i) * 10px - 10px)) scale(1.15);
+          }
+
+          .book-hint {
+            font-size: 0.5rem;
+            padding: 3px 10px;
+            bottom: 10px;
+          }
+        }
+
+        /* Custom Scrollbar */
         .book-scene::-webkit-scrollbar {
-          width: 6px;
+          width: 4px;
         }
         .book-scene::-webkit-scrollbar-track {
           background: rgba(255, 255, 255, 0.05);
         }
         .book-scene::-webkit-scrollbar-thumb {
           background: rgba(255, 255, 255, 0.2);
-          border-radius: 3px;
+          border-radius: 2px;
         }
         .book-scene::-webkit-scrollbar-thumb:hover {
           background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Touch-friendly adjustments */
+        .galeria-book-3d__item {
+          -webkit-tap-highlight-color: transparent;
+          touch-action: manipulation;
         }
       `}</style>
     </div>
