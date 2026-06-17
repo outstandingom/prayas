@@ -1,4 +1,3 @@
-// src/App.tsx
 import { Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Layout from './components/Layout';
@@ -9,16 +8,13 @@ import Gallery from './pages/Gallery';
 import Stories from './pages/Stories';
 import Donate from './pages/Donate';
 import Contact from './pages/Contact';
-import Auth from './pages/Auth'; // <-- import the new Auth component
+import Auth from './pages/Auth';
 
 export default function App() {
   return (
     <AnimatePresence mode="wait">
       <Routes>
-        {/* Auth page – standalone, no Layout */}
         <Route path="/auth" element={<Auth />} />
-
-        {/* All other pages with the common Layout */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
