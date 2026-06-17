@@ -1,4 +1,188 @@
-return (
+// src/pages/Auth.tsx
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
+import { z } from "zod";
+
+// --- Validation schemas ---
+const loginSchema = z.object({
+  email: z.string().trim().email({ message: "Invalid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+});
+
+const registerSchema = z.object({
+  fullName: z.string().trim().min(2, { message: "Name must be at least 2 characters" }).max(100),
+  phone: z.string().trim().min(10, { message: "Please enter a valid phone number" }).max(15).optional().or(z.literal("")),
+  email: z.string().trim().email({ message: "Invalid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+});
+
+export default function Auth() {
+  const navigate = useNavigate();
+  const mounted = useRef(true);
+  const authCompleted = useRef(false);
+
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Forgot password
+  const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+
+  // --- Effects ---
+  useEffect(() => {
+    mounted.current = true;
+
+    // If user is already signed in, redirect
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user && mounted.current && window.location.pathname === "/auth") {
+        navigate("/");
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (authCompleted.current && session?.user && mounted.current) {
+        navigate("/");
+      }
+    });
+
+    return () => {
+      mounted.current = false;
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
+
+  // --- Helpers ---
+  const validateMainForm = useCallback(() => {
+    setErrors({});
+    try {
+      if (isLogin) {
+        loginSchema.parse({ email, password });
+      } else {
+        registerSchema.parse({ fullName, phone, email, password });
+      }
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const nextErrors: Record<string, string> = {};
+        error.errors.forEach((issue: z.ZodIssue) => {
+          if (issue.path[0]) {
+            nextErrors[issue.path[0] as string] = issue.message;
+          }
+        });
+        setErrors(nextErrors);
+      }
+      return false;
+    }
+  }, [isLogin, email, password, fullName, phone]);
+
+  const showToast = (title: string, description?: string, isError = false) => {
+    alert(`${isError ? '❌ ' : '✅ '}${title}\n${description || ''}`);
+  };
+
+  // --- Sign In ---
+  const handleSignIn = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (!validateMainForm()) return;
+      setLoading(true);
+      authCompleted.current = true;
+
+      try {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        showToast("Welcome back!", "You have successfully logged in.");
+        navigate("/");
+      } catch (error: any) {
+        authCompleted.current = false;
+        if (!mounted.current) return;
+        showToast(
+          "Sign In Failed",
+          error?.message?.includes("Invalid login credentials")
+            ? "Invalid email or password."
+            : error?.message || "Unable to sign in.",
+          true
+        );
+      } finally {
+        if (mounted.current) setLoading(false);
+      }
+    },
+    [email, password, navigate, validateMainForm]
+  );
+
+  // --- Sign Up (uses Supabase default email confirmation) ---
+  const handleSignUp = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (!validateMainForm()) return;
+
+      setLoading(true);
+      try {
+        const { error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password: password.trim(),
+          options: {
+            data: {
+              full_name: fullName.trim(),
+              phone: phone.trim() || null,
+            },
+          },
+        });
+        if (error) throw error;
+
+        showToast(
+          "Confirmation Email Sent",
+          `Please check ${email.trim()} to confirm your account.`
+        );
+        // Optionally redirect to a "check your email" page
+        // navigate("/check-email");
+      } catch (error: any) {
+        if (!mounted.current) return;
+        showToast("Sign Up Failed", error?.message || "Unable to create account.", true);
+      } finally {
+        if (mounted.current) setLoading(false);
+      }
+    },
+    [email, fullName, password, phone, validateMainForm]
+  );
+
+  // --- Forgot Password ---
+  const handleResetPassword = useCallback(async () => {
+    if (!resetEmail.trim()) {
+      showToast("Email required", "Please enter your email address.", true);
+      return;
+    }
+    setResetLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail.trim(), {
+        redirectTo: `${window.location.origin}/auth?reset=true`,
+      });
+      if (error) throw error;
+      showToast("Reset link sent", `Check ${resetEmail} for password reset instructions.`);
+      setResetPasswordOpen(false);
+      setResetEmail("");
+    } catch (error: any) {
+      showToast("Reset failed", error?.message || "Unable to send reset email.", true);
+    } finally {
+      setResetLoading(false);
+    }
+  }, [resetEmail]);
+
+  const switchMode = useCallback(() => {
+    setIsLogin((prev) => !prev);
+    setErrors({});
+    setPassword("");
+  }, []);
+
+  // --- Main Auth Form ---
+  return (
     <section className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
@@ -16,7 +200,7 @@ return (
           <p className="text-muted-foreground text-sm">
             {isLogin
               ? "Enter your credentials to access your account"
-              : "Create account with email OTP verification"}
+              : "Create account and verify your email"}
           </p>
         </div>
 
@@ -77,7 +261,7 @@ return (
 
             <div className="space-y-1.5">
               <label htmlFor="password" className="flex items-center gap-2 text-xs text-muted-foreground">
-                Password {isLogin && <span className="text-destructive">*</span>}
+                Password <span className="text-destructive">*</span>
               </label>
               <div className="relative">
                 <input
@@ -86,8 +270,8 @@ return (
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required={isLogin}
-                  minLength={isLogin ? 6 : undefined}
+                  required
+                  minLength={6}
                   className={`w-full bg-background/50 border ${errors.password ? 'border-destructive' : 'border-border/50'} text-sm h-9 rounded-md px-3 pr-9 focus:outline-none focus:ring-2 focus:ring-primary`}
                 />
                 <button
@@ -100,29 +284,16 @@ return (
                 </button>
               </div>
               {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
-              {!isLogin && (
-                <p className="text-xs text-muted-foreground">
-                  Password is required and will be set after email verification.
-                </p>
-              )}
             </div>
 
             {isLogin && (
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-end">
                 <button
                   type="button"
                   onClick={() => setResetPasswordOpen(true)}
                   className="text-xs text-primary hover:underline font-medium"
                 >
                   Forgot Password?
-                </button>
-
-                <button
-                  type="button"
-                  onClick={openLoginOtpDialog}
-                  className="text-xs text-accent hover:underline font-medium"
-                >
-                  Login with OTP
                 </button>
               </div>
             )}
@@ -140,7 +311,7 @@ return (
                 </>
               ) : (
                 <>
-                  Send Signup OTP <span>→</span>
+                  Sign Up <span>→</span>
                 </>
               )}
             </button>
@@ -201,89 +372,6 @@ return (
           </div>
         </div>
       )}
-
-      {/* --- Login OTP Dialog (simple modal) --- */}
-      {loginOtpOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-card p-6 rounded-xl w-full max-w-md border border-primary/20">
-            <h2 className="text-lg font-semibold mb-2">Login with OTP</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              {loginOtpStep === "email"
-                ? "Enter your registered email to receive a one-time code."
-                : `Enter the 6-digit code sent to ${loginOtpEmail}`}
-            </p>
-
-            {loginOtpStep === "email" ? (
-              <div className="space-y-4">
-                <input
-                  type="email"
-                  placeholder="you@example.com"
-                  value={loginOtpEmail}
-                  onChange={(e) => setLoginOtpEmail(e.target.value)}
-                  className="w-full bg-background/50 border border-border/50 text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-                <div className="flex gap-2 justify-end">
-                  <button
-                    onClick={() => setLoginOtpOpen(false)}
-                    className="px-4 py-2 text-sm border border-border/50 rounded-md hover:bg-muted"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={sendLoginOtp}
-                    disabled={resetLoading || !loginOtpEmail.trim()}
-                    className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
-                  >
-                    Send OTP
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  autoComplete="one-time-code"
-                  placeholder="Enter 6-digit OTP"
-                  value={loginOtpCode}
-                  onChange={(e) => setLoginOtpCode(normalizeOtp(e.target.value))}
-                  className="w-full bg-background/50 border border-border/50 text-center text-lg tracking-[0.35em] h-11 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary"
-                  maxLength={6}
-                />
-                <div className="flex justify-between items-center">
-                  <button
-                    onClick={sendLoginOtp}
-                    disabled={loginOtpTimer > 0 || resetLoading}
-                    className="text-xs text-primary hover:underline disabled:opacity-50"
-                  >
-                    {loginOtpTimer > 0 ? `Resend in ${loginOtpTimer}s` : "Resend OTP"}
-                  </button>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => {
-                        setLoginOtpOpen(false);
-                        setLoginOtpStep("email");
-                        setLoginOtpCode("");
-                      }}
-                      className="px-4 py-2 text-sm border border-border/50 rounded-md hover:bg-muted"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={verifyLoginOtp}
-                      disabled={resetLoading || loginOtpCode.length !== 6}
-                      className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
-                    >
-                      Verify & Login
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </section>
   );
-      }
+                  }
