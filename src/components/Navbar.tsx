@@ -1,7 +1,9 @@
+// src/components/Navbar.tsx
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Heart } from 'lucide-react';
+import { Menu, X, Heart, User } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -15,7 +17,23 @@ const navLinks = [
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
+
+  // Check auth state on mount and on changes
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Close mobile menu when screen resizes to desktop width
   useEffect(() => {
@@ -42,6 +60,10 @@ export default function Navbar() {
 
   const isDarkPage = location.pathname === '/gallery' || location.pathname === '/stories';
   const isHomePage = location.pathname === '/';
+  const isAuthPage = location.pathname === '/auth';
+
+  // Don't show sign-in link on auth page (avoid self-link)
+  const showAuthLink = !isAuthPage;
 
   return (
     <header
@@ -66,7 +88,6 @@ export default function Navbar() {
               <span className="font-display font-bold text-lg sm:text-xl tracking-tight text-navy group-hover:text-emerald transition-colors">
                 Prayas
               </span>
-              {/* Hide subtitle on very small screens, show from 480px */}
               <span className="hidden min-[480px]:block text-[8px] sm:text-[9px] uppercase tracking-[0.15em] sm:tracking-[0.18em] text-navy/60">
                 Samaj Sevi Sanstha
               </span>
@@ -105,6 +126,17 @@ export default function Navbar() {
               <Heart className="w-4 h-4" />
             </Link>
 
+            {/* Sign In / Profile Link */}
+            {showAuthLink && (
+              <Link
+                to={isAuthenticated ? "/profile" : "/auth"}
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border border-emerald/30 text-emerald hover:bg-emerald/10 transition-all hover:scale-105"
+              >
+                <User className="w-4 h-4" />
+                {isAuthenticated ? "Profile" : "Sign In"}
+              </Link>
+            )}
+
             <button
               className="md:hidden text-navy p-2.5 -m-1 rounded-full hover:bg-black/5 active:bg-black/10 transition-colors"
               onClick={() => setIsMobileOpen(!isMobileOpen)}
@@ -128,7 +160,7 @@ export default function Navbar() {
             className="md:hidden bg-white/95 backdrop-blur-md border-t border-black/5 mt-2 overflow-hidden"
           >
             <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
-              {navLinks.map((link, idx) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
@@ -147,6 +179,17 @@ export default function Navbar() {
               >
                 Donate Now <Heart className="w-5 h-5" />
               </Link>
+
+              {/* Mobile Sign In / Profile Link */}
+              {showAuthLink && (
+                <Link
+                  to={isAuthenticated ? "/profile" : "/auth"}
+                  className="mt-2 w-full text-center rounded-full border border-emerald/30 px-6 py-3.5 font-semibold text-emerald flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+                >
+                  <User className="w-5 h-5" />
+                  {isAuthenticated ? "Profile" : "Sign In"}
+                </Link>
+              )}
             </nav>
           </motion.div>
         )}
