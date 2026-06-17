@@ -6,10 +6,11 @@ interface CounterProps {
   end: number
   suffix?: string
   label: string
+  description: string
   duration?: number
 }
 
-function Counter({ end, suffix = '', label, duration = 2000 }: CounterProps) {
+function Counter({ end, suffix = '', label, description, duration = 2000 }: CounterProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [count, setCount] = useState(0)
@@ -32,13 +33,22 @@ function Counter({ end, suffix = '', label, duration = 2000 }: CounterProps) {
   }, [isInView, end, duration])
 
   return (
-    <div ref={ref} className="flex flex-col items-center p-6 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gold/20 relative overflow-hidden group hover:shadow-2xl transition-all duration-300">
+    <div ref={ref} className="flex flex-col items-center p-6 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gold/20 relative overflow-hidden group hover:shadow-2xl transition-all duration-300 h-full">
       <div className="absolute inset-0 bg-gradient-to-br from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
+      {/* Number */}
       <div className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-gold mb-2 drop-shadow-md relative z-10">
         {count.toLocaleString()}{suffix}
       </div>
-      <div className="text-navy/70 font-mono text-xs md:text-sm uppercase tracking-widest text-center relative z-10 font-semibold">
+      
+      {/* Label */}
+      <div className="text-navy/80 font-mono text-xs md:text-sm uppercase tracking-widest text-center relative z-10 font-semibold">
         {label}
+      </div>
+      
+      {/* Description - NEW */}
+      <div className="text-navy/60 text-xs md:text-sm text-center relative z-10 mt-3 leading-relaxed max-w-xs">
+        {description}
       </div>
     </div>
   )
@@ -46,10 +56,34 @@ function Counter({ end, suffix = '', label, duration = 2000 }: CounterProps) {
 
 export default function ImpactCounter() {
   const counters = [
-    { end: 25000, suffix: "+", label: "Lives Impacted", duration: 2000 },
-    { end: 1200, suffix: "+", label: "Active Volunteers", duration: 1800 },
-    { end: 350, suffix: "+", label: "Projects Completed", duration: 1500 },
-    { end: 500, suffix: "+", label: "Regular Donors", duration: 1700 }
+    { 
+      end: 25000, 
+      suffix: "+", 
+      label: "LIVES IMPACTED",
+      description: "Through our healthcare camps, education programs, and women empowerment initiatives across rural India",
+      duration: 2000 
+    },
+    { 
+      end: 1200, 
+      suffix: "+", 
+      label: "ACTIVE VOLUNTEERS",
+      description: "Dedicated individuals working tirelessly in 27 states to bring change at the grassroots level",
+      duration: 1800 
+    },
+    { 
+      end: 350, 
+      suffix: "+", 
+      label: "PROJECTS COMPLETED",
+      description: "From building schools to organizing health camps, each project has transformed communities",
+      duration: 1500 
+    },
+    { 
+      end: 500, 
+      suffix: "+", 
+      label: "REGULAR DONORS",
+      description: "Compassionate supporters who believe in our mission and contribute monthly to sustain our work",
+      duration: 1700 
+    }
   ]
 
   return (
@@ -84,11 +118,13 @@ export default function ImpactCounter() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
+              className="h-full"
             >
               <Counter 
                 end={counter.end}
                 suffix={counter.suffix}
                 label={counter.label}
+                description={counter.description}
                 duration={counter.duration}
               />
             </motion.div>
