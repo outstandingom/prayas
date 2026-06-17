@@ -5,9 +5,9 @@ import { Loader2 } from 'lucide-react';
 
 type User = {
   id: string;
-  email: string;
   full_name: string;
   phone: string;
+  email?: string; // optional, because we might not have it in profiles
   created_at: string;
 };
 
@@ -23,21 +23,22 @@ export default function AdminUsers() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      // Fetch from auth.users is not directly allowed; we need to use profiles table.
-      // So we'll fetch from profiles joined with auth.users via RPC or we can query profiles directly.
-      // We'll assume profiles table exists.
+      // Fetch from profiles table (we might not have email there)
       const { data, error } = await supabase
         .from('profiles')
         .select('id, full_name, phone, created_at')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      // For email, we need to get from auth.users – but we can't directly join.
-      // Alternatively, we can store email in profiles too, or use a view.
-      // Let's assume we have email in profiles (we can add).
-      // For now, we'll show a placeholder or we can fetch from auth via RPC.
-      // Simpler: we'll fetch from auth.users using admin API (not recommended for client-side).
-      // Instead, we'll fetch from profiles and show those fields.
-      setUsers(data || []);
+
+      // Map data to User type (email will be empty)
+      const mappedUsers: User[] = (data || []).map((row: any) => ({
+        id: row.id,
+        full_name: row.full_name || '—',
+        phone: row.phone || '—',
+        email: '', // placeholder
+        created_at: row.created_at,
+      }));
+      setUsers(mappedUsers);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -71,8 +72,8 @@ export default function AdminUsers() {
             <tbody>
               {users.map((u) => (
                 <tr key={u.id} className="border-t border-border/50">
-                  <td className="p-3 font-medium">{u.full_name || '—'}</td>
-                  <td className="p-3">{u.phone || '—'}</td>
+                  <td className="p-3 font-medium">{u.full_name}</td>
+                  <td className="p-3">{u.phone}</td>
                   <td className="p-3">{new Date(u.created_at).toLocaleDateString()}</td>
                 </tr>
               ))}
