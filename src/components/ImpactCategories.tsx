@@ -41,46 +41,9 @@ export default function ImpactCategories() {
   return (
     <div ref={containerRef} className="relative w-full bg-white" style={{ height: `${12 * 55}vh` }}>
       
-      {/* Section Header - Fixed */}
-      <div className="fixed top-20 left-0 right-0 z-30 pointer-events-none">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center">
-            <span className="text-[#00897B] font-mono text-xs uppercase tracking-widest font-semibold bg-[#00897B]/10 px-4 py-2 rounded-full inline-block">
-              Our Impact Areas
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Sequence Counter - Fixed Left Side */}
-      <div className="fixed top-1/2 -translate-y-1/2 left-4 sm:left-6 md:left-10 z-30 flex flex-col items-center gap-1">
-        {/* Current Number - Large */}
-        <motion.div
-          key={activeIndex}
-          initial={{ scale: 1.3, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold text-[#00897B] leading-none"
-        >
-          {category.id}
-        </motion.div>
-        
-        {/* Divider */}
-        <div className="w-8 h-[1px] bg-[#00897B]/20 my-1" />
-        
-        {/* Total */}
-        <span className="text-sm sm:text-base font-mono text-[#263238]/30 font-bold">12</span>
-      </div>
-
       {/* Sticky Main Display */}
       <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-white">
         
-        {/* Subtle Background Pattern */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{
-          backgroundImage: 'radial-gradient(circle, #00897B 1px, transparent 1px)',
-          backgroundSize: '40px 40px'
-        }} />
-
         {/* Center Content */}
         <motion.div 
           key={activeIndex}
@@ -90,20 +53,13 @@ export default function ImpactCategories() {
           transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
           className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl"
         >
-          {/* Large Background Number */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-            <span className="text-[120px] sm:text-[180px] md:text-[250px] font-bold text-[#E8F5E9] leading-none">
-              {category.id}
-            </span>
-          </div>
-
-          {/* Category Name (Not description) */}
-          <h1 className="relative font-display font-bold text-[#263238] text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3 tracking-tight leading-none">
+          {/* Category Name */}
+          <h1 className="relative font-display font-bold text-[#263238] text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4 tracking-tight leading-none">
             {category.title}
           </h1>
 
-          {/* Short Tagline instead of full description */}
-          <p className="relative text-[#263238]/50 text-sm sm:text-base max-w-md leading-relaxed mb-6 font-mono uppercase tracking-wider">
+          {/* Short Tagline */}
+          <p className="relative text-[#263238]/50 text-sm sm:text-base max-w-md leading-relaxed mb-8 font-mono uppercase tracking-wider">
             {category.title === 'EDUCATION' && 'Building brighter futures'}
             {category.title === 'HEALTHCARE' && 'Healing communities'}
             {category.title === 'WOMEN EMPOWERMENT' && 'Strength in independence'}
@@ -118,20 +74,23 @@ export default function ImpactCategories() {
             {category.title === 'MENTAL HEALTH' && 'Healing minds'}
           </p>
 
-          {/* Progress Bar */}
-          <div className="w-40 sm:w-56 md:w-72 h-[3px] bg-[#E8F5E9] relative overflow-hidden rounded-full">
-            <motion.div 
-              className="absolute top-0 left-0 h-full bg-[#00897B] rounded-full"
-              style={{ width: progressWidth }}
-            />
+          {/* Progress Bar with Number */}
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono font-bold text-[#00897B]">{category.id}</span>
+            <div className="w-40 sm:w-56 md:w-72 h-[3px] bg-[#E8F5E9] relative overflow-hidden rounded-full">
+              <motion.div 
+                className="absolute top-0 left-0 h-full bg-[#00897B] rounded-full"
+                style={{ width: progressWidth }}
+              />
+            </div>
+            <span className="text-xs font-mono font-bold text-[#263238]/30">12</span>
           </div>
         </motion.div>
 
-        {/* Right Side Navigation Dots - Show sequence */}
+        {/* Right Side Navigation Dots */}
         <div className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30 items-center">
           {CATEGORIES.map((cat, i) => (
             <div key={i} className="flex items-center gap-2">
-              {/* Dot */}
               <div 
                 className="transition-all duration-300 rounded-full"
                 style={{
@@ -141,7 +100,6 @@ export default function ImpactCategories() {
                   boxShadow: i === activeIndex ? '0 0 6px rgba(0,137,123,0.3)' : 'none'
                 }}
               />
-              {/* Number - Show only for active */}
               {i === activeIndex && (
                 <motion.span 
                   initial={{ opacity: 0, x: 5 }}
@@ -153,20 +111,6 @@ export default function ImpactCategories() {
               )}
             </div>
           ))}
-        </div>
-
-        {/* Mobile Bottom Indicator */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 md:hidden z-20 flex items-center gap-3">
-          <motion.span 
-            key={activeIndex}
-            initial={{ scale: 1.2 }}
-            animate={{ scale: 1 }}
-            className="text-2xl font-display font-bold text-[#00897B]"
-          >
-            {category.id}
-          </motion.span>
-          <div className="w-px h-4 bg-[#00897B]/20" />
-          <span className="text-xs font-mono text-[#263238]/30 font-bold">12</span>
         </div>
       </div>
 
@@ -185,7 +129,6 @@ export default function ImpactCategories() {
               transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
               className="pointer-events-auto w-full max-w-sm sm:max-w-md bg-white/95 backdrop-blur-sm border border-[#00897B]/10 p-4 sm:p-5 rounded-2xl shadow-lg shadow-[#263238]/5 hover:shadow-xl hover:shadow-[#00897B]/5 transition-all duration-300"
             >
-              {/* Card ID */}
               <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#E8F5E9]">
                 <span className="font-mono text-[10px] tracking-[0.15em] text-[#00897B] font-bold">
                   {cat.id} — {cat.title}
@@ -193,35 +136,24 @@ export default function ImpactCategories() {
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00897B]" />
               </div>
 
-              {/* Card Title */}
               <h3 className="font-display text-xl sm:text-2xl font-bold text-[#263238] mb-1.5">
                 {cat.title}
               </h3>
 
-              {/* Card Description */}
               <p className="text-[#263238]/60 text-xs sm:text-sm leading-relaxed mb-3">
                 {cat.desc}
               </p>
 
-              {/* Card Image - Larger */}
               <div className="w-full h-40 sm:h-48 md:h-56 rounded-xl overflow-hidden mb-3 opacity-90 hover:opacity-100 transition-opacity">
                 <img src={cat.img} alt={cat.title} className="w-full h-full object-cover" loading="lazy" />
               </div>
 
-              {/* Card Action */}
               <button className="inline-flex items-center gap-2 text-[#00897B] font-mono text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all">
                 Learn More <span className="text-base leading-none">→</span>
               </button>
             </motion.div>
           </section>
         ))}
-      </div>
-
-      {/* Bottom Fixed Indicator */}
-      <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-30">
-        <span className="text-[#263238]/15 text-xs font-mono uppercase tracking-widest">
-          12 Impact Areas
-        </span>
       </div>
 
       <style>{`
