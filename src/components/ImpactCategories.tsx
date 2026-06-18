@@ -52,6 +52,26 @@ export default function ImpactCategories() {
         </div>
       </div>
 
+      {/* Sequence Counter - Fixed Left Side */}
+      <div className="fixed top-1/2 -translate-y-1/2 left-4 sm:left-6 md:left-10 z-30 flex flex-col items-center gap-1">
+        {/* Current Number - Large */}
+        <motion.div
+          key={activeIndex}
+          initial={{ scale: 1.3, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold text-[#00897B] leading-none"
+        >
+          {category.id}
+        </motion.div>
+        
+        {/* Divider */}
+        <div className="w-8 h-[1px] bg-[#00897B]/20 my-1" />
+        
+        {/* Total */}
+        <span className="text-sm sm:text-base font-mono text-[#263238]/30 font-bold">12</span>
+      </div>
+
       {/* Sticky Main Display */}
       <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-white">
         
@@ -70,13 +90,6 @@ export default function ImpactCategories() {
           transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
           className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl"
         >
-          {/* ID Badge */}
-          <div className="mb-4">
-            <span className="text-[#00897B] font-mono text-xs tracking-[0.2em] font-bold border border-[#00897B]/20 px-3 py-1.5 rounded-full bg-[#00897B]/5">
-              {category.id} / 12
-            </span>
-          </div>
-
           {/* Large Background Number */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
             <span className="text-[120px] sm:text-[180px] md:text-[250px] font-bold text-[#E8F5E9] leading-none">
@@ -84,14 +97,25 @@ export default function ImpactCategories() {
             </span>
           </div>
 
-          {/* Title */}
+          {/* Category Name (Not description) */}
           <h1 className="relative font-display font-bold text-[#263238] text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3 tracking-tight leading-none">
             {category.title}
           </h1>
 
-          {/* Description */}
-          <p className="relative text-[#263238]/60 text-sm sm:text-base max-w-lg leading-relaxed mb-6">
-            {category.desc}
+          {/* Short Tagline instead of full description */}
+          <p className="relative text-[#263238]/50 text-sm sm:text-base max-w-md leading-relaxed mb-6 font-mono uppercase tracking-wider">
+            {category.title === 'EDUCATION' && 'Building brighter futures'}
+            {category.title === 'HEALTHCARE' && 'Healing communities'}
+            {category.title === 'WOMEN EMPOWERMENT' && 'Strength in independence'}
+            {category.title === 'CHILD WELFARE' && 'Protecting innocence'}
+            {category.title === 'ENVIRONMENT' && 'Greener tomorrow'}
+            {category.title === 'RURAL DEVELOPMENT' && 'Bridging the gap'}
+            {category.title === 'SKILL TRAINING' && 'Crafting careers'}
+            {category.title === 'DISASTER RELIEF' && 'Hope in crisis'}
+            {category.title === 'ANIMAL WELFARE' && 'Voice for the voiceless'}
+            {category.title === 'ELDERLY CARE' && 'Wisdom with dignity'}
+            {category.title === 'FOOD SECURITY' && 'Nourishing lives'}
+            {category.title === 'MENTAL HEALTH' && 'Healing minds'}
           </p>
 
           {/* Progress Bar */}
@@ -103,27 +127,46 @@ export default function ImpactCategories() {
           </div>
         </motion.div>
 
-        {/* Side Navigation Dots */}
-        <div className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30">
-          {CATEGORIES.map((_, i) => (
-            <div 
-              key={i} 
-              className="transition-all duration-300 rounded-full"
-              style={{
-                width: i === activeIndex ? '10px' : '5px',
-                height: i === activeIndex ? '10px' : '5px',
-                backgroundColor: i === activeIndex ? '#00897B' : '#E8F5E9',
-                boxShadow: i === activeIndex ? '0 0 6px rgba(0,137,123,0.3)' : 'none'
-              }}
-            />
+        {/* Right Side Navigation Dots - Show sequence */}
+        <div className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30 items-center">
+          {CATEGORIES.map((cat, i) => (
+            <div key={i} className="flex items-center gap-2">
+              {/* Dot */}
+              <div 
+                className="transition-all duration-300 rounded-full"
+                style={{
+                  width: i === activeIndex ? '10px' : '5px',
+                  height: i === activeIndex ? '10px' : '5px',
+                  backgroundColor: i === activeIndex ? '#00897B' : '#E8F5E9',
+                  boxShadow: i === activeIndex ? '0 0 6px rgba(0,137,123,0.3)' : 'none'
+                }}
+              />
+              {/* Number - Show only for active */}
+              {i === activeIndex && (
+                <motion.span 
+                  initial={{ opacity: 0, x: 5 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="text-xs font-mono font-bold text-[#00897B]"
+                >
+                  {cat.id}
+                </motion.span>
+              )}
+            </div>
           ))}
         </div>
 
-        {/* Mobile Category Counter */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 md:hidden z-20">
-          <span className="text-[#263238]/40 text-xs font-mono tracking-widest">
-            {category.id} / 12
-          </span>
+        {/* Mobile Bottom Indicator */}
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 md:hidden z-20 flex items-center gap-3">
+          <motion.span 
+            key={activeIndex}
+            initial={{ scale: 1.2 }}
+            animate={{ scale: 1 }}
+            className="text-2xl font-display font-bold text-[#00897B]"
+          >
+            {category.id}
+          </motion.span>
+          <div className="w-px h-4 bg-[#00897B]/20" />
+          <span className="text-xs font-mono text-[#263238]/30 font-bold">12</span>
         </div>
       </div>
 
@@ -174,7 +217,7 @@ export default function ImpactCategories() {
         ))}
       </div>
 
-      {/* Bottom Indicator */}
+      {/* Bottom Fixed Indicator */}
       <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-30">
         <span className="text-[#263238]/15 text-xs font-mono uppercase tracking-widest">
           12 Impact Areas
