@@ -23,33 +23,37 @@
   --color-ring: var(--ring);
   --color-surface: var(--surface);
   --color-navy: var(--navy);
-  --color-emerald: var(--emerald);
-  --color-gold: var(--gold);
+  --color-teal: var(--teal);
+  --color-light-green: var(--light-green);
+  --color-dark-gray: var(--dark-gray);
 
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 :root {
   --radius: 1rem;
-  --navy: #0B2E63;
-  --emerald: #2E8B57;
-  --gold: #F9A825;
+  
+  /* New Color Scheme */
+  --teal: #00897B;
   --white: #FFFFFF;
-  --light-gray: #F5F8F6;
-  --text-dark: #1B1F24;
+  --light-green: #E8F5E9;
+  --dark-gray: #263238;
+  
+  /* Keep these for compatibility */
+  --gold: #F9A825;
   --violet: #6366F1;
 
   --background: var(--white);
-  --surface: var(--light-gray);
-  --foreground: var(--text-dark);
-  --primary: var(--emerald);
-  --primary-foreground: var(--navy);
-  --accent: var(--gold);
-  --accent-foreground: var(--navy);
-  --muted: rgba(0, 0, 0, 0.1);
-  --muted-foreground: rgba(0, 0, 0, 0.6);
-  --border: rgba(0, 0, 0, 0.1);
-  --ring: rgba(0, 168, 107, 0.5);
+  --surface: var(--light-green);
+  --foreground: var(--dark-gray);
+  --primary: var(--teal);
+  --primary-foreground: var(--white);
+  --accent: var(--light-green);
+  --accent-foreground: var(--dark-gray);
+  --muted: rgba(0, 0, 0, 0.06);
+  --muted-foreground: rgba(38, 50, 56, 0.6);
+  --border: rgba(0, 137, 123, 0.15);
+  --ring: rgba(0, 137, 123, 0.4);
 }
 
 @layer base {
@@ -58,17 +62,17 @@
   html {
     scroll-behavior: smooth;
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--color-emerald) 30%, transparent) var(--color-background);
+    scrollbar-color: color-mix(in srgb, var(--color-teal) 30%, transparent) var(--color-background);
   }
 
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: var(--color-background); }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--color-emerald) 30%, transparent);
+    background: color-mix(in srgb, var(--color-teal) 30%, transparent);
     border-radius: 9999px;
     border: 2px solid var(--color-background);
   }
-  ::-webkit-scrollbar-thumb:hover { background: var(--color-emerald); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-teal); }
 
   body {
     background-color: var(--color-background);
@@ -79,7 +83,7 @@
   }
 
   ::selection {
-    background-color: color-mix(in srgb, var(--color-emerald) 30%, transparent);
+    background-color: color-mix(in srgb, var(--color-teal) 20%, transparent);
     color: var(--color-foreground);
   }
 }
@@ -106,9 +110,13 @@
   to { transform: translateX(-50%); }
 }
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(0, 168, 107, 0.4); }
-  70% { box-shadow: 0 0 0 12px rgba(0, 168, 107, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 168, 107, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(0, 137, 123, 0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(0, 137, 123, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 137, 123, 0); }
+}
+@keyframes subtle-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
 }
 
 /* Custom Utility Classes */
@@ -117,6 +125,7 @@
 @utility animate-float-slower { animation: float-slower 18s ease-in-out infinite; }
 @utility animate-marquee { animation: marquee 30s linear infinite; }
 @utility animate-pulse-ring { animation: pulse-ring 2s infinite; }
+@utility animate-subtle-float { animation: subtle-float 3s ease-in-out infinite; }
 
 @utility stagger-1 { animation-delay: 100ms; }
 @utility stagger-2 { animation-delay: 200ms; }
@@ -125,30 +134,30 @@
 @utility stagger-5 { animation-delay: 500ms; }
 
 @utility glass {
-  background: color-mix(in srgb, var(--color-white) 70%, transparent);
+  background: color-mix(in srgb, var(--color-white) 80%, transparent);
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 137, 123, 0.15);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
 }
 
 @utility glass-dark {
-  background: color-mix(in srgb, var(--color-navy) 70%, transparent);
+  background: color-mix(in srgb, var(--color-dark-gray) 80%, transparent);
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@utility text-gradient-gold {
-  background: linear-gradient(135deg, var(--color-gold), #FFF8E7);
+@utility text-gradient-teal {
+  background: linear-gradient(135deg, var(--color-teal), #4DB6AC);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 @utility bg-gradient-hero {
-  background: radial-gradient(100% 100% at 50% 0%, color-mix(in srgb, var(--color-emerald) 15%, transparent) 0%, transparent 50%),
-              radial-gradient(100% 100% at 0% 100%, color-mix(in srgb, var(--color-gold) 10%, transparent) 0%, transparent 50%),
+  background: radial-gradient(100% 100% at 50% 0%, color-mix(in srgb, var(--color-teal) 8%, transparent) 0%, transparent 50%),
+              radial-gradient(100% 100% at 0% 100%, color-mix(in srgb, var(--color-light-green) 40%, transparent) 0%, transparent 50%),
               var(--color-surface);
 }
 
@@ -156,7 +165,32 @@
   transition: transform 400ms var(--ease-out-expo), box-shadow 400ms var(--ease-out-expo);
 
   &:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4), 0 0 20px -5px color-mix(in srgb, var(--color-emerald) 30%, transparent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.12), 0 0 20px -5px color-mix(in srgb, var(--color-teal) 20%, transparent);
+  }
+}
+
+/* Input focus styles */
+@utility input-focus {
+  @apply transition-all duration-300 ease-out;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.1);
+  }
+}
+
+/* Button hover effect */
+@utility btn-hover {
+  @apply transition-all duration-300 ease-out;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -8px rgba(0, 137, 123, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 }
