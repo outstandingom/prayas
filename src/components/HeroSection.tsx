@@ -4,6 +4,7 @@ import { Heart } from 'lucide-react'
 
 // NGO Photos Data - 50 meaningful images showing real impact
 const NGO_PHOTOS = [
+  // Original images
   "https://images.pexels.com/photos/6646959/pexels-photo-6646959.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
   "https://images.pexels.com/photos/4101143/pexels-photo-4101143.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
   "https://images.pexels.com/photos/2363800/pexels-photo-2363800.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
@@ -53,8 +54,30 @@ const NGO_PHOTOS = [
   "https://images.pexels.com/photos/3671392/pexels-photo-3671392.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
   "https://images.pexels.com/photos/4398099/pexels-photo-4398099.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
   "https://images.pexels.com/photos/7655631/pexels-photo-7655631.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/8580725/pexels-photo-8580725.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop"
-]
+  "https://images.pexels.com/photos/8580725/pexels-photo-8580725.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+
+  // 20 Added NGO, charity, and community volunteering images
+  "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3184432/pexels-photo-3184432.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3184433/pexels-photo-3184433.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/1183434/pexels-photo-1183434.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/868113/pexels-photo-868113.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6646917/pexels-photo-6646917.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6646895/pexels-photo-6646895.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7109946/pexels-photo-7109946.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7109930/pexels-photo-7109930.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3856027/pexels-photo-3856027.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3855975/pexels-photo-3855975.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3856050/pexels-photo-3856050.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4308112/pexels-photo-4308112.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4308095/pexels-photo-4308095.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6348123/pexels-photo-6348123.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6348074/pexels-photo-6348074.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6994681/pexels-photo-6994681.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6994665/pexels-photo-6994665.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4585184/pexels-photo-4585184.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop"
+];
 
 // Prepare columns data (5 columns, 10 images each)
 const columnsData = (() => {
