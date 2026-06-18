@@ -1,5 +1,5 @@
 // src/components/ImpactCategories.tsx
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion'
 
 const CATEGORIES = [
@@ -29,143 +29,108 @@ export default function ImpactCategories() {
   const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 50, restDelta: 0.001 })
 
   useMotionValueEvent(smoothProgress, "change", (latest) => {
-    const totalSectors = CATEGORIES.length
-    const currentIndex = Math.min(totalSectors - 1, Math.floor(latest * totalSectors))
+    const currentIndex = Math.min(11, Math.floor(latest * 12))
     if (currentIndex !== activeIndex) {
       setActiveIndex(currentIndex)
     }
   })
 
   const category = CATEGORIES[activeIndex]
+  const progressWidth = useTransform(smoothProgress, [0, 1], ['0%', '100%'])
 
   return (
-    <div ref={containerRef} className="relative w-full bg-black" style={{ height: `${CATEGORIES.length * 100}vh` }}>
+    <div ref={containerRef} className="relative w-full bg-white" style={{ height: `${12 * 100}vh` }}>
       
-      {/* Scanlines */}
-      <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.04]" style={{
-        background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.5) 2px, rgba(255,255,255,0.5) 4px)'
-      }} />
-
-      {/* Vignette */}
-      <div className="fixed inset-0 pointer-events-none z-50" style={{
-        background: 'radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.8) 100%)'
-      }} />
-
-      {/* HUD Top Bar */}
-      <div className="fixed top-0 left-0 right-0 z-40 px-6 py-3 flex items-center justify-between border-b border-white/10 bg-black/90 backdrop-blur-sm">
-        <div className="flex items-center gap-4">
-          <span className="text-[#00f3ff] font-mono text-xs tracking-[0.2em]">PRAYAS.ORG</span>
-          <div className="w-px h-3 bg-white/20" />
-          <span className="text-white/40 font-mono text-xs">12 IMPACT SECTORS</span>
+      {/* Section Header - Fixed */}
+      <div className="fixed top-20 left-0 right-0 z-30 pointer-events-none">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center">
+            <span className="text-[#00897B] font-mono text-xs uppercase tracking-widest font-semibold bg-[#00897B]/10 px-4 py-2 rounded-full inline-block">
+              Our Impact Areas
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-          <span className="text-white/40 font-mono text-xs">FPS <strong className="text-[#ccff00]">60</strong></span>
-          <div className="w-px h-3 bg-white/20" />
-          <span className="text-[#ccff00] font-mono text-xs font-bold">
-            {String(Math.round((activeIndex / (CATEGORIES.length - 1)) * 100)).padStart(3, '0')}%
-          </span>
-        </div>
-      </div>
-
-      {/* HUD Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 px-6 py-3 flex items-center justify-between border-t border-white/10 bg-black/90 backdrop-blur-sm">
-        <span className="text-white/40 font-mono text-xs">SECTION: {category.id}/12</span>
-        <span className="text-white/40 font-mono text-xs">SCROLL TO NAVIGATE</span>
-        <span className="text-white/40 font-mono text-xs">{category.title}</span>
       </div>
 
       {/* Sticky Main Display */}
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-white">
         
-        {/* Background Grid */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-          backgroundSize: '80px 80px'
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 opacity-[0.02]" style={{
+          backgroundImage: 'radial-gradient(circle, #00897B 1px, transparent 1px)',
+          backgroundSize: '40px 40px'
         }} />
-
-        {/* Large Background Image */}
-        <motion.div 
-          key={activeIndex}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 0.15, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${category.img})` }}
-        />
 
         {/* Center Content */}
         <motion.div 
           key={activeIndex}
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -40 }}
-          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl"
+          exit={{ opacity: 0, y: -30 }}
+          transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+          className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl"
         >
           {/* ID Badge */}
-          <div className="mb-8">
-            <span className="text-[#ff003c] font-mono text-sm tracking-[0.3em] font-bold border border-[#ff003c]/30 px-4 py-2">
+          <div className="mb-6">
+            <span className="text-[#00897B] font-mono text-sm tracking-[0.2em] font-bold border border-[#00897B]/20 px-4 py-2 rounded-full bg-[#00897B]/5">
               {category.id} / 12
             </span>
           </div>
 
+          {/* Large Background Number */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+            <span className="text-[180px] sm:text-[250px] md:text-[350px] font-bold text-[#E8F5E9] leading-none">
+              {category.id}
+            </span>
+          </div>
+
           {/* Title */}
-          <h1 className="font-bold text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl mb-6 tracking-tighter leading-none"
-            style={{ 
-              fontFamily: '"Syncopate", "Bebas Neue", sans-serif',
-              textShadow: '0 0 60px rgba(255,0,60,0.3), 0 0 120px rgba(0,243,255,0.2)'
-            }}>
+          <h1 className="relative font-display font-bold text-[#263238] text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4 tracking-tight leading-none">
             {category.title}
           </h1>
 
           {/* Description */}
-          <p className="text-white/50 text-sm sm:text-base md:text-lg max-w-2xl font-mono leading-relaxed mb-8">
+          <p className="relative text-[#263238]/60 text-sm sm:text-base md:text-lg max-w-xl leading-relaxed mb-8">
             {category.desc}
           </p>
 
           {/* Progress Bar */}
-          <div className="w-64 md:w-96 h-[1px] bg-white/10 relative overflow-hidden">
+          <div className="w-48 sm:w-64 md:w-80 h-[3px] bg-[#E8F5E9] relative overflow-hidden rounded-full">
             <motion.div 
-              className="absolute top-0 left-0 h-full"
-              style={{ 
-                width: useTransform(smoothProgress, [0, 1], ['0%', '100%']),
-                background: 'linear-gradient(90deg, #ff003c, #00f3ff, #ccff00)'
-              }}
+              className="absolute top-0 left-0 h-full bg-[#00897B] rounded-full"
+              style={{ width: progressWidth }}
             />
           </div>
 
           {/* Corner Decorations */}
-          <div className="absolute -top-4 -left-4 w-12 h-12 border-t-2 border-l-2 border-[#ff003c]/30" />
-          <div className="absolute -top-4 -right-4 w-12 h-12 border-t-2 border-r-2 border-[#00f3ff]/30" />
-          <div className="absolute -bottom-4 -left-4 w-12 h-12 border-b-2 border-l-2 border-[#ccff00]/30" />
-          <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-2 border-r-2 border-[#ff003c]/30" />
+          <div className="absolute -top-4 -left-4 w-8 h-8 border-t-2 border-l-2 border-[#00897B]/20 rounded-tl-lg" />
+          <div className="absolute -top-4 -right-4 w-8 h-8 border-t-2 border-r-2 border-[#00897B]/20 rounded-tr-lg" />
+          <div className="absolute -bottom-4 -left-4 w-8 h-8 border-b-2 border-l-2 border-[#00897B]/20 rounded-bl-lg" />
+          <div className="absolute -bottom-4 -right-4 w-8 h-8 border-b-2 border-r-2 border-[#00897B]/20 rounded-br-lg" />
         </motion.div>
 
         {/* Side Navigation Dots */}
-        <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-3 z-30">
-          {CATEGORIES.map((cat, i) => (
+        <div className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-2 z-30">
+          {CATEGORIES.map((_, i) => (
             <div 
               key={i} 
               className="transition-all duration-300 rounded-full"
               style={{
-                width: i === activeIndex ? '12px' : '6px',
-                height: i === activeIndex ? '12px' : '6px',
-                backgroundColor: i === activeIndex ? '#00f3ff' : 'rgba(255,255,255,0.2)',
-                boxShadow: i === activeIndex ? '0 0 12px #00f3ff' : 'none'
+                width: i === activeIndex ? '10px' : '6px',
+                height: i === activeIndex ? '10px' : '6px',
+                backgroundColor: i === activeIndex ? '#00897B' : '#E8F5E9',
+                boxShadow: i === activeIndex ? '0 0 8px rgba(0,137,123,0.3)' : 'none'
               }}
             />
           ))}
         </div>
 
-        {/* Scroll Indicator */}
-        <motion.div 
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20"
-        >
-          <span className="text-white/25 text-xs font-mono tracking-[0.3em] uppercase">Scroll</span>
-          <div className="w-px h-12 bg-gradient-to-b from-white/30 to-transparent" />
-        </motion.div>
+        {/* Mobile Category Counter */}
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 md:hidden z-20">
+          <span className="text-[#263238]/40 text-xs font-mono tracking-widest">
+            {category.id} / 12
+          </span>
+        </div>
       </div>
 
       {/* Detail Cards Overlay */}
@@ -173,59 +138,64 @@ export default function ImpactCategories() {
         {CATEGORIES.map((cat, i) => (
           <section 
             key={i} 
-            className="h-screen w-full flex items-end md:items-center pb-28 md:pb-0 px-6 md:px-20"
+            className="h-screen w-full flex items-end md:items-center pb-24 md:pb-0 px-4 sm:px-6 md:px-16"
             style={{ justifyContent: i % 2 === 0 ? 'flex-start' : 'flex-end' }}
           >
             <motion.div 
-              initial={{ opacity: 0, x: i % 2 === 0 ? -100 : 100 }}
+              initial={{ opacity: 0, x: i % 2 === 0 ? -60 : 60 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
-              transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="pointer-events-auto w-full max-w-md bg-black/90 backdrop-blur-xl border border-white/10 p-6 md:p-8 relative group"
-              style={{
-                boxShadow: '0 0 0 1px rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.5)'
-              }}
+              viewport={{ once: false, margin: "-10% 0px -10% 0px" }}
+              transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
+              className="pointer-events-auto w-full max-w-sm sm:max-w-md bg-white/95 backdrop-blur-sm border border-[#00897B]/10 p-5 sm:p-6 rounded-2xl shadow-xl shadow-[#263238]/5 hover:shadow-2xl hover:shadow-[#00897B]/5 transition-all duration-300"
             >
-              {/* Card Accent Corners */}
-              <div className="absolute top-0 left-0 w-0 h-0 border-t-2 border-l-2 border-[#ff003c]/50 group-hover:w-full group-hover:h-full transition-all duration-500" />
-              <div className="absolute bottom-0 right-0 w-0 h-0 border-b-2 border-r-2 border-[#00f3ff]/50 group-hover:w-full group-hover:h-full transition-all duration-500" />
-
-              {/* Card Header */}
-              <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
-                <span className="font-mono text-xs tracking-[0.2em] text-[#ff003c]">ID-{cat.id}</span>
-                <span className="font-mono text-xs text-white/30">{cat.title}</span>
+              {/* Card ID */}
+              <div className="flex items-center justify-between mb-3 pb-3 border-b border-[#E8F5E9]">
+                <span className="font-mono text-xs tracking-[0.15em] text-[#00897B] font-bold">
+                  {cat.id} — {cat.title}
+                </span>
+                <span className="w-2 h-2 rounded-full bg-[#00897B]" />
               </div>
 
               {/* Card Title */}
-              <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3" style={{ fontFamily: '"Syncopate", "Bebas Neue", sans-serif' }}>
+              <h3 className="font-display text-2xl sm:text-3xl font-bold text-[#263238] mb-2">
                 {cat.title}
               </h3>
 
               {/* Card Description */}
-              <p className="text-white/50 text-sm leading-relaxed mb-6 font-mono">
+              <p className="text-[#263238]/60 text-sm leading-relaxed mb-4">
                 {cat.desc}
               </p>
 
               {/* Card Image */}
-              <div className="w-full h-40 rounded overflow-hidden mb-6 opacity-50 group-hover:opacity-100 transition-opacity">
-                <img src={cat.img} alt={cat.title} className="w-full h-full object-cover" />
+              <div className="w-full h-32 sm:h-40 rounded-xl overflow-hidden mb-4 opacity-80 hover:opacity-100 transition-opacity">
+                <img src={cat.img} alt={cat.title} className="w-full h-full object-cover" loading="lazy" />
               </div>
 
               {/* Card Action */}
-              <button className="inline-flex items-center gap-2 px-5 py-2 text-xs font-mono font-bold text-black bg-[#00f3ff] hover:bg-[#00f3ff]/80 transition-colors">
-                EXPLORE <span className="text-lg leading-none">→</span>
+              <button className="inline-flex items-center gap-2 text-[#00897B] font-mono text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all">
+                Learn More <span className="text-lg leading-none">→</span>
               </button>
             </motion.div>
           </section>
         ))}
       </div>
 
-      {/* Styles */}
+      {/* Bottom Indicator */}
+      <div className="fixed bottom-6 left-6 z-30">
+        <span className="text-[#263238]/20 text-xs font-mono uppercase tracking-widest">
+          12 Impact Areas
+        </span>
+      </div>
+
       <style>{`
-        @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Syncopate:wght@400;700&family=Bebas+Neue&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap");
         
         .font-mono {
           font-family: "JetBrains Mono", monospace;
+        }
+
+        .font-display {
+          font-family: "Outfit", sans-serif;
         }
       `}</style>
     </div>
