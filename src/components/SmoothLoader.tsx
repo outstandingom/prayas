@@ -24,7 +24,6 @@ export default function SmoothLoader() {
 
   if (phase === 'done') return null
 
-  // Slightly faster exit animation on mobile
   const exitDuration = isMobile ? 0.7 : 0.9
 
   return (
@@ -35,15 +34,15 @@ export default function SmoothLoader() {
         animate={phase === 'exiting' ? { y: '-100%' } : { y: '0%' }}
         transition={phase === 'exiting' ? { duration: exitDuration, ease: expoOut } : undefined}
         className="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-hidden"
-        style={{ background: 'var(--navy)' }}
+        style={{ background: '#263238' }}
       >
-        {/* Ambient Glow – fully responsive */}
+        {/* Ambient Glow */}
         <motion.div
           className="absolute rounded-full"
           style={{
             width: 'clamp(200px, 60vw, 520px)',
             height: 'clamp(200px, 60vw, 520px)',
-            background: 'rgba(0,168,107,0.18)',
+            background: 'rgba(0,137,123,0.18)',
             filter: 'blur(clamp(60px, 15vw, 140px))'
           }}
           animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0.7, 0.4] }}
@@ -57,20 +56,20 @@ export default function SmoothLoader() {
           transition={{ duration: 0.7, delay: isMobile ? 0.05 : 0.1 }}
           className="relative z-10 flex flex-col items-center px-6 text-center"
         >
-          {/* Icon – responsive size */}
+          {/* Icon */}
           <motion.div
             className="flex items-center justify-center rounded-2xl mb-6 sm:mb-7"
             style={{
               width: 'clamp(56px, 15vw, 72px)',
               height: 'clamp(56px, 15vw, 72px)',
-              background: 'rgba(0,168,107,0.08)',
-              border: '1px solid rgba(0,168,107,0.18)'
+              background: 'rgba(0,137,123,0.08)',
+              border: '1px solid rgba(0,137,123,0.18)'
             }}
-            animate={{ boxShadow: ['0 0 0px rgba(0,168,107,0)', '0 0 30px rgba(0,168,107,0.3)', '0 0 0px rgba(0,168,107,0)'] }}
+            animate={{ boxShadow: ['0 0 0px rgba(0,137,123,0)', '0 0 30px rgba(0,137,123,0.3)', '0 0 0px rgba(0,137,123,0)'] }}
             transition={{ duration: 2.5, repeat: Infinity }}
           >
             <div
-              className="rounded-full bg-gradient-to-br from-emerald to-[#6366F1] flex items-center justify-center text-white font-bold"
+              className="rounded-full bg-gradient-to-br from-[#00897B] to-[#4DB6AC] flex items-center justify-center text-white font-bold"
               style={{
                 width: 'clamp(40px, 10vw, 48px)',
                 height: 'clamp(40px, 10vw, 48px)',
@@ -87,7 +86,7 @@ export default function SmoothLoader() {
               initial={{ y: '100%' }}
               animate={{ y: '0%' }}
               transition={{ duration: 0.8, delay: isMobile ? 0.2 : 0.3, ease: expoOut }}
-              className="font-display font-bold text-gold text-center tracking-tight"
+              className="font-display font-bold text-[#F9A825] text-center tracking-tight"
               style={{ fontSize: 'clamp(1.5rem, 6vw, 2.5rem)' }}
             >
               Building a Better World
@@ -100,7 +99,7 @@ export default function SmoothLoader() {
               initial={{ y: '100%' }}
               animate={{ y: '0%' }}
               transition={{ duration: 0.7, delay: isMobile ? 0.4 : 0.55, ease: expoOut }}
-              className="text-emerald font-mono font-semibold uppercase text-center"
+              className="text-[#00897B] font-mono font-semibold uppercase text-center"
               style={{
                 fontSize: 'clamp(0.65rem, 3vw, 0.75rem)',
                 letterSpacing: 'clamp(0.2em, 3vw, 0.35em)'
@@ -110,7 +109,7 @@ export default function SmoothLoader() {
             </motion.div>
           </div>
 
-          {/* Progress Bar – responsive width */}
+          {/* Progress Bar */}
           <div
             className="relative overflow-hidden rounded-full mt-8 sm:mt-10"
             style={{
@@ -121,7 +120,7 @@ export default function SmoothLoader() {
           >
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full"
-              style={{ background: 'linear-gradient(90deg, var(--emerald), rgba(0,168,107,0.6))' }}
+              style={{ background: 'linear-gradient(90deg, #00897B, rgba(0,137,123,0.6))' }}
               initial={{ width: '0%' }}
               animate={{ width: '100%' }}
               transition={{ duration: DURATION_MS / 1000 - 0.4, ease: [0.4, 0, 0.2, 1] }}
@@ -131,4 +130,4 @@ export default function SmoothLoader() {
       </motion.div>
     </AnimatePresence>
   )
-              }
+}
