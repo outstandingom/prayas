@@ -1,3 +1,4 @@
+// src/components/Layout.tsx
 import { Outlet, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
@@ -25,7 +26,7 @@ export default function Layout() {
   const exitY = isMobile ? -8 : -20
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans flex flex-col relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#263238] font-sans flex flex-col relative overflow-x-hidden">
       <SmoothLoader />
       <Navbar />
       <motion.main
