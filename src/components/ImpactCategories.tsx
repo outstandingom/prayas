@@ -39,7 +39,7 @@ export default function ImpactCategories() {
   const progressWidth = useTransform(smoothProgress, [0, 1], ['0%', '100%'])
 
   return (
-    <div ref={containerRef} className="relative w-full bg-white" style={{ height: `${12 * 100}vh` }}>
+    <div ref={containerRef} className="relative w-full bg-white" style={{ height: `${12 * 55}vh` }}>
       
       {/* Section Header - Fixed */}
       <div className="fixed top-20 left-0 right-0 z-30 pointer-events-none">
@@ -64,69 +64,63 @@ export default function ImpactCategories() {
         {/* Center Content */}
         <motion.div 
           key={activeIndex}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -30 }}
-          transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
           className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl"
         >
           {/* ID Badge */}
-          <div className="mb-6">
-            <span className="text-[#00897B] font-mono text-sm tracking-[0.2em] font-bold border border-[#00897B]/20 px-4 py-2 rounded-full bg-[#00897B]/5">
+          <div className="mb-4">
+            <span className="text-[#00897B] font-mono text-xs tracking-[0.2em] font-bold border border-[#00897B]/20 px-3 py-1.5 rounded-full bg-[#00897B]/5">
               {category.id} / 12
             </span>
           </div>
 
           {/* Large Background Number */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-            <span className="text-[180px] sm:text-[250px] md:text-[350px] font-bold text-[#E8F5E9] leading-none">
+            <span className="text-[120px] sm:text-[180px] md:text-[250px] font-bold text-[#E8F5E9] leading-none">
               {category.id}
             </span>
           </div>
 
           {/* Title */}
-          <h1 className="relative font-display font-bold text-[#263238] text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4 tracking-tight leading-none">
+          <h1 className="relative font-display font-bold text-[#263238] text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3 tracking-tight leading-none">
             {category.title}
           </h1>
 
           {/* Description */}
-          <p className="relative text-[#263238]/60 text-sm sm:text-base md:text-lg max-w-xl leading-relaxed mb-8">
+          <p className="relative text-[#263238]/60 text-sm sm:text-base max-w-lg leading-relaxed mb-6">
             {category.desc}
           </p>
 
           {/* Progress Bar */}
-          <div className="w-48 sm:w-64 md:w-80 h-[3px] bg-[#E8F5E9] relative overflow-hidden rounded-full">
+          <div className="w-40 sm:w-56 md:w-72 h-[3px] bg-[#E8F5E9] relative overflow-hidden rounded-full">
             <motion.div 
               className="absolute top-0 left-0 h-full bg-[#00897B] rounded-full"
               style={{ width: progressWidth }}
             />
           </div>
-
-          {/* Corner Decorations */}
-          <div className="absolute -top-4 -left-4 w-8 h-8 border-t-2 border-l-2 border-[#00897B]/20 rounded-tl-lg" />
-          <div className="absolute -top-4 -right-4 w-8 h-8 border-t-2 border-r-2 border-[#00897B]/20 rounded-tr-lg" />
-          <div className="absolute -bottom-4 -left-4 w-8 h-8 border-b-2 border-l-2 border-[#00897B]/20 rounded-bl-lg" />
-          <div className="absolute -bottom-4 -right-4 w-8 h-8 border-b-2 border-r-2 border-[#00897B]/20 rounded-br-lg" />
         </motion.div>
 
         {/* Side Navigation Dots */}
-        <div className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-2 z-30">
+        <div className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30">
           {CATEGORIES.map((_, i) => (
             <div 
               key={i} 
               className="transition-all duration-300 rounded-full"
               style={{
-                width: i === activeIndex ? '10px' : '6px',
-                height: i === activeIndex ? '10px' : '6px',
+                width: i === activeIndex ? '10px' : '5px',
+                height: i === activeIndex ? '10px' : '5px',
                 backgroundColor: i === activeIndex ? '#00897B' : '#E8F5E9',
-                boxShadow: i === activeIndex ? '0 0 8px rgba(0,137,123,0.3)' : 'none'
+                boxShadow: i === activeIndex ? '0 0 6px rgba(0,137,123,0.3)' : 'none'
               }}
             />
           ))}
         </div>
 
         {/* Mobile Category Counter */}
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 md:hidden z-20">
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 md:hidden z-20">
           <span className="text-[#263238]/40 text-xs font-mono tracking-widest">
             {category.id} / 12
           </span>
@@ -138,42 +132,42 @@ export default function ImpactCategories() {
         {CATEGORIES.map((cat, i) => (
           <section 
             key={i} 
-            className="h-screen w-full flex items-end md:items-center pb-24 md:pb-0 px-4 sm:px-6 md:px-16"
+            className="h-[55vh] w-full flex items-end md:items-center pb-20 md:pb-0 px-3 sm:px-4 md:px-12"
             style={{ justifyContent: i % 2 === 0 ? 'flex-start' : 'flex-end' }}
           >
             <motion.div 
-              initial={{ opacity: 0, x: i % 2 === 0 ? -60 : 60 }}
+              initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false, margin: "-10% 0px -10% 0px" }}
-              transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
-              className="pointer-events-auto w-full max-w-sm sm:max-w-md bg-white/95 backdrop-blur-sm border border-[#00897B]/10 p-5 sm:p-6 rounded-2xl shadow-xl shadow-[#263238]/5 hover:shadow-2xl hover:shadow-[#00897B]/5 transition-all duration-300"
+              viewport={{ once: false, margin: "-5% 0px -5% 0px" }}
+              transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+              className="pointer-events-auto w-full max-w-sm sm:max-w-md bg-white/95 backdrop-blur-sm border border-[#00897B]/10 p-4 sm:p-5 rounded-2xl shadow-lg shadow-[#263238]/5 hover:shadow-xl hover:shadow-[#00897B]/5 transition-all duration-300"
             >
               {/* Card ID */}
-              <div className="flex items-center justify-between mb-3 pb-3 border-b border-[#E8F5E9]">
-                <span className="font-mono text-xs tracking-[0.15em] text-[#00897B] font-bold">
+              <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#E8F5E9]">
+                <span className="font-mono text-[10px] tracking-[0.15em] text-[#00897B] font-bold">
                   {cat.id} — {cat.title}
                 </span>
-                <span className="w-2 h-2 rounded-full bg-[#00897B]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00897B]" />
               </div>
 
               {/* Card Title */}
-              <h3 className="font-display text-2xl sm:text-3xl font-bold text-[#263238] mb-2">
+              <h3 className="font-display text-xl sm:text-2xl font-bold text-[#263238] mb-1.5">
                 {cat.title}
               </h3>
 
               {/* Card Description */}
-              <p className="text-[#263238]/60 text-sm leading-relaxed mb-4">
+              <p className="text-[#263238]/60 text-xs sm:text-sm leading-relaxed mb-3">
                 {cat.desc}
               </p>
 
-              {/* Card Image */}
-              <div className="w-full h-32 sm:h-40 rounded-xl overflow-hidden mb-4 opacity-80 hover:opacity-100 transition-opacity">
+              {/* Card Image - Larger */}
+              <div className="w-full h-40 sm:h-48 md:h-56 rounded-xl overflow-hidden mb-3 opacity-90 hover:opacity-100 transition-opacity">
                 <img src={cat.img} alt={cat.title} className="w-full h-full object-cover" loading="lazy" />
               </div>
 
               {/* Card Action */}
               <button className="inline-flex items-center gap-2 text-[#00897B] font-mono text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all">
-                Learn More <span className="text-lg leading-none">→</span>
+                Learn More <span className="text-base leading-none">→</span>
               </button>
             </motion.div>
           </section>
@@ -181,8 +175,8 @@ export default function ImpactCategories() {
       </div>
 
       {/* Bottom Indicator */}
-      <div className="fixed bottom-6 left-6 z-30">
-        <span className="text-[#263238]/20 text-xs font-mono uppercase tracking-widest">
+      <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-30">
+        <span className="text-[#263238]/15 text-xs font-mono uppercase tracking-widest">
           12 Impact Areas
         </span>
       </div>
