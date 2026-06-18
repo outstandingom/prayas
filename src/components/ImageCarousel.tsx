@@ -221,4 +221,4 @@ function CarouselItem({ index, item, xOffset, itemWidth, totalWidth }: {
       </motion.div>
     </motion.div>
   )
-    }
+}
