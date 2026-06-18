@@ -1,7 +1,8 @@
+// src/pages/Home.tsx
 import HeroSection from '../components/HeroSection'
 import ImpactCounter from '../components/ImpactCounter'
 import ScrollStory from '../components/ScrollStory'
-import CubeGallery from '../components/CubeGallery'
+import ImpactCategories from '../components/ImpactCategories'
 import ImageCarousel from '../components/ImageCarousel'
 
 export default function Home() {
@@ -10,7 +11,7 @@ export default function Home() {
       <HeroSection />
       <ImpactCounter />
       <ScrollStory />
-      <CubeGallery />
+      <ImpactCategories />
       <ImageCarousel />
     </div>
   )
