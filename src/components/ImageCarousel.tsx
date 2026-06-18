@@ -1,255 +1,224 @@
-// src/components/Navbar.tsx
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Heart, User, Shield } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+// src/components/ImageCarousel.tsx
+import { useState, useRef, useEffect } from 'react'
+import { motion, useAnimationFrame, useMotionValue, useTransform, animate, useSpring } from 'framer-motion'
+import type { PanInfo } from 'framer-motion'
+import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 
-const navLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'About Us', path: '/about' },
-  { name: 'Programs', path: '/programs' },
-  { name: 'Gallery', path: '/gallery' },
-  { name: 'Stories', path: '/stories' },
-  { name: 'Volunteer', path: '/volunteer' },
-  { name: 'Contact', path: '/contact' },
-];
+const ASSETS = [
+  { src: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=500&auto=format&fit=crop', title: 'Women Welfare' },
+  { src: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=500&auto=format&fit=crop', title: 'Child Education' },
+  { src: 'https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=500&auto=format&fit=crop', title: 'Health & Hygiene' },
+  { src: 'https://images.unsplash.com/photo-1593113514619-33b934789d6e?q=80&w=500&auto=format&fit=crop', title: 'Nature Activity' },
+  { src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=500&auto=format&fit=crop', title: 'Rural Development' },
+  { src: 'https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=500&auto=format&fit=crop', title: 'Mental Counseling' },
+  { src: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=500&auto=format&fit=crop', title: 'Art & Culture' },
+  { src: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=500&auto=format&fit=crop', title: 'Sports' },
+  { src: 'https://images.unsplash.com/photo-1593113514619-33b934789d6e?q=80&w=500&auto=format&fit=crop', title: 'Special Child Support' },
+  { src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=500&auto=format&fit=crop', title: 'Slum Development' },
+]
 
-export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const location = useLocation();
+function useResponsiveItemWidth() {
+  const [itemWidth, setItemWidth] = useState(200)
 
   useEffect(() => {
-    const checkAuthAndAdmin = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const isAuth = !!session;
-        setIsAuthenticated(isAuth);
+    const updateWidth = () => {
+      const width = window.innerWidth
+      if (width < 480) setItemWidth(130)
+      else if (width < 640) setItemWidth(150)
+      else if (width < 768) setItemWidth(170)
+      else if (width < 1024) setItemWidth(190)
+      else setItemWidth(220)
+    }
+    updateWidth()
+    window.addEventListener('resize', updateWidth)
+    return () => window.removeEventListener('resize', updateWidth)
+  }, [])
 
-        if (isAuth && session?.user) {
-          const { data, error } = await supabase
-            .from('admin_roles')
-            .select('role')
-            .eq('user_id', session.user.id)
-            .maybeSingle();
+  return itemWidth
+}
 
-          if (!error && data) {
-            setIsAdmin(true);
-          } else {
-            setIsAdmin(false);
-          }
-        } else {
-          setIsAdmin(false);
-        }
-      } catch (err) {
-        console.error('Error checking admin status:', err);
-        setIsAdmin(false);
-      } finally {
-        setLoading(false);
-      }
-    };
+export default function ImageCarousel() {
+  const [isPaused, setIsPaused] = useState(false)
+  const isInteracting = useRef(false)
+  const xOffset = useMotionValue(0)
+  const itemWidth = useResponsiveItemWidth()
+  const totalItems = ASSETS.length
+  const totalWidth = totalItems * itemWidth
 
-    checkAuthAndAdmin();
+  const dragXSpring = useSpring(xOffset, { damping: 30, stiffness: 300 })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const isAuth = !!session;
-      setIsAuthenticated(isAuth);
+  useAnimationFrame((time, delta) => {
+    if (isPaused || isInteracting.current) return
+    const speed = itemWidth * 0.3
+    const moveBy = speed * (delta / 1000)
+    xOffset.set(xOffset.get() - moveBy)
+  })
 
-      if (isAuth && session?.user) {
-        const { data, error } = await supabase
-          .from('admin_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .maybeSingle();
+  const handleDragStart = () => { isInteracting.current = true }
+  const handleDragEnd = () => { isInteracting.current = false }
+  const handleDrag = (e: any, info: PanInfo) => {
+    xOffset.set(xOffset.get() + info.delta.x)
+  }
 
-        if (!error && data) {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
-      } else {
-        setIsAdmin(false);
-      }
-      setLoading(false);
-    });
+  const toNext = () => {
+    isInteracting.current = true
+    animate(xOffset, xOffset.get() - itemWidth, {
+      type: "spring",
+      bounce: 0,
+      duration: 0.5,
+      onComplete: () => isInteracting.current = false
+    })
+  }
 
-    return () => subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768 && isMobileOpen) {
-        setIsMobileOpen(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isMobileOpen]);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    setIsMobileOpen(false);
-  }, [location]);
-
-  const isAuthPage = location.pathname === '/auth';
-  const showAuthLink = !isAuthPage;
+  const toPrev = () => {
+    isInteracting.current = true
+    animate(xOffset, xOffset.get() + itemWidth, {
+      type: "spring",
+      bounce: 0,
+      duration: 0.5,
+      onComplete: () => isInteracting.current = false
+    })
+  }
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-[0_10px_30px_-20px_rgba(38,50,56,0.3)] py-2 sm:py-3'
-          : 'bg-white/80 backdrop-blur-sm py-3 sm:py-5'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between gap-3">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#00897B] to-[#4DB6AC] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-              <img
-                src="https://i.ibb.co/N6Cft6S3/IMG-20260614-015637.jpg"
-                alt="Prayas Logo"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex flex-col leading-tight">
-              <span className="font-display font-bold text-lg sm:text-xl tracking-tight text-[#263238] group-hover:text-[#00897B] transition-colors">
-                Prayas
-              </span>
-              <span className="hidden min-[480px]:block text-[8px] sm:text-[9px] uppercase tracking-[0.15em] sm:tracking-[0.18em] text-[#263238]/60">
-                Samaj Sevi Sanstha
-              </span>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-4 lg:gap-7">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`text-sm font-medium transition-colors relative py-2 group whitespace-nowrap ${
-                  location.pathname === link.path
-                    ? 'text-[#00897B]'
-                    : 'text-[#263238]/80 hover:text-[#263238]'
-                }`}
-              >
-                {link.name}
-                <span
-                  className={`absolute -bottom-1 left-0 h-[2px] bg-[#00897B] transition-all ${
-                    location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
-                  }`}
-                />
-              </Link>
-            ))}
-          </nav>
-
-          {/* Right side actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              to="/donate"
-              className="hidden sm:inline-flex items-center gap-1.5 bg-[#00897B] text-white px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full hover:bg-[#00897B]/90 transition-all shadow-lg shadow-[#00897B]/20 hover:shadow-[#00897B]/30 hover:scale-105"
-            >
-              Donate Now
-              <Heart className="w-4 h-4" />
-            </Link>
-
-            {!loading && isAdmin && (
-              <Link
-                to="/admin"
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border border-[#00897B]/30 text-[#00897B] hover:bg-[#00897B]/10 transition-all hover:scale-105"
-              >
-                <Shield className="w-4 h-4" />
-                Admin
-              </Link>
-            )}
-
-            {showAuthLink && !loading && (
-              <Link
-                to={isAuthenticated ? "/profile" : "/auth"}
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border border-[#00897B]/30 text-[#00897B] hover:bg-[#00897B]/10 transition-all hover:scale-105"
-              >
-                <User className="w-4 h-4" />
-                {isAuthenticated ? "Profile" : "Sign In"}
-              </Link>
-            )}
-
-            <button
-              className="md:hidden text-[#263238] p-2.5 -m-1 rounded-full hover:bg-black/5 active:bg-black/10 transition-colors"
-              onClick={() => setIsMobileOpen(!isMobileOpen)}
-              aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={isMobileOpen}
-            >
-              {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
+    <div className="relative py-16 sm:py-24 md:py-32 bg-[#E8F5E9]/50 border-y border-[#00897B]/5 overflow-hidden select-none">
+      <div className="text-center mb-12 sm:mb-16 md:mb-24 px-4 sm:px-6">
+        <span className="text-[#00897B] font-mono text-[10px] sm:text-xs uppercase tracking-widest font-semibold">
+          Our Reach
+        </span>
+        <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold mt-4 text-[#263238] px-2">
+          Explore Our Core Sectors
+        </h2>
       </div>
 
-      {/* Mobile Navigation Menu */}
-      <AnimatePresence>
-        {isMobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden bg-white/95 backdrop-blur-md border-t border-black/5 mt-2 overflow-hidden"
-          >
-            <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`text-lg font-medium py-3 px-2 rounded-lg transition-colors ${
-                    location.pathname === link.path
-                      ? 'text-[#00897B] bg-[#00897B]/5'
-                      : 'text-[#263238]/80 hover:text-[#263238] hover:bg-black/5'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
-              <Link
-                to="/donate"
-                className="mt-3 w-full text-center rounded-full bg-[#00897B] px-6 py-3.5 font-semibold text-white flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
-              >
-                Donate Now <Heart className="w-5 h-5" />
-              </Link>
+      <div
+        className="w-full relative flex justify-center items-center"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        <motion.div
+          className="relative h-[280px] sm:h-[320px] md:h-[380px] w-full max-w-7xl mx-auto cursor-grab active:cursor-grabbing flex items-center justify-center perspective-[1200px]"
+          drag="x"
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onDrag={handleDrag}
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.1}
+          dragTransition={{ bounceStiffness: 300, bounceDamping: 20 }}
+        >
+          {ASSETS.map((item, i) => (
+            <CarouselItem
+              key={i}
+              index={i}
+              item={item}
+              xOffset={dragXSpring}
+              itemWidth={itemWidth}
+              totalWidth={totalWidth}
+            />
+          ))}
+        </motion.div>
+      </div>
 
-              {!loading && isAdmin && (
-                <Link
-                  to="/admin"
-                  className="w-full text-center rounded-full border border-[#00897B]/30 px-6 py-3.5 font-semibold text-[#00897B] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
-                >
-                  <Shield className="w-5 h-5" />
-                  Admin Dashboard
-                </Link>
-              )}
+      <div className="relative mt-12 sm:mt-16 flex items-center justify-center gap-4 sm:gap-6 text-[#263238] z-20">
+        <button
+          onClick={toPrev}
+          className="p-2 sm:p-3 rounded-full glass hover:bg-[#00897B] hover:text-white transition-all cursor-pointer touch-manipulation"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft size={20} />
+        </button>
 
-              {showAuthLink && !loading && (
-                <Link
-                  to={isAuthenticated ? "/profile" : "/auth"}
-                  className="mt-2 w-full text-center rounded-full border border-[#00897B]/30 px-6 py-3.5 font-semibold text-[#00897B] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
-                >
-                  <User className="w-5 h-5" />
-                  {isAuthenticated ? "Profile" : "Sign In"}
-                </Link>
-              )}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
-  );
-                    }
+        <button
+          onClick={() => setIsPaused(!isPaused)}
+          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-[#263238]/5 hover:bg-[#263238]/10 border border-[#263238]/10 transition-colors text-[#00897B] touch-manipulation"
+          aria-label={isPaused ? "Play" : "Pause"}
+        >
+          {isPaused ? <Play size={16} className="ml-0.5 sm:ml-1" /> : <Pause size={16} />}
+        </button>
+
+        <button
+          onClick={toNext}
+          className="p-2 sm:p-3 rounded-full glass hover:bg-[#00897B] hover:text-white transition-all cursor-pointer touch-manipulation"
+          aria-label="Next slide"
+        >
+          <ChevronRight size={20} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function CarouselItem({ index, item, xOffset, itemWidth, totalWidth }: {
+  index: number
+  item: any
+  xOffset: any
+  itemWidth: number
+  totalWidth: number
+}) {
+  const rawOffset = useTransform(xOffset, (val: number) => {
+    const basePos = val + index * itemWidth
+    let wrapped = ((basePos % totalWidth) + totalWidth) % totalWidth
+    if (wrapped > totalWidth / 2) wrapped -= totalWidth
+    return wrapped
+  })
+
+  const x = rawOffset
+  const scale = useTransform(
+    rawOffset,
+    [-itemWidth * 3, -itemWidth, 0, itemWidth, itemWidth * 3],
+    [0.65, 0.85, 1.15, 0.85, 0.65]
+  )
+  const rotateY = useTransform(
+    rawOffset,
+    [-itemWidth * 3, -itemWidth, 0, itemWidth, itemWidth * 3],
+    [45, 25, 0, -25, -45]
+  )
+  const zIndex = useTransform(
+    rawOffset,
+    [-itemWidth * 3, -itemWidth, 0, itemWidth, itemWidth * 3],
+    [0, 5, 20, 5, 0]
+  )
+  const filter = useTransform(
+    rawOffset,
+    [-itemWidth * 2, -itemWidth, 0, itemWidth, itemWidth * 2],
+    ['blur(4px)', 'blur(2px)', 'blur(0px)', 'blur(2px)', 'blur(4px)']
+  )
+  const opacity = useTransform(
+    rawOffset,
+    [-itemWidth * 4, -itemWidth * 3, -itemWidth, 0, itemWidth, itemWidth * 3, itemWidth * 4],
+    [0, 0.3, 0.8, 1, 0.8, 0.3, 0]
+  )
+
+  const cardWidth = itemWidth
+  const cardHeight = itemWidth * (4 / 3)
+
+  return (
+    <motion.div
+      className="absolute"
+      style={{ x, zIndex, width: cardWidth }}
+    >
+      <motion.div
+        className="mx-auto flex flex-col items-center gap-3 sm:gap-4"
+        style={{ scale, rotateY, filter, opacity, width: cardWidth }}
+      >
+        <div
+          className="relative rounded-2xl shadow-xl border border-[#00897B]/10 overflow-hidden bg-[#263238]/5"
+          style={{ width: cardWidth, height: cardHeight }}
+        >
+          <img
+            src={item.src}
+            alt={item.title}
+            className="w-full h-full object-cover pointer-events-none"
+            loading="lazy"
+          />
+        </div>
+        <motion.div
+          className="text-xs sm:text-sm font-medium text-[#00897B] whitespace-nowrap bg-[#263238]/95 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#263238]/20 pointer-events-none shadow-sm"
+          style={{ maxWidth: cardWidth + 20, overflow: 'hidden', textOverflow: 'ellipsis' }}
+        >
+          {item.title}
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  )
+    }
