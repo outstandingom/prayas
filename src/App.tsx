@@ -14,11 +14,6 @@ import Profile from './pages/Profile';
 import Volunteer from './pages/Volunteer';
 import AdminDashboard from './pages/AdminDashboard';
 
-// Inside the <Route element={<Layout />}> block, add:
-
-// Inside the <Route element={<Layout />}> block add:
-
-
 export default function App() {
   return (
     <AnimatePresence mode="wait">
