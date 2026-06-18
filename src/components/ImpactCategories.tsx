@@ -54,27 +54,11 @@ export default function ImpactCategories() {
           className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl"
         >
           {/* Category Name */}
-          <h1 className="relative font-display font-bold text-[#263238] text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4 tracking-tight leading-none">
+          <h1 className="font-display font-bold text-[#263238] text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-8 tracking-tight leading-none">
             {category.title}
           </h1>
 
-          {/* Short Tagline */}
-          <p className="relative text-[#263238]/50 text-sm sm:text-base max-w-md leading-relaxed mb-8 font-mono uppercase tracking-wider">
-            {category.title === 'EDUCATION' && 'Building brighter futures'}
-            {category.title === 'HEALTHCARE' && 'Healing communities'}
-            {category.title === 'WOMEN EMPOWERMENT' && 'Strength in independence'}
-            {category.title === 'CHILD WELFARE' && 'Protecting innocence'}
-            {category.title === 'ENVIRONMENT' && 'Greener tomorrow'}
-            {category.title === 'RURAL DEVELOPMENT' && 'Bridging the gap'}
-            {category.title === 'SKILL TRAINING' && 'Crafting careers'}
-            {category.title === 'DISASTER RELIEF' && 'Hope in crisis'}
-            {category.title === 'ANIMAL WELFARE' && 'Voice for the voiceless'}
-            {category.title === 'ELDERLY CARE' && 'Wisdom with dignity'}
-            {category.title === 'FOOD SECURITY' && 'Nourishing lives'}
-            {category.title === 'MENTAL HEALTH' && 'Healing minds'}
-          </p>
-
-          {/* Progress Bar with Number */}
+          {/* Progress Bar with Numbers */}
           <div className="flex items-center gap-3">
             <span className="text-xs font-mono font-bold text-[#00897B]">{category.id}</span>
             <div className="w-40 sm:w-56 md:w-72 h-[3px] bg-[#E8F5E9] relative overflow-hidden rounded-full">
