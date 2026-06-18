@@ -1,4 +1,5 @@
 // src/components/ImageCarousel.tsx
+
 import { useState, useRef, useEffect } from 'react'
 import { motion, useAnimationFrame, useMotionValue, useTransform, animate, useSpring } from 'framer-motion'
 import type { PanInfo } from 'framer-motion'
