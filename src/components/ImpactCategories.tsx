@@ -1,112 +1,25 @@
 // src/components/ImpactCategories.tsx
 import { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion'
-import { ArrowRight, ArrowLeft, RotateCcw } from 'lucide-react'
 
-// 12 NGO Categories with real images
-const GALLERY_DATA = [
-  { 
-    tag: '01', 
-    title: 'EDUCATION', 
-    desc: 'Providing quality education to underprivileged children through modern learning centers.', 
-    align: 'left' as const, 
-    img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&h=400&fit=crop&q=80' 
-  },
-  { 
-    tag: '02', 
-    title: 'HEALTHCARE', 
-    desc: 'Free medical camps, health awareness programs, and essential healthcare access.', 
-    align: 'right' as const, 
-    img: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=400&fit=crop&q=80' 
-  },
-  { 
-    tag: '03', 
-    title: 'WOMEN EMPOWERMENT', 
-    desc: 'Skill development, self-help groups, and financial independence programs.', 
-    align: 'left' as const, 
-    img: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=600&h=400&fit=crop&q=80' 
-  },
-  { 
-    tag: '04', 
-    title: 'CHILD WELFARE', 
-    desc: 'Protecting children\'s rights, nutrition programs, and safe shelter initiatives.', 
-    align: 'right' as const, 
-    img: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop&q=80' 
-  },
-  { 
-    tag: '05', 
-    title: 'ENVIRONMENT', 
-    desc: 'Tree plantation drives, waste management, and environmental awareness campaigns.', 
-    align: 'left' as const, 
-    img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&h=400&fit=crop&q=80' 
-  },
-  { 
-    tag: '06', 
-    title: 'RURAL DEVELOPMENT', 
-    desc: 'Infrastructure development, clean water access, and livelihood programs.', 
-    align: 'right' as const, 
-    img: 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop&q=80' 
-  },
-  { 
-    tag: '07', 
-    title: 'SKILL TRAINING', 
-    desc: 'Vocational training and skill development programs for youth and adults.', 
-    align: 'left' as const, 
-    img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80' 
-  },
-  { 
-    tag: '08', 
-    title: 'DISASTER RELIEF', 
-    desc: 'Emergency response, relief distribution, and rehabilitation for affected communities.', 
-    align: 'right' as const, 
-    img: 'https://images.unsplash.com/photo-1536643155-33d268924c93?w=600&h=400&fit=crop&q=80' 
-  },
-  { 
-    tag: '09', 
-    title: 'ANIMAL WELFARE', 
-    desc: 'Rescue, shelter, and medical care for stray and injured animals.', 
-    align: 'left' as const, 
-    img: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=600&h=400&fit=crop&q=80' 
-  },
-  { 
-    tag: '10', 
-    title: 'ELDERLY CARE', 
-    desc: 'Support, healthcare, and dignity for senior citizens through dedicated programs.', 
-    align: 'right' as const, 
-    img: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&h=400&fit=crop&q=80' 
-  },
-  { 
-    tag: '11', 
-    title: 'FOOD SECURITY', 
-    desc: 'Food distribution, nutrition programs, and sustainable agriculture for communities.', 
-    align: 'left' as const, 
-    img: 'https://images.unsplash.com/photo-1593113514619-33b934789d6e?w=600&h=400&fit=crop&q=80' 
-  },
-  { 
-    tag: '12', 
-    title: 'MENTAL HEALTH', 
-    desc: 'Mental health awareness, counseling services, and emotional wellbeing programs.', 
-    align: 'right' as const, 
-    img: 'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=600&h=400&fit=crop&q=80' 
-  },
+const CATEGORIES = [
+  { id: '01', title: 'EDUCATION', desc: 'Quality education for underprivileged children through modern learning centers and dedicated teaching staff.', img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&h=500&fit=crop&q=80' },
+  { id: '02', title: 'HEALTHCARE', desc: 'Free medical camps, health awareness programs, and essential healthcare access for underserved communities.', img: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=500&fit=crop&q=80' },
+  { id: '03', title: 'WOMEN EMPOWERMENT', desc: 'Skill development, self-help groups, and financial independence programs transforming women\'s lives.', img: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=800&h=500&fit=crop&q=80' },
+  { id: '04', title: 'CHILD WELFARE', desc: 'Protecting children\'s rights, nutrition programs, and safe shelter initiatives for vulnerable children.', img: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop&q=80' },
+  { id: '05', title: 'ENVIRONMENT', desc: 'Tree plantation drives, waste management, and environmental awareness campaigns for a greener future.', img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=500&fit=crop&q=80' },
+  { id: '06', title: 'RURAL DEVELOPMENT', desc: 'Infrastructure development, clean water access, and livelihood programs for rural communities.', img: 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=800&h=500&fit=crop&q=80' },
+  { id: '07', title: 'SKILL TRAINING', desc: 'Vocational training and skill development programs empowering youth and adults with employable skills.', img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&h=500&fit=crop&q=80' },
+  { id: '08', title: 'DISASTER RELIEF', desc: 'Emergency response, relief distribution, and rehabilitation for disaster-affected communities.', img: 'https://images.unsplash.com/photo-1536643155-33d268924c93?w=800&h=500&fit=crop&q=80' },
+  { id: '09', title: 'ANIMAL WELFARE', desc: 'Rescue, shelter, and medical care for stray and injured animals in both urban and rural areas.', img: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=800&h=500&fit=crop&q=80' },
+  { id: '10', title: 'ELDERLY CARE', desc: 'Support, healthcare, and dignity for senior citizens through dedicated community programs.', img: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&h=500&fit=crop&q=80' },
+  { id: '11', title: 'FOOD SECURITY', desc: 'Food distribution, nutrition programs, and sustainable agriculture for vulnerable communities.', img: 'https://images.unsplash.com/photo-1593113514619-33b934789d6e?w=800&h=500&fit=crop&q=80' },
+  { id: '12', title: 'MENTAL HEALTH', desc: 'Mental health awareness, counseling services, and emotional wellbeing programs for all age groups.', img: 'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=800&h=500&fit=crop&q=80' },
 ]
-
-const getFaceForIndex = (index: number) => {
-  const faces = ['front', 'back', 'right', 'left', 'top', 'bottom']
-  return faces[index % 6]
-}
 
 export default function ImpactCategories() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
-  const [faceImages, setFaceImages] = useState<Record<string, string>>({
-    front: GALLERY_DATA[0].img,
-    back: GALLERY_DATA[1].img,
-    right: GALLERY_DATA[2].img,
-    left: GALLERY_DATA[3].img,
-    top: GALLERY_DATA[4].img,
-    bottom: GALLERY_DATA[5].img,
-  })
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -116,266 +29,203 @@ export default function ImpactCategories() {
   const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 50, restDelta: 0.001 })
 
   useMotionValueEvent(smoothProgress, "change", (latest) => {
-    const totalSectors = GALLERY_DATA.length
+    const totalSectors = CATEGORIES.length
     const currentIndex = Math.min(totalSectors - 1, Math.floor(latest * totalSectors))
-    
     if (currentIndex !== activeIndex) {
       setActiveIndex(currentIndex)
-      
-      setFaceImages(prev => {
-        const next = { ...prev }
-        const sectorsToLoad = [currentIndex, (currentIndex + 1) % totalSectors, (currentIndex + 2) % totalSectors]
-        
-        sectorsToLoad.forEach(idx => {
-          const face = getFaceForIndex(idx)
-          next[face] = GALLERY_DATA[idx].img
-        })
-        return next
-      })
     }
   })
 
-  const rotationAngle = useTransform(smoothProgress, [0, 1], ["0deg", "-360deg"])
-  const finalRotation = useSpring(rotationAngle, { damping: 25, stiffness: 40 })
-
-  const percentage = Math.round((activeIndex / (GALLERY_DATA.length - 1)) * 100)
-
-  const cubeSize = "clamp(180px, 35vw, 300px)"
-  const translateZ = "clamp(90px, 18vw, 150px)"
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const scrollBack = () => {
-    window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' })
-  }
+  const category = CATEGORIES[activeIndex]
 
   return (
-    <div ref={containerRef} className="theme-wrapper relative w-full" style={{ height: `${GALLERY_DATA.length * 100}vh` }}>
+    <div ref={containerRef} className="relative w-full bg-black" style={{ height: `${CATEGORIES.length * 100}vh` }}>
       
-      {/* Sticky Cube Container */}
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden" style={{ perspective: "1000px" }}>
-        
-        {/* 3D Cube Container */}
-        <div
-          className="relative"
-          style={{ width: cubeSize, height: cubeSize, transformStyle: 'preserve-3d' }}
-        >
-          {/* Rotating Cube Group */}
-          <motion.div
-            className="absolute inset-0"
-            style={{
-              transformStyle: 'preserve-3d',
-              rotateX: finalRotation,
-              rotateY: "25deg",
-            }}
-          >
-            {/* Front */}
-            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.front})`, transform: `translateZ(${translateZ})` }} />
-            {/* Back */}
-            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.back})`, transform: `rotateY(180deg) translateZ(${translateZ})` }} />
-            {/* Right */}
-            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.right})`, transform: `rotateY(90deg) translateZ(${translateZ})` }} />
-            {/* Left */}
-            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.left})`, transform: `rotateY(-90deg) translateZ(${translateZ})` }} />
-            {/* Top */}
-            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.top})`, transform: `rotateX(90deg) translateZ(${translateZ})` }} />
-            {/* Bottom */}
-            <div className="cube-face absolute inset-0" style={{ backgroundImage: `url(${faceImages.bottom})`, transform: `rotateX(-90deg) translateZ(${translateZ})` }} />
-          </motion.div>
-        </div>
+      {/* Scanlines */}
+      <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.04]" style={{
+        background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.5) 2px, rgba(255,255,255,0.5) 4px)'
+      }} />
 
-        {/* HUD - Progress Indicator */}
-        <div className="absolute bottom-6 right-4 md:bottom-8 md:right-8 z-50 text-right font-mono">
-          <div className="text-2xl md:text-3xl font-bold text-[var(--accent-dark)] tracking-wider">
-            {String(percentage).padStart(3, '0')}%
+      {/* Vignette */}
+      <div className="fixed inset-0 pointer-events-none z-50" style={{
+        background: 'radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.8) 100%)'
+      }} />
+
+      {/* HUD Top Bar */}
+      <div className="fixed top-0 left-0 right-0 z-40 px-6 py-3 flex items-center justify-between border-b border-white/10 bg-black/90 backdrop-blur-sm">
+        <div className="flex items-center gap-4">
+          <span className="text-[#00f3ff] font-mono text-xs tracking-[0.2em]">PRAYAS.ORG</span>
+          <div className="w-px h-3 bg-white/20" />
+          <span className="text-white/40 font-mono text-xs">12 IMPACT SECTORS</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-white/40 font-mono text-xs">FPS <strong className="text-[#ccff00]">60</strong></span>
+          <div className="w-px h-3 bg-white/20" />
+          <span className="text-[#ccff00] font-mono text-xs font-bold">
+            {String(Math.round((activeIndex / (CATEGORIES.length - 1)) * 100)).padStart(3, '0')}%
+          </span>
+        </div>
+      </div>
+
+      {/* HUD Bottom Bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 px-6 py-3 flex items-center justify-between border-t border-white/10 bg-black/90 backdrop-blur-sm">
+        <span className="text-white/40 font-mono text-xs">SECTION: {category.id}/12</span>
+        <span className="text-white/40 font-mono text-xs">SCROLL TO NAVIGATE</span>
+        <span className="text-white/40 font-mono text-xs">{category.title}</span>
+      </div>
+
+      {/* Sticky Main Display */}
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+        
+        {/* Background Grid */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+          backgroundSize: '80px 80px'
+        }} />
+
+        {/* Large Background Image */}
+        <motion.div 
+          key={activeIndex}
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 0.15, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${category.img})` }}
+        />
+
+        {/* Center Content */}
+        <motion.div 
+          key={activeIndex}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -40 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl"
+        >
+          {/* ID Badge */}
+          <div className="mb-8">
+            <span className="text-[#ff003c] font-mono text-sm tracking-[0.3em] font-bold border border-[#ff003c]/30 px-4 py-2">
+              {category.id} / 12
+            </span>
           </div>
-          <div className="w-24 md:w-32 h-[2px] bg-[var(--dark-muted)] mt-2 mb-1 relative overflow-hidden rounded-full">
+
+          {/* Title */}
+          <h1 className="font-bold text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl mb-6 tracking-tighter leading-none"
+            style={{ 
+              fontFamily: '"Syncopate", "Bebas Neue", sans-serif',
+              textShadow: '0 0 60px rgba(255,0,60,0.3), 0 0 120px rgba(0,243,255,0.2)'
+            }}>
+            {category.title}
+          </h1>
+
+          {/* Description */}
+          <p className="text-white/50 text-sm sm:text-base md:text-lg max-w-2xl font-mono leading-relaxed mb-8">
+            {category.desc}
+          </p>
+
+          {/* Progress Bar */}
+          <div className="w-64 md:w-96 h-[1px] bg-white/10 relative overflow-hidden">
             <motion.div 
-              className="absolute top-0 left-0 bottom-0 bg-[var(--accent-dark)] rounded-full"
-              style={{ width: useTransform(smoothProgress, [0, 1], ['0%', '100%']) }}
+              className="absolute top-0 left-0 h-full"
+              style={{ 
+                width: useTransform(smoothProgress, [0, 1], ['0%', '100%']),
+                background: 'linear-gradient(90deg, #ff003c, #00f3ff, #ccff00)'
+              }}
             />
           </div>
-          <div className="text-[10px] md:text-xs text-[var(--dark-muted)] uppercase tracking-wider font-semibold font-dm">
-            {GALLERY_DATA[activeIndex]?.title || 'SCROLL'}
-          </div>
-        </div>
-      </div>
 
-      {/* Text Cards Overlay */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20">
-        {GALLERY_DATA.map((item, i) => {
-          const isLast = i === GALLERY_DATA.length - 1;
+          {/* Corner Decorations */}
+          <div className="absolute -top-4 -left-4 w-12 h-12 border-t-2 border-l-2 border-[#ff003c]/30" />
+          <div className="absolute -top-4 -right-4 w-12 h-12 border-t-2 border-r-2 border-[#00f3ff]/30" />
+          <div className="absolute -bottom-4 -left-4 w-12 h-12 border-b-2 border-l-2 border-[#ccff00]/30" />
+          <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-2 border-r-2 border-[#ff003c]/30" />
+        </motion.div>
 
-          return (
-            <section 
+        {/* Side Navigation Dots */}
+        <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-3 z-30">
+          {CATEGORIES.map((cat, i) => (
+            <div 
               key={i} 
-              className="h-screen w-full flex items-end md:items-center pb-24 md:pb-0 px-4 md:px-10 lg:px-20"
-              style={{ justifyContent: item.align === 'right' ? 'flex-end' : 'flex-start' }}
+              className="transition-all duration-300 rounded-full"
+              style={{
+                width: i === activeIndex ? '12px' : '6px',
+                height: i === activeIndex ? '12px' : '6px',
+                backgroundColor: i === activeIndex ? '#00f3ff' : 'rgba(255,255,255,0.2)',
+                boxShadow: i === activeIndex ? '0 0 12px #00f3ff' : 'none'
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Scroll Indicator */}
+        <motion.div 
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20"
+        >
+          <span className="text-white/25 text-xs font-mono tracking-[0.3em] uppercase">Scroll</span>
+          <div className="w-px h-12 bg-gradient-to-b from-white/30 to-transparent" />
+        </motion.div>
+      </div>
+
+      {/* Detail Cards Overlay */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20">
+        {CATEGORIES.map((cat, i) => (
+          <section 
+            key={i} 
+            className="h-screen w-full flex items-end md:items-center pb-28 md:pb-0 px-6 md:px-20"
+            style={{ justifyContent: i % 2 === 0 ? 'flex-start' : 'flex-end' }}
+          >
+            <motion.div 
+              initial={{ opacity: 0, x: i % 2 === 0 ? -100 : 100 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
+              transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="pointer-events-auto w-full max-w-md bg-black/90 backdrop-blur-xl border border-white/10 p-6 md:p-8 relative group"
+              style={{
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.5)'
+              }}
             >
-              <motion.div 
-                initial={{ opacity: 0, x: item.align === 'right' ? 50 : -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="info-card pointer-events-auto"
-              >
-                <div className="text-[var(--accent-dark)] font-dm text-[10px] md:text-xs uppercase tracking-wider mb-3 md:mb-4 font-bold">
-                  {item.tag} — {item.title}
-                </div>
-                <h2 className="font-bebas text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[var(--dark-fg)] leading-tight mb-3 md:mb-6">
-                  {item.title}
-                </h2>
-                <p className="text-[var(--dark-muted)] font-dm text-xs sm:text-sm leading-relaxed mb-5 md:mb-8 max-w-sm">
-                  {item.desc}
-                </p>
+              {/* Card Accent Corners */}
+              <div className="absolute top-0 left-0 w-0 h-0 border-t-2 border-l-2 border-[#ff003c]/50 group-hover:w-full group-hover:h-full transition-all duration-500" />
+              <div className="absolute bottom-0 right-0 w-0 h-0 border-b-2 border-r-2 border-[#00f3ff]/50 group-hover:w-full group-hover:h-full transition-all duration-500" />
 
-                {/* Last Section CTAs */}
-                {isLast ? (
-                  <div className="flex items-center gap-4 mt-6">
-                    <button onClick={scrollBack} className="cta-back">
-                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M11 6H1M6 11L1 6l5-5" />
-                      </svg>
-                      Back
-                    </button>
-                    <button onClick={scrollToTop} className="cta">
-                      Begin again
-                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M1 6h10M6 1l5 5-5 5" />
-                      </svg>
-                    </button>
-                  </div>
-                ) : (
-                  <button className="cta-explore group">
-                    Discover More
-                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform">
-                      <path d="M1 6h10M6 1l5 5-5 5" />
-                    </svg>
-                  </button>
-                )}
-              </motion.div>
-            </section>
-          )
-        })}
+              {/* Card Header */}
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
+                <span className="font-mono text-xs tracking-[0.2em] text-[#ff003c]">ID-{cat.id}</span>
+                <span className="font-mono text-xs text-white/30">{cat.title}</span>
+              </div>
+
+              {/* Card Title */}
+              <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3" style={{ fontFamily: '"Syncopate", "Bebas Neue", sans-serif' }}>
+                {cat.title}
+              </h3>
+
+              {/* Card Description */}
+              <p className="text-white/50 text-sm leading-relaxed mb-6 font-mono">
+                {cat.desc}
+              </p>
+
+              {/* Card Image */}
+              <div className="w-full h-40 rounded overflow-hidden mb-6 opacity-50 group-hover:opacity-100 transition-opacity">
+                <img src={cat.img} alt={cat.title} className="w-full h-full object-cover" />
+              </div>
+
+              {/* Card Action */}
+              <button className="inline-flex items-center gap-2 px-5 py-2 text-xs font-mono font-bold text-black bg-[#00f3ff] hover:bg-[#00f3ff]/80 transition-colors">
+                EXPLORE <span className="text-lg leading-none">→</span>
+              </button>
+            </motion.div>
+          </section>
+        ))}
       </div>
 
-      {/* Credit Element */}
-      <div id="credit" className="fixed bottom-6 left-6 z-50">
-        <span className="text-[var(--dark-muted)] font-dm text-xs">
-          12 Impact Areas — Prayas Foundation
-        </span>
-      </div>
-
+      {/* Styles */}
       <style>{`
-        @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;700&display=swap");
-
-        .theme-wrapper {
-          --dark-bg: #fcfaf8;       
-          --dark-fg: #2d3748;       
-          --dark-muted: #718096;    
-          --light-bg: #276749;      
-          --light-fg: #f0fff4;      
-          --light-muted: #9ae6b4;   
-          --accent-dark: #2f855a;   
-          --accent-light: #ecc94b;  
-
-          background-color: var(--dark-bg);
-          color: var(--dark-fg);
-        }
-
-        .font-bebas {
-          font-family: "Bebas Neue", sans-serif;
-          letter-spacing: 0.05em;
-        }
-
-        .font-dm {
-          font-family: "DM Mono", monospace;
-        }
-
-        .cube-face {
-          overflow: hidden;
-          background-size: cover;
-          background-position: center;
-          border: 1px solid rgba(0, 0, 0, 0.05);
-          box-shadow: inset 0 0 40px rgba(0,0,0,0.05), 0 25px 50px -12px rgba(0,0,0,0.1);
-          backface-visibility: hidden;
-        }
+        @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Syncopate:wght@400;700&family=Bebas+Neue&display=swap");
         
-        .cube-face::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.3));
-        }
-
-        .info-card {
-          width: 85vw;
-          max-width: 420px;
-          background: rgba(255, 255, 255, 0.85);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(113, 128, 150, 0.2);
-          padding: 2rem;
-          border-radius: 4px;
-        }
-
-        .cta-explore {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          color: var(--accent-dark);
-          font-family: "DM Mono", monospace;
-          font-size: 0.75rem;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          font-weight: bold;
-          transition: color 0.3s ease;
-        }
-        .cta-explore svg { width: 12px; height: 12px; }
-
-        .cta-back, .cta {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          padding: 0.75rem 1.25rem;
-          font-family: "DM Mono", monospace;
-          font-size: 0.85rem;
-          text-transform: uppercase;
-          text-decoration: none;
-          letter-spacing: 0.05em;
-          border-radius: 4px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .cta-back {
-          background: transparent;
-          color: var(--dark-muted);
-          border: 1px solid var(--dark-muted);
-        }
-        .cta-back:hover {
-          color: var(--dark-fg);
-          border-color: var(--dark-fg);
-        }
-        .cta-back svg { width: 14px; height: 14px; }
-
-        .cta {
-          background: var(--dark-fg);
-          color: var(--dark-bg);
-          border: 1px solid var(--dark-fg);
-          font-weight: bold;
-        }
-        .cta:hover {
-          background: var(--accent-dark);
-          border-color: var(--accent-dark);
-        }
-        .cta svg { width: 14px; height: 14px; }
-
-        @media (max-width: 768px) {
-          .sticky { perspective: 800px; }
+        .font-mono {
+          font-family: "JetBrains Mono", monospace;
         }
       `}</style>
     </div>
