@@ -120,8 +120,8 @@ export default function HeroSection() {
       {/* 3D Photo Wall as Full Background */}
       <div className="absolute inset-0 w-full h-full z-0">
         <NGOWall3DBackground />
-        {/* Light overlay for a clean, readable contrast – uses White, Very Light Mint and Teal */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-[#F1F8F5]/90 to-white/90 z-10" />
+        {/* Lighter overlay that fades toward bottom-right, keeping photos much more visible */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-[#F1F8F5]/40 to-transparent z-10" />
       </div>
       
       {/* Background decorative effects – Teal and Light Green accents */}
@@ -318,4 +318,4 @@ export default function HeroSection() {
       `}</style>
     </section>
   )
-      }
+}
