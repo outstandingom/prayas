@@ -36,4 +36,11 @@
 <button
   type="submit"
   disabled={loading}
-  className="w-full py-3 bg
+  className="w-full py-3 bg-[#00897B] text-white rounded-lg font-medium btn-hover transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#00897B]/20"
+>
+  {loading ? 'Submitting...' : (
+    <>
+      Submit Application <Send className="w-4 h-4" />
+    </>
+  )}
+</button>
