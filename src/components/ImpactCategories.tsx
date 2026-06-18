@@ -1,6 +1,6 @@
 // src/components/ImpactCategories.tsx
 import { useRef, useState } from 'react'
-import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion'
+import { motion, useScroll, useSpring, useMotionValueEvent } from 'framer-motion'
 
 const CATEGORIES = [
   { id: '01', title: 'EDUCATION', desc: 'Quality education for underprivileged children through modern learning centers and dedicated teaching staff.', img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&h=500&fit=crop&q=80' },
@@ -35,67 +35,33 @@ export default function ImpactCategories() {
     }
   })
 
-  const category = CATEGORIES[activeIndex]
-  const progressWidth = useTransform(smoothProgress, [0, 1], ['0%', '100%'])
-
   return (
     <div ref={containerRef} className="relative w-full bg-white" style={{ height: `${12 * 55}vh` }}>
       
-      {/* Sticky Main Display */}
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-white">
-        
-        {/* Center Content */}
-        <motion.div 
-          key={activeIndex}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
-          className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl"
-        >
-          {/* Category Name */}
-          <h1 className="font-display font-bold text-[#263238] text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-8 tracking-tight leading-none">
-            {category.title}
-          </h1>
-
-          {/* Progress Bar with Numbers */}
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-mono font-bold text-[#00897B]">{category.id}</span>
-            <div className="w-40 sm:w-56 md:w-72 h-[3px] bg-[#E8F5E9] relative overflow-hidden rounded-full">
-              <motion.div 
-                className="absolute top-0 left-0 h-full bg-[#00897B] rounded-full"
-                style={{ width: progressWidth }}
-              />
-            </div>
-            <span className="text-xs font-mono font-bold text-[#263238]/30">12</span>
+      {/* Right Side Navigation Dots */}
+      <div className="fixed right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30 items-center">
+        {CATEGORIES.map((cat, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div 
+              className="transition-all duration-300 rounded-full"
+              style={{
+                width: i === activeIndex ? '10px' : '5px',
+                height: i === activeIndex ? '10px' : '5px',
+                backgroundColor: i === activeIndex ? '#00897B' : '#E8F5E9',
+                boxShadow: i === activeIndex ? '0 0 6px rgba(0,137,123,0.3)' : 'none'
+              }}
+            />
+            {i === activeIndex && (
+              <motion.span 
+                initial={{ opacity: 0, x: 5 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="text-xs font-mono font-bold text-[#00897B]"
+              >
+                {cat.id}
+              </motion.span>
+            )}
           </div>
-        </motion.div>
-
-        {/* Right Side Navigation Dots */}
-        <div className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30 items-center">
-          {CATEGORIES.map((cat, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <div 
-                className="transition-all duration-300 rounded-full"
-                style={{
-                  width: i === activeIndex ? '10px' : '5px',
-                  height: i === activeIndex ? '10px' : '5px',
-                  backgroundColor: i === activeIndex ? '#00897B' : '#E8F5E9',
-                  boxShadow: i === activeIndex ? '0 0 6px rgba(0,137,123,0.3)' : 'none'
-                }}
-              />
-              {i === activeIndex && (
-                <motion.span 
-                  initial={{ opacity: 0, x: 5 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="text-xs font-mono font-bold text-[#00897B]"
-                >
-                  {cat.id}
-                </motion.span>
-              )}
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
 
       {/* Detail Cards Overlay */}
