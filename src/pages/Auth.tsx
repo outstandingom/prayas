@@ -71,7 +71,6 @@ export default function Auth() {
     } catch (error) {
       if (error instanceof z.ZodError) {
         const nextErrors: Record<string, string> = {};
-        // Use `issues` instead of `errors` (standard in Zod)
         error.issues.forEach((issue) => {
           if (issue.path[0]) {
             nextErrors[issue.path[0] as string] = issue.message;
@@ -117,7 +116,7 @@ export default function Auth() {
     [email, password, navigate, validateMainForm]
   );
 
-  // --- Sign Up (uses Supabase default email confirmation) ---
+  // --- Sign Up ---
   const handleSignUp = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -141,8 +140,6 @@ export default function Auth() {
           "Confirmation Email Sent",
           `Please check ${email.trim()} to confirm your account.`
         );
-        // Optionally redirect to a "check your email" page
-        // navigate("/check-email");
       } catch (error: any) {
         if (!mounted.current) return;
         showToast("Sign Up Failed", error?.message || "Unable to create account.", true);
@@ -183,34 +180,34 @@ export default function Auth() {
 
   // --- Main Auth Form ---
   return (
-    <section className="min-h-[80vh] flex items-center justify-center px-4">
+    <section className="min-h-[80vh] flex items-center justify-center px-4 bg-[#F1F8F5]">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-card/40 backdrop-blur-sm mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#FFF314]/20 bg-white/40 backdrop-blur-sm mb-6">
             {isLogin ? (
-              <span className="text-sm font-medium text-primary">Welcome Back</span>
+              <span className="text-sm font-medium text-[#FFF314]">Welcome Back</span>
             ) : (
-              <span className="text-sm font-medium text-accent">Join Prayas Samaj Sevi Sanstha</span>
+              <span className="text-sm font-medium text-[#FFF314]">Join Prayas Samaj Sevi Sanstha</span>
             )}
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-[#263238]">
             {isLogin ? "Sign In" : "Create Account"}
           </h1>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-[#263238]/60 text-sm">
             {isLogin
               ? "Enter your credentials to access your account"
               : "Create account and verify your email"}
           </p>
         </div>
 
-        <div className="p-6 rounded-xl backdrop-blur-sm border border-primary/20 bg-card/50">
+        <div className="p-6 rounded-xl backdrop-blur-sm border border-[#FFF314]/20 bg-white/50">
           <form onSubmit={isLogin ? handleSignIn : handleSignUp} className="space-y-5">
             {!isLogin && (
               <>
                 <div className="space-y-1.5">
-                  <label htmlFor="fullName" className="flex items-center gap-2 text-xs text-muted-foreground">
-                    Full Name <span className="text-destructive">*</span>
+                  <label htmlFor="fullName" className="flex items-center gap-2 text-xs text-[#263238]/60">
+                    Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="fullName"
@@ -219,13 +216,13 @@ export default function Auth() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required
-                    className={`w-full bg-background/50 border ${errors.fullName ? 'border-destructive' : 'border-border/50'} text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary`}
+                    className={`w-full bg-white/50 border ${errors.fullName ? 'border-red-500' : 'border-[#FFF314]/20'} text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-[#FFF314]/50 text-[#263238]`}
                   />
-                  {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
+                  {errors.fullName && <p className="text-xs text-red-500">{errors.fullName}</p>}
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="phone" className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <label htmlFor="phone" className="flex items-center gap-2 text-xs text-[#263238]/60">
                     Phone Number
                   </label>
                   <input
@@ -234,18 +231,18 @@ export default function Auth() {
                     placeholder="+91 9876543210"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className={`w-full bg-background/50 border ${errors.phone ? 'border-destructive' : 'border-border/50'} text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary`}
+                    className={`w-full bg-white/50 border ${errors.phone ? 'border-red-500' : 'border-[#FFF314]/20'} text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-[#FFF314]/50 text-[#263238]`}
                   />
-                  {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
+                  {errors.phone && <p className="text-xs text-red-500">{errors.phone}</p>}
                 </div>
 
-                <div className="border-t border-border/30 my-2" />
+                <div className="border-t border-[#FFF314]/10 my-2" />
               </>
             )}
 
             <div className="space-y-1.5">
-              <label htmlFor="email" className="flex items-center gap-2 text-xs text-muted-foreground">
-                Email <span className="text-destructive">*</span>
+              <label htmlFor="email" className="flex items-center gap-2 text-xs text-[#263238]/60">
+                Email <span className="text-red-500">*</span>
               </label>
               <input
                 id="email"
@@ -254,14 +251,14 @@ export default function Auth() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className={`w-full bg-background/50 border ${errors.email ? 'border-destructive' : 'border-border/50'} text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary`}
+                className={`w-full bg-white/50 border ${errors.email ? 'border-red-500' : 'border-[#FFF314]/20'} text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-[#FFF314]/50 text-[#263238]`}
               />
-              {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+              {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="password" className="flex items-center gap-2 text-xs text-muted-foreground">
-                Password <span className="text-destructive">*</span>
+              <label htmlFor="password" className="flex items-center gap-2 text-xs text-[#263238]/60">
+                Password <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <input
@@ -272,18 +269,18 @@ export default function Auth() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className={`w-full bg-background/50 border ${errors.password ? 'border-destructive' : 'border-border/50'} text-sm h-9 rounded-md px-3 pr-9 focus:outline-none focus:ring-2 focus:ring-primary`}
+                  className={`w-full bg-white/50 border ${errors.password ? 'border-red-500' : 'border-[#FFF314]/20'} text-sm h-9 rounded-md px-3 pr-9 focus:outline-none focus:ring-2 focus:ring-[#FFF314]/50 text-[#263238]`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#263238]/60 hover:text-[#263238]"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? "👁️" : "👁️‍🗨️"}
                 </button>
               </div>
-              {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+              {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
             </div>
 
             {isLogin && (
@@ -291,7 +288,7 @@ export default function Auth() {
                 <button
                   type="button"
                   onClick={() => setResetPasswordOpen(true)}
-                  className="text-xs text-primary hover:underline font-medium"
+                  className="text-xs text-[#FFF314] hover:underline font-medium"
                 >
                   Forgot Password?
                 </button>
@@ -300,7 +297,7 @@ export default function Auth() {
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-2.5 bg-[#FFF314] text-[#263238] rounded-md font-medium hover:bg-[#FFF314]/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               disabled={loading}
             >
               {loading ? (
@@ -317,13 +314,13 @@ export default function Auth() {
             </button>
           </form>
 
-          <div className="mt-5 pt-4 border-t border-border/30 text-center">
-            <p className="text-xs text-muted-foreground">
+          <div className="mt-5 pt-4 border-t border-[#FFF314]/10 text-center">
+            <p className="text-xs text-[#263238]/60">
               {isLogin ? "Don't have an account?" : "Already have an account?"}
               <button
                 type="button"
                 onClick={switchMode}
-                className={`ml-2 font-medium hover:underline text-xs ${isLogin ? "text-primary" : "text-accent"}`}
+                className="ml-2 font-medium hover:underline text-xs text-[#FFF314]"
               >
                 {isLogin ? "Sign Up" : "Sign In"}
               </button>
@@ -331,17 +328,17 @@ export default function Auth() {
           </div>
         </div>
 
-        <p className="text-center text-[10px] text-muted-foreground/60 mt-6">
+        <p className="text-center text-[10px] text-[#263238]/40 mt-6">
           By continuing, you agree to our Terms of Service and Privacy Policy.
         </p>
       </div>
 
-      {/* --- Forgot Password Dialog (simple modal) --- */}
+      {/* --- Forgot Password Dialog --- */}
       {resetPasswordOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-card p-6 rounded-xl w-full max-w-md border border-primary/20">
-            <h2 className="text-lg font-semibold mb-2">Reset Password</h2>
-            <p className="text-sm text-muted-foreground mb-4">
+          <div className="bg-white p-6 rounded-xl w-full max-w-md border border-[#FFF314]/20">
+            <h2 className="text-lg font-semibold mb-2 text-[#263238]">Reset Password</h2>
+            <p className="text-sm text-[#263238]/60 mb-4">
               Enter the email address associated with your account, and we'll send you a reset link.
             </p>
             <div className="space-y-4">
@@ -351,19 +348,19 @@ export default function Auth() {
                 placeholder="you@example.com"
                 value={resetEmail}
                 onChange={(e) => setResetEmail(e.target.value)}
-                className="w-full bg-background/50 border border-border/50 text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full bg-white/50 border border-[#FFF314]/20 text-sm h-9 rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-[#FFF314]/50 text-[#263238]"
               />
               <div className="flex gap-2 justify-end">
                 <button
                   onClick={() => setResetPasswordOpen(false)}
-                  className="px-4 py-2 text-sm border border-border/50 rounded-md hover:bg-muted"
+                  className="px-4 py-2 text-sm border border-[#263238]/20 rounded-md hover:bg-gray-50 text-[#263238]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleResetPassword}
                   disabled={resetLoading || !resetEmail.trim()}
-                  className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+                  className="px-4 py-2 text-sm bg-[#FFF314] text-[#263238] rounded-md hover:bg-[#FFF314]/90 disabled:opacity-50"
                 >
                   {resetLoading ? "Sending..." : "Send Reset Link"}
                 </button>
@@ -374,4 +371,4 @@ export default function Auth() {
       )}
     </section>
   );
-                                                                                             }
+}
