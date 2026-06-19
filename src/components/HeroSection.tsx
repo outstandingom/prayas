@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, ChevronLeft, ChevronRight, GraduationCap, Users, HeartHandshake, Leaf, Stethoscope, Home, Lightbulb } from 'lucide-react'
+import { ChevronLeft, ChevronRight, GraduationCap, Users, HeartHandshake, Leaf, Stethoscope, Home, Lightbulb } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 // Slides Data - 7 meaningful slides
@@ -12,8 +11,7 @@ const SLIDES = [
     subtitle: "Improving Children for a Better World",
     description: "We provide quality education to underprivileged children, building foundations for lifelong learning and empowering the next generation of leaders.",
     image: "https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
-    stats: "10,000+ Children Educated",
-    color: "#FFF314"
+    stats: "10,000+ Children Educated"
   },
   {
     id: 2,
@@ -22,8 +20,7 @@ const SLIDES = [
     subtitle: "Building Strong, Independent Women",
     description: "Through skill development, entrepreneurship programs, and leadership training, we help women gain financial independence and social confidence.",
     image: "https://images.pexels.com/photos/1183434/pexels-photo-1183434.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
-    stats: "5,000+ Women Empowered",
-    color: "#FFF314"
+    stats: "5,000+ Women Empowered"
   },
   {
     id: 3,
@@ -32,8 +29,7 @@ const SLIDES = [
     subtitle: "Ensuring Healthy Communities",
     description: "Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.",
     image: "https://images.pexels.com/photos/4101143/pexels-photo-4101143.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
-    stats: "50+ Medical Camps",
-    color: "#FFF314"
+    stats: "50+ Medical Camps"
   },
   {
     id: 4,
@@ -42,8 +38,7 @@ const SLIDES = [
     subtitle: "Protecting Our Planet Together",
     description: "From tree plantation drives to waste management initiatives, we're committed to creating a sustainable and greener future for all.",
     image: "https://images.pexels.com/photos/3192815/pexels-photo-3192815.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
-    stats: "100,000+ Trees Planted",
-    color: "#FFF314"
+    stats: "100,000+ Trees Planted"
   },
   {
     id: 5,
@@ -52,8 +47,7 @@ const SLIDES = [
     subtitle: "Nourishing Bodies and Minds",
     description: "Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.",
     image: "https://images.pexels.com/photos/6646959/pexels-photo-6646959.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
-    stats: "20,000+ Meals Served",
-    color: "#FFF314"
+    stats: "20,000+ Meals Served"
   },
   {
     id: 6,
@@ -62,8 +56,7 @@ const SLIDES = [
     subtitle: "A Roof Over Every Head",
     description: "We work to provide safe and dignified housing solutions for homeless families, creating secure environments where they can thrive.",
     image: "https://images.pexels.com/photos/2363800/pexels-photo-2363800.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
-    stats: "500+ Homes Built",
-    color: "#FFF314"
+    stats: "500+ Homes Built"
   },
   {
     id: 7,
@@ -72,12 +65,11 @@ const SLIDES = [
     subtitle: "Empowering Through Knowledge",
     description: "Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth.",
     image: "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
-    stats: "3,000+ People Trained",
-    color: "#FFF314"
+    stats: "3,000+ People Trained"
   }
 ];
 
-export default function HeroSection() {
+export default function HeroBanner() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
@@ -110,229 +102,145 @@ export default function HeroSection() {
   const CurrentIcon = SLIDES[currentSlide].icon;
 
   return (
-    <section className="relative min-h-screen w-full flex items-center overflow-hidden bg-[#F1F8F5]">
-      {/* Main Content Container */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 w-full">
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+    <section className="relative w-full overflow-hidden" style={{ height: '100vh', maxHeight: '800px' }}>
+      
+      {/* Main Banner Image with Text Overlay */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentSlide}
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="absolute inset-0"
+        >
+          {/* Background Image */}
+          <div 
+            className="w-full h-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${SLIDES[currentSlide].image})` }}
+          />
           
-          {/* Left Side - Text Content */}
-          <div className="w-full lg:w-1/2 flex flex-col justify-center pt-20 lg:pt-0">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-sm border border-[#00897B]/20 text-[#00897B] font-bold font-mono text-xs uppercase tracking-widest mb-6"
-            >
-              <span className="w-2 h-2 rounded-full bg-[#00897B] animate-pulse" />
-              Empowering Communities Globally
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] text-[#263238]"
-            >
-              Together We Can Build A <span className="text-[#00897B]">Better World</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="mt-6 text-lg md:text-xl text-[#263238]/80 max-w-2xl leading-relaxed font-light"
-            >
-              We are dedicated to creating sustainable impact through grassroots education, comprehensive healthcare, and community-led environmental initiatives.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="mt-10 flex flex-col sm:flex-row items-center gap-4"
-            >
-              <Link
-                to="/donate"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#00897B] text-white px-8 py-4 rounded-full font-bold hover:bg-[#00695C] transition-all duration-300 shadow-lg shadow-[#00897B]/30 hover:shadow-[#00897B]/50 hover:scale-105"
-              >
-                Donate Now <Heart size={18} />
-              </Link>
-              <Link
-                to="/about"
-                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-[#00897B] border-2 border-[#00897B]/30 hover:bg-[#00897B]/10 transition-all duration-300 hover:border-[#00897B]/50"
-              >
-                Get Involved
-              </Link>
-            </motion.div>
-          </div>
-
-          {/* Right Side - Image Slider with Blended Design */}
-          <div className="w-full lg:w-1/2 relative mt-8 lg:mt-0">
-            <div className="relative rounded-3xl overflow-hidden" style={{ height: '550px' }}>
-              
-              {/* Main Image Display with Blended Overlay */}
-              <AnimatePresence mode="wait">
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+          
+          {/* Content Overlay */}
+          <div className="absolute inset-0 flex items-center">
+            <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
+              <div className="max-w-2xl">
                 <motion.div
-                  key={currentSlide}
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.7, ease: "easeOut" }}
-                  className="absolute inset-0"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
                 >
-                  {/* Background Image */}
-                  <div 
-                    className="w-full h-full bg-cover bg-center"
-                    style={{ backgroundImage: `url(${SLIDES[currentSlide].image})` }}
-                  />
-                  
-                  {/* Blended Gradient Overlay - White/Mint fade from left, transparent on right */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/40 to-transparent" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
-                  
-                  {/* Text Content Overlay on Image */}
-                  <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className="flex items-start gap-4"
-                    >
-                      {/* Icon with frosted glass effect */}
-                      <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-white/80 backdrop-blur-sm border border-white flex items-center justify-center shadow-lg">
-                        <CurrentIcon size={28} className="text-[#00897B]" />
-                      </div>
-                      
-                      <div className="flex-1">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF314]/90 backdrop-blur-sm mb-3">
-                          <span className="text-xs font-bold text-gray-900 uppercase tracking-wider">
-                            {SLIDES[currentSlide].stats}
-                          </span>
-                        </div>
-                        <h3 className="text-3xl md:text-4xl font-bold text-[#263238] mb-2">
-                          {SLIDES[currentSlide].title}
-                        </h3>
-                        <p className="text-[#00897B] font-semibold text-lg mb-3">
-                          {SLIDES[currentSlide].subtitle}
-                        </p>
-                        <p className="text-[#263238]/70 text-sm md:text-base leading-relaxed max-w-md">
-                          {SLIDES[currentSlide].description}
-                        </p>
-                        
-                        {/* Learn More Link */}
-                        <motion.button
-                          whileHover={{ x: 5 }}
-                          className="mt-4 inline-flex items-center gap-2 text-[#00897B] font-semibold text-sm group"
-                        >
-                          Learn More 
-                          <svg 
-                            className="w-4 h-4 group-hover:translate-x-1 transition-transform" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </motion.button>
-                      </div>
-                    </motion.div>
+                  {/* Stats Badge */}
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFF314] mb-6">
+                    <CurrentIcon size={18} className="text-gray-900" />
+                    <span className="text-sm font-bold text-gray-900 uppercase tracking-wider">
+                      {SLIDES[currentSlide].stats}
+                    </span>
                   </div>
-                </motion.div>
-              </AnimatePresence>
-
-              {/* Navigation Arrows - Frosted Glass */}
-              <button
-                onClick={handlePrev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm border border-white/50 flex items-center justify-center hover:bg-white/90 transition-all duration-300 shadow-lg group"
-              >
-                <ChevronLeft size={20} className="text-[#263238] group-hover:scale-110 transition-transform" />
-              </button>
-              <button
-                onClick={handleNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm border border-white/50 flex items-center justify-center hover:bg-white/90 transition-all duration-300 shadow-lg group"
-              >
-                <ChevronRight size={20} className="text-[#263238] group-hover:scale-110 transition-transform" />
-              </button>
-            </div>
-
-            {/* Sidebar Navigation - Clean, Light Design */}
-            <div className="mt-6 flex justify-center">
-              <div className="inline-flex items-center gap-2 p-2 bg-white/70 backdrop-blur-sm rounded-2xl border border-white/80 shadow-lg">
-                {SLIDES.map((slide, index) => {
-                  const Icon = slide.icon;
-                  const isActive = index === currentSlide;
                   
-                  return (
+                  {/* Title */}
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-4 leading-tight">
+                    {SLIDES[currentSlide].title}
+                  </h1>
+                  
+                  {/* Subtitle */}
+                  <p className="text-2xl md:text-3xl font-semibold text-[#FFF314] mb-6">
+                    {SLIDES[currentSlide].subtitle}
+                  </p>
+                  
+                  {/* Description */}
+                  <p className="text-lg md:text-xl text-white/90 leading-relaxed mb-8 max-w-xl">
+                    {SLIDES[currentSlide].description}
+                  </p>
+                  
+                  {/* CTA Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-4">
                     <motion.button
-                      key={slide.id}
-                      onClick={() => handleDotClick(index)}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`relative group flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${
-                        isActive
-                          ? 'bg-white shadow-md'
-                          : 'hover:bg-white/50'
-                      }`}
+                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-8 py-4 rounded-full font-bold hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
                     >
-                      {/* Thumbnail Preview on Hover */}
-                      <div className="relative">
-                        <div className={`w-10 h-10 rounded-lg bg-cover bg-center transition-all duration-300 ${
-                          isActive ? 'ring-2 ring-[#FFF314] ring-offset-2' : ''
-                        }`}
-                        style={{ backgroundImage: `url(${slide.image})` }}
-                        />
-                        {isActive && (
-                          <motion.div
-                            layoutId="activeIndicator"
-                            className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#FFF314] rounded-full border-2 border-white"
-                          />
-                        )}
-                      </div>
-                      
-                      {/* Label - Visible on larger screens */}
-                      <div className="hidden xl:block">
-                        <div className="flex items-center gap-1.5">
-                          <Icon size={14} className={isActive ? 'text-[#00897B]' : 'text-gray-500'} />
-                          <span className={`text-sm font-semibold whitespace-nowrap ${
-                            isActive ? 'text-[#263238]' : 'text-gray-500'
-                          }`}>
-                            {slide.title}
-                          </span>
-                        </div>
-                      </div>
+                      Donate Now
+                      <HeartHandshake size={20} />
                     </motion.button>
-                  );
-                })}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-white border-2 border-white/50 hover:bg-white/10 transition-all duration-300 hover:border-[#FFF314]"
+                    >
+                      Learn More
+                    </motion.button>
+                  </div>
+                </motion.div>
               </div>
             </div>
           </div>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={handlePrev}
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group z-10"
+      >
+        <ChevronLeft size={24} className="text-white group-hover:scale-110 transition-transform" />
+      </button>
+      <button
+        onClick={handleNext}
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group z-10"
+      >
+        <ChevronRight size={24} className="text-white group-hover:scale-110 transition-transform" />
+      </button>
+
+      {/* Bottom Navigation Dots */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <div className="flex items-center gap-3">
+          {SLIDES.map((slide, index) => {
+            const Icon = slide.icon;
+            const isActive = index === currentSlide;
+            
+            return (
+              <motion.button
+                key={slide.id}
+                onClick={() => handleDotClick(index)}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="group relative"
+              >
+                {/* Dot Indicator */}
+                <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  isActive 
+                    ? 'bg-[#FFF314] w-8' 
+                    : 'bg-white/50 hover:bg-white/80'
+                }`} />
+                
+                {/* Tooltip on Hover */}
+                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  <div className="bg-white rounded-lg shadow-lg px-3 py-2 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <Icon size={14} className="text-[#00897B]" />
+                      <span className="text-sm font-bold text-gray-900">{slide.title}</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Background Decorative Elements */}
-      <div className="absolute top-[10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-[#81C784]/10 blur-[100px] animate-float-slow pointer-events-none" />
-      <div className="absolute bottom-[10%] right-[-5%] w-[350px] h-[350px] rounded-full bg-[#00897B]/10 blur-[100px] animate-float-slower pointer-events-none" />
+      {/* Slide Counter */}
+      <div className="absolute top-8 right-8 z-10">
+        <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+          <span className="text-[#FFF314] font-bold text-lg">{(currentSlide + 1).toString().padStart(2, '0')}</span>
+          <span className="text-white/50">/</span>
+          <span className="text-white/70 font-semibold">{SLIDES.length.toString().padStart(2, '0')}</span>
+        </div>
+      </div>
 
-      {/* CSS Animations */}
-      <style>{`
-        @keyframes float-slow {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(20px, -30px) scale(1.05); }
-        }
-        
-        @keyframes float-slower {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-25px, 20px) scale(0.96); }
-        }
-        
-        .animate-float-slow {
-          animation: float-slow 14s ease-in-out infinite;
-        }
-        
-        .animate-float-slower {
-          animation: float-slower 18s ease-in-out infinite;
-        }
-      `}</style>
     </section>
   )
 }
