@@ -48,7 +48,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
             className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button - Fixed z-index and click handling */}
+            {/* Close Button */}
             <button
               type="button"
               onClick={(e) => {
@@ -102,18 +102,9 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               </div>
             ) : (
               <>
-                {/* Header with Child Image */}
-                <div className="relative bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 p-6 text-[#263238] rounded-t-2xl overflow-hidden">
-                  {/* Background Image */}
-                  <div className="absolute inset-0 opacity-20">
-                    <img
-                      src="https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop"
-                      alt="Children smiling"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  
-                  {/* Child Image Overlay */}
+                {/* Header */}
+                <div className="relative bg-[#FFF314] p-6 text-[#263238] rounded-t-2xl overflow-hidden">
+                  {/* Child Image */}
                   <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full border-4 border-white/30 overflow-hidden shadow-xl">
                     <img
                       src="https://images.pexels.com/photos/6646959/pexels-photo-6646959.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop"
