@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, ArrowRight, ChevronLeft, ChevronRight, GraduationCap, Users, HeartHandshake, Leaf, Stethoscope, Home, Lightbulb } from 'lucide-react'
+import { Heart, ChevronLeft, ChevronRight, GraduationCap, Users, HeartHandshake, Leaf, Stethoscope, Home, Lightbulb } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 // Slides Data - 7 meaningful slides
@@ -110,7 +110,7 @@ export default function HeroSection() {
   const CurrentIcon = SLIDES[currentSlide].icon;
 
   return (
-    <section className="relative min-h-screen w-full flex items-center overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+    <section className="relative min-h-screen w-full flex items-center overflow-hidden bg-[#F1F8F5]">
       {/* Main Content Container */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 w-full">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
@@ -121,7 +121,7 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00897B]/10 backdrop-blur-sm border border-[#00897B]/30 text-[#00897B] font-bold font-mono text-xs uppercase tracking-widest mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-sm border border-[#00897B]/20 text-[#00897B] font-bold font-mono text-xs uppercase tracking-widest mb-6"
             >
               <span className="w-2 h-2 rounded-full bg-[#00897B] animate-pulse" />
               Empowering Communities Globally
@@ -166,149 +166,144 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right Side - Image Slider with Sidebar */}
+          {/* Right Side - Image Slider with Blended Design */}
           <div className="w-full lg:w-1/2 relative mt-8 lg:mt-0">
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl" style={{ height: '600px' }}>
+            <div className="relative rounded-3xl overflow-hidden" style={{ height: '550px' }}>
               
-              {/* Main Image Display */}
+              {/* Main Image Display with Blended Overlay */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSlide}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.5 }}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.7, ease: "easeOut" }}
                   className="absolute inset-0"
                 >
+                  {/* Background Image */}
                   <div 
                     className="w-full h-full bg-cover bg-center"
                     style={{ backgroundImage: `url(${SLIDES[currentSlide].image})` }}
                   />
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   
-                  {/* Slide Content Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 p-8">
+                  {/* Blended Gradient Overlay - White/Mint fade from left, transparent on right */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
+                  
+                  {/* Text Content Overlay on Image */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10">
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
-                      className="flex items-center gap-3 mb-4"
+                      transition={{ delay: 0.3 }}
+                      className="flex items-start gap-4"
                     >
-                      <div 
-                        className="w-12 h-12 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: '#FFF314' }}
-                      >
-                        <CurrentIcon size={24} className="text-gray-900" />
+                      {/* Icon with frosted glass effect */}
+                      <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-white/80 backdrop-blur-sm border border-white flex items-center justify-center shadow-lg">
+                        <CurrentIcon size={28} className="text-[#00897B]" />
                       </div>
-                      <div>
-                        <h3 className="text-2xl font-bold text-white">{SLIDES[currentSlide].title}</h3>
-                        <p className="text-[#FFF314] font-semibold text-sm">{SLIDES[currentSlide].subtitle}</p>
+                      
+                      <div className="flex-1">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF314]/90 backdrop-blur-sm mb-3">
+                          <span className="text-xs font-bold text-gray-900 uppercase tracking-wider">
+                            {SLIDES[currentSlide].stats}
+                          </span>
+                        </div>
+                        <h3 className="text-3xl md:text-4xl font-bold text-[#263238] mb-2">
+                          {SLIDES[currentSlide].title}
+                        </h3>
+                        <p className="text-[#00897B] font-semibold text-lg mb-3">
+                          {SLIDES[currentSlide].subtitle}
+                        </p>
+                        <p className="text-[#263238]/70 text-sm md:text-base leading-relaxed max-w-md">
+                          {SLIDES[currentSlide].description}
+                        </p>
+                        
+                        {/* Learn More Link */}
+                        <motion.button
+                          whileHover={{ x: 5 }}
+                          className="mt-4 inline-flex items-center gap-2 text-[#00897B] font-semibold text-sm group"
+                        >
+                          Learn More 
+                          <svg 
+                            className="w-4 h-4 group-hover:translate-x-1 transition-transform" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </motion.button>
                       </div>
                     </motion.div>
-                    <p className="text-white/90 text-sm md:text-base mb-4">
-                      {SLIDES[currentSlide].description}
-                    </p>
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFF314]/20 backdrop-blur-sm border border-[#FFF314]/30">
-                      <span className="text-[#FFF314] font-bold text-sm">{SLIDES[currentSlide].stats}</span>
-                    </div>
                   </div>
                 </motion.div>
               </AnimatePresence>
 
-              {/* Navigation Arrows */}
+              {/* Navigation Arrows - Frosted Glass */}
               <button
                 onClick={handlePrev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm border border-white/50 flex items-center justify-center hover:bg-white/90 transition-all duration-300 shadow-lg group"
               >
-                <ChevronLeft size={24} className="text-white group-hover:scale-110 transition-transform" />
+                <ChevronLeft size={20} className="text-[#263238] group-hover:scale-110 transition-transform" />
               </button>
               <button
                 onClick={handleNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm border border-white/50 flex items-center justify-center hover:bg-white/90 transition-all duration-300 shadow-lg group"
               >
-                <ChevronRight size={24} className="text-white group-hover:scale-110 transition-transform" />
+                <ChevronRight size={20} className="text-[#263238] group-hover:scale-110 transition-transform" />
               </button>
-
-              {/* Slide Indicators */}
-              <div className="absolute top-6 right-6 flex gap-2">
-                {SLIDES.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleDotClick(index)}
-                    className="relative"
-                  >
-                    <div
-                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                        index === currentSlide
-                          ? 'bg-[#FFF314] scale-125'
-                          : 'bg-white/50 hover:bg-white/70'
-                      }`}
-                    />
-                  </button>
-                ))}
-              </div>
             </div>
 
-            {/* Sidebar - Slide Thumbnails */}
-            <div className="hidden lg:flex absolute -right-32 top-0 bottom-0 flex-col justify-center gap-3">
-              {SLIDES.map((slide, index) => {
-                const Icon = slide.icon;
-                return (
-                  <motion.button
-                    key={slide.id}
-                    onClick={() => handleDotClick(index)}
-                    className={`group flex items-center gap-4 transition-all duration-300 ${
-                      index === currentSlide ? 'translate-x-[-16px]' : ''
-                    }`}
-                    whileHover={{ x: -8 }}
-                  >
-                    {/* Thumbnail Image */}
-                    <div
-                      className={`w-24 h-16 rounded-lg bg-cover bg-center transition-all duration-300 border-2 ${
-                        index === currentSlide
-                          ? 'border-[#FFF314] shadow-lg shadow-[#FFF314]/30 scale-110'
-                          : 'border-white/20 hover:border-[#FFF314]/50'
+            {/* Sidebar Navigation - Clean, Light Design */}
+            <div className="mt-6 flex justify-center">
+              <div className="inline-flex items-center gap-2 p-2 bg-white/70 backdrop-blur-sm rounded-2xl border border-white/80 shadow-lg">
+                {SLIDES.map((slide, index) => {
+                  const Icon = slide.icon;
+                  const isActive = index === currentSlide;
+                  
+                  return (
+                    <motion.button
+                      key={slide.id}
+                      onClick={() => handleDotClick(index)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`relative group flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${
+                        isActive
+                          ? 'bg-white shadow-md'
+                          : 'hover:bg-white/50'
                       }`}
-                      style={{ backgroundImage: `url(${slide.image})` }}
                     >
-                      <div className="absolute inset-0 bg-black/40 rounded-lg" />
-                    </div>
-                    
-                    {/* Slide Info */}
-                    <div className={`transition-all duration-300 ${
-                      index === currentSlide ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0 overflow-hidden'
-                    }`}>
-                      <div className="flex items-center gap-2">
-                        <Icon size={16} className="text-[#FFF314]" />
-                        <span className="text-sm font-bold text-gray-800 whitespace-nowrap">{slide.title}</span>
+                      {/* Thumbnail Preview on Hover */}
+                      <div className="relative">
+                        <div className={`w-10 h-10 rounded-lg bg-cover bg-center transition-all duration-300 ${
+                          isActive ? 'ring-2 ring-[#FFF314] ring-offset-2' : ''
+                        }`}
+                        style={{ backgroundImage: `url(${slide.image})` }}
+                        />
+                        {isActive && (
+                          <motion.div
+                            layoutId="activeIndicator"
+                            className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#FFF314] rounded-full border-2 border-white"
+                          />
+                        )}
                       </div>
-                      <p className="text-xs text-gray-600 mt-1 whitespace-nowrap">{slide.subtitle}</p>
-                    </div>
-                  </motion.button>
-                );
-              })}
-            </div>
-
-            {/* Mobile Thumbnail Strip */}
-            <div className="lg:hidden mt-4 flex gap-2 overflow-x-auto pb-2">
-              {SLIDES.map((slide, index) => {
-                const Icon = slide.icon;
-                return (
-                  <button
-                    key={slide.id}
-                    onClick={() => handleDotClick(index)}
-                    className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${
-                      index === currentSlide
-                        ? 'bg-[#FFF314] text-gray-900 shadow-lg'
-                        : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
-                    }`}
-                  >
-                    <Icon size={16} />
-                    <span className="text-sm font-semibold whitespace-nowrap">{slide.title}</span>
-                  </button>
-                );
-              })}
+                      
+                      {/* Label - Visible on larger screens */}
+                      <div className="hidden xl:block">
+                        <div className="flex items-center gap-1.5">
+                          <Icon size={14} className={isActive ? 'text-[#00897B]' : 'text-gray-500'} />
+                          <span className={`text-sm font-semibold whitespace-nowrap ${
+                            isActive ? 'text-[#263238]' : 'text-gray-500'
+                          }`}>
+                            {slide.title}
+                          </span>
+                        </div>
+                      </div>
+                    </motion.button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
