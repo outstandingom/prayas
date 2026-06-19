@@ -1,144 +1,129 @@
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Heart } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Heart, ArrowRight, ChevronLeft, ChevronRight, GraduationCap, Users, HeartHandshake, Leaf, Stethoscope, Home, Lightbulb } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
-// NGO Photos Data - 50 meaningful images showing real impact
-const NGO_PHOTOS = [
-  // Original images
-  "https://images.pexels.com/photos/6646959/pexels-photo-6646959.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4101143/pexels-photo-4101143.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/2363800/pexels-photo-2363800.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7402453/pexels-photo-7402453.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6994660/pexels-photo-6994660.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3192815/pexels-photo-3192815.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6646915/pexels-photo-6646915.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/5698569/pexels-photo-5698569.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4483324/pexels-photo-4483324.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6646884/pexels-photo-6646884.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4386365/pexels-photo-4386365.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3985221/pexels-photo-3985221.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/5428830/pexels-photo-5428830.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/2387795/pexels-photo-2387795.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3192819/pexels-photo-3192819.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6646949/pexels-photo-6646949.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4262939/pexels-photo-4262939.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7610704/pexels-photo-7610704.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7109863/pexels-photo-7109863.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3772667/pexels-photo-3772667.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/8498305/pexels-photo-8498305.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4145192/pexels-photo-4145192.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/8531304/pexels-photo-8531304.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6646970/pexels-photo-6646970.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4577808/pexels-photo-4577808.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7925426/pexels-photo-7925426.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6889372/pexels-photo-6889372.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/8618175/pexels-photo-8618175.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/5673501/pexels-photo-5673501.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/5202401/pexels-photo-5202401.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7536565/pexels-photo-7536565.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3772687/pexels-photo-3772687.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/5699463/pexels-photo-5699463.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7092446/pexels-photo-7092446.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4145357/pexels-photo-4145357.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/8499459/pexels-photo-8499459.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7041675/pexels-photo-7041675.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7655078/pexels-photo-7655078.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4130114/pexels-photo-4130114.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6646945/pexels-photo-6646945.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6460436/pexels-photo-6460436.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3912791/pexels-photo-3912791.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7549982/pexels-photo-7549982.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7680444/pexels-photo-7680444.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3671392/pexels-photo-3671392.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4398099/pexels-photo-4398099.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7655631/pexels-photo-7655631.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/8580725/pexels-photo-8580725.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-
-  // 20 Added NGO, charity, and community volunteering images
-  "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3184432/pexels-photo-3184432.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3184433/pexels-photo-3184433.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/1183434/pexels-photo-1183434.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/868113/pexels-photo-868113.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6646917/pexels-photo-6646917.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6646895/pexels-photo-6646895.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7109946/pexels-photo-7109946.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/7109930/pexels-photo-7109930.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3856027/pexels-photo-3856027.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3855975/pexels-photo-3855975.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/3856050/pexels-photo-3856050.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4308112/pexels-photo-4308112.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4308095/pexels-photo-4308095.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6348123/pexels-photo-6348123.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6348074/pexels-photo-6348074.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6994681/pexels-photo-6994681.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/6994665/pexels-photo-6994665.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
-  "https://images.pexels.com/photos/4585184/pexels-photo-4585184.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop"
+// Slides Data - 7 meaningful slides
+const SLIDES = [
+  {
+    id: 1,
+    icon: GraduationCap,
+    title: "Education",
+    subtitle: "Improving Children for a Better World",
+    description: "We provide quality education to underprivileged children, building foundations for lifelong learning and empowering the next generation of leaders.",
+    image: "https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "10,000+ Children Educated",
+    color: "#FFF314"
+  },
+  {
+    id: 2,
+    icon: Users,
+    title: "Women Empowerment",
+    subtitle: "Building Strong, Independent Women",
+    description: "Through skill development, entrepreneurship programs, and leadership training, we help women gain financial independence and social confidence.",
+    image: "https://images.pexels.com/photos/1183434/pexels-photo-1183434.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "5,000+ Women Empowered",
+    color: "#FFF314"
+  },
+  {
+    id: 3,
+    icon: HeartHandshake,
+    title: "Healthcare",
+    subtitle: "Ensuring Healthy Communities",
+    description: "Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.",
+    image: "https://images.pexels.com/photos/4101143/pexels-photo-4101143.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "50+ Medical Camps",
+    color: "#FFF314"
+  },
+  {
+    id: 4,
+    icon: Leaf,
+    title: "Environment",
+    subtitle: "Protecting Our Planet Together",
+    description: "From tree plantation drives to waste management initiatives, we're committed to creating a sustainable and greener future for all.",
+    image: "https://images.pexels.com/photos/3192815/pexels-photo-3192815.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "100,000+ Trees Planted",
+    color: "#FFF314"
+  },
+  {
+    id: 5,
+    icon: Stethoscope,
+    title: "Nutrition",
+    subtitle: "Nourishing Bodies and Minds",
+    description: "Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.",
+    image: "https://images.pexels.com/photos/6646959/pexels-photo-6646959.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "20,000+ Meals Served",
+    color: "#FFF314"
+  },
+  {
+    id: 6,
+    icon: Home,
+    title: "Shelter",
+    subtitle: "A Roof Over Every Head",
+    description: "We work to provide safe and dignified housing solutions for homeless families, creating secure environments where they can thrive.",
+    image: "https://images.pexels.com/photos/2363800/pexels-photo-2363800.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "500+ Homes Built",
+    color: "#FFF314"
+  },
+  {
+    id: 7,
+    icon: Lightbulb,
+    title: "Skill Development",
+    subtitle: "Empowering Through Knowledge",
+    description: "Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth.",
+    image: "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "3,000+ People Trained",
+    color: "#FFF314"
+  }
 ];
 
-// Prepare columns data (5 columns, 10 images each)
-const columnsData = (() => {
-  const columns: string[][] = [[], [], [], [], []]
-  NGO_PHOTOS.forEach((img, idx) => {
-    const colIdx = idx % 5
-    columns[colIdx].push(img)
-  })
-  return columns
-})()
-
-const columnClasses = ["up", "down", "up", "down", "up"]
-
-// 3D Photo Wall Component - Preserving original photo size but scaling the container
-const NGOWall3DBackground = () => {
-  return (
-    <div className="ngo-photo-wall-background">
-      <div className="column-wrapper-background">
-        <div className="columns-background">
-          {columnsData.map((colImages, colIndex) => (
-            <div key={colIndex} className={`column-background ${columnClasses[colIndex]}`}>
-              {colImages.map((imgUrl, imgIdx) => (
-                <div 
-                  key={imgIdx} 
-                  style={{ backgroundImage: `url(${imgUrl})` }}
-                  title="NGO impact in action"
-                />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function HeroSection() {
-  return (
-    <section className="relative min-h-screen w-full flex items-center pt-24 pb-16 overflow-hidden">
-      {/* 3D Photo Wall as Full Background */}
-      <div className="absolute inset-0 w-full h-full z-0">
-        <NGOWall3DBackground />
-        {/* Light overlay that fades toward bottom-right, keeping photos much more visible */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/40 to-transparent z-10" />
-      </div>
-      
-      {/* Background decorative effects – Deep Forest Green accents */}
-      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#204D24]/15 blur-[120px] animate-float-slow pointer-events-none z-10" />
-      <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-[#204D24]/10 blur-[100px] animate-float-slower pointer-events-none z-10" />
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-      <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-20">
-        <div className="max-w-3xl">
-          {/* Text Content – Deep Forest Green (#204D24) for text and accents */}
-          <div className="text-[#204D24]">
+  // Auto-play functionality
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying]);
+
+  const handleNext = () => {
+    setIsAutoPlaying(false);
+    setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+  };
+
+  const handlePrev = () => {
+    setIsAutoPlaying(false);
+    setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+  };
+
+  const handleDotClick = (index: number) => {
+    setIsAutoPlaying(false);
+    setCurrentSlide(index);
+  };
+
+  const CurrentIcon = SLIDES[currentSlide].icon;
+
+  return (
+    <section className="relative min-h-screen w-full flex items-center overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Main Content Container */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6 w-full">
+        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+          
+          {/* Left Side - Text Content */}
+          <div className="w-full lg:w-1/2 flex flex-col justify-center pt-20 lg:pt-0">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#204D24]/10 backdrop-blur-sm border border-[#204D24]/30 text-[#204D24] font-bold font-mono text-xs uppercase tracking-widest mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00897B]/10 backdrop-blur-sm border border-[#00897B]/30 text-[#00897B] font-bold font-mono text-xs uppercase tracking-widest mb-6"
             >
-              <span className="w-2 h-2 rounded-full bg-[#204D24] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#00897B] animate-pulse" />
               Empowering Communities Globally
             </motion.div>
 
@@ -146,16 +131,16 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05]"
+              className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] text-[#263238]"
             >
-              Together We Can Build A <span className="text-[#204D24]">Better World</span>
+              Together We Can Build A <span className="text-[#00897B]">Better World</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="mt-6 text-lg md:text-xl text-[#204D24]/70 max-w-2xl leading-relaxed font-light"
+              className="mt-6 text-lg md:text-xl text-[#263238]/80 max-w-2xl leading-relaxed font-light"
             >
               We are dedicated to creating sustainable impact through grassroots education, comprehensive healthcare, and community-led environmental initiatives.
             </motion.p>
@@ -168,123 +153,173 @@ export default function HeroSection() {
             >
               <Link
                 to="/donate"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#204D24] text-white px-8 py-4 rounded-full font-bold hover:bg-[#183B1B] transition-all duration-300 shadow-lg shadow-[#204D24]/30 hover:shadow-[#204D24]/50 hover:scale-105"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#00897B] text-white px-8 py-4 rounded-full font-bold hover:bg-[#00695C] transition-all duration-300 shadow-lg shadow-[#00897B]/30 hover:shadow-[#00897B]/50 hover:scale-105"
               >
                 Donate Now <Heart size={18} />
               </Link>
               <Link
                 to="/about"
-                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-[#204D24] border-2 border-[#204D24]/30 hover:bg-[#204D24]/10 transition-all duration-300 hover:border-[#204D24]/50"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-[#00897B] border-2 border-[#00897B]/30 hover:bg-[#00897B]/10 transition-all duration-300 hover:border-[#00897B]/50"
               >
                 Get Involved
               </Link>
             </motion.div>
           </div>
+
+          {/* Right Side - Image Slider with Sidebar */}
+          <div className="w-full lg:w-1/2 relative mt-8 lg:mt-0">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl" style={{ height: '600px' }}>
+              
+              {/* Main Image Display */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentSlide}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.5 }}
+                  className="absolute inset-0"
+                >
+                  <div 
+                    className="w-full h-full bg-cover bg-center"
+                    style={{ backgroundImage: `url(${SLIDES[currentSlide].image})` }}
+                  />
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  
+                  {/* Slide Content Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 p-8">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="flex items-center gap-3 mb-4"
+                    >
+                      <div 
+                        className="w-12 h-12 rounded-xl flex items-center justify-center"
+                        style={{ backgroundColor: '#FFF314' }}
+                      >
+                        <CurrentIcon size={24} className="text-gray-900" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold text-white">{SLIDES[currentSlide].title}</h3>
+                        <p className="text-[#FFF314] font-semibold text-sm">{SLIDES[currentSlide].subtitle}</p>
+                      </div>
+                    </motion.div>
+                    <p className="text-white/90 text-sm md:text-base mb-4">
+                      {SLIDES[currentSlide].description}
+                    </p>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFF314]/20 backdrop-blur-sm border border-[#FFF314]/30">
+                      <span className="text-[#FFF314] font-bold text-sm">{SLIDES[currentSlide].stats}</span>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Navigation Arrows */}
+              <button
+                onClick={handlePrev}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+              >
+                <ChevronLeft size={24} className="text-white group-hover:scale-110 transition-transform" />
+              </button>
+              <button
+                onClick={handleNext}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+              >
+                <ChevronRight size={24} className="text-white group-hover:scale-110 transition-transform" />
+              </button>
+
+              {/* Slide Indicators */}
+              <div className="absolute top-6 right-6 flex gap-2">
+                {SLIDES.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleDotClick(index)}
+                    className="relative"
+                  >
+                    <div
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentSlide
+                          ? 'bg-[#FFF314] scale-125'
+                          : 'bg-white/50 hover:bg-white/70'
+                      }`}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Sidebar - Slide Thumbnails */}
+            <div className="hidden lg:flex absolute -right-32 top-0 bottom-0 flex-col justify-center gap-3">
+              {SLIDES.map((slide, index) => {
+                const Icon = slide.icon;
+                return (
+                  <motion.button
+                    key={slide.id}
+                    onClick={() => handleDotClick(index)}
+                    className={`group flex items-center gap-4 transition-all duration-300 ${
+                      index === currentSlide ? 'translate-x-[-16px]' : ''
+                    }`}
+                    whileHover={{ x: -8 }}
+                  >
+                    {/* Thumbnail Image */}
+                    <div
+                      className={`w-24 h-16 rounded-lg bg-cover bg-center transition-all duration-300 border-2 ${
+                        index === currentSlide
+                          ? 'border-[#FFF314] shadow-lg shadow-[#FFF314]/30 scale-110'
+                          : 'border-white/20 hover:border-[#FFF314]/50'
+                      }`}
+                      style={{ backgroundImage: `url(${slide.image})` }}
+                    >
+                      <div className="absolute inset-0 bg-black/40 rounded-lg" />
+                    </div>
+                    
+                    {/* Slide Info */}
+                    <div className={`transition-all duration-300 ${
+                      index === currentSlide ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0 overflow-hidden'
+                    }`}>
+                      <div className="flex items-center gap-2">
+                        <Icon size={16} className="text-[#FFF314]" />
+                        <span className="text-sm font-bold text-gray-800 whitespace-nowrap">{slide.title}</span>
+                      </div>
+                      <p className="text-xs text-gray-600 mt-1 whitespace-nowrap">{slide.subtitle}</p>
+                    </div>
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Mobile Thumbnail Strip */}
+            <div className="lg:hidden mt-4 flex gap-2 overflow-x-auto pb-2">
+              {SLIDES.map((slide, index) => {
+                const Icon = slide.icon;
+                return (
+                  <button
+                    key={slide.id}
+                    onClick={() => handleDotClick(index)}
+                    className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${
+                      index === currentSlide
+                        ? 'bg-[#FFF314] text-gray-900 shadow-lg'
+                        : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                    }`}
+                  >
+                    <Icon size={16} />
+                    <span className="text-sm font-semibold whitespace-nowrap">{slide.title}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* CSS styles - Preserving original photo dimensions, scaling the container */}
+      {/* Background Decorative Elements */}
+      <div className="absolute top-[10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-[#81C784]/10 blur-[100px] animate-float-slow pointer-events-none" />
+      <div className="absolute bottom-[10%] right-[-5%] w-[350px] h-[350px] rounded-full bg-[#00897B]/10 blur-[100px] animate-float-slower pointer-events-none" />
+
+      {/* CSS Animations */}
       <style>{`
-        :root {
-          --column-height: 300px;
-          --image-height: 200px;
-          --row-gap: 0.5em;
-          --column-gap: 0.25em;
-        }
-
-        /* Full screen background 3D wall - scaled down container */
-        .ngo-photo-wall-background {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          overflow: hidden;
-        }
-
-        .column-wrapper-background {
-          width: 100%;
-          height: 100%;
-          perspective: 1000px;
-          position: relative;
-          overflow: hidden;
-          /* Scale down the entire container to show more photos */
-          transform: scale(0.7);
-        }
-
-        .columns-background {
-          position: absolute;
-          width: 200%;
-          height: 200%;
-          top: -50%;
-          left: -50%;
-          display: grid;
-          grid-template-columns: repeat(5, 1fr);
-          transform: rotateX(45deg) rotateY(20deg) rotate(-25deg) translate3d(-6em, 8em, 8em);
-          transform-origin: 50%;
-          transform-style: preserve-3d;
-          mask-image: linear-gradient(
-            #0000 0%,
-            #00000005 2.3%,
-            #00000009 2.57%,
-            #00000013 3.65%,
-            #00000026 5.25%,
-            #0000004d 7.5%,
-            #000 30%
-          );
-        }
-
-        .column-background {
-          display: flex;
-          flex-direction: column;
-          margin-left: var(--column-gap);
-          margin-right: var(--column-gap);
-        }
-
-        /* Original photo size preserved */
-        .column-background div {
-          height: 200px;
-          margin-bottom: var(--row-gap);
-          background-repeat: no-repeat;
-          background-size: cover;
-          background-position: center;
-          border-radius: 12px;
-          box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-          transition: transform 0.3s ease, filter 0.3s ease;
-        }
-
-        .column-background div:hover {
-          transform: scale(1.03);
-          filter: brightness(1.08);
-        }
-
-        .column-background:nth-child(1) { padding-top: 100px; }
-        .column-background:nth-child(2) { padding-top: 50px; }
-        .column-background:nth-child(3) { padding-top: 0px; }
-        .column-background:nth-child(4) { padding-top: 100px; }
-        .column-background:nth-child(5) { padding-top: 50px; }
-
-        .up {
-          animation: imageScrollingUp 25s linear infinite alternate;
-        }
-
-        .down {
-          animation: imageScrollingDown 25s linear infinite alternate;
-        }
-
-        @keyframes imageScrollingUp {
-          0% { transform: translateY(0); }
-          100% { transform: translateY(calc(-1 * (((200px + 0.5em) * 10) - 300px))); }
-        }
-
-        @keyframes imageScrollingDown {
-          0% { transform: translateY(calc(-1 * (((200px + 0.5em) * 10) - 300px))); }
-          100% { transform: translateY(0); }
-        }
-
         @keyframes float-slow {
           0%, 100% { transform: translate(0, 0) scale(1); }
           50% { transform: translate(20px, -30px) scale(1.05); }
@@ -301,19 +336,6 @@ export default function HeroSection() {
         
         .animate-float-slower {
           animation: float-slower 18s ease-in-out infinite;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 1024px) {
-          .column-wrapper-background {
-            transform: scale(0.9);
-          }
-        }
-        
-        @media (max-width: 768px) {
-          .column-wrapper-background {
-            transform: scale(1.1);
-          }
         }
       `}</style>
     </section>
