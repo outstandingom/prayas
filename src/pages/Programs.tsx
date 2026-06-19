@@ -1,10 +1,9 @@
-export default function Programs() { return <div className="pt-32 min-h-screen text-center"><h1 className="text-4xl font-bold">Our Programs</h1></div> }
 // src/pages/Programs.tsx
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { 
   GraduationCap, Heart, Users, Leaf, Stethoscope, Home, 
-  Lightbulb, Utensils, PawPrint, HeartHandshake, ArrowRight, Target 
+  Lightbulb, Utensils, PawPrint, HeartHandshake, ArrowRight 
 } from 'lucide-react'
 
 const programs = [
@@ -15,7 +14,6 @@ const programs = [
     description: 'Providing quality education to underprivileged children through after-school programs, scholarships, and digital literacy initiatives.',
     stats: '10,000+ Children Educated',
     image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&h=400&fit=crop',
-    color: '#FFF314'
   },
   {
     icon: Stethoscope,
@@ -24,7 +22,6 @@ const programs = [
     description: 'Organizing free medical camps, health awareness programs, and providing essential healthcare access to remote communities.',
     stats: '500+ Medical Camps',
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=400&fit=crop',
-    color: '#FFF314'
   },
   {
     icon: Users,
@@ -33,7 +30,6 @@ const programs = [
     description: 'Skill development, self-help groups, and entrepreneurship programs helping women gain financial independence.',
     stats: '5,000+ Women Empowered',
     image: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=600&h=400&fit=crop',
-    color: '#FFF314'
   },
   {
     icon: Heart,
@@ -42,7 +38,6 @@ const programs = [
     description: 'Protecting children\'s rights through nutrition programs, safe shelters, and comprehensive child development initiatives.',
     stats: '15,000+ Children Supported',
     image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop',
-    color: '#FFF314'
   },
   {
     icon: Leaf,
@@ -51,7 +46,6 @@ const programs = [
     description: 'Tree plantation drives, waste management programs, and environmental awareness campaigns for sustainable living.',
     stats: '100,000+ Trees Planted',
     image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&h=400&fit=crop',
-    color: '#FFF314'
   },
   {
     icon: Home,
@@ -60,7 +54,6 @@ const programs = [
     description: 'Infrastructure development, clean water access, and sustainable livelihood programs for rural communities.',
     stats: '200+ Villages Developed',
     image: 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop',
-    color: '#FFF314'
   },
   {
     icon: Lightbulb,
@@ -69,7 +62,6 @@ const programs = [
     description: 'Vocational training programs equipping youth and adults with employable skills for better career opportunities.',
     stats: '8,000+ People Trained',
     image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop',
-    color: '#FFF314'
   },
   {
     icon: Utensils,
@@ -78,7 +70,6 @@ const programs = [
     description: 'Food distribution drives, nutrition programs, and sustainable agriculture support for food-insecure communities.',
     stats: '500,000+ Meals Served',
     image: 'https://images.unsplash.com/photo-1593113514619-33b934789d6e?w=600&h=400&fit=crop',
-    color: '#FFF314'
   },
   {
     icon: PawPrint,
@@ -87,7 +78,6 @@ const programs = [
     description: 'Rescue operations, shelter homes, and medical care for stray and injured animals in urban and rural areas.',
     stats: '3,000+ Animals Rescued',
     image: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=600&h=400&fit=crop',
-    color: '#FFF314'
   },
 ]
 
