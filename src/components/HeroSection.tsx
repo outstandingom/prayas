@@ -120,25 +120,25 @@ export default function HeroSection() {
       {/* 3D Photo Wall as Full Background */}
       <div className="absolute inset-0 w-full h-full z-0">
         <NGOWall3DBackground />
-        {/* Lighter overlay that fades toward bottom-right, keeping photos much more visible */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-[#F1F8F5]/40 to-transparent z-10" />
+        {/* Light overlay that fades toward bottom-right, keeping photos much more visible */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/40 to-transparent z-10" />
       </div>
       
-      {/* Background decorative effects – Teal and Light Green accents */}
-      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#00897B]/20 blur-[120px] animate-float-slow pointer-events-none z-10" />
-      <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-[#81C784]/20 blur-[100px] animate-float-slower pointer-events-none z-10" />
+      {/* Background decorative effects – Deep Forest Green accents */}
+      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#204D24]/15 blur-[120px] animate-float-slow pointer-events-none z-10" />
+      <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-[#204D24]/10 blur-[100px] animate-float-slower pointer-events-none z-10" />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-20">
         <div className="max-w-3xl">
-          {/* Text Content – Dark Gray (#263238) for text, Teal (#00897B) for accents */}
-          <div className="text-[#263238]">
+          {/* Text Content – Deep Forest Green (#204D24) for text and accents */}
+          <div className="text-[#204D24]">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00897B]/10 backdrop-blur-sm border border-[#00897B]/30 text-[#00897B] font-bold font-mono text-xs uppercase tracking-widest mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#204D24]/10 backdrop-blur-sm border border-[#204D24]/30 text-[#204D24] font-bold font-mono text-xs uppercase tracking-widest mb-6"
             >
-              <span className="w-2 h-2 rounded-full bg-[#00897B] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#204D24] animate-pulse" />
               Empowering Communities Globally
             </motion.div>
 
@@ -148,14 +148,14 @@ export default function HeroSection() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05]"
             >
-              Together We Can Build A <span className="text-[#00897B]">Better World</span>
+              Together We Can Build A <span className="text-[#204D24]">Better World</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="mt-6 text-lg md:text-xl text-[#263238]/80 max-w-2xl leading-relaxed font-light"
+              className="mt-6 text-lg md:text-xl text-[#204D24]/70 max-w-2xl leading-relaxed font-light"
             >
               We are dedicated to creating sustainable impact through grassroots education, comprehensive healthcare, and community-led environmental initiatives.
             </motion.p>
@@ -168,13 +168,13 @@ export default function HeroSection() {
             >
               <Link
                 to="/donate"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#00897B] text-white px-8 py-4 rounded-full font-bold hover:bg-[#00695C] transition-all duration-300 shadow-lg shadow-[#00897B]/30 hover:shadow-[#00897B]/50 hover:scale-105"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#204D24] text-white px-8 py-4 rounded-full font-bold hover:bg-[#183B1B] transition-all duration-300 shadow-lg shadow-[#204D24]/30 hover:shadow-[#204D24]/50 hover:scale-105"
               >
                 Donate Now <Heart size={18} />
               </Link>
               <Link
                 to="/about"
-                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-[#00897B] border-2 border-[#00897B]/30 hover:bg-[#00897B]/10 transition-all duration-300 hover:border-[#00897B]/50"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-[#204D24] border-2 border-[#204D24]/30 hover:bg-[#204D24]/10 transition-all duration-300 hover:border-[#204D24]/50"
               >
                 Get Involved
               </Link>
