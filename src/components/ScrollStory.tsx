@@ -32,9 +32,112 @@ const stories = [
   }
 ]
 
+// Custom hook for SplitText-like line animation
+function useSplitTextAnimation(ref: React.RefObject<HTMLDivElement>, isActive: boolean) {
+  const [lines, setLines] = useState<HTMLElement[]>([])
+  const animationRef = useRef<gsap.core.Timeline | null>(null)
+
+  useEffect(() => {
+    if (!ref.current) return
+
+    // Split text into lines (simulating SplitText)
+    const element = ref.current
+    const text = element.textContent || ''
+    const words = text.split(' ')
+    const tempDiv = document.createElement('div')
+    tempDiv.style.cssText = window.getComputedStyle(element).cssText
+    tempDiv.style.position = 'absolute'
+    tempDiv.style.visibility = 'hidden'
+    tempDiv.style.width = element.offsetWidth + 'px'
+    document.body.appendChild(tempDiv)
+
+    // Create lines by measuring word widths
+    const lineElements: HTMLElement[] = []
+    let currentLine = document.createElement('span')
+    currentLine.className = 'card-line'
+    currentLine.style.display = 'block'
+    currentLine.style.overflow = 'hidden'
+    
+    const lineContent = document.createElement('span')
+    lineContent.style.display = 'inline-block'
+    lineContent.style.transform = isActive ? 'translateY(0)' : 'translateY(100%)'
+    lineContent.style.transition = 'transform 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997), opacity 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997)'
+    
+    currentLine.appendChild(lineContent)
+    tempDiv.appendChild(currentLine)
+
+    words.forEach((word, i) => {
+      const testLine = lineContent.textContent + (lineContent.textContent ? ' ' : '') + word
+      lineContent.textContent = testLine
+      
+      if (tempDiv.offsetHeight > 50 && lineContent.textContent.includes(' ')) {
+        // Line is full, create new line
+        lineContent.textContent = lineContent.textContent.replace(' ' + word, '')
+        lineElements.push(currentLine.cloneNode(true) as HTMLElement)
+        
+        currentLine = document.createElement('span')
+        currentLine.className = 'card-line'
+        currentLine.style.display = 'block'
+        currentLine.style.overflow = 'hidden'
+        
+        const newLineContent = document.createElement('span')
+        newLineContent.style.display = 'inline-block'
+        newLineContent.style.transform = isActive ? 'translateY(0)' : 'translateY(100%)'
+        newLineContent.style.transition = 'transform 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997), opacity 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997)'
+        newLineContent.textContent = word
+        
+        currentLine.appendChild(newLineContent)
+        tempDiv.innerHTML = ''
+        tempDiv.appendChild(currentLine)
+      }
+    })
+    
+    if (lineContent.textContent) {
+      lineElements.push(currentLine.cloneNode(true) as HTMLElement)
+    }
+
+    document.body.removeChild(tempDiv)
+    setLines(lineElements)
+
+    // Clear element and append lines
+    element.innerHTML = ''
+    lineElements.forEach(line => element.appendChild(line))
+  }, [ref.current, text])
+
+  // Animate lines when active state changes
+  useEffect(() => {
+    if (!ref.current || lines.length === 0) return
+
+    const lineSpans = ref.current.querySelectorAll('.card-line span')
+    
+    if (isActive) {
+      // Animate in
+      lineSpans.forEach((span, i) => {
+        setTimeout(() => {
+          (span as HTMLElement).style.transform = 'translateY(0)'
+          (span as HTMLElement).style.opacity = '1'
+        }, i * 60) // 60ms stagger = STAGGER
+      })
+    } else {
+      // Animate out
+      lineSpans.forEach((span, i) => {
+        setTimeout(() => {
+          (span as HTMLElement).style.transform = 'translateY(100%)'
+          (span as HTMLElement).style.opacity = '0'
+        }, i * 60)
+      })
+    }
+  }, [isActive, lines])
+
+  return lines
+}
+
 export default function ScrollStory() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
   const [cardHeights, setCardHeights] = useState<string[]>([])
+  const [isAnimating, setIsAnimating] = useState(false)
+  const queuedIndexRef = useRef<number | null>(null)
 
   // Responsive card heights
   useEffect(() => {
@@ -59,6 +162,29 @@ export default function ScrollStory() {
   const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 50 })
   const circleDashoffset = useTransform(smoothProgress, [0, 1], [251, 0])
 
+  // Tab click handler with animation queue
+  const switchTab = (nextIndex: number) => {
+    if (nextIndex === activeIndex) return
+
+    if (isAnimating) {
+      queuedIndexRef.current = nextIndex
+      return
+    }
+
+    setIsAnimating(true)
+    setActiveIndex(nextIndex)
+
+    // Complete animation after duration
+    setTimeout(() => {
+      setIsAnimating(false)
+      if (queuedIndexRef.current !== null && queuedIndexRef.current !== nextIndex) {
+        const q = queuedIndexRef.current
+        queuedIndexRef.current = null
+        switchTab(q)
+      }
+    }, 400) // DURATION
+  }
+
   return (
     <div ref={containerRef} className="scroll-story-container">
       {/* Header */}
@@ -74,10 +200,46 @@ export default function ScrollStory() {
         </motion.h1>
       </header>
 
+      {/* Tab Navigation */}
+      <div className="tabs-container">
+        <div className="tabs">
+          {stories.map((story, index) => (
+            <button
+              key={index}
+              onClick={() => switchTab(index)}
+              className={`tab ${index === activeIndex ? 'active' : ''}`}
+            >
+              {story.title}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content with SplitText animation */}
+      <div className="content-wrapper">
+        {stories.map((story, index) => (
+          <motion.div
+            key={index}
+            className="role-content"
+            initial={false}
+            animate={{
+              opacity: index === activeIndex ? 1 : 0,
+              pointerEvents: index === activeIndex ? 'auto' : 'none'
+            }}
+            transition={{ duration: 0.3 }}
+          >
+            <SplitTextContent 
+              text={story.description}
+              isActive={index === activeIndex}
+            />
+          </motion.div>
+        ))}
+      </div>
+
       {/* Stacking Cards */}
       <ul id="cards" style={{ gridTemplateRows: cardHeights.join(' ') }}>
         {stories.map((story, index) => (
-          <Card key={index} story={story} index={index} />
+          <Card key={index} story={story} index={index} isActive={index === activeIndex} />
         ))}
       </ul>
 
@@ -142,6 +304,80 @@ export default function ScrollStory() {
           font-weight: 800;
           color: #000;
         }
+
+        /* Tab Navigation Styles */
+        .tabs-container {
+          position: sticky;
+          top: 20px;
+          z-index: 50;
+          padding: 20px 0;
+          background: rgba(255, 255, 255, 0.9);
+          backdrop-filter: blur(10px);
+          margin-bottom: 32px;
+        }
+        .tabs {
+          display: flex;
+          justify-content: center;
+          gap: 12px;
+          flex-wrap: wrap;
+          max-width: 1020px;
+          margin: 0 auto;
+          padding: 0 clamp(2rem, 8vw, 5rem);
+        }
+        .tab {
+          border: none;
+          padding: 10px 16px;
+          border-radius: 999px;
+          font-size: 16px;
+          font-weight: 500;
+          letter-spacing: 0.02em;
+          color: #000;
+          cursor: pointer;
+          background: rgba(0, 0, 0, 0.08);
+          transition: all 0.25s cubic-bezier(0.256, 0.009, 0.125, 0.997);
+        }
+        .tab:hover {
+          background: rgba(0, 0, 0, 0.16);
+        }
+        .tab.active {
+          background: #111;
+          color: #fff;
+        }
+
+        /* Content Wrapper with SplitText Animation */
+        .content-wrapper {
+          position: relative;
+          display: grid;
+          grid-template-columns: 1fr;
+          max-width: 1020px;
+          margin: 0 auto 60px;
+          padding: 0 clamp(2rem, 8vw, 5rem);
+        }
+        .role-content {
+          grid-column: 1;
+          grid-row: 1;
+          text-align: center;
+          font-size: clamp(1.5rem, 3vw, 2.5rem);
+          font-weight: 600;
+          line-height: 1.15;
+          letter-spacing: -0.03em;
+          color: #000;
+        }
+
+        /* SplitText mask */
+        .card-line {
+          overflow: hidden;
+          display: block;
+          margin-bottom: 0.1em;
+        }
+        .card-line span {
+          display: inline-block;
+          transform: translateY(100%);
+          transition: transform 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997),
+                      opacity 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997);
+        }
+
+        /* Cards */
         #cards {
           list-style: none;
           padding: 0;
@@ -170,14 +406,8 @@ export default function ScrollStory() {
           justify-content: center;
           border: 1px solid rgba(0,0,0,0.05);
           overflow: hidden;
+          transition: transform 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997);
         }
-        
-        /* Line animation styles */
-        .card-line {
-          overflow: hidden;
-          display: block;
-        }
-        
         .card__content h2 {
           font-size: clamp(1.5rem, 4vw, 2.5rem);
           font-weight: 700;
@@ -211,6 +441,9 @@ export default function ScrollStory() {
           #cards { gap: 6vw; }
           .card__content { padding: 1.5rem; }
           .progress-circle { bottom: 20px; right: 20px; }
+          .role-content {
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+          }
         }
         html { scroll-behavior: smooth; }
       `}</style>
@@ -218,44 +451,58 @@ export default function ScrollStory() {
   )
 }
 
-// Individual Card with tab-style line animation
-function Card({ story, index }: { story: any; index: number }) {
-  const cardRef = useRef<HTMLLIElement>(null)
-  const [lines, setLines] = useState<{ title: string[], description: string[] }>({ title: [], description: [] })
+// SplitText Content Component with line animation
+function SplitTextContent({ text, isActive }: { text: string; isActive: boolean }) {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [lines, setLines] = useState<string[]>([])
 
-  // Split text into lines on mount
   useEffect(() => {
-    // Split title and description into individual words for line animation
-    const titleWords = story.title.split(' ')
-    const descWords = story.description.split(' ')
-    
-    // Group words into lines (simulate SplitText lines)
-    const titleLines: string[] = [story.title] // Single line for title
-    const descLines: string[] = []
-    
+    // Split text into lines based on approximate character width
+    const words = text.split(' ')
+    const lineArray: string[] = []
     let currentLine = ''
-    descWords.forEach((word: string, i: number) => {
-      if (currentLine.length + word.length < 50) {
-        currentLine += (currentLine ? ' ' : '') + word
-      } else {
-        descLines.push(currentLine)
+    
+    words.forEach((word, i) => {
+      const testLine = currentLine + (currentLine ? ' ' : '') + word
+      if (testLine.length > 45 && currentLine) {
+        lineArray.push(currentLine)
         currentLine = word
+      } else {
+        currentLine = testLine
       }
-      if (i === descWords.length - 1) {
-        descLines.push(currentLine)
+      if (i === words.length - 1) {
+        lineArray.push(currentLine)
       }
     })
     
-    setLines({ title: titleLines, description: descLines })
-  }, [story])
+    setLines(lineArray)
+  }, [text])
 
-  // Track when the card enters/exits viewport
+  return (
+    <div ref={contentRef}>
+      {lines.map((line, i) => (
+        <div key={i} className="card-line">
+          <span style={{ 
+            transform: isActive ? 'translateY(0)' : 'translateY(100%)',
+            transitionDelay: isActive ? `${i * 0.06}s` : `${(lines.length - 1 - i) * 0.06}s`
+          }}>
+            {line}
+          </span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// Individual Card Component
+function Card({ story, index, isActive }: { story: any; index: number; isActive: boolean }) {
+  const cardRef = useRef<HTMLLIElement>(null)
+
   const { scrollYProgress: cardScroll } = useScroll({
     target: cardRef,
     offset: ["start end", "end start"]
   })
 
-  // Map scroll progress to transform values
   const scale = useTransform(cardScroll, [0.5, 1], [1, 0.85])
   const y = useTransform(cardScroll, [0.5, 1], ['0vh', '-10vh'])
   const rotateX = useTransform(cardScroll, [0.5, 1], [0, -15])
@@ -266,10 +513,6 @@ function Card({ story, index }: { story: any; index: number }) {
     [0.7, 1],
     ['0px 0px 0px rgba(0,0,0,0)', '0px 50px 80px -20px rgba(0,0,0,0.25)']
   )
-
-  // Text line animation - slide up when card enters view
-  const textProgress = useTransform(cardScroll, [0, 0.3], [100, 0])
-  const textOpacity = useTransform(cardScroll, [0, 0.3], [0, 1])
 
   return (
     <li ref={cardRef} className="card" style={{ '--index': index + 1 } as React.CSSProperties}>
@@ -287,50 +530,12 @@ function Card({ story, index }: { story: any; index: number }) {
         }}
       >
         <span className="number">{story.number}</span>
-        
-        {/* Title with line animation */}
         <h2>
-          {lines.title.map((line, i) => (
-            <span key={i} className="card-line">
-              <motion.span
-                style={{
-                  display: 'inline-block',
-                  y: textProgress,
-                  opacity: textOpacity,
-                }}
-                transition={{
-                  duration: 0.6,
-                  delay: i * 0.12,
-                  ease: [0.256, 0.009, 0.125, 0.997]
-                }}
-              >
-                {line}
-              </motion.span>
-            </span>
-          ))}
+          <div className="card-line">
+            <span style={{ transform: 'translateY(0)' }}>{story.title}</span>
+          </div>
         </h2>
-        
-        {/* Description with line animation */}
-        <p>
-          {lines.description.map((line, i) => (
-            <span key={i} className="card-line">
-              <motion.span
-                style={{
-                  display: 'inline-block',
-                  y: textProgress,
-                  opacity: textOpacity,
-                }}
-                transition={{
-                  duration: 0.6,
-                  delay: (i + 1) * 0.12,
-                  ease: [0.256, 0.009, 0.125, 0.997]
-                }}
-              >
-                {line}
-              </motion.span>
-            </span>
-          ))}
-        </p>
+        <SplitTextContent text={story.description} isActive={isActive} />
       </motion.div>
     </li>
   )
