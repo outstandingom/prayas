@@ -102,16 +102,16 @@ export default function HeroBanner() {
   const CurrentIcon = SLIDES[currentSlide].icon;
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ height: '100vh', maxHeight: '800px' }}>
+    <section className="relative w-full overflow-hidden bg-gray-900" style={{ height: '100vh', maxHeight: '800px' }}>
       
       {/* Main Banner Image with Text Overlay */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
           className="absolute inset-0"
         >
           {/* Background Image */}
@@ -121,8 +121,8 @@ export default function HeroBanner() {
           />
           
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
           
           {/* Content Overlay */}
           <div className="absolute inset-0 flex items-center">
@@ -131,7 +131,7 @@ export default function HeroBanner() {
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
                 >
                   {/* Stats Badge */}
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFF314] mb-6">
@@ -184,13 +184,13 @@ export default function HeroBanner() {
       {/* Navigation Arrows */}
       <button
         onClick={handlePrev}
-        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group z-10"
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-black/50 transition-all duration-300 group z-10"
       >
         <ChevronLeft size={24} className="text-white group-hover:scale-110 transition-transform" />
       </button>
       <button
         onClick={handleNext}
-        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group z-10"
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-black/50 transition-all duration-300 group z-10"
       >
         <ChevronRight size={24} className="text-white group-hover:scale-110 transition-transform" />
       </button>
@@ -211,18 +211,18 @@ export default function HeroBanner() {
                 className="group relative"
               >
                 {/* Dot Indicator */}
-                <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                <div className={`h-3 rounded-full transition-all duration-300 ${
                   isActive 
                     ? 'bg-[#FFF314] w-8' 
-                    : 'bg-white/50 hover:bg-white/80'
+                    : 'bg-white/30 hover:bg-white/60 w-3'
                 }`} />
                 
                 {/* Tooltip on Hover */}
                 <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="bg-white rounded-lg shadow-lg px-3 py-2 whitespace-nowrap">
+                  <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg px-3 py-2 whitespace-nowrap border border-white/10">
                     <div className="flex items-center gap-2">
-                      <Icon size={14} className="text-[#00897B]" />
-                      <span className="text-sm font-bold text-gray-900">{slide.title}</span>
+                      <Icon size={14} className="text-[#FFF314]" />
+                      <span className="text-sm font-bold text-white">{slide.title}</span>
                     </div>
                   </div>
                 </div>
@@ -234,10 +234,10 @@ export default function HeroBanner() {
 
       {/* Slide Counter */}
       <div className="absolute top-8 right-8 z-10">
-        <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+        <div className="flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10">
           <span className="text-[#FFF314] font-bold text-lg">{(currentSlide + 1).toString().padStart(2, '0')}</span>
-          <span className="text-white/50">/</span>
-          <span className="text-white/70 font-semibold">{SLIDES.length.toString().padStart(2, '0')}</span>
+          <span className="text-white/30">/</span>
+          <span className="text-white/50 font-semibold">{SLIDES.length.toString().padStart(2, '0')}</span>
         </div>
       </div>
 
