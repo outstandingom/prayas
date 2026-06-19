@@ -1,271 +1,287 @@
-import { useRef, useEffect, useState } from 'react'
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ChevronLeft, ChevronRight, GraduationCap, Users, HeartHandshake, Leaf, Stethoscope, Home, Lightbulb } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
 
-const stories = [
+// Slides Data - 7 meaningful slides
+const SLIDES = [
   {
-    number: "01",
-    title: "From Remote Villages",
-    description: "From the remote villages of rural India to bustling urban slums, our dedicated team works tirelessly to bring education, healthcare, and livelihood opportunities to those who need them most.",
-    bgColor: "#b9f5b0",
-    textColor: "#000"
+    id: 1,
+    icon: GraduationCap,
+    title: "Education",
+    subtitle: "Improving Children for a Better World",
+    description: "We provide quality education to underprivileged children, building foundations for lifelong learning and empowering the next generation of leaders.",
+    image: "https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "10,000+ Children Educated"
   },
   {
-    number: "02",
-    title: "Access Creates Change",
-    description: "We believe true empowerment begins with access – to classrooms, clean water, and healthcare. We create a ripple effect that lifts entire communities.",
-    bgColor: "#a6d9e3",
-    textColor: "#000"
+    id: 2,
+    icon: Users,
+    title: "Women Empowerment",
+    subtitle: "Building Strong, Independent Women",
+    description: "Through skill development, entrepreneurship programs, and leadership training, we help women gain financial independence and social confidence.",
+    image: "https://images.pexels.com/photos/1183434/pexels-photo-1183434.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "5,000+ Women Empowered"
   },
   {
-    number: "03",
-    title: "Environmental Impact",
-    description: "Through grassroots awareness and direct action, we plant trees, clean waterways, and teach the next generation to be stewards of the earth.",
-    bgColor: "#dabdf2",
-    textColor: "#000"
+    id: 3,
+    icon: HeartHandshake,
+    title: "Healthcare",
+    subtitle: "Ensuring Healthy Communities",
+    description: "Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.",
+    image: "https://images.pexels.com/photos/4101143/pexels-photo-4101143.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "50+ Medical Camps"
   },
   {
-    number: "04",
-    title: "Building Resilience",
-    description: "We don't just build infrastructure; we build resilience. By training community members, we ensure every initiative is sustainable long after we leave.",
-    bgColor: "#eaedd1",
-    textColor: "#000"
+    id: 4,
+    icon: Leaf,
+    title: "Environment",
+    subtitle: "Protecting Our Planet Together",
+    description: "From tree plantation drives to waste management initiatives, we're committed to creating a sustainable and greener future for all.",
+    image: "https://images.pexels.com/photos/3192815/pexels-photo-3192815.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "100,000+ Trees Planted"
+  },
+  {
+    id: 5,
+    icon: Stethoscope,
+    title: "Nutrition",
+    subtitle: "Nourishing Bodies and Minds",
+    description: "Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.",
+    image: "https://images.pexels.com/photos/6646959/pexels-photo-6646959.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "20,000+ Meals Served"
+  },
+  {
+    id: 6,
+    icon: Home,
+    title: "Shelter",
+    subtitle: "A Roof Over Every Head",
+    description: "We work to provide safe and dignified housing solutions for homeless families, creating secure environments where they can thrive.",
+    image: "https://images.pexels.com/photos/2363800/pexels-photo-2363800.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "500+ Homes Built"
+  },
+  {
+    id: 7,
+    icon: Lightbulb,
+    title: "Skill Development",
+    subtitle: "Empowering Through Knowledge",
+    description: "Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth.",
+    image: "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    stats: "3,000+ People Trained"
   }
-]
+];
 
-export default function ScrollStory() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [cardHeights, setCardHeights] = useState<string[]>([])
+export default function HeroBanner() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [queuedSlide, setQueuedSlide] = useState<number | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  // Responsive card heights (exactly as in original CSS)
+  // Auto-play functionality
   useEffect(() => {
-    const updateHeights = () => {
-      const vw = window.innerWidth
-      let h = ''
-      if (vw < 480) h = '55vh'
-      else if (vw < 768) h = '70vh'
-      else h = '40vw'
-      setCardHeights(stories.map(() => h))
+    if (!isAutoPlaying) return;
+    
+    const interval = setInterval(() => {
+      handleSlideChange((currentSlide + 1) % SLIDES.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, currentSlide]);
+
+  const handleSlideChange = (nextIndex: number) => {
+    if (nextIndex === currentSlide) return;
+
+    if (isAnimating) {
+      setQueuedSlide(nextIndex);
+      return;
     }
-    updateHeights()
-    window.addEventListener('resize', updateHeights)
-    return () => window.removeEventListener('resize', updateHeights)
-  }, [])
 
-  // Global scroll for progress circle
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  })
-  const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 50 })
-  const circleDashoffset = useTransform(smoothProgress, [0, 1], [251, 0])
+    setIsAutoPlaying(false);
+    setIsAnimating(true);
 
-  // Header & end text fill (white background, dark text)
-  const titleFill = useTransform(scrollYProgress, [0, 0.3], ['transparent', '#000000'])
-  const titleStroke = useTransform(scrollYProgress, [0, 0.3], ['2px rgba(0,0,0,0.3)', '0px'])
-  const endFill = useTransform(scrollYProgress, [0.7, 1], ['transparent', '#000000'])
-  const endStroke = useTransform(scrollYProgress, [0.7, 1], ['2px rgba(0,0,0,0.3)', '0px'])
+    // Animate out current text
+    const currentTexts = contentRef.current?.querySelectorAll('.text-line');
+    if (currentTexts) {
+      currentTexts.forEach((line, i) => {
+        setTimeout(() => {
+          (line as HTMLElement).style.transform = 'translateY(100%)';
+          (line as HTMLElement).style.opacity = '0';
+        }, i * 60);
+      });
+    }
 
-  return (
-    <div ref={containerRef} className="scroll-story-container">
-      {/* Header */}
-      <header className="story-header">
-        <motion.h1 
-          className="story-title"
-          style={{ color: titleFill, WebkitTextStroke: titleStroke }}
-        >
-          Beautiful<br />Modern<br />Impact
-        </motion.h1>
-      </header>
+    // Wait for exit animation, then switch slide
+    setTimeout(() => {
+      setCurrentSlide(nextIndex);
+      
+      // Animate in new text after a brief delay
+      setTimeout(() => {
+        const newTexts = contentRef.current?.querySelectorAll('.text-line');
+        if (newTexts) {
+          newTexts.forEach((line, i) => {
+            setTimeout(() => {
+              (line as HTMLElement).style.transform = 'translateY(0)';
+              (line as HTMLElement).style.opacity = '1';
+            }, i * 60);
+          });
+        }
+        
+        setTimeout(() => {
+          setIsAnimating(false);
+          if (queuedSlide !== null && queuedSlide !== nextIndex) {
+            const q = queuedSlide;
+            setQueuedSlide(null);
+            handleSlideChange(q);
+          }
+        }, 600);
+      }, 50);
+    }, 400);
+  };
 
-      {/* Stacking Cards */}
-      <ul id="cards" style={{ gridTemplateRows: cardHeights.join(' ') }}>
-        {stories.map((story, index) => (
-          <Card key={index} story={story} index={index} />
-        ))}
-      </ul>
+  const handleNext = () => handleSlideChange((currentSlide + 1) % SLIDES.length);
+  const handlePrev = () => handleSlideChange((currentSlide - 1 + SLIDES.length) % SLIDES.length);
+  const handleDotClick = (index: number) => handleSlideChange(index);
 
-      {/* Progress Circle */}
-      <svg className="progress-circle" viewBox="0 0 100 100">
-        <motion.circle
-          cx="50" cy="50" r="40"
-          fill="none"
-          stroke="#000000"
-          strokeWidth="5"
-          transform="rotate(-90 50 50)"
-          style={{ strokeDasharray: 251, strokeDashoffset: circleDashoffset }}
-        />
-      </svg>
-
-      {/* End Section */}
-      <header className="end-header">
-        <motion.h1 
-          className="end-title"
-          style={{ color: endFill, WebkitTextStroke: endStroke }}
-        >
-          The Journey<br />Continues
-        </motion.h1>
-      </header>
-
-      <style>{`
-        .scroll-story-container {
-          background: #ffffff;
-          color: #000000;
-          font-family: "Space Grotesk", "Inter", sans-serif;
-          min-height: 100vh;
-          padding-bottom: 10vh;
-        }
-        .story-header {
-          min-height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          padding: 2rem;
-        }
-        .story-title {
-          font-size: clamp(2rem, 8vw, 5rem);
-          font-weight: 800;
-          line-height: 1.2;
-          background: linear-gradient(to bottom, #000000 0%, transparent 100%);
-          background-clip: text;
-          -webkit-background-clip: text;
-          color: transparent;
-          -webkit-text-stroke: 2px rgba(0,0,0,0.3);
-          max-width: 900px;
-        }
-        .end-header {
-          min-height: 60vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          padding: 2rem;
-        }
-        .end-title {
-          font-size: clamp(2rem, 8vw, 4rem);
-          font-weight: 800;
-          background: linear-gradient(to bottom, #000000 0%, transparent 100%);
-          background-clip: text;
-          -webkit-background-clip: text;
-          color: transparent;
-          -webkit-text-stroke: 2px rgba(0,0,0,0.3);
-        }
-        #cards {
-          list-style: none;
-          padding: 0;
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 4vw;
-          padding-bottom: 16vw;
-          max-width: 90vw;
-          margin: 0 auto;
-        }
-        .card {
-          position: sticky;
-          top: 10vh;
-          height: 100%;
-          padding-top: calc(var(--index) * 1em);
-          perspective: 1000px;
-        }
-        .card__content {
-          box-sizing: border-box;
-          padding: clamp(1.5rem, 5vw, 3rem);
-          width: 100%;
-          height: 100%;
-          border-radius: 32px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          border: 1px solid rgba(0,0,0,0.05);
-          overflow: hidden;
-          transform-origin: 50% 0%;
-          will-change: transform, filter;
-          transform-style: preserve-3d;
-        }
-        .card__content h2 {
-          font-size: clamp(1.5rem, 4vw, 2.5rem);
-          font-weight: 700;
-          margin: 0 0 1rem 0;
-          line-height: 1.2;
-        }
-        .card__content p {
-          font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-          max-width: 700px;
-          line-height: 1.5;
-          opacity: 0.9;
-        }
-        .number {
-          font-size: clamp(3rem, 8vw, 6rem);
-          position: absolute;
-          right: 1rem;
-          top: -0.5rem;
-          opacity: 0.15;
-          font-weight: 800;
-          pointer-events: none;
-        }
-        .progress-circle {
-          position: fixed;
-          bottom: 30px;
-          right: 30px;
-          width: clamp(50px, 8vw, 70px);
-          height: clamp(50px, 8vw, 70px);
-          z-index: 100;
-        }
-        @media (max-width: 768px) {
-          #cards { gap: 6vw; }
-          .card__content { padding: 1.5rem; }
-          .progress-circle { bottom: 20px; right: 20px; }
-        }
-        html { scroll-behavior: smooth; }
-      `}</style>
-    </div>
-  )
-}
-
-// Individual Card – exact replica of CSS @keyframes scale-card
-function Card({ story, index }: { story: any; index: number }) {
-  const cardRef = useRef<HTMLLIElement>(null)
-
-  // Track when the card exits the viewport (exactly like animation-timeline: view())
-  // Offset: "start end" = card starts entering, "end start" = card leaves
-  const { scrollYProgress: cardScroll } = useScroll({
-    target: cardRef,
-    offset: ["start end", "end start"]
-  })
-
-  // Map scroll progress to transform values – only animate during exit (0.5 → 1)
-  // This matches the CSS keyframes which apply the "to" state as the card exits.
-  const scale = useTransform(cardScroll, [0.5, 1], [1, 0.85])
-  const y = useTransform(cardScroll, [0.5, 1], ['0vh', '-10vh'])
-  const rotateX = useTransform(cardScroll, [0.5, 1], [0, -15])
-  const filter = useTransform(cardScroll, [0.5, 1], ['brightness(1)', 'brightness(0.7)'])
-  const borderRadius = useTransform(cardScroll, [0.5, 1], ['32px', '20px'])
-  // Shadow appears only at the end (from 0.7 to 1)
-  const boxShadow = useTransform(
-    cardScroll,
-    [0.7, 1],
-    ['none', '0 50px 80px -20px rgba(0,0,0,0.25)']
-  )
+  const CurrentIcon = SLIDES[currentSlide].icon;
+  const currentContent = SLIDES[currentSlide];
 
   return (
-    <li ref={cardRef} className="card" style={{ '--index': index + 1 } as React.CSSProperties}>
-      <motion.div
-        className="card__content"
-        style={{
-          background: story.bgColor,
-          color: story.textColor,
-          scale,
-          y,
-          rotateX,
-          filter,
-          borderRadius,
-          boxShadow,
-        }}
+    <section className="relative w-full overflow-hidden bg-gray-900" style={{ height: '100vh', maxHeight: '800px' }}>
+      
+      {/* Main Banner with Content */}
+      <div className="absolute inset-0">
+        {/* Background Image */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`bg-${currentSlide}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className="absolute inset-0"
+          >
+            <div 
+              className="w-full h-full bg-cover bg-center"
+              style={{ backgroundImage: `url(${currentContent.image})` }}
+            />
+          </motion.div>
+        </AnimatePresence>
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
+        
+        {/* Content Overlay with Line Animation */}
+        <div className="absolute inset-0 flex items-center">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
+            <div className="max-w-2xl" ref={contentRef}>
+              
+              {/* Stats Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFF314] mb-6"
+              >
+                <CurrentIcon size={18} className="text-gray-900" />
+                <span className="text-sm font-bold text-gray-900 uppercase tracking-wider">
+                  {currentContent.stats}
+                </span>
+              </motion.div>
+              
+              {/* Title with line-by-line animation */}
+              <AnimatePresence mode="wait">
+                <motion.div key={`content-${currentSlide}`}>
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-4 leading-tight overflow-hidden">
+                    <span className="text-line block" style={{ transition: 'transform 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997), opacity 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997)' }}>
+                      {currentContent.title}
+                    </span>
+                  </h1>
+                  
+                  <p className="text-2xl md:text-3xl font-semibold text-[#FFF314] mb-6 overflow-hidden">
+                    <span className="text-line block" style={{ transition: 'transform 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997) 0.06s, opacity 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997) 0.06s' }}>
+                      {currentContent.subtitle}
+                    </span>
+                  </p>
+                  
+                  <p className="text-lg md:text-xl text-white/90 leading-relaxed mb-8 max-w-xl overflow-hidden">
+                    <span className="text-line block" style={{ transition: 'transform 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997) 0.12s, opacity 0.4s cubic-bezier(0.256, 0.009, 0.125, 0.997) 0.12s' }}>
+                      {currentContent.description}
+                    </span>
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+              
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-8 py-4 rounded-full font-bold hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
+                >
+                  Donate Now
+                  <HeartHandshake size={20} />
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-white border-2 border-white/50 hover:bg-white/10 transition-all duration-300 hover:border-[#FFF314]"
+                >
+                  Learn More
+                </motion.button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={handlePrev}
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-black/50 transition-all duration-300 group z-10"
       >
-        <span className="number">{story.number}</span>
-        <h2>{story.title}</h2>
-        <p>{story.description}</p>
-      </motion.div>
-    </li>
+        <ChevronLeft size={24} className="text-white group-hover:scale-110 transition-transform" />
+      </button>
+      <button
+        onClick={handleNext}
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-black/50 transition-all duration-300 group z-10"
+      >
+        <ChevronRight size={24} className="text-white group-hover:scale-110 transition-transform" />
+      </button>
+
+      {/* Bottom Navigation Tabs */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <div className="flex items-center gap-2 p-1.5 bg-black/30 backdrop-blur-sm rounded-full border border-white/10">
+          {SLIDES.map((slide, index) => {
+            const Icon = slide.icon;
+            const isActive = index === currentSlide;
+            
+            return (
+              <button
+                key={slide.id}
+                onClick={() => handleDotClick(index)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  isActive
+                    ? 'bg-[#FFF314] text-gray-900'
+                    : 'text-white/60 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <Icon size={16} />
+                <span className="hidden md:inline">{slide.title}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Slide Counter */}
+      <div className="absolute top-8 right-8 z-10">
+        <div className="flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10">
+          <span className="text-[#FFF314] font-bold text-lg">{(currentSlide + 1).toString().padStart(2, '0')}</span>
+          <span className="text-white/30">/</span>
+          <span className="text-white/50 font-semibold">{SLIDES.length.toString().padStart(2, '0')}</span>
+        </div>
+      </div>
+
+    </section>
   )
 }
