@@ -1,186 +1,321 @@
-import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, Play, Heart, Shield, Users, Award } from 'lucide-react'
-import { FaFacebook, FaInstagram, FaYoutube, FaTwitter } from 'react-icons/fa'
+import { Heart } from 'lucide-react'
+
+// NGO Photos Data - 50 meaningful images showing real impact
+const NGO_PHOTOS = [
+  // Original images
+  "https://images.pexels.com/photos/6646959/pexels-photo-6646959.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4101143/pexels-photo-4101143.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/2363800/pexels-photo-2363800.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7402453/pexels-photo-7402453.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6994660/pexels-photo-6994660.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3192815/pexels-photo-3192815.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6646915/pexels-photo-6646915.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/5698569/pexels-photo-5698569.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4483324/pexels-photo-4483324.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6646884/pexels-photo-6646884.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4386365/pexels-photo-4386365.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3985221/pexels-photo-3985221.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/5428830/pexels-photo-5428830.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/2387795/pexels-photo-2387795.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3192819/pexels-photo-3192819.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6646949/pexels-photo-6646949.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4262939/pexels-photo-4262939.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7610704/pexels-photo-7610704.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7109863/pexels-photo-7109863.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3772667/pexels-photo-3772667.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/8498305/pexels-photo-8498305.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4145192/pexels-photo-4145192.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/8531304/pexels-photo-8531304.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6646970/pexels-photo-6646970.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4577808/pexels-photo-4577808.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7925426/pexels-photo-7925426.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6889372/pexels-photo-6889372.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/8618175/pexels-photo-8618175.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/5673501/pexels-photo-5673501.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/5202401/pexels-photo-5202401.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7536565/pexels-photo-7536565.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3772687/pexels-photo-3772687.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/5699463/pexels-photo-5699463.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7092446/pexels-photo-7092446.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4145357/pexels-photo-4145357.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/8499459/pexels-photo-8499459.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7041675/pexels-photo-7041675.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7655078/pexels-photo-7655078.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4130114/pexels-photo-4130114.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6646945/pexels-photo-6646945.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6460436/pexels-photo-6460436.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3912791/pexels-photo-3912791.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7549982/pexels-photo-7549982.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7680444/pexels-photo-7680444.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3671392/pexels-photo-3671392.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4398099/pexels-photo-4398099.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7655631/pexels-photo-7655631.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/8580725/pexels-photo-8580725.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+
+  // 20 Added NGO, charity, and community volunteering images
+  "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3184432/pexels-photo-3184432.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3184433/pexels-photo-3184433.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/1183434/pexels-photo-1183434.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/868113/pexels-photo-868113.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6646917/pexels-photo-6646917.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6646895/pexels-photo-6646895.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7109946/pexels-photo-7109946.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/7109930/pexels-photo-7109930.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3856027/pexels-photo-3856027.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3855975/pexels-photo-3855975.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/3856050/pexels-photo-3856050.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4308112/pexels-photo-4308112.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4308095/pexels-photo-4308095.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6348123/pexels-photo-6348123.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6348074/pexels-photo-6348074.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6994681/pexels-photo-6994681.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/6994665/pexels-photo-6994665.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop",
+  "https://images.pexels.com/photos/4585184/pexels-photo-4585184.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop"
+];
+
+// Prepare columns data (5 columns, 10 images each)
+const columnsData = (() => {
+  const columns: string[][] = [[], [], [], [], []]
+  NGO_PHOTOS.forEach((img, idx) => {
+    const colIdx = idx % 5
+    columns[colIdx].push(img)
+  })
+  return columns
+})()
+
+const columnClasses = ["up", "down", "up", "down", "up"]
+
+// 3D Photo Wall Component - Preserving original photo size but scaling the container
+const NGOWall3DBackground = () => {
+  return (
+    <div className="ngo-photo-wall-background">
+      <div className="column-wrapper-background">
+        <div className="columns-background">
+          {columnsData.map((colImages, colIndex) => (
+            <div key={colIndex} className={`column-background ${columnClasses[colIndex]}`}>
+              {colImages.map((imgUrl, imgIdx) => (
+                <div 
+                  key={imgIdx} 
+                  style={{ backgroundImage: `url(${imgUrl})` }}
+                  title="NGO impact in action"
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function HeroSection() {
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    setIsVisible(true)
-  }, [])
-
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-navy via-navy/95 to-[#0a1628]">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('/pattern.svg')] bg-repeat" />
+    <section className="relative min-h-screen w-full flex items-center pt-24 pb-16 overflow-hidden">
+      {/* 3D Photo Wall as Full Background */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <NGOWall3DBackground />
+        {/* Lighter overlay that fades toward bottom-right, keeping photos much more visible */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-[#F1F8F5]/40 to-transparent z-10" />
       </div>
+      
+      {/* Background decorative effects – Teal and Light Green accents */}
+      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#00897B]/20 blur-[120px] animate-float-slow pointer-events-none z-10" />
+      <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-[#81C784]/20 blur-[100px] animate-float-slower pointer-events-none z-10" />
 
-      {/* Floating Glow Effects */}
-      <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#205D24]/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#205D24]/20 rounded-full blur-3xl animate-pulse delay-1000" />
-
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Column */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: isVisible ? 1 : 0, x: isVisible ? 0 : -50 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="space-y-8"
-          >
-            {/* Badge */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-20">
+        <div className="max-w-3xl">
+          {/* Text Content – Dark Gray (#263238) for text, Teal (#00897B) for accents */}
+          <div className="text-[#263238]">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#205D24]/20 border border-[#205D24]/30 backdrop-blur-sm"
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00897B]/10 backdrop-blur-sm border border-[#00897B]/30 text-[#00897B] font-bold font-mono text-xs uppercase tracking-widest mb-6"
             >
-              <Shield size={16} className="text-[#4CAF50]" />
-              <span className="text-xs font-semibold text-[#4CAF50] uppercase tracking-wider">
-                Trusted NGO Since 2010
-              </span>
+              <span className="w-2 h-2 rounded-full bg-[#00897B] animate-pulse" />
+              Empowering Communities Globally
             </motion.div>
 
-            {/* Heading */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
-              transition={{ delay: 0.3, duration: 0.7 }}
-              className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight"
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05]"
             >
-              Empowering Lives,
-              <br />
-              <span className="bg-gradient-to-r from-[#4CAF50] via-[#205D24] to-[#4CAF50] bg-clip-text text-transparent">
-                Building Futures
-              </span>
+              Together We Can Build A <span className="text-[#00897B]">Better World</span>
             </motion.h1>
 
-            {/* Description */}
             <motion.p
               initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
-              transition={{ delay: 0.4, duration: 0.7 }}
-              className="text-lg text-white/70 leading-relaxed max-w-lg"
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="mt-6 text-lg md:text-xl text-[#263238]/80 max-w-2xl leading-relaxed font-light"
             >
-              Join us in our mission to create lasting change through education, 
-              healthcare, and community development across India.
+              We are dedicated to creating sustainable impact through grassroots education, comprehensive healthcare, and community-led environmental initiatives.
             </motion.p>
 
-            {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
-              transition={{ delay: 0.5, duration: 0.7 }}
-              className="flex flex-wrap gap-4"
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="mt-10 flex flex-col sm:flex-row items-center gap-4"
             >
               <Link
                 to="/donate"
-                className="group inline-flex items-center gap-2 px-6 py-3 bg-[#205D24] hover:bg-[#2a7a2f] text-white font-semibold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#205D24]/30"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#00897B] text-white px-8 py-4 rounded-full font-bold hover:bg-[#00695C] transition-all duration-300 shadow-lg shadow-[#00897B]/30 hover:shadow-[#00897B]/50 hover:scale-105"
               >
-                <Heart size={20} />
-                Donate Now
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                Donate Now <Heart size={18} />
               </Link>
               <Link
-                to="/programs"
-                className="inline-flex items-center gap-2 px-6 py-3 border border-white/20 hover:border-[#4CAF50] text-white font-semibold rounded-full transition-all duration-300 hover:bg-[#205D24]/10"
+                to="/about"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-[#00897B] border-2 border-[#00897B]/30 hover:bg-[#00897B]/10 transition-all duration-300 hover:border-[#00897B]/50"
               >
-                Explore Programs
+                Get Involved
               </Link>
             </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
-              transition={{ delay: 0.6, duration: 0.7 }}
-              className="flex flex-wrap gap-8 pt-4"
-            >
-              {[
-                { icon: Users, value: '25K+', label: 'Lives Impacted' },
-                { icon: Heart, value: '350+', label: 'Projects' },
-                { icon: Award, value: '27+', label: 'States' }
-              ].map((stat, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-[#205D24]/20">
-                    <stat.icon size={20} className="text-[#4CAF50]" />
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold text-white">{stat.value}</div>
-                    <div className="text-xs text-white/60">{stat.label}</div>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          {/* Right Column - Image/Video */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: isVisible ? 1 : 0, x: isVisible ? 0 : 50 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="relative"
-          >
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-[#205D24]/20">
-              <img
-                src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop"
-                alt="Prayas NGO Impact"
-                className="w-full h-[400px] sm:h-[500px] object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent" />
-              
-              {/* Play Button Overlay */}
-              <button className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-[#205D24] hover:bg-[#2a7a2f] flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg shadow-[#205D24]/30 group">
-                <Play size={24} className="text-white fill-white ml-1" />
-              </button>
-            </div>
-
-            {/* Floating Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
-              transition={{ delay: 0.6, duration: 0.7 }}
-              className="absolute -bottom-6 -left-6 bg-white/10 backdrop-blur-md border border-white/10 rounded-xl p-4 shadow-xl"
-            >
-              <div className="flex items-center gap-3">
-                <div className="flex -space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#205D24] to-[#2a7a2f] border-2 border-white/20" />
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#205D24] to-[#2a7a2f] border-2 border-white/20" />
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#205D24] to-[#2a7a2f] border-2 border-white/20" />
-                </div>
-                <div>
-                  <p className="text-white font-semibold text-sm">200+ Volunteers</p>
-                  <p className="text-white/60 text-xs">Active across India</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
-      {/* Bottom Social Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
-        transition={{ delay: 0.7, duration: 0.7 }}
-        className="absolute bottom-8 left-0 right-0 flex justify-center gap-6"
-      >
-        <a href="#" className="text-white/40 hover:text-[#4CAF50] transition-colors">
-          <FaFacebook size={20} />
-        </a>
-        <a href="#" className="text-white/40 hover:text-[#4CAF50] transition-colors">
-          <FaInstagram size={20} />
-        </a>
-        <a href="#" className="text-white/40 hover:text-[#4CAF50] transition-colors">
-          <FaYoutube size={20} />
-        </a>
-        <a href="#" className="text-white/40 hover:text-[#4CAF50] transition-colors">
-          <FaTwitter size={20} />
-        </a>
-      </motion.div>
+      {/* CSS styles - Preserving original photo dimensions, scaling the container */}
+      <style>{`
+        :root {
+          --column-height: 300px;
+          --image-height: 200px;
+          --row-gap: 0.5em;
+          --column-gap: 0.25em;
+        }
+
+        /* Full screen background 3D wall - scaled down container */
+        .ngo-photo-wall-background {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+        }
+
+        .column-wrapper-background {
+          width: 100%;
+          height: 100%;
+          perspective: 1000px;
+          position: relative;
+          overflow: hidden;
+          /* Scale down the entire container to show more photos */
+          transform: scale(0.7);
+        }
+
+        .columns-background {
+          position: absolute;
+          width: 200%;
+          height: 200%;
+          top: -50%;
+          left: -50%;
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          transform: rotateX(45deg) rotateY(20deg) rotate(-25deg) translate3d(-6em, 8em, 8em);
+          transform-origin: 50%;
+          transform-style: preserve-3d;
+          mask-image: linear-gradient(
+            #0000 0%,
+            #00000005 2.3%,
+            #00000009 2.57%,
+            #00000013 3.65%,
+            #00000026 5.25%,
+            #0000004d 7.5%,
+            #000 30%
+          );
+        }
+
+        .column-background {
+          display: flex;
+          flex-direction: column;
+          margin-left: var(--column-gap);
+          margin-right: var(--column-gap);
+        }
+
+        /* Original photo size preserved */
+        .column-background div {
+          height: 200px;
+          margin-bottom: var(--row-gap);
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-position: center;
+          border-radius: 12px;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+          transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .column-background div:hover {
+          transform: scale(1.03);
+          filter: brightness(1.08);
+        }
+
+        .column-background:nth-child(1) { padding-top: 100px; }
+        .column-background:nth-child(2) { padding-top: 50px; }
+        .column-background:nth-child(3) { padding-top: 0px; }
+        .column-background:nth-child(4) { padding-top: 100px; }
+        .column-background:nth-child(5) { padding-top: 50px; }
+
+        .up {
+          animation: imageScrollingUp 25s linear infinite alternate;
+        }
+
+        .down {
+          animation: imageScrollingDown 25s linear infinite alternate;
+        }
+
+        @keyframes imageScrollingUp {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(calc(-1 * (((200px + 0.5em) * 10) - 300px))); }
+        }
+
+        @keyframes imageScrollingDown {
+          0% { transform: translateY(calc(-1 * (((200px + 0.5em) * 10) - 300px))); }
+          100% { transform: translateY(0); }
+        }
+
+        @keyframes float-slow {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(20px, -30px) scale(1.05); }
+        }
+        
+        @keyframes float-slower {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-25px, 20px) scale(0.96); }
+        }
+        
+        .animate-float-slow {
+          animation: float-slow 14s ease-in-out infinite;
+        }
+        
+        .animate-float-slower {
+          animation: float-slower 18s ease-in-out infinite;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+          .column-wrapper-background {
+            transform: scale(0.9);
+          }
+        }
+        
+        @media (max-width: 768px) {
+          .column-wrapper-background {
+            transform: scale(1.1);
+          }
+        }
+      `}</style>
     </section>
   )
 }
