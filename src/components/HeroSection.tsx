@@ -1,290 +1,150 @@
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Heart } from 'lucide-react'
+import { Heart, Mail, Phone, MapPin, Facebook, Instagram, Youtube, Twitter, Send } from 'lucide-react'
 
-// NGO Photos Data - 50 meaningful images showing real impact
-const NGO_PHOTOS = [
-  // Real NGO photos from ibb.co
-  "https://i.ibb.co/vx3hCL1w/IMG-0168.avif",
-  "https://i.ibb.co/fdRGxny2/IMG-0236.avif",
-  "https://i.ibb.co/NgGSdsmN/IMG-1658.avif",
-  "https://i.ibb.co/fzhHbdJr/IMG-0250.avif",
-  "https://i.ibb.co/qMsCwRYs/IMG-20191104-162653.jpg",
-  "https://i.ibb.co/DDD78cWr/IMG-20241227-132947.jpg",
-  "https://i.ibb.co/k63wYXTs/IMG-20250222-122329.jpg",
-  "https://i.ibb.co/hxSBSXYX/IMG-0339.avif",
-  "https://i.ibb.co/zTK3gdhL/d22833f6-f7be-410d-b7cc-79135da776b9.jpg",
-  "https://i.ibb.co/0jXXjMGw/IMG-2199.jpg",
-  "https://i.ibb.co/LX58XTfm/0a85ed14-9582-4e56-bc41-5c9e1784ec45.jpg",
-  "https://i.ibb.co/7tnXcS54/2f1b8f20-5e95-4b11-b16f-385528a1e0c8.jpg",
-  "https://i.ibb.co/jdQP2w5/aa849143-415b-4cf2-a906-862d128af6ff.jpg",
-  "https://i.ibb.co/k6Wrqnc2/85233277-c407-43a4-8ea8-dfe661401e54.jpg",
-   "https://i.ibb.co/vx3hCL1w/IMG-0168.avif",
-  "https://i.ibb.co/fdRGxny2/IMG-0236.avif",
-  "https://i.ibb.co/NgGSdsmN/IMG-1658.avif",
-  "https://i.ibb.co/fzhHbdJr/IMG-0250.avif",
-  "https://i.ibb.co/qMsCwRYs/IMG-20191104-162653.jpg",
-  "https://i.ibb.co/DDD78cWr/IMG-20241227-132947.jpg",
-  "https://i.ibb.co/k63wYXTs/IMG-20250222-122329.jpg",
-  "https://i.ibb.co/hxSBSXYX/IMG-0339.avif",
-  "https://i.ibb.co/zTK3gdhL/d22833f6-f7be-410d-b7cc-79135da776b9.jpg",
-  "https://i.ibb.co/0jXXjMGw/IMG-2199.jpg",
-  "https://i.ibb.co/LX58XTfm/0a85ed14-9582-4e56-bc41-5c9e1784ec45.jpg",
-  "https://i.ibb.co/7tnXcS54/2f1b8f20-5e95-4b11-b16f-385528a1e0c8.jpg",
-  "https://i.ibb.co/jdQP2w5/aa849143-415b-4cf2-a906-862d128af6ff.jpg",
-  "https://i.ibb.co/k6Wrqnc2/85233277-c407-43a4-8ea8-dfe661401e54.jpg",
-   "https://i.ibb.co/vx3hCL1w/IMG-0168.avif",
-  "https://i.ibb.co/fdRGxny2/IMG-0236.avif",
-  "https://i.ibb.co/NgGSdsmN/IMG-1658.avif",
-  "https://i.ibb.co/fzhHbdJr/IMG-0250.avif",
-  "https://i.ibb.co/qMsCwRYs/IMG-20191104-162653.jpg",
-  "https://i.ibb.co/DDD78cWr/IMG-20241227-132947.jpg",
-  "https://i.ibb.co/k63wYXTs/IMG-20250222-122329.jpg",
-  "https://i.ibb.co/hxSBSXYX/IMG-0339.avif",
-  "https://i.ibb.co/zTK3gdhL/d22833f6-f7be-410d-b7cc-79135da776b9.jpg",
-  "https://i.ibb.co/0jXXjMGw/IMG-2199.jpg",
-  "https://i.ibb.co/LX58XTfm/0a85ed14-9582-4e56-bc41-5c9e1784ec45.jpg",
-  "https://i.ibb.co/7tnXcS54/2f1b8f20-5e95-4b11-b16f-385528a1e0c8.jpg",
-  "https://i.ibb.co/jdQP2w5/aa849143-415b-4cf2-a906-862d128af6ff.jpg",
-  "https://i.ibb.co/k6Wrqnc2/85233277-c407-43a4-8ea8-dfe661401e54.jpg",
-];
-// Prepare columns data (5 columns, 10 images each)
-const columnsData = (() => {
-  const columns: string[][] = [[], [], [], [], []]
-  NGO_PHOTOS.forEach((img, idx) => {
-    const colIdx = idx % 5
-    columns[colIdx].push(img)
-  })
-  return columns
-})()
+export default function Footer() {
+  const currentYear = new Date().getFullYear()
 
-const columnClasses = ["up", "down", "up", "down", "up"]
-
-// 3D Photo Wall Component - Preserving original photo size but scaling the container
-const NGOWall3DBackground = () => {
   return (
-    <div className="ngo-photo-wall-background">
-      <div className="column-wrapper-background">
-        <div className="columns-background">
-          {columnsData.map((colImages, colIndex) => (
-            <div key={colIndex} className={`column-background ${columnClasses[colIndex]}`}>
-              {colImages.map((imgUrl, imgIdx) => (
-                <div 
-                  key={imgIdx} 
-                  style={{ backgroundImage: `url(${imgUrl})` }}
-                  title="NGO impact in action"
+    <footer className="bg-navy text-white/80 relative overflow-hidden">
+      {/* Decorative top border */}
+      <div className="h-1 bg-gradient-to-r from-[#205D24] via-[#2a7a2f] to-[#205D24]" />
+
+      {/* Main Footer */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          {/* Brand Section */}
+          <div className="space-y-4">
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#205D24] to-[#2a7a2f] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <img 
+                  src="https://i.ibb.co/N6Cft6S3/IMG-20260614-015637.jpg" 
+                  alt="Prayas Logo" 
+                  className="w-full h-full object-cover"
                 />
-              ))}
+              </div>
+              <div className="flex flex-col leading-tight">
+                <span className="font-display font-bold text-xl tracking-tight text-white group-hover:text-[#4CAF50] transition-colors">
+                  Prayas
+                </span>
+                <span className="text-[9px] uppercase tracking-[0.18em] text-white/60">
+                  Samaj Sevi Sanstha
+                </span>
+              </div>
+            </Link>
+            <p className="text-sm text-white/60 leading-relaxed max-w-xs">
+              Empowering communities through education, healthcare, and sustainable development since 2010.
+            </p>
+            <div className="flex items-center gap-3 pt-2">
+              <a 
+                href="#" 
+                className="w-9 h-9 rounded-full bg-white/5 hover:bg-[#205D24] transition-all duration-300 flex items-center justify-center text-white/60 hover:text-white group"
+                aria-label="Facebook"
+              >
+                <Facebook size={16} className="group-hover:scale-110 transition-transform" />
+              </a>
+              <a 
+                href="#" 
+                className="w-9 h-9 rounded-full bg-white/5 hover:bg-[#205D24] transition-all duration-300 flex items-center justify-center text-white/60 hover:text-white group"
+                aria-label="Instagram"
+              >
+                <Instagram size={16} className="group-hover:scale-110 transition-transform" />
+              </a>
+              <a 
+                href="#" 
+                className="w-9 h-9 rounded-full bg-white/5 hover:bg-[#205D24] transition-all duration-300 flex items-center justify-center text-white/60 hover:text-white group"
+                aria-label="YouTube"
+              >
+                <Youtube size={16} className="group-hover:scale-110 transition-transform" />
+              </a>
+              <a 
+                href="#" 
+                className="w-9 h-9 rounded-full bg-white/5 hover:bg-[#205D24] transition-all duration-300 flex items-center justify-center text-white/60 hover:text-white group"
+                aria-label="Twitter"
+              >
+                <Twitter size={16} className="group-hover:scale-110 transition-transform" />
+              </a>
             </div>
-          ))}
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-semibold text-white text-sm uppercase tracking-wider mb-4">Quick Links</h3>
+            <ul className="space-y-2.5">
+              {['Home', 'About Us', 'Programs', 'Gallery', 'Stories', 'Contact'].map((item) => (
+                <li key={item}>
+                  <Link 
+                    to={`/${item.toLowerCase().replace(' ', '-')}`} 
+                    className="text-sm text-white/60 hover:text-[#4CAF50] transition-colors duration-200 hover:translate-x-1 inline-block"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h3 className="font-semibold text-white text-sm uppercase tracking-wider mb-4">Contact Us</h3>
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3 text-sm text-white/60 hover:text-white transition-colors">
+                <MapPin size={16} className="text-[#4CAF50] flex-shrink-0 mt-0.5" />
+                <span>Indore, Madhya Pradesh, India</span>
+              </li>
+              <li className="flex items-center gap-3 text-sm text-white/60 hover:text-white transition-colors">
+                <Phone size={16} className="text-[#4CAF50] flex-shrink-0" />
+                <a href="tel:+919999999999">+91 99999 99999</a>
+              </li>
+              <li className="flex items-center gap-3 text-sm text-white/60 hover:text-white transition-colors">
+                <Mail size={16} className="text-[#4CAF50] flex-shrink-0" />
+                <a href="mailto:prayas20269@gmail.com">prayas20269@gmail.com</a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div>
+            <h3 className="font-semibold text-white text-sm uppercase tracking-wider mb-4">Stay Updated</h3>
+            <p className="text-sm text-white/60 mb-4">
+              Subscribe to our newsletter for updates on our work and impact.
+            </p>
+            <form className="flex flex-col sm:flex-row gap-2">
+              <input 
+                type="email" 
+                placeholder="Your email" 
+                className="flex-1 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#4CAF50] transition-colors text-sm"
+                required
+              />
+              <button 
+                type="submit" 
+                className="px-4 py-2.5 rounded-lg bg-[#205D24] hover:bg-[#2a7a2f] text-white font-medium transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-sm whitespace-nowrap"
+              >
+                Subscribe
+                <Send size={14} />
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </div>
-  )
-}
 
-export default function HeroSection() {
-  return (
-    <section className="relative min-h-screen w-full flex items-center pt-24 pb-16 overflow-hidden">
-      {/* 3D Photo Wall as Full Background */}
-      <div className="absolute inset-0 w-full h-full z-0">
-        <NGOWall3DBackground />
-        {/* Lighter overlay that fades toward bottom-right, keeping photos much more visible */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-[#F1F8F5]/40 to-transparent z-10" />
-      </div>
-      
-      {/* Background decorative effects – Teal and Light Green accents */}
-      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#00897B]/20 blur-[120px] animate-float-slow pointer-events-none z-10" />
-      <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-[#81C784]/20 blur-[100px] animate-float-slower pointer-events-none z-10" />
-
-      <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-20">
-        <div className="max-w-3xl">
-          {/* Text Content – Dark Gray (#263238) for text, Teal (#00897B) for accents */}
-          <div className="text-[#263238]">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00897B]/10 backdrop-blur-sm border border-[#00897B]/30 text-[#00897B] font-bold font-mono text-xs uppercase tracking-widest mb-6"
-            >
-              <span className="w-2 h-2 rounded-full bg-[#00897B] animate-pulse" />
-              Empowering Communities Globally
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05]"
-            >
-              Together We Can Build A <span className="text-[#00897B]">Better World</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="mt-6 text-lg md:text-xl text-[#263238]/80 max-w-2xl leading-relaxed font-light"
-            >
-              We are dedicated to creating sustainable impact through grassroots education, comprehensive healthcare, and community-led environmental initiatives.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="mt-10 flex flex-col sm:flex-row items-center gap-4"
-            >
-              <Link
-                to="/donate"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#00897B] text-white px-8 py-4 rounded-full font-bold hover:bg-[#00695C] transition-all duration-300 shadow-lg shadow-[#00897B]/30 hover:shadow-[#00897B]/50 hover:scale-105"
-              >
-                Donate Now <Heart size={18} />
-              </Link>
-              <Link
-                to="/about"
-                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-[#00897B] border-2 border-[#00897B]/30 hover:bg-[#00897B]/10 transition-all duration-300 hover:border-[#00897B]/50"
-              >
-                Get Involved
-              </Link>
-            </motion.div>
+        {/* Bottom Bar */}
+        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-white/40">
+            © {currentYear} <span className="text-white/60 font-medium">Prayas Samaj Sevi Sanstha</span>. All rights reserved.
+          </p>
+          <div className="flex items-center gap-6 text-xs text-white/40">
+            <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link to="/donate" className="flex items-center gap-1.5 text-[#4CAF50] hover:text-white transition-colors font-medium">
+              <Heart size={12} className="fill-[#4CAF50] group-hover:fill-white" />
+              Donate Now
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* CSS styles - Preserving original photo dimensions, scaling the container */}
-      <style>{`
-        :root {
-          --column-height: 300px;
-          --image-height: 200px;
-          --row-gap: 0.5em;
-          --column-gap: 0.25em;
-        }
-
-        /* Full screen background 3D wall - scaled down container */
-        .ngo-photo-wall-background {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          overflow: hidden;
-        }
-
-        .column-wrapper-background {
-          width: 100%;
-          height: 100%;
-          perspective: 1000px;
-          position: relative;
-          overflow: hidden;
-          /* Scale down the entire container to show more photos */
-          transform: scale(0.7);
-        }
-
-        .columns-background {
-          position: absolute;
-          width: 200%;
-          height: 200%;
-          top: -50%;
-          left: -50%;
-          display: grid;
-          grid-template-columns: repeat(5, 1fr);
-          transform: rotateX(45deg) rotateY(20deg) rotate(-25deg) translate3d(-6em, 8em, 8em);
-          transform-origin: 50%;
-          transform-style: preserve-3d;
-          mask-image: linear-gradient(
-            #0000 0%,
-            #00000005 2.3%,
-            #00000009 2.57%,
-            #00000013 3.65%,
-            #00000026 5.25%,
-            #0000004d 7.5%,
-            #000 30%
-          );
-        }
-
-        .column-background {
-          display: flex;
-          flex-direction: column;
-          margin-left: var(--column-gap);
-          margin-right: var(--column-gap);
-        }
-
-        /* Original photo size preserved */
-        .column-background div {
-          height: 200px;
-          margin-bottom: var(--row-gap);
-          background-repeat: no-repeat;
-          background-size: cover;
-          background-position: center;
-          border-radius: 12px;
-          box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-          transition: transform 0.3s ease, filter 0.3s ease;
-        }
-
-        .column-background div:hover {
-          transform: scale(1.03);
-          filter: brightness(1.08);
-        }
-
-        .column-background:nth-child(1) { padding-top: 100px; }
-        .column-background:nth-child(2) { padding-top: 50px; }
-        .column-background:nth-child(3) { padding-top: 0px; }
-        .column-background:nth-child(4) { padding-top: 100px; }
-        .column-background:nth-child(5) { padding-top: 50px; }
-
-        .up {
-          animation: imageScrollingUp 25s linear infinite alternate;
-        }
-
-        .down {
-          animation: imageScrollingDown 25s linear infinite alternate;
-        }
-
-        @keyframes imageScrollingUp {
-          0% { transform: translateY(0); }
-          100% { transform: translateY(calc(-1 * (((200px + 0.5em) * 10) - 300px))); }
-        }
-
-        @keyframes imageScrollingDown {
-          0% { transform: translateY(calc(-1 * (((200px + 0.5em) * 10) - 300px))); }
-          100% { transform: translateY(0); }
-        }
-
-        @keyframes float-slow {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(20px, -30px) scale(1.05); }
-        }
-        
-        @keyframes float-slower {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-25px, 20px) scale(0.96); }
-        }
-        
-        .animate-float-slow {
-          animation: float-slow 14s ease-in-out infinite;
-        }
-        
-        .animate-float-slower {
-          animation: float-slower 18s ease-in-out infinite;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 1024px) {
-          .column-wrapper-background {
-            transform: scale(0.9);
-          }
-        }
-        
-        @media (max-width: 768px) {
-          .column-wrapper-background {
-            transform: scale(1.1);
-          }
-        }
-      `}</style>
-    </section>
+      {/* Floating Decorative Elements */}
+      <div className="absolute -bottom-20 -right-20 w-64 h-64 rounded-full bg-[#205D24]/5 blur-3xl pointer-events-none" />
+      <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-[#205D24]/5 blur-3xl pointer-events-none" />
+    </footer>
   )
 }
