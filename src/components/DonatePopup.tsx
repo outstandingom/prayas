@@ -62,9 +62,9 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#00897B]/10 mb-6"
+                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#FFF314]/10 mb-6"
                 >
-                  <CheckCircle className="w-10 h-10 text-[#00897B]" />
+                  <CheckCircle className="w-10 h-10 text-[#FFF314]" />
                 </motion.div>
                 <h2 className="text-2xl font-bold text-[#263238] mb-2">Thank You! ❤️</h2>
                 <p className="text-[#263238]/60 mb-2">
@@ -76,13 +76,13 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 <div className="flex gap-3 justify-center">
                   <button
                     onClick={onClose}
-                    className="px-6 py-2.5 bg-[#E8F5E9] text-[#263238] rounded-lg font-medium hover:bg-[#E8F5E9]/80 transition-colors"
+                    className="px-6 py-2.5 bg-gray-100 text-[#263238] rounded-lg font-medium hover:bg-gray-200 transition-colors"
                   >
                     Close
                   </button>
                   <button
                     onClick={onClose}
-                    className="px-6 py-2.5 bg-[#00897B] text-white rounded-lg font-medium hover:bg-[#00897B]/90 transition-colors"
+                    className="px-6 py-2.5 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-colors"
                   >
                     Share
                   </button>
@@ -90,20 +90,40 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               </div>
             ) : (
               <>
-                {/* Header */}
-                <div className="bg-gradient-to-br from-[#00897B] to-[#4DB6AC] p-6 text-white rounded-t-2xl">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                      <Heart className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold">Make a Donation</h2>
-                      <p className="text-white/80 text-sm">Your support changes lives</p>
-                    </div>
+                {/* Header with Child Image */}
+                <div className="relative bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 p-6 text-[#263238] rounded-t-2xl overflow-hidden">
+                  {/* Background Image */}
+                  <div className="absolute inset-0 opacity-20">
+                    <img
+                      src="https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop"
+                      alt="Children smiling"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <p className="text-white/60 text-xs">
-                    All donations are tax-deductible under Section 80G
-                  </p>
+                  
+                  {/* Child Image Overlay */}
+                  <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full border-4 border-white/30 overflow-hidden shadow-xl">
+                    <img
+                      src="https://images.pexels.com/photos/6646959/pexels-photo-6646959.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop"
+                      alt="Happy child"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 rounded-full bg-white/30 flex items-center justify-center backdrop-blur-sm">
+                        <Heart className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold">Make a Donation</h2>
+                        <p className="text-[#263238]/70 text-sm">Your support changes lives</p>
+                      </div>
+                    </div>
+                    <p className="text-[#263238]/50 text-xs">
+                      All donations are tax-deductible under Section 80G
+                    </p>
+                  </div>
                 </div>
 
                 {/* Form */}
@@ -111,7 +131,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                   {/* Amount Selection */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-3">
-                      <IndianRupee className="w-4 h-4 text-[#00897B]" />
+                      <IndianRupee className="w-4 h-4 text-[#FFF314]" />
                       Select Amount
                     </label>
                     <div className="grid grid-cols-3 gap-2 mb-3">
@@ -125,8 +145,8 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                           }}
                           className={`py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${
                             selectedAmount === amt.value && !customAmount
-                              ? 'bg-[#00897B] text-white shadow-lg shadow-[#00897B]/20'
-                              : 'bg-[#E8F5E9] text-[#263238] hover:bg-[#00897B]/10'
+                              ? 'bg-[#FFF314] text-[#263238] shadow-lg shadow-[#FFF314]/20'
+                              : 'bg-gray-100 text-[#263238] hover:bg-[#FFF314]/10'
                           }`}
                         >
                           {amt.label}
@@ -143,7 +163,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                           setCustomAmount(e.target.value)
                           setSelectedAmount(null)
                         }}
-                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#00897B]/20 rounded-lg focus:outline-none focus:border-[#00897B] focus:ring-2 focus:ring-[#00897B]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
+                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
                       />
                     </div>
                   </div>
@@ -151,7 +171,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                   {/* Payment Method */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-3">
-                      <CreditCard className="w-4 h-4 text-[#00897B]" />
+                      <CreditCard className="w-4 h-4 text-[#FFF314]" />
                       Payment Method
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -166,8 +186,8 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                           onClick={() => setPaymentMethod(method.id)}
                           className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg transition-all ${
                             paymentMethod === method.id
-                              ? 'bg-[#00897B] text-white shadow-lg shadow-[#00897B]/20'
-                              : 'bg-[#E8F5E9] text-[#263238] hover:bg-[#00897B]/10'
+                              ? 'bg-[#FFF314] text-[#263238] shadow-lg shadow-[#FFF314]/20'
+                              : 'bg-gray-100 text-[#263238] hover:bg-[#FFF314]/10'
                           }`}
                         >
                           <method.icon className="w-5 h-5" />
@@ -178,8 +198,8 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                   </div>
 
                   {/* Impact Message */}
-                  <div className="bg-[#E8F5E9] rounded-lg p-4 flex items-start gap-3">
-                    <Gift className="w-5 h-5 text-[#00897B] mt-0.5" />
+                  <div className="bg-[#FFF314]/5 rounded-lg p-4 flex items-start gap-3 border border-[#FFF314]/10">
+                    <Gift className="w-5 h-5 text-[#FFF314] mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-[#263238]">Your Impact</p>
                       <p className="text-xs text-[#263238]/60">
@@ -195,7 +215,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                   {/* Donate Button */}
                   <button
                     type="submit"
-                    className="w-full py-3.5 bg-[#00897B] text-white rounded-lg font-bold text-lg hover:bg-[#00897B]/90 transition-all shadow-lg shadow-[#00897B]/20 flex items-center justify-center gap-2"
+                    className="w-full py-3.5 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2"
                   >
                     <Heart className="w-5 h-5" />
                     Donate ₹{amount?.toLocaleString() || '0'}
