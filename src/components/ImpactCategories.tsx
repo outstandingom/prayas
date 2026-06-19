@@ -3,7 +3,7 @@ import { useRef, useState } from 'react'
 import { motion, useScroll, useSpring, useMotionValueEvent } from 'framer-motion'
 
 const CATEGORIES = [
-  { id: '01', title: 'Child growth & Education', desc: 'Every child deserves a chance to learn, grow, and dream..', img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&h=500&fit=crop&q=80' },
+  { id: '01', title: 'Child growth & Education', desc: 'Every child deserves a chance to learn, grow, and dream.', img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&h=500&fit=crop&q=80' },
   { id: '02', title: 'HEALTHCARE', desc: 'Free medical camps, health awareness programs, and essential healthcare access for underserved communities.', img: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=500&fit=crop&q=80' },
   { id: '03', title: 'WOMEN EMPOWERMENT', desc: 'Skill development, self-help groups, and financial independence programs transforming women\'s lives.', img: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=800&h=500&fit=crop&q=80' },
   { id: '04', title: 'CHILD WELFARE', desc: 'Protecting children\'s rights, nutrition programs, and safe shelter initiatives for vulnerable children.', img: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop&q=80' },
@@ -47,15 +47,15 @@ export default function ImpactCategories() {
               style={{
                 width: i === activeIndex ? '10px' : '5px',
                 height: i === activeIndex ? '10px' : '5px',
-                backgroundColor: i === activeIndex ? '#00897B' : '#E8F5E9',
-                boxShadow: i === activeIndex ? '0 0 6px rgba(0,137,123,0.3)' : 'none'
+                backgroundColor: i === activeIndex ? '#FFF314' : '#F1F8F5',
+                boxShadow: i === activeIndex ? '0 0 8px rgba(255,243,20,0.5)' : 'none'
               }}
             />
             {i === activeIndex && (
               <motion.span 
                 initial={{ opacity: 0, x: 5 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="text-xs font-mono font-bold text-[#00897B]"
+                className="text-xs font-mono font-bold text-[#FFF314]"
               >
                 {cat.id}
               </motion.span>
@@ -77,13 +77,13 @@ export default function ImpactCategories() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false, margin: "-5% 0px -5% 0px" }}
               transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
-              className="pointer-events-auto w-full max-w-sm sm:max-w-md bg-white/95 backdrop-blur-sm border border-[#00897B]/10 p-4 sm:p-5 rounded-2xl shadow-lg shadow-[#263238]/5 hover:shadow-xl hover:shadow-[#00897B]/5 transition-all duration-300"
+              className="pointer-events-auto w-full max-w-sm sm:max-w-md bg-white/95 backdrop-blur-sm border border-[#FFF314]/10 p-4 sm:p-5 rounded-2xl shadow-lg shadow-[#263238]/5 hover:shadow-xl hover:shadow-[#FFF314]/5 transition-all duration-300"
             >
-              <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#E8F5E9]">
-                <span className="font-mono text-[10px] tracking-[0.15em] text-[#00897B] font-bold">
+              <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#FFF314]/10">
+                <span className="font-mono text-[10px] tracking-[0.15em] text-[#FFF314] font-bold">
                   {cat.id} — {cat.title}
                 </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00897B]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FFF314]" />
               </div>
 
               <h3 className="font-display text-xl sm:text-2xl font-bold text-[#263238] mb-1.5">
@@ -98,7 +98,7 @@ export default function ImpactCategories() {
                 <img src={cat.img} alt={cat.title} className="w-full h-full object-cover" loading="lazy" />
               </div>
 
-              <button className="inline-flex items-center gap-2 text-[#00897B] font-mono text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all">
+              <button className="inline-flex items-center gap-2 text-[#FFF314] font-mono text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all">
                 Learn More <span className="text-base leading-none">→</span>
               </button>
             </motion.div>
