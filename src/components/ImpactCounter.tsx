@@ -34,21 +34,21 @@ function Counter({ end, suffix = '', label, description, duration = 2000 }: Coun
   }, [isInView, end, duration])
 
   return (
-    <div ref={ref} className="flex flex-col items-center p-6 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-[#F9A825]/20 relative overflow-hidden group hover:shadow-2xl transition-all duration-300 h-full">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#F9A825]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    <div ref={ref} className="flex flex-col items-center p-6 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-[#FFF314]/20 relative overflow-hidden group hover:shadow-2xl transition-all duration-300 h-full">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#FFF314]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       
       {/* Number */}
-      <div className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-[#F9A825] mb-2 drop-shadow-md relative z-10">
+      <div className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-[#FFF314] mb-2 drop-shadow-md relative z-10">
         {count.toLocaleString()}{suffix}
       </div>
       
       {/* Label */}
-      <div className="text-[#0B2E63]/80 font-mono text-xs md:text-sm uppercase tracking-widest text-center relative z-10 font-semibold">
+      <div className="text-[#263238]/80 font-mono text-xs md:text-sm uppercase tracking-widest text-center relative z-10 font-semibold">
         {label}
       </div>
       
       {/* Description */}
-      <div className="text-[#0B2E63]/60 text-xs md:text-sm text-center relative z-10 mt-3 leading-relaxed max-w-xs">
+      <div className="text-[#263238]/60 text-xs md:text-sm text-center relative z-10 mt-3 leading-relaxed max-w-xs">
         {description}
       </div>
     </div>
@@ -98,14 +98,14 @@ export default function ImpactCounter() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <span className="text-[#F9A825] font-mono text-xs uppercase tracking-widest font-semibold bg-[#F9A825]/10 px-4 py-2 rounded-full inline-block">
+          <span className="text-[#FFF314] font-mono text-xs uppercase tracking-widest font-semibold bg-[#FFF314]/10 px-4 py-2 rounded-full inline-block">
             Our Impact in Numbers
           </span>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-[#0B2E63] mt-4">
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-[#263238] mt-4">
             Making a Difference Together
           </h2>
-          <div className="w-20 h-1 bg-[#F9A825] mx-auto mt-4 rounded-full"></div>
-          <p className="text-[#0B2E63]/60 mt-4 max-w-2xl mx-auto">
+          <div className="w-20 h-1 bg-[#FFF314] mx-auto mt-4 rounded-full"></div>
+          <p className="text-[#263238]/60 mt-4 max-w-2xl mx-auto">
             Every number represents a life touched, a community empowered, and hope restored.
           </p>
         </motion.div>
@@ -140,7 +140,7 @@ export default function ImpactCounter() {
           viewport={{ once: true }}
           className="mt-12 flex justify-center"
         >
-          <div className="w-32 h-[2px] bg-gradient-to-r from-transparent via-[#F9A825] to-transparent rounded-full"></div>
+          <div className="w-32 h-[2px] bg-gradient-to-r from-transparent via-[#FFF314] to-transparent rounded-full"></div>
         </motion.div>
       </div>
 
