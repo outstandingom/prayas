@@ -94,9 +94,9 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#00897B]/10 mb-6"
+                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#FFF314]/10 mb-6"
                 >
-                  <CheckCircle className="w-10 h-10 text-[#00897B]" />
+                  <CheckCircle className="w-10 h-10 text-[#FFF314]" />
                 </motion.div>
                 <h2 className="text-2xl font-bold text-[#263238] mb-2">Thank You! 🎉</h2>
                 <p className="text-[#263238]/60 mb-6">
@@ -104,7 +104,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                 </p>
                 <button
                   onClick={onClose}
-                  className="px-6 py-2.5 bg-[#00897B] text-white rounded-lg font-medium hover:bg-[#00897B]/90 transition-colors"
+                  className="px-6 py-2.5 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-colors"
                 >
                   Close
                 </button>
@@ -114,8 +114,8 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                 {/* Header */}
                 <div className="p-6 border-b border-gray-100">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 rounded-full bg-[#00897B]/10 flex items-center justify-center">
-                      <Heart className="w-5 h-5 text-[#00897B]" />
+                    <div className="w-10 h-10 rounded-full bg-[#FFF314]/10 flex items-center justify-center">
+                      <Heart className="w-5 h-5 text-[#FFF314]" />
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-[#263238]">Become a Volunteer</h2>
@@ -129,7 +129,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                   {/* Full Name */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
-                      <User className="w-4 h-4 text-[#00897B]" />
+                      <User className="w-4 h-4 text-[#FFF314]" />
                       Full Name *
                     </label>
                     <input
@@ -139,7 +139,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                       onChange={handleChange}
                       required
                       placeholder="Enter your full name"
-                      className="w-full px-4 py-2.5 bg-white border border-[#00897B]/20 rounded-lg focus:outline-none focus:border-[#00897B] focus:ring-2 focus:ring-[#00897B]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
+                      className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
                     />
                   </div>
 
@@ -147,7 +147,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
-                        <Mail className="w-4 h-4 text-[#00897B]" />
+                        <Mail className="w-4 h-4 text-[#FFF314]" />
                         Email *
                       </label>
                       <input
@@ -157,12 +157,12 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                         onChange={handleChange}
                         required
                         placeholder="your@email.com"
-                        className="w-full px-4 py-2.5 bg-white border border-[#00897B]/20 rounded-lg focus:outline-none focus:border-[#00897B] focus:ring-2 focus:ring-[#00897B]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
+                        className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
                       />
                     </div>
                     <div>
                       <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
-                        <Phone className="w-4 h-4 text-[#00897B]" />
+                        <Phone className="w-4 h-4 text-[#FFF314]" />
                         Phone *
                       </label>
                       <input
@@ -172,7 +172,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                         onChange={handleChange}
                         required
                         placeholder="+91 98765 43210"
-                        className="w-full px-4 py-2.5 bg-white border border-[#00897B]/20 rounded-lg focus:outline-none focus:border-[#00897B] focus:ring-2 focus:ring-[#00897B]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
+                        className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
                       />
                     </div>
                   </div>
@@ -180,7 +180,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                   {/* Address */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
-                      <MapPin className="w-4 h-4 text-[#00897B]" />
+                      <MapPin className="w-4 h-4 text-[#FFF314]" />
                       Address
                     </label>
                     <input
@@ -189,21 +189,21 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                       value={formData.address}
                       onChange={handleChange}
                       placeholder="Your address"
-                      className="w-full px-4 py-2.5 bg-white border border-[#00897B]/20 rounded-lg focus:outline-none focus:border-[#00897B] focus:ring-2 focus:ring-[#00897B]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
+                      className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
                     />
                   </div>
 
                   {/* Availability */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
-                      <Calendar className="w-4 h-4 text-[#00897B]" />
+                      <Calendar className="w-4 h-4 text-[#FFF314]" />
                       Availability
                     </label>
                     <select
                       name="availability"
                       value={formData.availability}
                       onChange={handleChange}
-                      className="w-full px-4 py-2.5 bg-white border border-[#00897B]/20 rounded-lg focus:outline-none focus:border-[#00897B] focus:ring-2 focus:ring-[#00897B]/10 transition-all text-[#263238]"
+                      className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238]"
                     >
                       <option value="">Select availability</option>
                       <option value="weekdays">Weekdays</option>
@@ -217,7 +217,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                   {/* Skills */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
-                      <User className="w-4 h-4 text-[#00897B]" />
+                      <User className="w-4 h-4 text-[#FFF314]" />
                       Skills / Interests
                     </label>
                     <input
@@ -226,14 +226,14 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                       value={formData.skills}
                       onChange={handleChange}
                       placeholder="e.g., Teaching, Event Management, Social Media"
-                      className="w-full px-4 py-2.5 bg-white border border-[#00897B]/20 rounded-lg focus:outline-none focus:border-[#00897B] focus:ring-2 focus:ring-[#00897B]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
+                      className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
                     />
                   </div>
 
                   {/* Message */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
-                      <Send className="w-4 h-4 text-[#00897B]" />
+                      <Send className="w-4 h-4 text-[#FFF314]" />
                       Message (Optional)
                     </label>
                     <textarea
@@ -242,7 +242,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                       onChange={handleChange}
                       rows={3}
                       placeholder="Tell us why you want to volunteer..."
-                      className="w-full px-4 py-2.5 bg-white border border-[#00897B]/20 rounded-lg focus:outline-none focus:border-[#00897B] focus:ring-2 focus:ring-[#00897B]/10 transition-all text-[#263238] placeholder:text-[#263238]/40 resize-none"
+                      className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40 resize-none"
                     />
                   </div>
 
@@ -257,11 +257,11 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 bg-[#00897B] text-white rounded-lg font-medium hover:bg-[#00897B]/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#00897B]/20"
+                    className="w-full py-3 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#FFF314]/20"
                   >
                     {loading ? (
                       <>
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-[#263238]/30 border-t-[#263238] rounded-full animate-spin" />
                         Submitting...
                       </>
                     ) : (
