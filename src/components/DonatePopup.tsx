@@ -37,7 +37,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50"
           onClick={onClose}
         >
           <motion.div
@@ -48,10 +48,14 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
             className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
+            {/* Close Button - Fixed z-index and click handling */}
             <button
-              onClick={onClose}
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors z-10"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors z-50"
             >
               <X className="w-5 h-5 text-gray-500" />
             </button>
@@ -75,13 +79,21 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 </p>
                 <div className="flex gap-3 justify-center">
                   <button
-                    onClick={onClose}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClose();
+                    }}
                     className="px-6 py-2.5 bg-gray-100 text-[#263238] rounded-lg font-medium hover:bg-gray-200 transition-colors"
                   >
                     Close
                   </button>
                   <button
-                    onClick={onClose}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClose();
+                    }}
                     className="px-6 py-2.5 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-colors"
                   >
                     Share
@@ -112,7 +124,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                   
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-full bg-white/30 flex items-center justify-center backdrop-blur-sm">
+                      <div className="w-12 h-12 rounded-full bg-white/30 flex items-center justify-center">
                         <Heart className="w-6 h-6" />
                       </div>
                       <div>
