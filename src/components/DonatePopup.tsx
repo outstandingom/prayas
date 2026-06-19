@@ -54,9 +54,9 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 e.stopPropagation()
                 onClose()
               }}
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors z-50"
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/80 hover:bg-white transition-colors z-50"
             >
-              <X className="w-5 h-5 text-gray-500" />
+              <X className="w-5 h-5 text-gray-700" />
             </button>
 
             {success ? (
@@ -89,13 +89,22 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               </div>
             ) : (
               <>
-                {/* Simple Header */}
-                <div className="bg-[#FFF314] p-6 rounded-t-2xl">
-                  <div className="flex items-center gap-3">
-                    <Heart className="w-6 h-6 text-[#263238]" />
-                    <div>
-                      <h2 className="text-xl font-bold text-[#263238]">Make a Donation</h2>
-                      <p className="text-[#263238]/70 text-sm">Your support changes lives</p>
+                {/* Header with Children Image */}
+                <div className="relative h-48 rounded-t-2xl overflow-hidden">
+                  <img
+                    src="https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop"
+                    alt="Children smiling"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
+                  
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <div className="flex items-center gap-3">
+                      <Heart className="w-6 h-6 text-[#FFF314]" />
+                      <div>
+                        <h2 className="text-xl font-bold text-white">Make a Donation</h2>
+                        <p className="text-white/80 text-sm">Your support changes lives</p>
+                      </div>
                     </div>
                   </div>
                 </div>
