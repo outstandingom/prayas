@@ -124,8 +124,8 @@ export default function HeroBanner() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
           
-          {/* Content Overlay */}
-          <div className="absolute inset-0 flex items-center">
+          {/* Content Overlay - Added pt-20 for navbar spacing */}
+          <div className="absolute inset-0 flex items-center pt-16 md:pt-20">
             <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
               <div className="max-w-2xl">
                 <motion.div
@@ -134,34 +134,34 @@ export default function HeroBanner() {
                   transition={{ delay: 0.2, duration: 0.5 }}
                 >
                   {/* Stats Badge */}
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFF314] mb-6">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFF314] mb-4 md:mb-6">
                     <CurrentIcon size={18} className="text-gray-900" />
                     <span className="text-sm font-bold text-gray-900 uppercase tracking-wider">
                       {SLIDES[currentSlide].stats}
                     </span>
                   </div>
                   
-                  {/* Title */}
-                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-4 leading-tight">
+                  {/* Title - Responsive sizing with better spacing */}
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-3 md:mb-4 leading-tight">
                     {SLIDES[currentSlide].title}
                   </h1>
                   
                   {/* Subtitle */}
-                  <p className="text-2xl md:text-3xl font-semibold text-[#FFF314] mb-6">
+                  <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#FFF314] mb-4 md:mb-6">
                     {SLIDES[currentSlide].subtitle}
                   </p>
                   
-                  {/* Description */}
-                  <p className="text-lg md:text-xl text-white/90 leading-relaxed mb-8 max-w-xl">
+                  {/* Description - Hide on very small screens to prevent overlap */}
+                  <p className="hidden sm:block text-base md:text-lg lg:text-xl text-white/90 leading-relaxed mb-6 md:mb-8 max-w-xl">
                     {SLIDES[currentSlide].description}
                   </p>
                   
                   {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-8 py-4 rounded-full font-bold hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
+                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-6 md:px-8 py-3 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
                     >
                       Donate Now
                       <HeartHandshake size={20} />
@@ -169,7 +169,7 @@ export default function HeroBanner() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-white border-2 border-white/50 hover:bg-white/10 transition-all duration-300 hover:border-[#FFF314]"
+                      className="inline-flex items-center justify-center px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-sm md:text-base text-white border-2 border-white/50 hover:bg-white/10 transition-all duration-300 hover:border-[#FFF314]"
                     >
                       Learn More
                     </motion.button>
@@ -181,23 +181,32 @@ export default function HeroBanner() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrows - Adjusted for mobile */}
       <button
         onClick={handlePrev}
-        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-black/50 transition-all duration-300 group z-10"
+        className="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/30 border border-white/20 flex items-center justify-center hover:bg-black/50 transition-all duration-300 group z-10"
       >
-        <ChevronLeft size={24} className="text-white group-hover:scale-110 transition-transform" />
+        <ChevronLeft size={20} className="md:w-6 md:h-6 text-white group-hover:scale-110 transition-transform" />
       </button>
       <button
         onClick={handleNext}
-        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-black/50 transition-all duration-300 group z-10"
+        className="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/30 border border-white/20 flex items-center justify-center hover:bg-black/50 transition-all duration-300 group z-10"
       >
-        <ChevronRight size={24} className="text-white group-hover:scale-110 transition-transform" />
+        <ChevronRight size={20} className="md:w-6 md:h-6 text-white group-hover:scale-110 transition-transform" />
       </button>
 
+      {/* Slide Counter - Moved lower to avoid navbar overlap */}
+      <div className="absolute top-24 md:top-28 right-4 md:right-8 z-10">
+        <div className="flex items-center gap-2 bg-black/50 rounded-full px-3 py-1.5 md:px-4 md:py-2 border border-white/10">
+          <span className="text-[#FFF314] font-bold text-sm md:text-lg">{(currentSlide + 1).toString().padStart(2, '0')}</span>
+          <span className="text-white/30">/</span>
+          <span className="text-white/50 font-semibold text-sm md:text-base">{SLIDES.length.toString().padStart(2, '0')}</span>
+        </div>
+      </div>
+
       {/* Bottom Navigation Dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
-        <div className="flex items-center gap-3">
+      <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <div className="flex items-center gap-2 md:gap-3">
           {SLIDES.map((slide, index) => {
             const Icon = slide.icon;
             const isActive = index === currentSlide;
@@ -211,15 +220,15 @@ export default function HeroBanner() {
                 className="group relative"
               >
                 {/* Dot Indicator */}
-                <div className={`h-3 rounded-full transition-all duration-300 ${
+                <div className={`h-2.5 md:h-3 rounded-full transition-all duration-300 ${
                   isActive 
-                    ? 'bg-[#FFF314] w-8' 
-                    : 'bg-white/30 hover:bg-white/60 w-3'
+                    ? 'bg-[#FFF314] w-6 md:w-8' 
+                    : 'bg-white/30 hover:bg-white/60 w-2.5 md:w-3'
                 }`} />
                 
-                {/* Tooltip on Hover */}
-                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg px-3 py-2 whitespace-nowrap border border-white/10">
+                {/* Tooltip on Hover - Hidden on mobile */}
+                <div className="hidden md:block absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  <div className="bg-gray-900/90 rounded-lg px-3 py-2 whitespace-nowrap border border-white/10">
                     <div className="flex items-center gap-2">
                       <Icon size={14} className="text-[#FFF314]" />
                       <span className="text-sm font-bold text-white">{slide.title}</span>
@@ -229,15 +238,6 @@ export default function HeroBanner() {
               </motion.button>
             );
           })}
-        </div>
-      </div>
-
-      {/* Slide Counter */}
-      <div className="absolute top-8 right-8 z-10">
-        <div className="flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10">
-          <span className="text-[#FFF314] font-bold text-lg">{(currentSlide + 1).toString().padStart(2, '0')}</span>
-          <span className="text-white/30">/</span>
-          <span className="text-white/50 font-semibold">{SLIDES.length.toString().padStart(2, '0')}</span>
         </div>
       </div>
 
