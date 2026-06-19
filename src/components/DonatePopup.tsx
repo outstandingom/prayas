@@ -24,7 +24,6 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
 
   const handleDonate = (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would integrate with a payment gateway (Razorpay, Stripe, etc.)
     setSuccess(true)
   }
 
@@ -52,8 +51,8 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
             <button
               type="button"
               onClick={(e) => {
-                e.stopPropagation();
-                onClose();
+                e.stopPropagation()
+                onClose()
               }}
               className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors z-50"
             >
@@ -77,55 +76,27 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 <p className="text-sm text-[#263238]/40 mb-6">
                   You will receive a confirmation email shortly.
                 </p>
-                <div className="flex gap-3 justify-center">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onClose();
-                    }}
-                    className="px-6 py-2.5 bg-gray-100 text-[#263238] rounded-lg font-medium hover:bg-gray-200 transition-colors"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onClose();
-                    }}
-                    className="px-6 py-2.5 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-colors"
-                  >
-                    Share
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onClose()
+                  }}
+                  className="px-6 py-2.5 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-colors"
+                >
+                  Close
+                </button>
               </div>
             ) : (
               <>
-                {/* Header */}
-                <div className="relative bg-[#FFF314] p-6 text-[#263238] rounded-t-2xl overflow-hidden">
-                  {/* Child Image */}
-                  <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full border-4 border-white/30 overflow-hidden shadow-xl">
-                    <img
-                      src="https://images.pexels.com/photos/6646959/pexels-photo-6646959.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop"
-                      alt="Happy child"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-full bg-white/30 flex items-center justify-center">
-                        <Heart className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <h2 className="text-xl font-bold">Make a Donation</h2>
-                        <p className="text-[#263238]/70 text-sm">Your support changes lives</p>
-                      </div>
+                {/* Simple Header */}
+                <div className="bg-[#FFF314] p-6 rounded-t-2xl">
+                  <div className="flex items-center gap-3">
+                    <Heart className="w-6 h-6 text-[#263238]" />
+                    <div>
+                      <h2 className="text-xl font-bold text-[#263238]">Make a Donation</h2>
+                      <p className="text-[#263238]/70 text-sm">Your support changes lives</p>
                     </div>
-                    <p className="text-[#263238]/50 text-xs">
-                      All donations are tax-deductible under Section 80G
-                    </p>
                   </div>
                 </div>
 
