@@ -8,9 +8,9 @@ const SLIDES = [
     id: 1,
     icon: GraduationCap,
     title: "Education",
-    subtitle: "Improving Children for a Better World",
+    subtitle: "Improver Children for a Better World",
     description: "We provide quality education to underprivileged children, building foundations for lifelong learning and empowering the next generation of leaders.",
-    image: "https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    image: "https://i.ibb.co/VW6yVPKf/IMG-20260619-WA0027.jpg",
     stats: "10,000+ Children Educated"
   },
   {
