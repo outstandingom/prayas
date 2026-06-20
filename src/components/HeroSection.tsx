@@ -36,7 +36,7 @@ const SLIDES = [
     icon: Leaf,
     title: "Environment",
     subtitle: "Protecting Our Planet Together",
-    description: "From tree plantation drives to waste management initiatives, we're committed to creating a sustainable and greener future for all.",
+    description: "Nurturing the environment through awareness, action, and responsibility",
     image: "/IMG-21.jpg",
     imagePosition: "right",
   },
