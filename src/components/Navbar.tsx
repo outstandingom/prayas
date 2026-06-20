@@ -23,9 +23,54 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
-  // ... (auth and admin logic remains unchanged) ...
+  // Auth logic (unchanged)
+  useEffect(() => {
+    checkAuthAndAdmin();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setIsAuthenticated(!!session);
+      if (session?.user) {
+        const { data, error } = await supabase
+          .from('admin_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+        setIsAdmin(!error && !!data);
+      } else {
+        setIsAdmin(false);
+      }
+      setLoading(false);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
-  // Close mobile menu on route change and resize
+  async function checkAuthAndAdmin() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+      if (session?.user) {
+        const { data, error } = await supabase
+          .from('admin_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+        setIsAdmin(!error && !!data);
+      } else {
+        setIsAdmin(false);
+      }
+    } catch (err) {
+      console.error('Error checking admin status:', err);
+      setIsAdmin(false);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   useEffect(() => {
     setIsMobileOpen(false);
   }, [location]);
@@ -38,28 +83,21 @@ export default function Navbar() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Scroll effect
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const isAuthPage = location.pathname === '/auth';
   const showAuthLink = !isAuthPage;
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-[999] transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-500 ${
         isScrolled
           ? 'bg-white/95 backdrop-blur-lg shadow-[0_10px_30px_-20px_rgba(38,50,56,0.15)] py-2 sm:py-3'
-          : 'bg-transparent py-3 sm:py-5'
+          : 'bg-white/10 backdrop-blur-sm py-3 sm:py-5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between gap-3">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0 z-[1000] relative">
+          <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <img
                 src="https://i.ibb.co/N6Cft6S3/IMG-20260614-015637.jpg"
@@ -68,10 +106,14 @@ export default function Navbar() {
               />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className="font-display font-bold text-lg sm:text-xl tracking-tight text-[#263238] group-hover:text-[#FFF314] transition-colors">
+              <span className={`font-display font-bold text-lg sm:text-xl tracking-tight transition-colors ${
+                isScrolled ? 'text-[#263238]' : 'text-white'
+              } group-hover:text-[#FFF314]`}>
                 Prayas
               </span>
-              <span className="hidden min-[480px]:block text-[8px] sm:text-[9px] uppercase tracking-[0.15em] sm:tracking-[0.18em] text-[#263238]/60">
+              <span className={`hidden min-[480px]:block text-[8px] sm:text-[9px] uppercase tracking-[0.15em] sm:tracking-[0.18em] transition-colors ${
+                isScrolled ? 'text-[#263238]/60' : 'text-white/70'
+              }`}>
                 Samaj Sevi Sanstha
               </span>
             </div>
@@ -86,7 +128,9 @@ export default function Navbar() {
                 className={`text-sm font-medium transition-colors relative py-2 group whitespace-nowrap ${
                   location.pathname === link.path
                     ? 'text-[#FFF314]'
-                    : 'text-[#263238] hover:text-[#FFF314]'
+                    : isScrolled
+                    ? 'text-[#263238] hover:text-[#FFF314]'
+                    : 'text-white/90 hover:text-[#FFF314]'
                 }`}
               >
                 {link.name}
@@ -103,7 +147,11 @@ export default function Navbar() {
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
               to="/donate"
-              className="hidden sm:inline-flex items-center gap-1.5 bg-[#FFF314] text-[#263238] px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 hover:shadow-[#FFF314]/30 hover:scale-105"
+              className={`hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 ${
+                isScrolled
+                  ? 'bg-[#FFF314] text-[#263238] shadow-[#FFF314]/20 hover:bg-[#FFF314]/90'
+                  : 'bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40'
+              }`}
             >
               Donate Now
               <Heart className="w-4 h-4" />
@@ -112,7 +160,11 @@ export default function Navbar() {
             {!loading && isAdmin && (
               <Link
                 to="/admin"
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border border-[#FFF314]/40 text-[#FFF314] hover:bg-[#FFF314]/10 transition-all hover:scale-105"
+                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${
+                  isScrolled
+                    ? 'border-[#FFF314]/40 text-[#FFF314] hover:bg-[#FFF314]/10'
+                    : 'border-white/30 text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]'
+                }`}
               >
                 <Shield className="w-4 h-4" />
                 Admin
@@ -122,7 +174,11 @@ export default function Navbar() {
             {showAuthLink && !loading && (
               <Link
                 to={isAuthenticated ? "/profile" : "/auth"}
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border border-[#FFF314]/40 text-[#263238] hover:text-[#FFF314] hover:bg-[#FFF314]/10 transition-all hover:scale-105"
+                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${
+                  isScrolled
+                    ? 'border-[#FFF314]/40 text-[#263238] hover:text-[#FFF314] hover:bg-[#FFF314]/10'
+                    : 'border-white/30 text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]'
+                }`}
               >
                 <User className="w-4 h-4" />
                 {isAuthenticated ? "Profile" : "Sign In"}
@@ -130,7 +186,9 @@ export default function Navbar() {
             )}
 
             <button
-              className="md:hidden text-[#263238] p-2.5 -m-1 rounded-full hover:bg-[#FFF314]/10 active:bg-[#FFF314]/20 transition-colors z-[1000] relative cursor-pointer"
+              className={`md:hidden p-2.5 -m-1 rounded-full transition-colors ${
+                isScrolled ? 'text-[#263238] hover:bg-[#FFF314]/10' : 'text-white hover:bg-white/10'
+              }`}
               onClick={() => setIsMobileOpen(!isMobileOpen)}
               aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
             >
@@ -149,7 +207,6 @@ export default function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
             className="md:hidden bg-white/95 backdrop-blur-lg border-t border-[#FFF314]/10 mt-2 overflow-hidden shadow-xl"
-            style={{ position: 'relative', zIndex: 1000 }}
           >
             <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
               {navLinks.map((link) => (
