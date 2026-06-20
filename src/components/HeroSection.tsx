@@ -10,7 +10,7 @@ const SLIDES = [
     title: "Education",
     subtitle: "Improver Children for a Better World",
     description: "We provide quality education to underprivileged children, building foundations for lifelong learning and empowering the next generation of leaders.",
-    image: "public/IMG-20260619-WA0027.jpg", // Image 1
+    image: "public/IMG-20", // Image 1
     stats: "10,000+ Children Educated"
   },
   {
