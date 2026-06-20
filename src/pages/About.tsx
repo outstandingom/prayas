@@ -1,276 +1,248 @@
-// src/pages/Profile.tsx
-import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '@/lib/supabase';
-import { User, Mail, Phone, Edit, LogOut, Loader2, Shield } from 'lucide-react';
+// src/pages/About.tsx
+import { motion } from 'framer-motion';
+import { Heart, Users, GraduationCap, Leaf, Stethoscope, Home, Lightbulb, Target, Globe, HandHeart } from 'lucide-react';
+import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
 
-interface ProfileData {
-  full_name: string;
-  phone: string;
-  avatar_url?: string;
-  email: string;
-}
+export default function About() {
+  const stats = [
+    { number: '25+', label: 'Years of Service' },
+    { number: '10K+', label: 'Lives Impacted' },
+    { number: '50+', label: 'Villages Reached' },
+    { number: '200+', label: 'Volunteers' },
+  ];
 
-export default function Profile() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [updating, setUpdating] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [adminCheckDone, setAdminCheckDone] = useState(false);
+  const values = [
+    { icon: Heart, title: 'Compassion', desc: 'We approach every initiative with empathy and care for those we serve.' },
+    { icon: Target, title: 'Commitment', desc: 'We are dedicated to creating lasting change through consistent effort.' },
+    { icon: Globe, title: 'Sustainability', desc: 'We build solutions that endure and empower communities long-term.' },
+    { icon: HandHeart, title: 'Collaboration', desc: 'We work together with communities, donors, and volunteers to maximize impact.' },
+  ];
 
-  useEffect(() => {
-    fetchProfile();
-    checkAdminStatus();
-  }, []);
-
-  const fetchProfile = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError) throw userError;
-      if (!user) {
-        navigate('/auth');
-        return;
-      }
-
-      // Fetch profile from profiles table
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('full_name, phone, avatar_url')
-        .eq('id', user.id)
-        .single();
-
-      if (profileError && profileError.code !== 'PGRST116') {
-        throw profileError;
-      }
-
-      setProfile({
-        email: user.email || '',
-        full_name: profileData?.full_name || user.user_metadata?.full_name || '',
-        phone: profileData?.phone || user.user_metadata?.phone || '',
-        avatar_url: profileData?.avatar_url || '',
-      });
-      setFullName(profileData?.full_name || user.user_metadata?.full_name || '');
-      setPhone(profileData?.phone || user.user_metadata?.phone || '');
-    } catch (err: any) {
-      setError(err.message || 'Failed to load profile.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const checkAdminStatus = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user) {
-        const { data, error } = await supabase
-          .from('admin_roles')
-          .select('role')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (!error && data) {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
-      } else {
-        setIsAdmin(false);
-      }
-    } catch (err) {
-      console.error('Error checking admin status:', err);
-      setIsAdmin(false);
-    } finally {
-      setAdminCheckDone(true);
-    }
-  };
-
-  const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setUpdating(true);
-    setError(null);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user');
-
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user.id,
-          full_name: fullName,
-          phone: phone,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'id' });
-
-      if (updateError) throw updateError;
-
-      const { error: metaError } = await supabase.auth.updateUser({
-        data: { full_name: fullName, phone }
-      });
-      if (metaError) console.warn('Metadata update failed:', metaError);
-
-      setProfile(prev => prev ? { ...prev, full_name: fullName, phone } : null);
-      setEditing(false);
-    } catch (err: any) {
-      setError(err.message || 'Update failed.');
-    } finally {
-      setUpdating(false);
-    }
-  };
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate('/auth');
-  };
-
-  if (loading) {
-    return (
-      <section className="min-h-[80vh] flex items-center justify-center bg-[#F1F8F5]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#FFF314]" />
-      </section>
-    );
-  }
+  const initiatives = [
+    { icon: GraduationCap, label: 'Education' },
+    { icon: Stethoscope, label: 'Healthcare' },
+    { icon: Users, label: 'Empowerment' },
+    { icon: Leaf, label: 'Environment' },
+    { icon: Home, label: 'Shelter' },
+    { icon: Lightbulb, label: 'Skill Development' },
+  ];
 
   return (
-    <section className="min-h-[80vh] flex items-center justify-center px-4 py-8 bg-[#F1F8F5]">
-      <div className="w-full max-w-2xl bg-white/80 backdrop-blur-sm border border-[#FFF314]/20 rounded-xl p-6 md:p-8 shadow-lg">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-[#263238]">My Profile</h1>
-          <div className="flex gap-3">
-            {!editing && (
-              <button
-                onClick={() => setEditing(true)}
-                className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md border border-[#FFF314]/30 text-[#FFF314] hover:bg-[#FFF314]/10 transition"
-              >
-                <Edit className="w-4 h-4" />
-                Edit
-              </button>
-            )}
-            <button
-              onClick={handleSignOut}
-              className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md border border-red-300 text-red-600 hover:bg-red-50 transition"
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </button>
+    <section className="min-h-screen bg-[#F1F8F5] py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Decorations */}
+      <div className="absolute top-20 right-10 w-72 h-72 bg-[#FFF314]/5 rounded-full blur-[100px] pointer-events-none -z-10" />
+      <div className="absolute bottom-20 left-10 w-72 h-72 bg-[#FFF314]/10 rounded-full blur-[100px] pointer-events-none -z-10" />
+
+      <div className="max-w-6xl mx-auto">
+        {/* Hero Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#FFF314]/30 bg-[#FFF314]/10 mb-4 shadow-sm">
+            <Heart className="w-4 h-4 text-[#FFF314] fill-[#FFF314]" />
+            <span className="text-xs font-bold text-[#263238] uppercase tracking-wider">About Us</span>
           </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#263238] mb-4">
+            Making a Difference{' '}
+            <span className="text-[#FFF314]">Together</span>
+          </h1>
+          <p className="text-lg sm:text-xl text-[#263238]/70 max-w-3xl mx-auto leading-relaxed">
+            For over two decades, Prayas has been at the forefront of social change, 
+            empowering communities and transforming lives across India.
+          </p>
+        </motion.div>
+
+        {/* Stats Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
+        >
+          {stats.map((stat, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-xl p-6 text-center border border-[#FFF314]/20 shadow-lg hover:shadow-xl transition-shadow"
+            >
+              <p className="text-3xl sm:text-4xl font-bold text-[#FFF314]">{stat.number}</p>
+              <p className="text-sm text-[#263238]/60 mt-1">{stat.label}</p>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          {/* Our Story */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-white rounded-2xl p-6 sm:p-8 border border-[#FFF314]/20 shadow-lg"
+          >
+            <h2 className="text-2xl font-bold text-[#263238] mb-4 flex items-center gap-2">
+              <Heart className="w-6 h-6 text-[#FFF314] fill-[#FFF314]" />
+              Our Story
+            </h2>
+            <p className="text-[#263238]/70 leading-relaxed mb-4">
+              Prayas is a non-profit organization dedicated to creating meaningful and sustainable change in society. 
+              Established in 2001, we have been working towards empowering communities and improving lives through education, 
+              healthcare, social awareness, and community development initiatives.
+            </p>
+            <p className="text-[#263238]/70 leading-relaxed">
+              For over two decades, Prayas has been committed to supporting underprivileged families, children, women, 
+              and communities by providing opportunities, resources, and guidance for a better future. Our efforts focus 
+              on building a society where every individual gets the chance to learn, grow, and live with dignity.
+            </p>
+          </motion.div>
+
+          {/* Our Mission */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="bg-white rounded-2xl p-6 sm:p-8 border border-[#FFF314]/20 shadow-lg"
+          >
+            <h2 className="text-2xl font-bold text-[#263238] mb-4 flex items-center gap-2">
+              <Target className="w-6 h-6 text-[#FFF314]" />
+              Our Mission
+            </h2>
+            <p className="text-[#263238]/70 leading-relaxed mb-4">
+              With the support of volunteers, donors, and well-wishers, we have positively impacted thousands of lives 
+              across different communities. Through our various initiatives, we continue to work towards education, 
+              empowerment, environmental awareness, skill development, and social welfare.
+            </p>
+            <p className="text-[#263238]/70 leading-relaxed">
+              Our journey is driven by compassion, commitment, and the belief that even small efforts can create a 
+              lasting impact. Together, we strive to bring hope, opportunity, and transformation to those who need it the most.
+            </p>
+          </motion.div>
         </div>
 
-        {/* Admin Dashboard Button */}
-        {adminCheckDone && isAdmin && (
-          <Link
-            to="/admin"
-            className="mb-4 flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#FFF314]/10 text-[#263238] border border-[#FFF314]/30 rounded-md hover:bg-[#FFF314]/20 transition font-medium text-sm"
-          >
-            <Shield className="w-4 h-4 text-[#FFF314]" />
-            Go to Admin Dashboard
-          </Link>
-        )}
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
-            {error}
+        {/* Our Values */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mb-12"
+        >
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#263238] text-center mb-6">
+            Our <span className="text-[#FFF314]">Values</span>
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {values.map((value, index) => {
+              const Icon = value.icon;
+              return (
+                <div
+                  key={index}
+                  className="bg-white rounded-xl p-6 text-center border border-[#FFF314]/20 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+                >
+                  <div className="w-12 h-12 rounded-full bg-[#FFF314]/10 flex items-center justify-center mx-auto mb-3">
+                    <Icon className="w-6 h-6 text-[#FFF314]" />
+                  </div>
+                  <h3 className="font-bold text-[#263238] mb-1">{value.title}</h3>
+                  <p className="text-sm text-[#263238]/60">{value.desc}</p>
+                </div>
+              );
+            })}
           </div>
-        )}
+        </motion.div>
 
-        {profile ? (
-          <div className="space-y-6">
-            {/* Avatar */}
-            <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#FFF314] to-[#FFF314]/70 flex items-center justify-center text-[#263238] text-3xl font-bold shadow-lg">
-                {profile.full_name?.charAt(0) || 'U'}
-              </div>
-              <div>
-                <p className="text-lg font-semibold text-[#263238]">{profile.full_name || 'No name'}</p>
-                <p className="text-sm text-[#263238]/70 flex items-center gap-1">
-                  <Mail className="w-4 h-4 text-[#FFF314]" /> {profile.email}
-                </p>
-                {profile.phone && (
-                  <p className="text-sm text-[#263238]/70 flex items-center gap-1">
-                    <Phone className="w-4 h-4 text-[#FFF314]" /> {profile.phone}
-                  </p>
-                )}
-                {isAdmin && (
-                  <p className="text-xs text-[#FFF314] font-medium mt-1 flex items-center gap-1">
-                    <Shield className="w-3 h-3" /> Administrator
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Edit form */}
-            {editing ? (
-              <form onSubmit={handleUpdate} className="border-t border-[#FFF314]/10 pt-6 space-y-4">
-                <div>
-                  <label className="text-sm text-[#263238]/70 block mb-1 font-medium">Full Name</label>
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="w-full bg-white border border-[#FFF314]/20 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFF314]/50 text-[#263238]"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-[#263238]/70 block mb-1 font-medium">Phone</label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-white border border-[#FFF314]/20 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFF314]/50 text-[#263238]"
-                  />
-                </div>
-                <div className="flex gap-3 pt-2">
-                  <button
-                    type="submit"
-                    disabled={updating}
-                    className="px-6 py-2 bg-[#FFF314] text-[#263238] rounded-md hover:bg-[#FFF314]/90 disabled:opacity-50 font-medium"
-                  >
-                    {updating ? 'Saving...' : 'Save Changes'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditing(false);
-                      setFullName(profile.full_name || '');
-                      setPhone(profile.phone || '');
-                    }}
-                    className="px-6 py-2 border border-[#263238]/20 rounded-md hover:bg-gray-50 text-[#263238]"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            ) : (
-              // View mode
-              <div className="border-t border-[#FFF314]/10 pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-[#263238]/50 uppercase tracking-wider font-medium">Full Name</p>
-                  <p className="font-medium text-[#263238] mt-1">{profile.full_name || 'Not set'}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-[#263238]/50 uppercase tracking-wider font-medium">Email</p>
-                  <p className="font-medium text-[#263238] mt-1">{profile.email}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-[#263238]/50 uppercase tracking-wider font-medium">Phone</p>
-                  <p className="font-medium text-[#263238] mt-1">{profile.phone || 'Not set'}</p>
-                </div>
-              </div>
-            )}
+        {/* Initiatives */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="bg-white rounded-2xl p-6 sm:p-8 border border-[#FFF314]/20 shadow-lg mb-12"
+        >
+          <h2 className="text-2xl font-bold text-[#263238] text-center mb-6">
+            Our <span className="text-[#FFF314]">Initiatives</span>
+          </h2>
+          <div className="flex flex-wrap justify-center gap-3">
+            {initiatives.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <span
+                  key={index}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFF314]/10 rounded-full border border-[#FFF314]/20 text-sm font-medium text-[#263238]"
+                >
+                  <Icon className="w-4 h-4 text-[#FFF314]" />
+                  {item.label}
+                </span>
+              );
+            })}
           </div>
-        ) : (
-          <p className="text-[#263238]/60">No profile data found.</p>
-        )}
+        </motion.div>
+
+        {/* Social Media Links */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="text-center"
+        >
+          <h2 className="text-2xl font-bold text-[#263238] mb-4">
+            Connect With <span className="text-[#FFF314]">Us</span>
+          </h2>
+          <p className="text-[#263238]/60 text-sm mb-6">
+            Follow us on social media to stay updated with our latest initiatives and impact stories.
+          </p>
+          <div className="flex justify-center gap-4 flex-wrap">
+            {/* Facebook */}
+            <a
+              href="https://www.facebook.com/prayassamajiksanstha"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-14 h-14 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg hover:shadow-xl"
+              aria-label="Facebook"
+            >
+              <FaFacebook className="w-7 h-7" />
+            </a>
+
+            {/* Instagram */}
+            <a
+              href="https://www.instagram.com/prayas_samajik_sanstha"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-14 h-14 rounded-full bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg hover:shadow-xl"
+              aria-label="Instagram"
+            >
+              <FaInstagram className="w-7 h-7" />
+            </a>
+
+            {/* YouTube */}
+            <a
+              href="https://www.youtube.com/channel/UC16ZbLnP1qJxrKQoKsss12w"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-14 h-14 rounded-full bg-[#FF0000] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg hover:shadow-xl"
+              aria-label="YouTube"
+            >
+              <FaYoutube className="w-7 h-7" />
+            </a>
+
+            {/* LinkedIn */}
+            <a
+              href="https://www.linkedin.com/company/prayas-samajik-sanstha"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-14 h-14 rounded-full bg-[#0A66C2] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg hover:shadow-xl"
+              aria-label="LinkedIn"
+            >
+              <FaLinkedin className="w-7 h-7" />
+            </a>
+          </div>
+        </motion.div>
       </div>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+        .font-display {
+          font-family: 'Outfit', sans-serif;
+        }
+      `}</style>
     </section>
   );
 }
