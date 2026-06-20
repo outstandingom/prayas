@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 interface DonatePopupProps {
   isOpen: boolean
   onClose: () => void
-  className?: string // Add this
+  className?: string
 }
 
 export default function DonatePopup({ isOpen, onClose, className = '' }: DonatePopupProps) {
@@ -64,7 +64,6 @@ export default function DonatePopup({ isOpen, onClose, className = '' }: DonateP
             onClick={(e) => e.stopPropagation()}
             style={{ zIndex: 100000 }}
           >
-            {/* Rest of your component remains the same */}
             {/* Close Button */}
             <button
               type="button"
