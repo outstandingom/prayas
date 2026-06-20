@@ -100,9 +100,9 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
             </div>
 
             {/* Content */}
-            <div className="p-6 text-center">
+            <div className="p-6 pb-8 text-center">
               {/* Tagline */}
-              <p className="text-[#263238]/60 text-sm mb-6 italic">
+              <p className="text-[#263238]/60 text-sm mb-8 italic">
                 "Every contribution, no matter how small, creates a ripple of change."
               </p>
 
@@ -110,7 +110,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               <Link
                 to="/donate"
                 onClick={handleClose}
-                className="w-full py-3.5 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-4 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Heart className="w-5 h-5 fill-current" />
                 Donate Now
@@ -121,7 +121,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               <button
                 type="button"
                 onClick={handleClose}
-                className="mt-4 text-sm text-[#263238]/40 hover:text-[#263238]/60 transition-colors"
+                className="mt-5 text-sm text-[#263238]/40 hover:text-[#263238]/60 transition-colors"
               >
                 Maybe later
               </button>
