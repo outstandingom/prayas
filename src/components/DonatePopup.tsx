@@ -92,7 +92,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 {/* Header with Children Image */}
                 <div className="relative h-48 rounded-t-2xl overflow-hidden">
                   <img
-                    src="https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop"
+                    src="/IMG-20.JPG"
                     alt="Children smiling"
                     className="w-full h-full object-cover"
                   />
