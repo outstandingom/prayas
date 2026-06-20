@@ -1,5 +1,5 @@
 // src/components/DonatePopup.tsx
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Heart, CheckCircle, CreditCard, Smartphone, Building2, IndianRupee, Gift } from 'lucide-react'
 
@@ -22,24 +22,51 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
   const [paymentMethod, setPaymentMethod] = useState('card')
   const [success, setSuccess] = useState(false)
 
+  // Reset state when popup closes
+  useEffect(() => {
+    if (!isOpen) {
+      setTimeout(() => {
+        setSuccess(false)
+        setSelectedAmount(1000)
+        setCustomAmount('')
+        setPaymentMethod('card')
+      }, 300)
+    }
+  }, [isOpen])
+
   const handleDonate = (e: React.FormEvent) => {
     e.preventDefault()
+    e.stopPropagation()
     setSuccess(true)
   }
 
   const amount = customAmount ? parseInt(customAmount) : selectedAmount
 
+  // Handle close with proper cleanup
+  const handleClose = () => {
+    onClose()
+  }
+
+  // Handle overlay click
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      handleClose()
+    }
+  }
+
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {isOpen && (
         <motion.div
+          key="donate-popup-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-          onClick={onClose}
+          onClick={handleOverlayClick}
         >
           <motion.div
+            key="donate-popup-modal"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -47,11 +74,11 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
             className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
+            {/* Close Button - Fixed positioning */}
             <button
               type="button"
-              onClick={onClose}
-              className="absolute top-4 right-4 p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-colors z-50"
+              onClick={handleClose}
+              className="absolute top-3 right-3 z-50 p-2 rounded-full bg-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 border border-gray-100"
               aria-label="Close donation popup"
             >
               <X className="w-5 h-5 text-gray-700" />
@@ -76,7 +103,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 </p>
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="px-6 py-2.5 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-colors"
                 >
                   Close
@@ -84,22 +111,21 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               </div>
             ) : (
               <>
-                {/* Header with Children Image */}
-                <div className="relative h-48 rounded-t-2xl overflow-hidden">
+                {/* Header with Children Image - Fixed positioning */}
+                <div className="relative h-48 rounded-t-2xl overflow-hidden flex-shrink-0">
                   <img
                     src="/IMG-20.jpg"
                     alt="Children smiling"
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      // Fallback if image doesn't load
                       (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=400&fit=crop&q=80'
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <div className="flex items-center gap-3">
-                      <Heart className="w-6 h-6 text-[#FFF314]" />
+                      <Heart className="w-6 h-6 text-[#FFF314] fill-[#FFF314]" />
                       <div>
                         <h2 className="text-xl font-bold text-white">Make a Donation</h2>
                         <p className="text-white/80 text-sm">Your support changes lives</p>
@@ -121,7 +147,8 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                         <button
                           key={amt.value}
                           type="button"
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.preventDefault()
                             setSelectedAmount(amt.value)
                             setCustomAmount('')
                           }}
@@ -165,7 +192,10 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                         <button
                           key={method.id}
                           type="button"
-                          onClick={() => setPaymentMethod(method.id)}
+                          onClick={(e) => {
+                            e.preventDefault()
+                            setPaymentMethod(method.id)
+                          }}
                           className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg transition-all ${
                             paymentMethod === method.id
                               ? 'bg-[#FFF314] text-[#263238] shadow-lg shadow-[#FFF314]/20'
@@ -199,7 +229,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                     type="submit"
                     className="w-full py-3.5 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2"
                   >
-                    <Heart className="w-5 h-5" />
+                    <Heart className="w-5 h-5 fill-current" />
                     Donate ₹{amount?.toLocaleString() || '0'}
                   </button>
 
