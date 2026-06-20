@@ -1,5 +1,6 @@
 // src/pages/About.tsx
 import { motion } from 'framer-motion';
+
 import { Heart, Users, GraduationCap, Leaf, Stethoscope, Home, Lightbulb, Target, Globe, HandHeart } from 'lucide-react';
 import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
 
