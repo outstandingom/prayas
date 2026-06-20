@@ -60,14 +60,14 @@ export default function Volunteer() {
 
   if (success) {
     return (
-      <section className="min-h-screen bg-[#F1F8F5] flex items-center justify-center px-4 py-16 relative overflow-hidden">
+      <section className="min-h-screen bg-[#F1F8F5] flex items-center justify-center px-4 py-16 relative overflow-hidden pointer-events-auto">
         <div className="absolute top-20 left-10 w-72 h-72 bg-[#FFF314]/10 rounded-full blur-[100px] pointer-events-none -z-10" />
         <div className="absolute bottom-20 right-10 w-72 h-72 bg-[#FFF314]/5 rounded-full blur-[100px] pointer-events-none -z-10" />
 
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-center max-w-md w-full bg-white rounded-2xl p-8 shadow-xl relative z-20 border border-[#FFF314]/20"
+          className="text-center max-w-md w-full bg-white rounded-2xl p-8 shadow-xl relative z-20 border border-[#FFF314]/20 pointer-events-auto"
         >
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FFF314]/10 text-[#FFF314] mb-4 shadow-inner">
             <CheckCircle className="w-8 h-8" />
@@ -78,7 +78,7 @@ export default function Volunteer() {
           </p>
           <button
             onClick={() => setSuccess(false)}
-            className="mt-6 inline-flex items-center gap-2 text-sm text-[#263238] hover:text-[#FFF314] hover:underline transition-colors font-medium cursor-pointer"
+            className="mt-6 inline-flex items-center gap-2 text-sm text-[#263238] hover:text-[#FFF314] hover:underline transition-colors font-medium cursor-pointer pointer-events-auto"
           >
             Submit another application
           </button>
@@ -88,7 +88,7 @@ export default function Volunteer() {
   }
 
   return (
-    <section className="min-h-screen bg-[#F1F8F5] flex items-center justify-center px-4 py-20 relative overflow-hidden">
+    <section className="min-h-screen bg-[#F1F8F5] flex items-center justify-center px-4 py-20 relative overflow-hidden pointer-events-auto">
       <div className="absolute top-20 left-10 w-72 h-72 bg-[#FFF314]/10 rounded-full blur-[100px] pointer-events-none -z-10" />
       <div className="absolute bottom-20 right-10 w-72 h-72 bg-[#FFF314]/5 rounded-full blur-[100px] pointer-events-none -z-10" />
 
@@ -96,10 +96,10 @@ export default function Volunteer() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-2xl bg-white rounded-2xl border border-[#FFF314]/20 shadow-xl relative z-20 overflow-hidden"
+        className="w-full max-w-2xl bg-white rounded-2xl border border-[#FFF314]/20 shadow-xl relative z-20 overflow-hidden pointer-events-auto"
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-6 border-b border-gray-100 pointer-events-auto">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-[#FFF314]/10 flex items-center justify-center">
               <Heart className="w-5 h-5 text-[#FFF314]" />
@@ -112,9 +112,9 @@ export default function Volunteer() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 pointer-events-auto">
           <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
+            <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5 pointer-events-auto">
               <User className="w-4 h-4 text-[#FFF314]" />
               Full Name *
             </label>
@@ -125,7 +125,7 @@ export default function Volunteer() {
               onChange={handleChange}
               required
               placeholder="Enter your full name"
-              className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
+              className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40 pointer-events-auto cursor-text"
             />
           </div>
 
@@ -142,7 +142,7 @@ export default function Volunteer() {
                 onChange={handleChange}
                 required
                 placeholder="your@email.com"
-                className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
+                className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40 pointer-events-auto cursor-text"
               />
             </div>
             <div>
@@ -157,7 +157,7 @@ export default function Volunteer() {
                 onChange={handleChange}
                 required
                 placeholder="+91 98765 43210"
-                className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
+                className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40 pointer-events-auto cursor-text"
               />
             </div>
           </div>
@@ -173,7 +173,7 @@ export default function Volunteer() {
               value={formData.address}
               onChange={handleChange}
               placeholder="Your address"
-              className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
+              className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40 pointer-events-auto cursor-text"
             />
           </div>
 
@@ -186,7 +186,7 @@ export default function Volunteer() {
               name="availability"
               value={formData.availability}
               onChange={handleChange}
-              className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238]"
+              className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] pointer-events-auto cursor-pointer"
             >
               <option value="">Select availability</option>
               <option value="weekdays">Weekdays</option>
@@ -208,7 +208,7 @@ export default function Volunteer() {
               value={formData.skills}
               onChange={handleChange}
               placeholder="e.g., Teaching, Event Management, Social Media"
-              className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40"
+              className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40 pointer-events-auto cursor-text"
             />
           </div>
 
@@ -223,12 +223,12 @@ export default function Volunteer() {
               onChange={handleChange}
               rows={3}
               placeholder="Tell us why you want to volunteer..."
-              className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40 resize-none"
+              className="w-full px-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/10 transition-all text-[#263238] placeholder:text-[#263238]/40 resize-none pointer-events-auto cursor-text"
             />
           </div>
 
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+            <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm pointer-events-auto">
               {error}
             </div>
           )}
@@ -236,7 +236,7 @@ export default function Volunteer() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#FFF314]/20 cursor-pointer"
+            className="w-full py-3 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#FFF314]/20 cursor-pointer pointer-events-auto"
           >
             {loading ? (
               <>
