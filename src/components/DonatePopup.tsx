@@ -75,13 +75,13 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               <X className="w-5 h-5 text-gray-700" />
             </button>
 
-            {/* Header with Children Image - Increased height & adjusted position to show bottom */}
-            <div className="relative h-72 sm:h-80 md:h-96 rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
+            {/* Header with Children Image - Even taller and shows more top */}
+            <div className="relative h-80 sm:h-96 md:h-[32rem] rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
               <img
                 src="/IMG-20.jpg"
                 alt="Children smiling"
                 className="w-full h-full object-cover object-center"
-                style={{ objectPosition: 'center 80%' }} // shift focus to show more of the bottom
+                style={{ objectPosition: 'center 20%' }} // Shift focus upward to show more of the top
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=600&fit=crop&q=80'
                 }}
