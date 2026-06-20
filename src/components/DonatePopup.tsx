@@ -10,7 +10,6 @@ interface DonatePopupProps {
 }
 
 export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
-  // Lock body scroll when popup is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -21,7 +20,6 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
       document.body.style.position = 'unset'
       document.body.style.width = 'unset'
     }
-
     return () => {
       document.body.style.overflow = 'unset'
       document.body.style.position = 'unset'
@@ -75,38 +73,23 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               <X className="w-5 h-5 text-gray-700" />
             </button>
 
-            {/* Header with Children Image - Even taller and shows more top */}
+            {/* Header with Children Image - No text overlay */}
             <div className="relative h-80 sm:h-96 md:h-[32rem] rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
               <img
                 src="/IMG-20.jpg"
                 alt="Children smiling"
                 className="w-full h-full object-cover object-center"
-                style={{ objectPosition: 'center 20%' }} // Shift focus upward to show more of the top
+                style={{ objectPosition: 'center 20%' }}
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=600&fit=crop&q=80'
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-              
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <div className="flex items-center gap-3">
-                  <Heart className="w-6 h-6 text-[#FFF314] fill-[#FFF314]" />
-                  <div>
-                    <h2 className="text-xl font-bold text-white">Make a Donation</h2>
-                    <p className="text-white/80 text-sm">Your support changes lives</p>
-                  </div>
-                </div>
-              </div>
+              {/* Gradient overlay only for visual depth, no text */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
 
-            {/* Content */}
+            {/* Content - Only Donate Button and "Maybe later" */}
             <div className="p-6 pb-8 text-center">
-              {/* Tagline */}
-              <p className="text-[#263238]/60 text-sm mb-8 italic">
-                "Every contribution, no matter how small, creates a ripple of change."
-              </p>
-
-              {/* Donate Button */}
               <Link
                 to="/donate"
                 onClick={handleClose}
@@ -117,7 +100,6 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 <ArrowRight className="w-5 h-5" />
               </Link>
 
-              {/* Close Button */}
               <button
                 type="button"
                 onClick={handleClose}
