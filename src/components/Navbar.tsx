@@ -23,6 +23,8 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
+  const isHome = location.pathname === '/';
+
   // Auth logic (unchanged)
   useEffect(() => {
     checkAuthAndAdmin();
@@ -86,13 +88,20 @@ export default function Navbar() {
   const isAuthPage = location.pathname === '/auth';
   const showAuthLink = !isAuthPage;
 
+  // Determine if navbar should use light text (white) or dark text (#263238)
+  const useLightText = isHome && !isScrolled;
+  const textColor = useLightText ? 'text-white' : 'text-[#263238]';
+  const textColorHover = 'hover:text-[#FFF314]';
+  const textColorMuted = useLightText ? 'text-white/70' : 'text-[#263238]/60';
+  const borderColor = useLightText ? 'border-white/30' : 'border-[#FFF314]/40';
+  const bgButton = useLightText ? 'bg-white/10 hover:bg-white/20' : 'hover:bg-[#FFF314]/10';
+  const bgHeader = isHome && !isScrolled 
+    ? 'bg-white/10 backdrop-blur-sm' 
+    : 'bg-white/95 backdrop-blur-lg shadow-[0_10px_30px_-20px_rgba(38,50,56,0.15)]';
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-500 ${
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-lg shadow-[0_10px_30px_-20px_rgba(38,50,56,0.15)] py-2 sm:py-3'
-          : 'bg-white/10 backdrop-blur-sm py-3 sm:py-5'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-500 ${bgHeader} py-2 sm:py-3`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between gap-3">
@@ -106,14 +115,10 @@ export default function Navbar() {
               />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className={`font-display font-bold text-lg sm:text-xl tracking-tight transition-colors ${
-                isScrolled ? 'text-[#263238]' : 'text-white'
-              } group-hover:text-[#FFF314]`}>
+              <span className={`font-display font-bold text-lg sm:text-xl tracking-tight transition-colors ${textColor} group-hover:text-[#FFF314]`}>
                 Prayas
               </span>
-              <span className={`hidden min-[480px]:block text-[8px] sm:text-[9px] uppercase tracking-[0.15em] sm:tracking-[0.18em] transition-colors ${
-                isScrolled ? 'text-[#263238]/60' : 'text-white/70'
-              }`}>
+              <span className={`hidden min-[480px]:block text-[8px] sm:text-[9px] uppercase tracking-[0.15em] sm:tracking-[0.18em] transition-colors ${textColorMuted}`}>
                 Samaj Sevi Sanstha
               </span>
             </div>
@@ -128,9 +133,7 @@ export default function Navbar() {
                 className={`text-sm font-medium transition-colors relative py-2 group whitespace-nowrap ${
                   location.pathname === link.path
                     ? 'text-[#FFF314]'
-                    : isScrolled
-                    ? 'text-[#263238] hover:text-[#FFF314]'
-                    : 'text-white/90 hover:text-[#FFF314]'
+                    : `${textColor} ${textColorHover}`
                 }`}
               >
                 {link.name}
@@ -148,9 +151,9 @@ export default function Navbar() {
             <Link
               to="/donate"
               className={`hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 ${
-                isScrolled
-                  ? 'bg-[#FFF314] text-[#263238] shadow-[#FFF314]/20 hover:bg-[#FFF314]/90'
-                  : 'bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40'
+                useLightText
+                  ? 'bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90'
+                  : 'bg-[#FFF314] text-[#263238] shadow-[#FFF314]/20 hover:bg-[#FFF314]/90'
               }`}
             >
               Donate Now
@@ -161,9 +164,9 @@ export default function Navbar() {
               <Link
                 to="/admin"
                 className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${
-                  isScrolled
-                    ? 'border-[#FFF314]/40 text-[#FFF314] hover:bg-[#FFF314]/10'
-                    : 'border-white/30 text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]'
+                  useLightText
+                    ? `${borderColor} text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]`
+                    : `${borderColor} text-[#263238] hover:text-[#FFF314] hover:bg-[#FFF314]/10`
                 }`}
               >
                 <Shield className="w-4 h-4" />
@@ -175,9 +178,9 @@ export default function Navbar() {
               <Link
                 to={isAuthenticated ? "/profile" : "/auth"}
                 className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${
-                  isScrolled
-                    ? 'border-[#FFF314]/40 text-[#263238] hover:text-[#FFF314] hover:bg-[#FFF314]/10'
-                    : 'border-white/30 text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]'
+                  useLightText
+                    ? `${borderColor} text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]`
+                    : `${borderColor} text-[#263238] hover:text-[#FFF314] hover:bg-[#FFF314]/10`
                 }`}
               >
                 <User className="w-4 h-4" />
@@ -186,9 +189,7 @@ export default function Navbar() {
             )}
 
             <button
-              className={`md:hidden p-2.5 -m-1 rounded-full transition-colors ${
-                isScrolled ? 'text-[#263238] hover:bg-[#FFF314]/10' : 'text-white hover:bg-white/10'
-              }`}
+              className={`md:hidden p-2.5 -m-1 rounded-full transition-colors ${textColor} ${textColorHover} ${bgButton}`}
               onClick={() => setIsMobileOpen(!isMobileOpen)}
               aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
             >
