@@ -36,42 +36,45 @@ export default function ImpactCategories() {
   })
 
   return (
-    <div ref={containerRef} className="relative w-full bg-white" style={{ height: `${12 * 55}vh` }}>
+    <div ref={containerRef} className="relative w-full bg-white" style={{ height: `${12 * 55 + 30}vh` }}>
       
-      {/* Sticky Header with Title and Initiatives */}
-      <div className="fixed top-0 left-0 w-full z-40 bg-white/95 backdrop-blur-sm border-b border-[#FFF314]/20 px-4 sm:px-6 md:px-12 py-4 sm:py-5">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div>
-            <motion.h1 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-[#263238]"
-            >
-              Our Impact <span className="text-[#FFF314]">Initiatives</span>
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-[#263238]/60 text-xs sm:text-sm font-mono mt-0.5"
-            >
-              {activeIndex + 1} of {CATEGORIES.length} • Scroll to explore
-            </motion.p>
-          </div>
-          
-          <motion.div 
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex items-center gap-3"
+      {/* Heading Section at the Start */}
+      <div className="sticky top-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-8 sm:pt-12 pb-6 sm:pb-8 border-b border-[#FFF314]/20">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
           >
-            <span className="text-[#FFF314] font-mono text-sm font-bold">
-              {CATEGORIES[activeIndex]?.id || '01'}
+            <span className="font-mono text-[#FFF314] text-xs sm:text-sm tracking-[0.2em] uppercase font-bold">
+              Our Work
             </span>
-            <span className="w-px h-6 bg-[#FFF314]/30" />
-            <span className="text-[#263238] font-display text-sm font-medium truncate max-w-[150px] sm:max-w-[200px]">
-              {CATEGORIES[activeIndex]?.title || 'Loading...'}
-            </span>
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#263238] mt-1 sm:mt-2">
+              Impact <span className="text-[#FFF314]">Initiatives</span>
+            </h1>
+            <p className="text-[#263238]/60 text-sm sm:text-base max-w-2xl mt-2 sm:mt-3 font-mono">
+              Explore our 12 key focus areas driving meaningful change in communities across the globe.
+            </p>
+            
+            {/* Progress Indicator */}
+            <div className="flex items-center gap-3 mt-4 sm:mt-5">
+              <div className="flex items-center gap-2">
+                <span className="text-[#FFF314] font-mono text-lg sm:text-xl font-bold">
+                  {String(activeIndex + 1).padStart(2, '0')}
+                </span>
+                <span className="text-[#263238]/30 font-mono text-sm">/ {String(CATEGORIES.length).padStart(2, '0')}</span>
+              </div>
+              <div className="h-px flex-1 max-w-[200px] bg-[#263238]/10 relative overflow-hidden">
+                <motion.div 
+                  className="h-full bg-[#FFF314] absolute left-0 top-0"
+                  style={{ width: `${((activeIndex + 1) / CATEGORIES.length) * 100}%` }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+              <span className="text-[#263238]/40 font-mono text-xs truncate max-w-[120px] sm:max-w-[200px]">
+                {CATEGORIES[activeIndex]?.title}
+              </span>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -103,7 +106,7 @@ export default function ImpactCategories() {
       </div>
 
       {/* Detail Cards Overlay */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20">
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20" style={{ paddingTop: '30vh' }}>
         {CATEGORIES.map((cat, i) => (
           <section 
             key={i} 
