@@ -28,7 +28,7 @@ export default function App() {
           <Route path="/programs" element={<Programs />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/stories" element={<Stories />} />
-          <Route path="/children" element={<Children />} />
+          <Route path="/Children" element={<Children />} />
           <Route path="/donate" element={<Donate />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/volunteer" element={<Volunteer />} />
