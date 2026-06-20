@@ -43,13 +43,15 @@ export default function Home() {
       {/* Donate Popup - Shows first */}
       <DonatePopup 
         isOpen={showDonatePopup} 
-        onClose={handleDonateClose} 
+        onClose={handleDonateClose}
+        className="mt-20 md:mt-24 lg:mt-28"
       />
 
       {/* Volunteer Popup - Shows after Donate popup closes */}
       <VolunteerPopup 
         isOpen={showVolunteerPopup} 
-        onClose={() => setShowVolunteerPopup(false)} 
+        onClose={() => setShowVolunteerPopup(false)}
+        className="mt-20 md:mt-24 lg:mt-28"
       />
     </div>
   )
