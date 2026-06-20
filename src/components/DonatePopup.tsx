@@ -49,7 +49,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           onClick={handleOverlayClick}
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
         >
@@ -61,7 +61,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
             transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
             className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
-            style={{ zIndex: 10000 }}
+            style={{ zIndex: 100000 }}
           >
             {/* Close Button */}
             <button
@@ -89,12 +89,10 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
 
             {/* Content */}
             <div className="p-6 pb-8 text-center">
-              {/* Quote with only "Opening doors" bolded */}
               <p className="text-[#000000] text-base sm:text-lg italic leading-relaxed">
                 <span className="font-bold">Opening doors</span> to a better future through the power of education.
               </p>
 
-              {/* Donate Button */}
               <Link
                 to="/donate"
                 onClick={handleClose}
