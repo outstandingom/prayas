@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, GraduationCap, Users, HeartHandshake, Leaf, Stethoscope, Home, Lightbulb } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
-// Slides Data - 7 meaningful slides with 3 images repeating
+// Slides Data - 7 meaningful slides with 2 local images
 const SLIDES = [
   {
     id: 1,
@@ -10,8 +10,8 @@ const SLIDES = [
     title: "Education",
     subtitle: "Improver Children for a Better World",
     description: "We provide quality education to underprivileged children, building foundations for lifelong learning and empowering the next generation of leaders.",
-    image: "/IMG-20.jpg", // Image 1
-    stats: "10,000+ Children Educated"
+    image: "/IMG-20.jpg",
+    imagePosition: "center", // Center position for IMG-20
   },
   {
     id: 2,
@@ -19,8 +19,8 @@ const SLIDES = [
     title: "Women Empowerment",
     subtitle: "Building Strong, Independent Women",
     description: "Through skill development, entrepreneurship programs, and leadership training, we help women gain financial independence and social confidence.",
-    image: "/IMG-21.jpg", // Image 2
-    stats: "5,000+ Women Empowered"
+    image: "/IMG-21.jpg",
+    imagePosition: "right", // Show right side for IMG-21
   },
   {
     id: 3,
@@ -28,8 +28,8 @@ const SLIDES = [
     title: "Healthcare",
     subtitle: "Ensuring Healthy Communities",
     description: "Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.",
-    image: "https://i.ibb.co/Zz2N4XYx/IMG-21.jpg", // Image 2 (waiting for Image 3 URL)
-    stats: "50+ Medical Camps"
+    image: "/IMG-20.jpg",
+    imagePosition: "center",
   },
   {
     id: 4,
@@ -37,8 +37,8 @@ const SLIDES = [
     title: "Environment",
     subtitle: "Protecting Our Planet Together",
     description: "From tree plantation drives to waste management initiatives, we're committed to creating a sustainable and greener future for all.",
-    image: "https://i.ibb.co/VW6yVPKf/IMG-20260619-WA0027.jpg", // Image 1 (repeat)
-    stats: "100,000+ Trees Planted"
+    image: "/IMG-21.jpg",
+    imagePosition: "right",
   },
   {
     id: 5,
@@ -46,8 +46,8 @@ const SLIDES = [
     title: "Nutrition",
     subtitle: "Nourishing Bodies and Minds",
     description: "Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.",
-    image: "https://i.ibb.co/m5NSZTX4/IMG-20260620-WA0001.jpg", // Image 2 (repeat)
-    stats: "20,000+ Meals Served"
+    image: "/IMG-20.jpg",
+    imagePosition: "center",
   },
   {
     id: 6,
@@ -55,8 +55,8 @@ const SLIDES = [
     title: "Shelter",
     subtitle: "A Roof Over Every Head",
     description: "We work to provide safe and dignified housing solutions for homeless families, creating secure environments where they can thrive.",
-    image: "https://i.ibb.co/VW6yVPKf/IMG-20260619-WA0027.jpg", // Image 1 (repeat)
-    stats: "500+ Homes Built"
+    image: "/IMG-21.jpg",
+    imagePosition: "right",
   },
   {
     id: 7,
@@ -64,8 +64,8 @@ const SLIDES = [
     title: "Skill Development",
     subtitle: "Empowering Through Knowledge",
     description: "Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth.",
-    image: "https://i.ibb.co/m5NSZTX4/IMG-20260620-WA0001.jpg", // Image 2 (repeat)
-    stats: "3,000+ People Trained"
+    image: "/IMG-20.jpg",
+    imagePosition: "center",
   }
 ];
 
@@ -116,48 +116,61 @@ export default function HeroBanner() {
         >
           {/* Background Image */}
           <div 
-            className="w-full h-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${SLIDES[currentSlide].image})` }}
+            className="w-full h-full bg-cover bg-no-repeat"
+            style={{ 
+              backgroundImage: `url(${SLIDES[currentSlide].image})`,
+              backgroundPosition: SLIDES[currentSlide].imagePosition === 'right' 
+                ? '70% center' // Shows right side of image
+                : 'center center'
+            }}
           />
           
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
           
-          {/* Content Overlay - Added pt-20 for navbar spacing */}
-          <div className="absolute inset-0 flex items-center pt-16 md:pt-20">
+          {/* Content - Mobile: Bottom aligned, Desktop: Center aligned */}
+          <div className="absolute inset-0 flex items-end md:items-center pb-24 md:pb-0 pt-20 md:pt-20">
             <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
               <div className="max-w-2xl">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
+                  className="text-center md:text-left"
                 >
-                  {/* Stats Badge */}
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFF314] mb-4 md:mb-6">
+                  {/* Icon - Hidden on mobile */}
+                  <div className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFF314] mb-4 md:mb-6">
                     <CurrentIcon size={18} className="text-gray-900" />
                     <span className="text-sm font-bold text-gray-900 uppercase tracking-wider">
-                      {SLIDES[currentSlide].stats}
+                      {SLIDES[currentSlide].title}
                     </span>
                   </div>
                   
-                  {/* Title - Responsive sizing with better spacing */}
-                  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-3 md:mb-4 leading-tight">
+                  {/* Mobile Icon */}
+                  <div className="flex justify-center md:hidden mb-3">
+                    <div className="w-12 h-12 rounded-full bg-[#FFF314]/20 flex items-center justify-center">
+                      <CurrentIcon size={24} className="text-[#FFF314]" />
+                    </div>
+                  </div>
+                  
+                  {/* Title - Responsive sizing */}
+                  <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-2 md:mb-4 leading-tight">
                     {SLIDES[currentSlide].title}
                   </h1>
                   
                   {/* Subtitle */}
-                  <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#FFF314] mb-4 md:mb-6">
+                  <p className="text-lg sm:text-2xl md:text-3xl font-semibold text-[#FFF314] mb-3 md:mb-6">
                     {SLIDES[currentSlide].subtitle}
                   </p>
                   
-                  {/* Description - Hide on very small screens to prevent overlap */}
-                  <p className="hidden sm:block text-base md:text-lg lg:text-xl text-white/90 leading-relaxed mb-6 md:mb-8 max-w-xl">
+                  {/* Description - Visible on all screens now */}
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/80 md:text-white/90 leading-relaxed mb-6 md:mb-8 max-w-xl mx-auto md:mx-0 px-2 md:px-0">
                     {SLIDES[currentSlide].description}
                   </p>
                   
                   {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -181,7 +194,7 @@ export default function HeroBanner() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation Arrows - Adjusted for mobile */}
+      {/* Navigation Arrows */}
       <button
         onClick={handlePrev}
         className="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/30 border border-white/20 flex items-center justify-center hover:bg-black/50 transition-all duration-300 group z-10"
@@ -195,7 +208,7 @@ export default function HeroBanner() {
         <ChevronRight size={20} className="md:w-6 md:h-6 text-white group-hover:scale-110 transition-transform" />
       </button>
 
-      {/* Slide Counter - Moved lower to avoid navbar overlap */}
+      {/* Slide Counter */}
       <div className="absolute top-24 md:top-28 right-4 md:right-8 z-10">
         <div className="flex items-center gap-2 bg-black/50 rounded-full px-3 py-1.5 md:px-4 md:py-2 border border-white/10">
           <span className="text-[#FFF314] font-bold text-sm md:text-lg">{(currentSlide + 1).toString().padStart(2, '0')}</span>
@@ -219,14 +232,13 @@ export default function HeroBanner() {
                 whileTap={{ scale: 0.9 }}
                 className="group relative"
               >
-                {/* Dot Indicator */}
                 <div className={`h-2.5 md:h-3 rounded-full transition-all duration-300 ${
                   isActive 
                     ? 'bg-[#FFF314] w-6 md:w-8' 
                     : 'bg-white/30 hover:bg-white/60 w-2.5 md:w-3'
                 }`} />
                 
-                {/* Tooltip on Hover - Hidden on mobile */}
+                {/* Tooltip on Hover - Desktop only */}
                 <div className="hidden md:block absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                   <div className="bg-gray-900/90 rounded-lg px-3 py-2 whitespace-nowrap border border-white/10">
                     <div className="flex items-center gap-2">
