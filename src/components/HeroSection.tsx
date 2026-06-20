@@ -10,7 +10,7 @@ const SLIDES = [
     title: "Education",
     subtitle: "Improver Children for a Better World",
     description: "We provide quality education to underprivileged children, building foundations for lifelong learning and empowering the next generation of leaders.",
-    image: "public/IMG-20", // Image 1
+    image: "/IMG-20.jpg", // Image 1
     stats: "10,000+ Children Educated"
   },
   {
@@ -19,7 +19,7 @@ const SLIDES = [
     title: "Women Empowerment",
     subtitle: "Building Strong, Independent Women",
     description: "Through skill development, entrepreneurship programs, and leadership training, we help women gain financial independence and social confidence.",
-    image: "https://i.ibb.co/m5NSZTX4/IMG-20260620-WA0001.jpg", // Image 2
+    image: "/IMG-21."jpg, // Image 2
     stats: "5,000+ Women Empowered"
   },
   {
