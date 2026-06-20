@@ -75,25 +75,34 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               <X className="w-5 h-5 text-gray-700" />
             </button>
 
+            {/* Header with Children Image */}
+            <div className="relative h-48 sm:h-56 rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
+              <img
+                src="/IMG-20.jpg"
+                alt="Children smiling"
+                className="w-full h-full object-cover object-center"
+                style={{ objectPosition: 'center 30%' }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop&q=80'
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="flex items-center gap-3">
+                  <Heart className="w-6 h-6 text-[#FFF314] fill-[#FFF314]" />
+                  <div>
+                    <h2 className="text-xl font-bold text-white">Make a Donation</h2>
+                    <p className="text-white/80 text-sm">Your support changes lives</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Content */}
-            <div className="p-8 text-center">
-              {/* Icon */}
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#FFF314]/10 mb-6"
-              >
-                <Heart className="w-10 h-10 text-[#FFF314] fill-[#FFF314]" />
-              </motion.div>
-
-              {/* Title */}
-              <h2 className="text-2xl font-bold text-[#263238] mb-3">
-                Support Our Cause
-              </h2>
-
+            <div className="p-6 text-center">
               {/* Tagline */}
-              <p className="text-[#263238]/60 text-sm mb-6">
+              <p className="text-[#263238]/60 text-sm mb-6 italic">
                 "Every contribution, no matter how small, creates a ripple of change."
               </p>
 
