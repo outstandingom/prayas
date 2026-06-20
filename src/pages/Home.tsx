@@ -34,9 +34,10 @@ export default function Home() {
     <div className="w-full">
       <HeroSection />
       <ImpactCounter />
-      <ScrollStory />
+      
       <ImpactCategories />
       <ImageCarousel />
+      <ScrollStory />
 
       {/* Donate Popup - Shows first */}
       <DonatePopup 
