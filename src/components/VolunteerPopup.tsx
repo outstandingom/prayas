@@ -7,9 +7,10 @@ import { supabase } from '@/lib/supabase'
 interface VolunteerPopupProps {
   isOpen: boolean
   onClose: () => void
+  className?: string // Add this
 }
 
-export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps) {
+export default function VolunteerPopup({ isOpen, onClose, className = '' }: VolunteerPopupProps) {
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -102,7 +103,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          className={`fixed inset-0 z-[99999] flex items-start justify-center p-4 bg-black/50 backdrop-blur-sm ${className}`}
           onClick={handleOverlayClick}
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
         >
@@ -112,10 +113,11 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
-            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
+            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl mt-20 md:mt-24 lg:mt-28"
             onClick={(e) => e.stopPropagation()}
             style={{ zIndex: 100000 }}
           >
+            {/* Rest of your component remains the same */}
             {/* Close Button */}
             <button
               type="button"
@@ -163,6 +165,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                  {/* All your form fields remain the same */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
                       <User className="w-4 h-4 text-[#FFF314]" />
@@ -308,4 +311,4 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
       )}
     </AnimatePresence>
   )
-}
+                      }
