@@ -90,7 +90,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
             {/* Content */}
             <div className="p-6 pb-8 text-center">
               {/* Quote with only "Opening doors" bolded */}
-              <p className="text-[#FFF314] text-base sm:text-lg italic leading-relaxed">
+              <p className="text-[#000000] text-base sm:text-lg italic leading-relaxed">
                 <span className="font-bold">Opening doors</span> to a better future through the power of education.
               </p>
 
