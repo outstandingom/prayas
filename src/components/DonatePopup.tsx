@@ -1,7 +1,8 @@
 // src/components/DonatePopup.tsx
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Heart, CheckCircle, CreditCard, Smartphone, Building2, IndianRupee, Gift } from 'lucide-react'
+import { X, Heart, CheckCircle, CreditCard, Smartphone, Building2, IndianRupee, Gift, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 interface DonatePopupProps {
   isOpen: boolean
@@ -157,6 +158,13 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                   </div>
                 </div>
 
+                {/* Tagline */}
+                <div className="px-6 pt-4">
+                  <p className="text-xs text-[#263238]/60 italic text-center">
+                    "Every contribution, no matter how small, creates a ripple of change."
+                  </p>
+                </div>
+
                 {/* Form */}
                 <form onSubmit={handleDonate} className="p-6 space-y-5">
                   {/* Amount Selection */}
@@ -257,6 +265,16 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                     <Heart className="w-5 h-5 fill-current" />
                     Donate ₹{amount?.toLocaleString() || '0'}
                   </button>
+
+                  {/* View All Options Link */}
+                  <Link
+                    to="/donate"
+                    onClick={handleClose}
+                    className="flex items-center justify-center gap-2 text-sm text-[#263238]/60 hover:text-[#FFF314] transition-colors group"
+                  >
+                    <span>View all donation options</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
 
                   <p className="text-center text-xs text-[#263238]/40">
                     Secured by SSL encryption. Your data is safe.
