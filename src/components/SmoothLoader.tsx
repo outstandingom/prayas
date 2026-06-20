@@ -24,8 +24,7 @@ export default function SmoothLoader() {
     return () => clearTimeout(t)
   }, [finish])
 
-  if (phase === 'done') return null
-
+  // FIXED: Don't early return, let AnimatePresence handle exit
   const exitDuration = isMobile ? 0.7 : 0.9
 
   return (
@@ -177,7 +176,7 @@ export default function SmoothLoader() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              {Math.round((phase === 'exiting' ? 100 : 75))}%
+              {phase === 'exiting' ? '100' : '75'}%
             </motion.p>
           </motion.div>
 
