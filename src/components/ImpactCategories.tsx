@@ -36,10 +36,10 @@ export default function ImpactCategories() {
   })
 
   return (
-    <div ref={containerRef} className="relative w-full bg-white" style={{ height: `${12 * 55 + 30}vh` }}>
+    <div ref={containerRef} className="relative w-full bg-[#FFF314]" style={{ height: `${12 * 55 + 30}vh` }}>
       
       {/* Heading Section at the Start */}
-      <div className="sticky top-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-8 sm:pt-12 pb-6 sm:pb-8 border-b border-black/10">
+      <div className="sticky top-0 z-30 bg-[#FFF314] px-4 sm:px-6 md:px-12 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-black/10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -49,29 +49,29 @@ export default function ImpactCategories() {
             <span className="font-mono text-black text-xs sm:text-sm tracking-[0.2em] uppercase font-bold">
               Our Work
             </span>
-            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#263238] mt-1 sm:mt-2">
-              Impact <span className="text-[#263238]">Initiatives</span>
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mt-1 sm:mt-2">
+              Impact <span className="text-black">Initiatives</span>
             </h1>
-            <p className="text-[#263238]/60 text-sm sm:text-base max-w-2xl mt-2 sm:mt-3 font-mono">
+            <p className="text-black/60 text-sm sm:text-base max-w-2xl mt-2 sm:mt-3 font-mono">
               Explore our 12 key focus areas driving meaningful change in communities across the globe.
             </p>
             
             {/* Progress Indicator */}
-            <div className="flex items-center gap-3 mt-4 sm:mt-5">
+            <div className="flex items-center gap-3 mt-3 sm:mt-4">
               <div className="flex items-center gap-2">
-                <span className="text-[#263238] font-mono text-lg sm:text-xl font-bold">
+                <span className="text-black font-mono text-lg sm:text-xl font-bold">
                   {String(activeIndex + 1).padStart(2, '0')}
                 </span>
-                <span className="text-[#263238]/30 font-mono text-sm">/ {String(CATEGORIES.length).padStart(2, '0')}</span>
+                <span className="text-black/30 font-mono text-sm">/ {String(CATEGORIES.length).padStart(2, '0')}</span>
               </div>
               <div className="h-px flex-1 max-w-[200px] bg-black/10 relative overflow-hidden">
                 <motion.div 
-                  className="h-full bg-[#263238] absolute left-0 top-0"
+                  className="h-full bg-black absolute left-0 top-0"
                   style={{ width: `${((activeIndex + 1) / CATEGORIES.length) * 100}%` }}
                   transition={{ duration: 0.3 }}
                 />
               </div>
-              <span className="text-[#263238]/40 font-mono text-xs truncate max-w-[120px] sm:max-w-[200px]">
+              <span className="text-black/40 font-mono text-xs truncate max-w-[120px] sm:max-w-[200px]">
                 {CATEGORIES[activeIndex]?.title}
               </span>
             </div>
@@ -88,15 +88,15 @@ export default function ImpactCategories() {
               style={{
                 width: i === activeIndex ? '10px' : '5px',
                 height: i === activeIndex ? '10px' : '5px',
-                backgroundColor: i === activeIndex ? '#263238' : '#F1F8F5',
-                boxShadow: i === activeIndex ? '0 0 8px rgba(38,50,56,0.3)' : 'none'
+                backgroundColor: i === activeIndex ? '#000' : '#F1F8F5',
+                boxShadow: i === activeIndex ? '0 0 8px rgba(0,0,0,0.3)' : 'none'
               }}
             />
             {i === activeIndex && (
               <motion.span 
                 initial={{ opacity: 0, x: 5 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="text-xs font-mono font-bold text-[#263238]"
+                className="text-xs font-mono font-bold text-black"
               >
                 {cat.id}
               </motion.span>
@@ -105,8 +105,8 @@ export default function ImpactCategories() {
         ))}
       </div>
 
-      {/* Detail Cards Overlay - Increased padding-top to show first card fully */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20" style={{ paddingTop: '35vh' }}>
+      {/* Detail Cards Overlay – increased padding-top to show first card */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20" style={{ paddingTop: '40vh' }}>
         {CATEGORIES.map((cat, i) => (
           <section 
             key={i} 
@@ -118,21 +118,20 @@ export default function ImpactCategories() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false, margin: "-5% 0px -5% 0px" }}
               transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
-              // Glass effect card
               className="pointer-events-auto w-full max-w-sm sm:max-w-md bg-white/70 backdrop-blur-md border border-white/30 p-4 sm:p-5 rounded-2xl shadow-xl shadow-black/5 hover:shadow-2xl hover:shadow-black/10 transition-all duration-300"
             >
               <div className="flex items-center justify-between mb-2 pb-2 border-b border-black/10">
-                <span className="font-mono text-[10px] tracking-[0.15em] text-[#263238] font-bold">
+                <span className="font-mono text-[10px] tracking-[0.15em] text-black font-bold">
                   {cat.id} — {cat.title}
                 </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#263238]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-black" />
               </div>
 
-              <h3 className="font-display text-xl sm:text-2xl font-bold text-[#263238] mb-1.5">
+              <h3 className="font-display text-xl sm:text-2xl font-bold text-black mb-1.5">
                 {cat.title}
               </h3>
 
-              <p className="text-[#263238]/60 text-xs sm:text-sm leading-relaxed mb-3">
+              <p className="text-black/60 text-xs sm:text-sm leading-relaxed mb-3">
                 {cat.desc}
               </p>
 
@@ -140,7 +139,7 @@ export default function ImpactCategories() {
                 <img src={cat.img} alt={cat.title} className="w-full h-full object-cover" loading="lazy" />
               </div>
 
-              <button className="inline-flex items-center gap-2 text-[#263238] font-mono text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all">
+              <button className="inline-flex items-center gap-2 text-black font-mono text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all">
                 Learn More <span className="text-base leading-none">→</span>
               </button>
             </motion.div>
