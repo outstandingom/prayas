@@ -84,12 +84,17 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                   (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=600&fit=crop&q=80'
                 }}
               />
-              {/* Gradient overlay only for visual depth, no text */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
 
-            {/* Content - Only Donate Button and "Maybe later" */}
+            {/* Content */}
             <div className="p-6 pb-8 text-center">
+              {/* Quote */}
+              <p className="text-[#263238]/80 text-base font-medium mb-6 italic leading-relaxed">
+                "Opening doors to a better future through the power of education."
+              </p>
+
+              {/* Donate Button */}
               <Link
                 to="/donate"
                 onClick={handleClose}
@@ -100,6 +105,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 <ArrowRight className="w-5 h-5" />
               </Link>
 
+              {/* Close Button */}
               <button
                 type="button"
                 onClick={handleClose}
