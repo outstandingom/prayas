@@ -89,16 +89,16 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
 
             {/* Content */}
             <div className="p-6 pb-8 text-center">
-              {/* Highlighted Quote */}
-              <p className="text-[#FFF314] text-base sm:text-lg font-bold mb-6 italic leading-relaxed">
-                "Opening doors to a better future through the power of education."
+              {/* Quote with only "Opening doors" bolded */}
+              <p className="text-[#FFF314] text-base sm:text-lg italic leading-relaxed">
+                <span className="font-bold">Opening doors</span> to a better future through the power of education.
               </p>
 
               {/* Donate Button */}
               <Link
                 to="/donate"
                 onClick={handleClose}
-                className="w-full py-4 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-4 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2 cursor-pointer mt-6"
               >
                 <Heart className="w-5 h-5 fill-current" />
                 Donate Now
