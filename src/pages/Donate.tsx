@@ -19,6 +19,8 @@ export default function Donate() {
 
   const handleDonate = (e: React.FormEvent) => {
     e.preventDefault()
+    e.stopPropagation()
+    console.log('Donate button clicked!') // Debug
     setSuccess(true)
   }
 
@@ -59,7 +61,7 @@ export default function Donate() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8" style={{ position: 'relative', zIndex: 1 }}>
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -95,7 +97,7 @@ export default function Donate() {
                       setSelectedAmount(amt.value)
                       setCustomAmount('')
                     }}
-                    className={`py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${
+                    className={`py-2.5 px-3 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                       selectedAmount === amt.value && !customAmount
                         ? 'bg-[#FFF314] text-[#263238] shadow-lg shadow-[#FFF314]/20'
                         : 'bg-gray-100 text-[#263238] hover:bg-[#FFF314]/10'
@@ -136,7 +138,7 @@ export default function Donate() {
                     key={method.id}
                     type="button"
                     onClick={() => setPaymentMethod(method.id)}
-                    className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg transition-all ${
+                    className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg transition-all cursor-pointer ${
                       paymentMethod === method.id
                         ? 'bg-[#FFF314] text-[#263238] shadow-lg shadow-[#FFF314]/20'
                         : 'bg-gray-100 text-[#263238] hover:bg-[#FFF314]/10'
@@ -167,7 +169,7 @@ export default function Donate() {
             {/* Donate Button */}
             <button
               type="submit"
-              className="w-full py-3.5 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2 cursor-pointer"
             >
               <Heart className="w-5 h-5 fill-current" />
               Donate ₹{amount?.toLocaleString() || '0'}
@@ -179,10 +181,9 @@ export default function Donate() {
           </form>
         </motion.div>
 
-        {/* Extra Info */}
         <div className="mt-8 text-center text-sm text-[#263238]/40">
           <p>100% of your donation goes directly to our programs.</p>
-          <p className="mt-1">Prayas Samaj Sevi Sanstha is a registered NGO (Registration No. XYZ123).</p>
+          <p className="mt-1">Prayas Samaj Sevi Sanstha is a registered NGO.</p>
         </div>
       </div>
     </div>
