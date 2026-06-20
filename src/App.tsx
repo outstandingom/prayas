@@ -1,42 +1,54 @@
-// src/App.tsx
-import { Routes, Route } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
-import Layout from './components/Layout';
-import Home from './pages/Home';
-import About from './pages/About';
-import Programs from './pages/Programs';
-import Gallery from './pages/Gallery';
-import Stories from './pages/Stories';
-import Children from './pages/Children'; // ADD THIS IMPORT
-import Donate from './pages/Donate';
-import Contact from './pages/Contact';
-import Auth from './pages/Auth';
-import Profile from './pages/Profile';
-import Volunteer from './pages/Volunteer';
-import AdminDashboard from './pages/AdminDashboard';
+// src/pages/Home.tsx
+import { useState, useEffect } from 'react'
+import HeroSection from '../components/HeroSection'
+import ImpactCounter from '../components/ImpactCounter'
+import ScrollStory from '../components/ScrollStory'
+import ImpactCategories from '../components/ImpactCategories'
+import ImageCarousel from '../components/ImageCarousel'
+import VolunteerPopup from '../components/VolunteerPopup'
+import DonatePopup from '../components/DonatePopup'
 
-export default function App() {
+export default function Home() {
+  const [showDonatePopup, setShowDonatePopup] = useState(false)
+  const [showVolunteerPopup, setShowVolunteerPopup] = useState(false)
+
+  useEffect(() => {
+    // Show Donate popup first after 2 seconds
+    const timer = setTimeout(() => {
+      setShowDonatePopup(true)
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  // When Donate popup closes, show Volunteer popup
+  const handleDonateClose = () => {
+    setShowDonatePopup(false)
+    // Show Volunteer popup after a short delay
+    setTimeout(() => {
+      setShowVolunteerPopup(true)
+    }, 500)
+  }
+
   return (
-    <AnimatePresence mode="wait">
-      <Routes>
-        {/* Auth page – standalone (no layout) */}
-        <Route path="/auth" element={<Auth />} />
+    <div className="w-full">
+      <HeroSection />
+      <ImpactCounter />
+      <ScrollStory />
+      <ImpactCategories />
+      <ImageCarousel />
 
-        {/* All other pages with the common Layout (includes Navbar & Footer) */}
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/programs" element={<Programs />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/stories" element={<Stories />} />
-          <Route path="/children" element={<Children />} /> {/* FIXED: lowercase path, using imported component */}
-          <Route path="/donate" element={<Donate />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/volunteer" element={<Volunteer />} />
-          <Route path="/admin/*" element={<AdminDashboard />} />
-          <Route path="/profile" element={<Profile />} />
-        </Route>
-      </Routes>
-    </AnimatePresence>
-  );
+      {/* Donate Popup - Shows first */}
+      <DonatePopup 
+        isOpen={showDonatePopup} 
+        onClose={handleDonateClose} 
+      />
+
+      {/* Volunteer Popup - Shows after Donate popup closes */}
+      <VolunteerPopup 
+        isOpen={showVolunteerPopup} 
+        onClose={() => setShowVolunteerPopup(false)} 
+      />
+    </div>
+  )
 }
