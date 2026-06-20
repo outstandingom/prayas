@@ -19,7 +19,7 @@ const SLIDES = [
     title: "Women Empowerment",
     subtitle: "Building Strong, Independent Women",
     description: "Through skill development, entrepreneurship programs, and leadership training, we help women gain financial independence and social confidence.",
-    image: "/IMG-21."jpg, // Image 2
+    image: "/IMG-21.jpg", // Image 2
     stats: "5,000+ Women Empowered"
   },
   {
