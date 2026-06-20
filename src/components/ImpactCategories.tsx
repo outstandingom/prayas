@@ -118,7 +118,8 @@ export default function ImpactCategories() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false, margin: "-5% 0px -5% 0px" }}
               transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
-              className="pointer-events-auto w-full max-w-sm sm:max-w-md bg-white/95 backdrop-blur-sm border border-black/10 p-4 sm:p-5 rounded-2xl shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-black/10 transition-all duration-300"
+              // ENHANCED GLASS EFFECT on the card
+              className="pointer-events-auto w-full max-w-sm sm:max-w-md bg-white/70 backdrop-blur-md border border-white/30 p-4 sm:p-5 rounded-2xl shadow-xl shadow-black/5 hover:shadow-2xl hover:shadow-black/10 transition-all duration-300"
             >
               <div className="flex items-center justify-between mb-2 pb-2 border-b border-black/10">
                 <span className="font-mono text-[10px] tracking-[0.15em] text-black font-bold">
