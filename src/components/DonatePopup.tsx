@@ -75,15 +75,15 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               <X className="w-5 h-5 text-gray-700" />
             </button>
 
-            {/* Header with Children Image */}
-            <div className="relative h-48 sm:h-56 rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
+            {/* Header with Children Image - Increased height */}
+            <div className="relative h-64 sm:h-72 md:h-80 rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
               <img
                 src="/IMG-20.jpg"
                 alt="Children smiling"
                 className="w-full h-full object-cover object-center"
                 style={{ objectPosition: 'center 30%' }}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop&q=80'
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=600&fit=crop&q=80'
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
