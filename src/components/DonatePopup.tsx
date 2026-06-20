@@ -22,7 +22,6 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
   const [paymentMethod, setPaymentMethod] = useState('card')
   const [success, setSuccess] = useState(false)
 
-  // Reset state when popup closes
   useEffect(() => {
     if (!isOpen) {
       setTimeout(() => {
@@ -42,12 +41,14 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
 
   const amount = customAmount ? parseInt(customAmount) : selectedAmount
 
-  // Handle close with proper cleanup
-  const handleClose = () => {
+  const handleClose = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
     onClose()
   }
 
-  // Handle overlay click
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       handleClose()
@@ -74,11 +75,11 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
             className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button - Fixed positioning */}
+            {/* Close Button - Fixed with proper event handling */}
             <button
               type="button"
               onClick={handleClose}
-              className="absolute top-3 right-3 z-50 p-2 rounded-full bg-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 border border-gray-100"
+              className="absolute top-3 right-3 z-50 p-2 rounded-full bg-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 border border-gray-200 hover:border-[#FFF314] cursor-pointer"
               aria-label="Close donation popup"
             >
               <X className="w-5 h-5 text-gray-700" />
@@ -104,24 +105,25 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-6 py-2.5 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-colors"
+                  className="px-6 py-2.5 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-colors cursor-pointer"
                 >
                   Close
                 </button>
               </div>
             ) : (
               <>
-                {/* Header with Children Image - Fixed positioning */}
-                <div className="relative h-48 rounded-t-2xl overflow-hidden flex-shrink-0">
+                {/* Header with Children Image - Fixed to show full face */}
+                <div className="relative h-56 sm:h-64 rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
                   <img
                     src="/IMG-20.jpg"
                     alt="Children smiling"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center"
+                    style={{ objectPosition: 'center 30%' }}
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=400&fit=crop&q=80'
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop&q=80'
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                   
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <div className="flex items-center gap-3">
@@ -149,10 +151,11 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                           type="button"
                           onClick={(e) => {
                             e.preventDefault()
+                            e.stopPropagation()
                             setSelectedAmount(amt.value)
                             setCustomAmount('')
                           }}
-                          className={`py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${
+                          className={`py-2.5 px-3 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                             selectedAmount === amt.value && !customAmount
                               ? 'bg-[#FFF314] text-[#263238] shadow-lg shadow-[#FFF314]/20'
                               : 'bg-gray-100 text-[#263238] hover:bg-[#FFF314]/10'
@@ -194,9 +197,10 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                           type="button"
                           onClick={(e) => {
                             e.preventDefault()
+                            e.stopPropagation()
                             setPaymentMethod(method.id)
                           }}
-                          className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg transition-all ${
+                          className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg transition-all cursor-pointer ${
                             paymentMethod === method.id
                               ? 'bg-[#FFF314] text-[#263238] shadow-lg shadow-[#FFF314]/20'
                               : 'bg-gray-100 text-[#263238] hover:bg-[#FFF314]/10'
@@ -227,7 +231,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                   {/* Donate Button */}
                   <button
                     type="submit"
-                    className="w-full py-3.5 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2"
+                    className="w-full py-3.5 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Heart className="w-5 h-5 fill-current" />
                     Donate ₹{amount?.toLocaleString() || '0'}
