@@ -28,7 +28,7 @@ const SLIDES = [
     title: "Healthcare",
     subtitle: "Ensuring Healthy Communities",
     description: "Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.",
-    image: "/IMG-23.jpg",
+    image: "/IMG-23.jpeg",
     imagePosition: "center",
   },
   {
