@@ -36,7 +36,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           onClick={onClose}
         >
           <motion.div
@@ -50,11 +50,9 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
             {/* Close Button */}
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                onClose()
-              }}
-              className="absolute top-4 right-4 p-2 rounded-full bg-white/80 hover:bg-white transition-colors z-50"
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-colors z-50"
+              aria-label="Close donation popup"
             >
               <X className="w-5 h-5 text-gray-700" />
             </button>
@@ -78,10 +76,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 </p>
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onClose()
-                  }}
+                  onClick={onClose}
                   className="px-6 py-2.5 bg-[#FFF314] text-[#263238] rounded-lg font-medium hover:bg-[#FFF314]/90 transition-colors"
                 >
                   Close
@@ -92,9 +87,13 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 {/* Header with Children Image */}
                 <div className="relative h-48 rounded-t-2xl overflow-hidden">
                   <img
-                    src="public/IMG-20.jpg"
+                    src="/IMG-20.jpg"
                     alt="Children smiling"
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback if image doesn't load
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=400&fit=crop&q=80'
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
                   
