@@ -22,6 +22,25 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
   const [paymentMethod, setPaymentMethod] = useState('card')
   const [success, setSuccess] = useState(false)
 
+  // Lock body scroll when popup is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.width = '100%'
+    } else {
+      document.body.style.overflow = 'unset'
+      document.body.style.position = 'unset'
+      document.body.style.width = 'unset'
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset'
+      document.body.style.position = 'unset'
+      document.body.style.width = 'unset'
+    }
+  }, [isOpen])
+
   useEffect(() => {
     if (!isOpen) {
       setTimeout(() => {
@@ -63,8 +82,9 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           onClick={handleOverlayClick}
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
         >
           <motion.div
             key="donate-popup-modal"
@@ -74,8 +94,9 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
             transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
             className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
+            style={{ zIndex: 10000 }}
           >
-            {/* Close Button - Fixed with proper event handling */}
+            {/* Close Button */}
             <button
               type="button"
               onClick={handleClose}
@@ -112,7 +133,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               </div>
             ) : (
               <>
-                {/* Header with Children Image - Fixed to show full face */}
+                {/* Header with Children Image */}
                 <div className="relative h-56 sm:h-64 rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
                   <img
                     src="/IMG-20.jpg"
