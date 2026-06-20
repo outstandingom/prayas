@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, GraduationCap, Users, HeartHandshake, Leaf, Stethoscope, Home, Lightbulb } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
-// Slides Data - 7 meaningful slides
+// Slides Data - 7 meaningful slides with 3 images repeating
 const SLIDES = [
   {
     id: 1,
@@ -10,7 +10,7 @@ const SLIDES = [
     title: "Education",
     subtitle: "Improver Children for a Better World",
     description: "We provide quality education to underprivileged children, building foundations for lifelong learning and empowering the next generation of leaders.",
-    image: "https://i.ibb.co/VW6yVPKf/IMG-20260619-WA0027.jpg",
+    image: "https://i.ibb.co/VW6yVPKf/IMG-20260619-WA0027.jpg", // Image 1
     stats: "10,000+ Children Educated"
   },
   {
@@ -19,7 +19,7 @@ const SLIDES = [
     title: "Women Empowerment",
     subtitle: "Building Strong, Independent Women",
     description: "Through skill development, entrepreneurship programs, and leadership training, we help women gain financial independence and social confidence.",
-    image: "https://i.ibb.co/VW6yVPKf/IMG-20260619-WA0027.jpg",
+    image: "https://i.ibb.co/m5NSZTX4/IMG-20260620-WA0001.jpg", // Image 2
     stats: "5,000+ Women Empowered"
   },
   {
@@ -28,7 +28,7 @@ const SLIDES = [
     title: "Healthcare",
     subtitle: "Ensuring Healthy Communities",
     description: "Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.",
-    image: "https://images.pexels.com/photos/4101143/pexels-photo-4101143.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    image: "https://i.ibb.co/Zz2N4XYx/IMG-20260620-WA0001.jpg", // Image 2 (waiting for Image 3 URL)
     stats: "50+ Medical Camps"
   },
   {
@@ -37,7 +37,7 @@ const SLIDES = [
     title: "Environment",
     subtitle: "Protecting Our Planet Together",
     description: "From tree plantation drives to waste management initiatives, we're committed to creating a sustainable and greener future for all.",
-    image: "https://images.pexels.com/photos/3192815/pexels-photo-3192815.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    image: "https://i.ibb.co/VW6yVPKf/IMG-20260619-WA0027.jpg", // Image 1 (repeat)
     stats: "100,000+ Trees Planted"
   },
   {
@@ -46,7 +46,7 @@ const SLIDES = [
     title: "Nutrition",
     subtitle: "Nourishing Bodies and Minds",
     description: "Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.",
-    image: "https://images.pexels.com/photos/6646959/pexels-photo-6646959.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    image: "https://i.ibb.co/m5NSZTX4/IMG-20260620-WA0001.jpg", // Image 2 (repeat)
     stats: "20,000+ Meals Served"
   },
   {
@@ -55,7 +55,7 @@ const SLIDES = [
     title: "Shelter",
     subtitle: "A Roof Over Every Head",
     description: "We work to provide safe and dignified housing solutions for homeless families, creating secure environments where they can thrive.",
-    image: "https://images.pexels.com/photos/2363800/pexels-photo-2363800.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    image: "https://i.ibb.co/VW6yVPKf/IMG-20260619-WA0027.jpg", // Image 1 (repeat)
     stats: "500+ Homes Built"
   },
   {
@@ -64,7 +64,7 @@ const SLIDES = [
     title: "Skill Development",
     subtitle: "Empowering Through Knowledge",
     description: "Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth.",
-    image: "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    image: "https://i.ibb.co/m5NSZTX4/IMG-20260620-WA0001.jpg", // Image 2 (repeat)
     stats: "3,000+ People Trained"
   }
 ];
