@@ -38,6 +38,44 @@ export default function ImpactCategories() {
   return (
     <div ref={containerRef} className="relative w-full bg-white" style={{ height: `${12 * 55}vh` }}>
       
+      {/* Sticky Header with Title and Initiatives */}
+      <div className="fixed top-0 left-0 w-full z-40 bg-white/95 backdrop-blur-sm border-b border-[#FFF314]/20 px-4 sm:px-6 md:px-12 py-4 sm:py-5">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <motion.h1 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-[#263238]"
+            >
+              Our Impact <span className="text-[#FFF314]">Initiatives</span>
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-[#263238]/60 text-xs sm:text-sm font-mono mt-0.5"
+            >
+              {activeIndex + 1} of {CATEGORIES.length} • Scroll to explore
+            </motion.p>
+          </div>
+          
+          <motion.div 
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="flex items-center gap-3"
+          >
+            <span className="text-[#FFF314] font-mono text-sm font-bold">
+              {CATEGORIES[activeIndex]?.id || '01'}
+            </span>
+            <span className="w-px h-6 bg-[#FFF314]/30" />
+            <span className="text-[#263238] font-display text-sm font-medium truncate max-w-[150px] sm:max-w-[200px]">
+              {CATEGORIES[activeIndex]?.title || 'Loading...'}
+            </span>
+          </motion.div>
+        </div>
+      </div>
+
       {/* Right Side Navigation Dots */}
       <div className="fixed right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30 items-center">
         {CATEGORIES.map((cat, i) => (
