@@ -73,7 +73,7 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
               <X className="w-5 h-5 text-gray-700" />
             </button>
 
-            {/* Header with Children Image - No text overlay */}
+            {/* Header with Children Image */}
             <div className="relative h-80 sm:h-96 md:h-[32rem] rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
               <img
                 src="/IMG-20.jpg"
@@ -89,8 +89,8 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
 
             {/* Content */}
             <div className="p-6 pb-8 text-center">
-              {/* Quote */}
-              <p className="text-[#263238]/80 text-base font-medium mb-6 italic leading-relaxed">
+              {/* Highlighted Quote */}
+              <p className="text-[#FFF314] text-base sm:text-lg font-bold mb-6 italic leading-relaxed">
                 "Opening doors to a better future through the power of education."
               </p>
 
@@ -104,15 +104,6 @@ export default function DonatePopup({ isOpen, onClose }: DonatePopupProps) {
                 Donate Now
                 <ArrowRight className="w-5 h-5" />
               </Link>
-
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={handleClose}
-                className="mt-5 text-sm text-[#263238]/40 hover:text-[#263238]/60 transition-colors"
-              >
-                Maybe later
-              </button>
             </div>
           </motion.div>
         </motion.div>
