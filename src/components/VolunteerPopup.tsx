@@ -23,7 +23,6 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
-  // Lock body scroll when popup is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -34,7 +33,6 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
       document.body.style.position = 'unset'
       document.body.style.width = 'unset'
     }
-
     return () => {
       document.body.style.overflow = 'unset'
       document.body.style.position = 'unset'
@@ -104,7 +102,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           onClick={handleOverlayClick}
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
         >
@@ -116,7 +114,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
             transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
             className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
-            style={{ zIndex: 10000 }}
+            style={{ zIndex: 100000 }}
           >
             {/* Close Button */}
             <button
@@ -152,7 +150,6 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
               </div>
             ) : (
               <>
-                {/* Header */}
                 <div className="p-6 border-b border-gray-100">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-10 h-10 rounded-full bg-[#FFF314]/10 flex items-center justify-center">
@@ -165,9 +162,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                   </div>
                 </div>
 
-                {/* Form */}
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                  {/* Full Name */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
                       <User className="w-4 h-4 text-[#FFF314]" />
@@ -184,7 +179,6 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                     />
                   </div>
 
-                  {/* Email & Phone */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
@@ -218,7 +212,6 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                     </div>
                   </div>
 
-                  {/* Address */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
                       <MapPin className="w-4 h-4 text-[#FFF314]" />
@@ -234,7 +227,6 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                     />
                   </div>
 
-                  {/* Availability */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
                       <Calendar className="w-4 h-4 text-[#FFF314]" />
@@ -255,7 +247,6 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                     </select>
                   </div>
 
-                  {/* Skills */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
                       <User className="w-4 h-4 text-[#FFF314]" />
@@ -271,7 +262,6 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                     />
                   </div>
 
-                  {/* Message */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
                       <Send className="w-4 h-4 text-[#FFF314]" />
@@ -287,14 +277,12 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                     />
                   </div>
 
-                  {/* Error Message */}
                   {error && (
                     <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
                       {error}
                     </div>
                   )}
 
-                  {/* Submit Button */}
                   <button
                     type="submit"
                     disabled={loading}
