@@ -10,7 +10,7 @@ const SLIDES = [
     title: "Education",
     subtitle: "Improver Children for a Better World",
     description: "We provide quality education to underprivileged children, building foundations for lifelong learning and empowering the next generation of leaders.",
-    image: "/IMG-23.jpeg",
+    image: "/IMG-26.jpeg",
     imagePosition: "center", // Center position for IMG-20
   },
   {
