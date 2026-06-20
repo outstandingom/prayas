@@ -1,4 +1,35 @@
 // src/pages/Volunteer.tsx
+/*
+  Run this SQL in Supabase SQL editor to create the volunteers table:
+
+  CREATE TABLE IF NOT EXISTS public.volunteers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    full_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    address TEXT,
+    availability TEXT,
+    skills TEXT,
+    message TEXT,
+    status TEXT DEFAULT 'pending',
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  ALTER TABLE public.volunteers ENABLE ROW LEVEL SECURITY;
+
+  CREATE POLICY "Anyone can insert volunteers"
+    ON public.volunteers FOR INSERT
+    WITH CHECK (true);
+
+  CREATE POLICY "Authenticated users can select volunteers"
+    ON public.volunteers FOR SELECT
+    USING (auth.role() = 'authenticated');
+
+  CREATE POLICY "Authenticated users can update volunteers"
+    ON public.volunteers FOR UPDATE
+    USING (auth.role() = 'authenticated');
+*/
+
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Heart, Send, CheckCircle, Loader2 } from 'lucide-react';
@@ -62,7 +93,6 @@ export default function Volunteer() {
   if (success) {
     return (
       <section className="min-h-screen bg-[#F1F8F5] flex items-center justify-center px-4 py-16 relative overflow-hidden">
-        {/* Background elements */}
         <div className="absolute top-20 left-10 w-72 h-72 bg-[#FFF314]/10 rounded-full blur-[100px] pointer-events-none -z-10" />
         <div className="absolute bottom-20 right-10 w-72 h-72 bg-[#FFF314]/5 rounded-full blur-[100px] pointer-events-none -z-10" />
 
@@ -87,7 +117,6 @@ export default function Volunteer() {
 
   return (
     <section className="min-h-screen bg-[#F1F8F5] flex items-center justify-center px-4 py-20 relative overflow-hidden">
-      {/* Background decorations */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-[#FFF314]/10 rounded-full blur-[100px] pointer-events-none -z-10" />
       <div className="absolute bottom-20 right-10 w-72 h-72 bg-[#FFF314]/5 rounded-full blur-[100px] pointer-events-none -z-10" />
 
