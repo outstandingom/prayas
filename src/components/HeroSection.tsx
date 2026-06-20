@@ -54,7 +54,7 @@ const SLIDES = [
     icon: Home,
     title: "Shelter",
     subtitle: "A Roof Over Every Head",
-    description: "We work to provide safe and dignified housing solutions for homeless families, creating secure environments where they can thrive.",
+    description: "Transforming rural lives through sustainable development and hope.",
     image: "/IMG-25.jpeg",
     imagePosition: "right",
   },
