@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase'
 interface VolunteerPopupProps {
   isOpen: boolean
   onClose: () => void
-  className?: string // Add this
+  className?: string
 }
 
 export default function VolunteerPopup({ isOpen, onClose, className = '' }: VolunteerPopupProps) {
@@ -117,7 +117,6 @@ export default function VolunteerPopup({ isOpen, onClose, className = '' }: Volu
             onClick={(e) => e.stopPropagation()}
             style={{ zIndex: 100000 }}
           >
-            {/* Rest of your component remains the same */}
             {/* Close Button */}
             <button
               type="button"
@@ -165,7 +164,6 @@ export default function VolunteerPopup({ isOpen, onClose, className = '' }: Volu
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                  {/* All your form fields remain the same */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-1.5">
                       <User className="w-4 h-4 text-[#FFF314]" />
@@ -311,4 +309,4 @@ export default function VolunteerPopup({ isOpen, onClose, className = '' }: Volu
       )}
     </AnimatePresence>
   )
-                      }
+}
