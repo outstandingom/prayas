@@ -1,275 +1,303 @@
-// src/pages/Profile.tsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
-import { User, Mail, Phone, Edit, LogOut, Loader2, Shield } from 'lucide-react';
+import { Mail, Lock, User, Phone, ArrowRight, Loader2, Heart } from 'lucide-react';
 
-interface ProfileData {
-  full_name: string;
-  phone: string;
-  avatar_url?: string;
-  email: string;
-}
+type AuthMode = 'signin' | 'signup';
 
-export default function Profile() {
+export default function Auth() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [mode, setMode] = useState<AuthMode>('signin');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [editing, setEditing] = useState(false);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  // Form Fields
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
-  const [updating, setUpdating] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [adminCheckDone, setAdminCheckDone] = useState(false);
 
-  useEffect(() => {
-    fetchProfile();
-    checkAdminStatus();
-  }, []);
+  const handleModeSwitch = (newMode: AuthMode) => {
+    setMode(newMode);
+    setError(null);
+    setSuccessMsg(null);
+  };
 
-  const fetchProfile = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
     setError(null);
+    setSuccessMsg(null);
+
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError) throw userError;
-      if (!user) {
-        navigate('/auth');
-        return;
+      if (mode === 'signin') {
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        });
+
+        if (signInError) throw signInError;
+
+        if (data.session) {
+          navigate('/profile');
+        }
+      } else {
+        // Sign Up Flow
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: {
+            data: {
+              full_name: fullName.trim(),
+              phone: phone.trim(),
+            },
+          },
+        });
+
+        if (signUpError) throw signUpError;
+
+        if (data.user) {
+          // Immediately upsert profile data just in case the trigger didn't fire
+          const { error: profileError } = await supabase.from('profiles').upsert({
+            id: data.user.id,
+            full_name: fullName.trim(),
+            phone: phone.trim(),
+            updated_at: new Date().toISOString(),
+          });
+
+          if (profileError) {
+            console.warn('Profile record creation warning:', profileError.message);
+          }
+
+          if (data.session) {
+            // Autologin on signup is supported in this Supabase configuration
+            navigate('/profile');
+          } else {
+            setSuccessMsg('Registration successful! Please check your email to verify your account.');
+            // Clear inputs
+            setFullName('');
+            setPhone('');
+            setEmail('');
+            setPassword('');
+          }
+        }
       }
-
-      // Fetch profile from profiles table
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('full_name, phone, avatar_url')
-        .eq('id', user.id)
-        .single();
-
-      if (profileError && profileError.code !== 'PGRST116') {
-        throw profileError;
-      }
-
-      setProfile({
-        email: user.email || '',
-        full_name: profileData?.full_name || user.user_metadata?.full_name || '',
-        phone: profileData?.phone || user.user_metadata?.phone || '',
-        avatar_url: profileData?.avatar_url || '',
-      });
-      setFullName(profileData?.full_name || user.user_metadata?.full_name || '');
-      setPhone(profileData?.phone || user.user_metadata?.phone || '');
     } catch (err: any) {
-      setError(err.message || 'Failed to load profile.');
-      console.error(err);
+      setError(err.message || 'An error occurred during authentication. Please try again.');
+      console.error('Auth error:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const checkAdminStatus = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user) {
-        const { data, error } = await supabase
-          .from('admin_roles')
-          .select('role')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (!error && data) {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
-      } else {
-        setIsAdmin(false);
-      }
-    } catch (err) {
-      console.error('Error checking admin status:', err);
-      setIsAdmin(false);
-    } finally {
-      setAdminCheckDone(true);
-    }
-  };
-
-  const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setUpdating(true);
-    setError(null);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user');
-
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user.id,
-          full_name: fullName,
-          phone: phone,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'id' });
-
-      if (updateError) throw updateError;
-
-      const { error: metaError } = await supabase.auth.updateUser({
-        data: { full_name: fullName, phone }
-      });
-      if (metaError) console.warn('Metadata update failed:', metaError);
-
-      setProfile(prev => prev ? { ...prev, full_name: fullName, phone } : null);
-      setEditing(false);
-    } catch (err: any) {
-      setError(err.message || 'Update failed.');
-    } finally {
-      setUpdating(false);
-    }
-  };
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate('/auth');
-  };
-
-  if (loading) {
-    return (
-      <section className="min-h-[80vh] flex items-center justify-center bg-[#F1F8F5]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#FFF314]" />
-      </section>
-    );
-  }
-
   return (
-    <section className="min-h-[80vh] flex items-center justify-center px-4 py-8 bg-[#F1F8F5]">
-      <div className="w-full max-w-2xl bg-white/80 backdrop-blur-sm border border-[#FFF314]/20 rounded-xl p-6 md:p-8 shadow-lg">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-[#263238]">My Profile</h1>
-          <div className="flex gap-3">
-            {!editing && (
-              <button
-                onClick={() => setEditing(true)}
-                className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md border border-[#FFF314]/30 text-[#FFF314] hover:bg-[#FFF314]/10 transition"
-              >
-                <Edit className="w-4 h-4" />
-                Edit
-              </button>
-            )}
-            <button
-              onClick={handleSignOut}
-              className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md border border-red-300 text-red-600 hover:bg-red-50 transition"
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </button>
-          </div>
+    <section className="min-h-screen bg-[#F1F8F5] flex items-center justify-center px-4 py-16 relative overflow-hidden">
+      {/* Decorative background components */}
+      <div className="absolute top-20 left-10 w-72 h-72 bg-[#FFF314]/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-20 right-10 w-72 h-72 bg-[#FFF314]/5 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="w-full max-w-md bg-white/80 backdrop-blur-sm border border-[#FFF314]/20 rounded-2xl p-6 md:p-8 shadow-xl relative z-10">
+        {/* Brand header */}
+        <div className="text-center mb-6">
+          <Link to="/" className="inline-flex items-center gap-2 mb-3 group">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+              <img
+                src="https://i.ibb.co/N6Cft6S3/IMG-20260614-015637.jpg"
+                alt="Prayas Logo"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="font-display font-bold text-xl text-[#263238]">Prayas</span>
+          </Link>
+          <h1 className="text-2xl font-bold text-[#263238] tracking-tight">
+            {mode === 'signin' ? 'Welcome Back' : 'Create Account'}
+          </h1>
+          <p className="text-sm text-[#263238]/60 mt-1">
+            {mode === 'signin'
+              ? 'Sign in to access your profile and dashboards'
+              : 'Join our mission and make a difference today'}
+          </p>
         </div>
 
-        {/* Admin Dashboard Button */}
-        {adminCheckDone && isAdmin && (
-          <Link
-            to="/admin"
-            className="mb-4 flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#FFF314]/10 text-[#263238] border border-[#FFF314]/30 rounded-md hover:bg-[#FFF314]/20 transition font-medium text-sm"
+        {/* Tab switchers */}
+        <div className="flex border-b border-[#FFF314]/20 mb-6 relative">
+          <button
+            onClick={() => handleModeSwitch('signin')}
+            className={`flex-1 py-2.5 text-center font-medium text-sm transition-colors relative cursor-pointer ${
+              mode === 'signin' ? 'text-[#263238]' : 'text-[#263238]/50 hover:text-[#263238]/80'
+            }`}
           >
-            <Shield className="w-4 h-4 text-[#FFF314]" />
-            Go to Admin Dashboard
-          </Link>
-        )}
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
-            {error}
-          </div>
-        )}
-
-        {profile ? (
-          <div className="space-y-6">
-            {/* Avatar */}
-            <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#FFF314] to-[#FFF314]/70 flex items-center justify-center text-[#263238] text-3xl font-bold shadow-lg">
-                {profile.full_name?.charAt(0) || 'U'}
-              </div>
-              <div>
-                <p className="text-lg font-semibold text-[#263238]">{profile.full_name || 'No name'}</p>
-                <p className="text-sm text-[#263238]/70 flex items-center gap-1">
-                  <Mail className="w-4 h-4 text-[#FFF314]" /> {profile.email}
-                </p>
-                {profile.phone && (
-                  <p className="text-sm text-[#263238]/70 flex items-center gap-1">
-                    <Phone className="w-4 h-4 text-[#FFF314]" /> {profile.phone}
-                  </p>
-                )}
-                {isAdmin && (
-                  <p className="text-xs text-[#FFF314] font-medium mt-1 flex items-center gap-1">
-                    <Shield className="w-3 h-3" /> Administrator
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Edit form */}
-            {editing ? (
-              <form onSubmit={handleUpdate} className="border-t border-[#FFF314]/10 pt-6 space-y-4">
-                <div>
-                  <label className="text-sm text-[#263238]/70 block mb-1 font-medium">Full Name</label>
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="w-full bg-white border border-[#FFF314]/20 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFF314]/50 text-[#263238]"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-[#263238]/70 block mb-1 font-medium">Phone</label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-white border border-[#FFF314]/20 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFF314]/50 text-[#263238]"
-                  />
-                </div>
-                <div className="flex gap-3 pt-2">
-                  <button
-                    type="submit"
-                    disabled={updating}
-                    className="px-6 py-2 bg-[#FFF314] text-[#263238] rounded-md hover:bg-[#FFF314]/90 disabled:opacity-50 font-medium"
-                  >
-                    {updating ? 'Saving...' : 'Save Changes'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditing(false);
-                      setFullName(profile.full_name || '');
-                      setPhone(profile.phone || '');
-                    }}
-                    className="px-6 py-2 border border-[#263238]/20 rounded-md hover:bg-gray-50 text-[#263238]"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            ) : (
-              // View mode
-              <div className="border-t border-[#FFF314]/10 pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-[#263238]/50 uppercase tracking-wider font-medium">Full Name</p>
-                  <p className="font-medium text-[#263238] mt-1">{profile.full_name || 'Not set'}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-[#263238]/50 uppercase tracking-wider font-medium">Email</p>
-                  <p className="font-medium text-[#263238] mt-1">{profile.email}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-[#263238]/50 uppercase tracking-wider font-medium">Phone</p>
-                  <p className="font-medium text-[#263238] mt-1">{profile.phone || 'Not set'}</p>
-                </div>
-              </div>
+            Sign In
+            {mode === 'signin' && (
+              <motion.div
+                layoutId="auth-tab-active"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FFF314]"
+              />
             )}
+          </button>
+          <button
+            onClick={() => handleModeSwitch('signup')}
+            className={`flex-1 py-2.5 text-center font-medium text-sm transition-colors relative cursor-pointer ${
+              mode === 'signup' ? 'text-[#263238]' : 'text-[#263238]/50 hover:text-[#263238]/80'
+            }`}
+          >
+            Register
+            {mode === 'signup' && (
+              <motion.div
+                layoutId="auth-tab-active"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FFF314]"
+              />
+            )}
+          </button>
+        </div>
+
+        {/* Status Alerts */}
+        <AnimatePresence mode="wait">
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm mb-4"
+            >
+              {error}
+            </motion.div>
+          )}
+          {successMsg && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg text-sm mb-4"
+            >
+              {successMsg}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Auth Forms */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <AnimatePresence mode="wait">
+            {mode === 'signup' && (
+              <motion.div
+                key="signup-fields"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-4 overflow-hidden"
+              >
+                <div>
+                  <label className="block text-xs font-semibold text-[#263238]/70 uppercase tracking-wider mb-1">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#263238]/40">
+                      <User size={16} />
+                    </span>
+                    <input
+                      type="text"
+                      required={mode === 'signup'}
+                      placeholder="John Doe"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/15 transition-all text-[#263238] placeholder:text-[#263238]/40 text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#263238]/70 uppercase tracking-wider mb-1">
+                    Phone Number
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#263238]/40">
+                      <Phone size={16} />
+                    </span>
+                    <input
+                      type="tel"
+                      placeholder="+91 98765 43210"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/15 transition-all text-[#263238] placeholder:text-[#263238]/40 text-sm"
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div>
+            <label className="block text-xs font-semibold text-[#263238]/70 uppercase tracking-wider mb-1">
+              Email Address
+            </label>
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#263238]/40">
+                <Mail size={16} />
+              </span>
+              <input
+                type="email"
+                required
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/15 transition-all text-[#263238] placeholder:text-[#263238]/40 text-sm"
+              />
+            </div>
           </div>
-        ) : (
-          <p className="text-[#263238]/60">No profile data found.</p>
-        )}
+
+          <div>
+            <label className="block text-xs font-semibold text-[#263238]/70 uppercase tracking-wider mb-1">
+              Password
+            </label>
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#263238]/40">
+                <Lock size={16} />
+              </span>
+              <input
+                type="password"
+                required
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#FFF314]/20 rounded-lg focus:outline-none focus:border-[#FFF314] focus:ring-2 focus:ring-[#FFF314]/15 transition-all text-[#263238] placeholder:text-[#263238]/40 text-sm"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 mt-2 bg-[#FFF314] text-[#263238] font-bold rounded-lg hover:bg-[#FFF314]/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#FFF314]/20 disabled:opacity-50 cursor-pointer text-sm btn-hover"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Processing...
+              </>
+            ) : mode === 'signin' ? (
+              <>
+                Sign In <ArrowRight size={16} />
+              </>
+            ) : (
+              <>
+                Create Account <Heart size={16} className="fill-[#263238]" />
+              </>
+            )}
+          </button>
+        </form>
+
+        {/* Footer info links */}
+        <div className="mt-6 pt-4 border-t border-[#FFF314]/10 text-center">
+          <Link
+            to="/"
+            className="text-xs text-[#263238]/60 hover:text-[#263238] hover:underline"
+          >
+            Back to Home
+          </Link>
+        </div>
       </div>
     </section>
   );

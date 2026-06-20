@@ -144,7 +144,7 @@ export default function Profile() {
   if (loading) {
     return (
       <section className="min-h-[80vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#FFF314]" />
       </section>
     );
   }
@@ -153,15 +153,19 @@ export default function Profile() {
   console.log('Profile render - isAdmin:', isAdmin, 'adminCheckDone:', adminCheckDone);
 
   return (
-    <section className="min-h-[80vh] flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-2xl bg-card/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 md:p-8">
+    <section className="min-h-screen bg-[#F1F8F5] flex items-center justify-center px-4 py-20 relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute top-20 left-10 w-72 h-72 bg-[#FFF314]/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-20 right-10 w-72 h-72 bg-[#FFF314]/5 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="w-full max-w-2xl bg-white/80 backdrop-blur-sm border border-[#FFF314]/20 rounded-2xl p-6 md:p-8 shadow-xl relative z-10">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">My Profile</h1>
+          <h1 className="text-2xl font-bold text-[#263238]">My Profile</h1>
           <div className="flex gap-3">
             {!editing && (
               <button
                 onClick={() => setEditing(true)}
-                className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md border border-primary/30 text-primary hover:bg-primary/10 transition"
+                className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md border border-[#FFF314]/50 text-[#263238] hover:bg-[#FFF314]/10 transition cursor-pointer"
               >
                 <Edit className="w-4 h-4" />
                 Edit
@@ -169,7 +173,7 @@ export default function Profile() {
             )}
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md border border-destructive/30 text-destructive hover:bg-destructive/10 transition"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md border border-red-500/30 text-red-600 hover:bg-red-500/10 transition cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
               Sign Out
@@ -181,7 +185,7 @@ export default function Profile() {
         {adminCheckDone && isAdmin && (
           <Link
             to="/admin"
-            className="mb-4 flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-primary/10 text-primary border border-primary/30 rounded-md hover:bg-primary/20 transition font-medium text-sm"
+            className="mb-4 flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#FFF314]/10 text-[#263238] border border-[#FFF314]/40 rounded-md hover:bg-[#FFF314]/20 transition font-medium text-sm"
           >
             <Shield className="w-4 h-4" />
             Go to Admin Dashboard
@@ -189,7 +193,7 @@ export default function Profile() {
         )}
 
         {error && (
-          <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive rounded-md text-sm">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
             {error}
           </div>
         )}
@@ -198,21 +202,21 @@ export default function Profile() {
           <div className="space-y-6">
             {/* Avatar placeholder */}
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald to-primary/70 flex items-center justify-center text-white text-3xl font-bold">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#FFF314] to-[#FFF314]/70 flex items-center justify-center text-[#263238] text-3xl font-bold shadow-md">
                 {profile.full_name?.charAt(0) || 'U'}
               </div>
               <div>
-                <p className="text-lg font-semibold">{profile.full_name || 'No name'}</p>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                <p className="text-lg font-bold text-[#263238]">{profile.full_name || 'No name'}</p>
+                <p className="text-sm text-[#263238]/60 flex items-center gap-1">
                   <Mail className="w-4 h-4" /> {profile.email}
                 </p>
                 {profile.phone && (
-                  <p className="text-sm text-muted-foreground flex items-center gap-1">
+                  <p className="text-sm text-[#263238]/60 flex items-center gap-1">
                     <Phone className="w-4 h-4" /> {profile.phone}
                   </p>
                 )}
                 {isAdmin && (
-                  <p className="text-xs text-primary font-medium mt-1 flex items-center gap-1">
+                  <p className="text-xs text-[#FFF314] font-medium mt-1 flex items-center gap-1">
                     <Shield className="w-3 h-3" /> Administrator
                   </p>
                 )}
@@ -221,31 +225,31 @@ export default function Profile() {
 
             {/* Edit form */}
             {editing ? (
-              <form onSubmit={handleUpdate} className="border-t border-border/30 pt-6 space-y-4">
+              <form onSubmit={handleUpdate} className="border-t border-[#FFF314]/20 pt-6 space-y-4">
                 <div>
-                  <label className="text-sm text-muted-foreground block mb-1">Full Name</label>
+                  <label className="text-sm font-semibold text-[#263238]/70 block mb-1">Full Name</label>
                   <input
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full bg-background/50 border border-border/50 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full bg-white border border-[#FFF314]/30 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFF314]/50 text-[#263238]"
                     required
                   />
                 </div>
                 <div>
-                  <label className="text-sm text-muted-foreground block mb-1">Phone</label>
+                  <label className="text-sm font-semibold text-[#263238]/70 block mb-1">Phone</label>
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-background/50 border border-border/50 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full bg-white border border-[#FFF314]/30 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFF314]/50 text-[#263238]"
                   />
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button
                     type="submit"
                     disabled={updating}
-                    className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+                    className="px-6 py-2 bg-[#FFF314] text-[#263238] rounded-md font-semibold hover:bg-[#FFF314]/90 disabled:opacity-50 transition cursor-pointer shadow-sm"
                   >
                     {updating ? 'Saving...' : 'Save Changes'}
                   </button>
@@ -256,7 +260,7 @@ export default function Profile() {
                       setFullName(profile.full_name || '');
                       setPhone(profile.phone || '');
                     }}
-                    className="px-6 py-2 border border-border/50 rounded-md hover:bg-muted"
+                    className="px-6 py-2 border border-[#FFF314]/40 text-[#263238] rounded-md hover:bg-[#FFF314]/10 transition cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -264,26 +268,26 @@ export default function Profile() {
               </form>
             ) : (
               // View mode
-              <div className="border-t border-border/30 pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="border-t border-[#FFF314]/20 pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-muted-foreground">Full Name</p>
-                  <p className="font-medium">{profile.full_name || 'Not set'}</p>
+                  <p className="text-xs font-semibold text-[#263238]/60 uppercase">Full Name</p>
+                  <p className="font-medium text-[#263238]">{profile.full_name || 'Not set'}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Email</p>
-                  <p className="font-medium">{profile.email}</p>
+                  <p className="text-xs font-semibold text-[#263238]/60 uppercase">Email</p>
+                  <p className="font-medium text-[#263238]">{profile.email}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Phone</p>
-                  <p className="font-medium">{profile.phone || 'Not set'}</p>
+                  <p className="text-xs font-semibold text-[#263238]/60 uppercase">Phone</p>
+                  <p className="font-medium text-[#263238]">{profile.phone || 'Not set'}</p>
                 </div>
               </div>
             )}
           </div>
         ) : (
-          <p className="text-muted-foreground">No profile data found.</p>
+          <p className="text-[#263238]/60">No profile data found.</p>
         )}
       </div>
     </section>
   );
-                  }
+}
