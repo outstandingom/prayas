@@ -46,7 +46,7 @@ const SLIDES = [
     title: "Nutrition",
     subtitle: "Nourishing Bodies and Minds",
     description: "Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.",
-    image: "/IMG-24.jpg",
+    image: "/IMG-24.jpeg",
     imagePosition: "center",
   },
   {
@@ -55,7 +55,7 @@ const SLIDES = [
     title: "Shelter",
     subtitle: "A Roof Over Every Head",
     description: "We work to provide safe and dignified housing solutions for homeless families, creating secure environments where they can thrive.",
-    image: "/IMG-25.jpg",
+    image: "/IMG-25.jpeg",
     imagePosition: "right",
   },
   {
