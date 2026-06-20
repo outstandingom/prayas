@@ -7,6 +7,7 @@ import About from './pages/About';
 import Programs from './pages/Programs';
 import Gallery from './pages/Gallery';
 import Stories from './pages/Stories';
+import Children from './pages/Children'; // ADD THIS IMPORT
 import Donate from './pages/Donate';
 import Contact from './pages/Contact';
 import Auth from './pages/Auth';
@@ -28,13 +29,11 @@ export default function App() {
           <Route path="/programs" element={<Programs />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/stories" element={<Stories />} />
-          <Route path="/Children" element={<Children />} />
+          <Route path="/children" element={<Children />} /> {/* FIXED: lowercase path, using imported component */}
           <Route path="/donate" element={<Donate />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/volunteer" element={<Volunteer />} />
           <Route path="/admin/*" element={<AdminDashboard />} />
-          
-          {/* Profile now lives inside Layout, so it gets Navbar & Footer */}
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Routes>
