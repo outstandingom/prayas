@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Heart, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, Heart, LogOut, Menu, X, MessageSquare } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 interface AdminLayoutProps {
@@ -12,6 +12,7 @@ interface AdminLayoutProps {
 const navItems = [
   { name: 'Volunteers', path: '/admin/volunteers', icon: Heart },
   { name: 'Users', path: '/admin/users', icon: Users },
+  { name: 'Contact Messages', path: '/admin/contacts', icon: MessageSquare },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {

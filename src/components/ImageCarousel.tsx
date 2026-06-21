@@ -82,7 +82,7 @@ export default function ImageCarousel() {
   }
 
   return (
-    <div className="relative py-16 sm:py-24 md:py-32 bg-[#F1F8F5]/50 border-y border-[#FFF314]/10 overflow-hidden select-none">
+    <div className="relative py-16 sm:py-24 md:py-32 bg-[#263238]/5 border-y border-[#FFF314]/10 overflow-hidden select-none">
       <div className="text-center mb-12 sm:mb-16 md:mb-24 px-4 sm:px-6">
         <span className="text-[#FFF314] font-mono text-[10px] sm:text-xs uppercase tracking-widest font-semibold">
           Our Reach
@@ -131,7 +131,7 @@ export default function ImageCarousel() {
 
         <button
           onClick={() => setIsPaused(!isPaused)}
-          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-[#263238]/5 hover:bg-[#263238]/10 border border-[#263238]/10 transition-colors text-[#FFF314] touch-manipulation"
+          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-[#263238] hover:bg-[#263238]/90 border border-[#FFF314]/20 transition-colors text-[#FFF314] shadow-md touch-manipulation"
           aria-label={isPaused ? "Play" : "Pause"}
         >
           {isPaused ? <Play size={16} className="ml-0.5 sm:ml-1" /> : <Pause size={16} />}

@@ -14,7 +14,7 @@ export default function Footer() {
       <div className="absolute -top-5 left-1/2 -translate-x-1/2">
         <button
           onClick={scrollToTop}
-          className="w-10 h-10 bg-[#00897B] text-white rounded-full flex items-center justify-center shadow-lg hover:bg-[#00897B]/90 transition-all hover:scale-110 animate-subtle-float"
+          className="w-10 h-10 bg-[#FFF314] text-[#263238] rounded-full flex items-center justify-center shadow-lg hover:bg-[#FFF314]/90 transition-all hover:scale-110 animate-subtle-float"
           aria-label="Back to top"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -28,7 +28,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/" className="inline-flex items-center gap-2.5 group mb-4">
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#00897B] to-[#4DB6AC] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                 <img
                   src="https://i.ibb.co/N6Cft6S3/IMG-20260614-015637.jpg"
                   alt="Prayas Logo"
@@ -63,7 +63,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     to={link.path}
-                    className="text-white/60 hover:text-[#00897B] text-sm transition-colors flex items-center gap-1 group"
+                    className="text-white/60 hover:text-[#FFF314] text-sm transition-colors flex items-center gap-1 group"
                   >
                     {link.name}
                     <ArrowUpRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
@@ -78,13 +78,13 @@ export default function Footer() {
             <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Contact Us</h4>
             <ul className="space-y-3">
               <li>
-                <a href="mailto:info@prayasfoundation.org" className="flex items-start gap-3 text-white/60 hover:text-[#00897B] text-sm transition-colors group">
+                <a href="mailto:info@prayasfoundation.org" className="flex items-start gap-3 text-white/60 hover:text-[#FFF314] text-sm transition-colors group">
                   <Mail className="w-4 h-4 mt-0.5 shrink-0" />
                   <span>info@prayasfoundation.org</span>
                 </a>
               </li>
               <li>
-                <a href="tel:+919876543210" className="flex items-start gap-3 text-white/60 hover:text-[#00897B] text-sm transition-colors group">
+                <a href="tel:+919876543210" className="flex items-start gap-3 text-white/60 hover:text-[#FFF314] text-sm transition-colors group">
                   <Phone className="w-4 h-4 mt-0.5 shrink-0" />
                   <span>+91 98765 43210</span>
                 </a>
@@ -108,11 +108,11 @@ export default function Footer() {
               <input
                 type="email"
                 placeholder="Your email"
-                className="flex-1 bg-white/10 border border-white/20 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#00897B] focus:bg-white/15 transition-all placeholder:text-white/40"
+                className="flex-1 bg-white/10 border border-white/20 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#FFF314] focus:bg-white/15 transition-all placeholder:text-white/40"
               />
               <button
                 type="submit"
-                className="bg-[#00897B] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#00897B]/90 transition-all hover:scale-105"
+                className="bg-[#FFF314] text-[#263238] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#FFF314]/90 transition-all hover:scale-105"
               >
                 Join
               </button>
@@ -120,9 +120,9 @@ export default function Footer() {
             <div className="mt-6">
               <Link
                 to="/donate"
-                className="inline-flex items-center gap-2 bg-[#E8F5E9] text-[#263238] px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#E8F5E9]/80 transition-all hover:scale-105"
+                className="inline-flex items-center gap-2 bg-[#FFF314] text-[#263238] px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#FFF314]/90 transition-all hover:scale-105"
               >
-                <Heart className="w-4 h-4 text-[#00897B]" />
+                <Heart className="w-4 h-4 text-[#263238] fill-current" />
                 Make a Donation
               </Link>
             </div>
@@ -139,7 +139,7 @@ export default function Footer() {
             <a href="#" className="text-white/40 hover:text-white text-xs transition-colors">Terms of Service</a>
             <span className="text-white/20 text-xs">|</span>
             <span className="text-white/40 text-xs flex items-center gap-1">
-              Made with <Heart className="w-3 h-3 text-[#00897B] fill-[#00897B]" /> in India
+              Made with <Heart className="w-3 h-3 text-[#FFF314] fill-[#FFF314]" /> in India
             </span>
           </div>
         </div>

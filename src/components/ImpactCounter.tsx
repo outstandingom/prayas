@@ -34,7 +34,7 @@ function Counter({ end, suffix = '', label, description, duration = 2000 }: Coun
   }, [isInView, end, duration])
 
   return (
-    <div ref={ref} className="flex flex-col items-center p-6 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-[#FFF314]/20 relative overflow-hidden group hover:shadow-2xl transition-all duration-300 h-full">
+    <div ref={ref} className="flex flex-col items-center p-6 bg-[#263238] rounded-2xl shadow-xl border border-[#FFF314]/20 relative overflow-hidden group hover:shadow-2xl transition-all duration-300 h-full">
       <div className="absolute inset-0 bg-gradient-to-br from-[#FFF314]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       
       {/* Number */}
@@ -43,12 +43,12 @@ function Counter({ end, suffix = '', label, description, duration = 2000 }: Coun
       </div>
       
       {/* Label */}
-      <div className="text-[#263238]/80 font-mono text-xs md:text-sm uppercase tracking-widest text-center relative z-10 font-semibold">
+      <div className="text-white/80 font-mono text-xs md:text-sm uppercase tracking-widest text-center relative z-10 font-semibold">
         {label}
       </div>
       
       {/* Description */}
-      <div className="text-[#263238]/60 text-xs md:text-sm text-center relative z-10 mt-3 leading-relaxed max-w-xs">
+      <div className="text-white/60 text-xs md:text-sm text-center relative z-10 mt-3 leading-relaxed max-w-xs">
         {description}
       </div>
     </div>

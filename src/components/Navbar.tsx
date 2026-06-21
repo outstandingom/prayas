@@ -88,17 +88,18 @@ export default function Navbar() {
   const isAuthPage = location.pathname === '/auth';
   const showAuthLink = !isAuthPage;
 
-  // Always use white text with transparent background
-  const textColor = 'text-white';
-  const textColorHover = 'hover:text-[#FFF314]';
-  const textColorMuted = 'text-white/70';
-  const borderColor = 'border-white/30';
-  const bgButton = 'bg-white/10 hover:bg-white/20';
+  // Use light text on home page, dark text on other pages
+  const isLightText = isHome;
+  const textColor = isLightText ? 'text-white' : 'text-[#263238]';
+  const textColorHover = isLightText ? 'hover:text-[#FFF314]' : 'hover:text-[#FFF314]';
+  const textColorMuted = isLightText ? 'text-white/70' : 'text-[#263238]/70';
+  const borderColor = isLightText ? 'border-white/30' : 'border-[#263238]/30';
+  const bgButton = isLightText ? 'bg-white/10 hover:bg-white/20' : 'bg-[#263238]/5 hover:bg-[#263238]/10';
   
-  // Fully transparent header with subtle blur on scroll
-  const bgHeader = isScrolled 
-    ? 'bg-black/30 backdrop-blur-md' 
-    : 'bg-transparent';
+  // Header background logic
+  const bgHeader = isHome 
+    ? (isScrolled ? 'bg-black/30 backdrop-blur-md' : 'bg-transparent')
+    : (isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white border-b border-[#263238]/5');
 
   return (
     <header
@@ -160,7 +161,7 @@ export default function Navbar() {
             {!loading && isAdmin && (
               <Link
                 to="/admin"
-                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]`}
+                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <Shield className="w-4 h-4" />
                 Admin
@@ -170,7 +171,7 @@ export default function Navbar() {
             {showAuthLink && !loading && (
               <Link
                 to={isAuthenticated ? "/profile" : "/auth"}
-                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]`}
+                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <User className="w-4 h-4" />
                 {isAuthenticated ? "Profile" : "Sign In"}
