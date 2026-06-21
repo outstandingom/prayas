@@ -1,7 +1,6 @@
 // src/components/FloatingDonateButton.tsx
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Heart } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Define all messages with their image URLs
@@ -59,29 +58,29 @@ export default function FloatingDonateButton() {
   return (
     <Link
       to={`/donate?cause=${currentMessage.id}`}
-      className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-1 hover:scale-110 transition-transform duration-200"
+      className="fixed bottom-8 right-8 z-50 flex flex-col items-center gap-2 hover:scale-110 transition-transform duration-200"
     >
-      {/* Circular Image */}
-      <div className="w-14 h-14 rounded-full overflow-hidden shadow-lg border-2 border-white/20">
+      {/* Circular Image - Increased size */}
+      <div className="w-20 h-20 rounded-full overflow-hidden shadow-2xl border-4 border-white/30">
         <img 
           src={currentMessage.imageUrl} 
           alt={currentMessage.text}
           className="w-full h-full object-cover"
           onError={(e) => {
             // Fallback if image fails to load
-            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/56/FFF314/263238?text=❤️'
+            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/80/FFF314/263238?text=❤️'
           }}
         />
       </div>
       
-      {/* Text Below Image */}
+      {/* Text Below Image - Increased size */}
       <motion.div
         key={currentIndex}
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -5 }}
         transition={{ duration: 0.3 }}
-        className="text-xs font-medium text-[#263238] bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-md whitespace-nowrap"
+        className="text-sm font-semibold text-[#263238] bg-white/95 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap"
       >
         {currentMessage.text}
       </motion.div>
