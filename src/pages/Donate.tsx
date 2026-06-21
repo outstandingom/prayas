@@ -1,6 +1,6 @@
 // src/pages/Donate.tsx
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'   // <-- new import
+import { useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Heart, CreditCard, Smartphone, Building2, IndianRupee, Gift, Loader2 } from 'lucide-react'
 
@@ -46,7 +46,10 @@ export default function Donate() {
     }
 
     setLoading(true)
-    const upiUrl = `upi://pay?pa=rp7682428@okaxis&pn=Raj%20Parmar&am=${amount}&cu=INR&tn=Payment%20for%20service`
+    
+    // Updated UPI ID
+    const upiUrl = `upi://pay?pa=8818882178.1@hdfc&pn=Prayas%20Samaj%20Sevi%20Sanstha&am=${amount}&cu=INR&tn=Donation%20to%20Prayas%20NGO`
+    
     window.location.href = upiUrl
     setTimeout(() => setLoading(false), 5000)
   }
