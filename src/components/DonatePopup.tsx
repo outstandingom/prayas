@@ -60,7 +60,7 @@ export default function DonatePopup({ isOpen, onClose, className = '' }: DonateP
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
-            className="relative w-full max-w-md max-h-[85vh] sm:max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl mt-16 sm:mt-20 md:mt-24 lg:mt-28"
+            className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl mt-20 md:mt-24 lg:mt-28"
             onClick={(e) => e.stopPropagation()}
             style={{ zIndex: 100000 }}
           >
@@ -75,7 +75,7 @@ export default function DonatePopup({ isOpen, onClose, className = '' }: DonateP
             </button>
 
             {/* Header with Children Image */}
-            <div className="relative h-64 sm:h-80 md:h-96 rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
+            <div className="relative h-80 sm:h-96 md:h-[32rem] rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
               <img
                 src="/IMG-20.jpg"
                 alt="Children smiling"
@@ -89,19 +89,19 @@ export default function DonatePopup({ isOpen, onClose, className = '' }: DonateP
             </div>
 
             {/* Content */}
-            <div className="p-4 sm:p-6 pb-6 sm:pb-8 text-center">
-              <p className="text-[#000000] text-sm sm:text-base md:text-lg italic leading-relaxed px-2">
+            <div className="p-6 pb-8 text-center">
+              <p className="text-[#000000] text-base sm:text-lg italic leading-relaxed">
                 <span className="font-bold">Opening doors</span> to a better future through the power of education.
               </p>
 
               <Link
                 to="/donate"
                 onClick={handleClose}
-                className="w-full py-3 sm:py-4 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-base sm:text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2 cursor-pointer mt-4 sm:mt-6"
+                className="w-full py-4 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2 cursor-pointer mt-6"
               >
-                <Heart className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                <Heart className="w-5 h-5 fill-current" />
                 Donate Now
-                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           </motion.div>
