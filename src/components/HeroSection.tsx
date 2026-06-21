@@ -1,68 +1,53 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, GraduationCap, Users, HeartHandshake, Leaf, Stethoscope, Home, Lightbulb } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 // Slides Data - 7 meaningful slides with 2 local images
 const SLIDES = [
   {
     id: 1,
-    icon: GraduationCap,
     title: "Education",
-    subtitle: "Improver Children for a Better World",
-    description:“Opening doors to a better future through the power of education.”,
+    description: "Opening doors to a better future through the power of education.",
     image: "/IMG-24.jpeg",
-    imagePosition: "center", // Center position for IMG-20
+    imagePosition: "center",
   },
   {
     id: 2,
-    icon: Users,
     title: "Women Empowerment",
-    subtitle: "Building Strong, Independent Women",
-    description:“Empowering women to break away from the vicious cycle of poverty.”,
+    description: "Empowering women to break away from the vicious cycle of poverty.",
     image: "/IMG-21.jpg",
-    imagePosition: "right", // Show right side for IMG-21
+    imagePosition: "right",
   },
   {
     id: 3,
-    icon: Health,
     title: "Healthcare",
-    subtitle: "Ensuring Healthy Communities",
     description: "Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.",
     image: "/IMG-23.jpeg",
     imagePosition: "center",
   },
   {
     id: 4,
-    icon: Leaf,
     title: "Environment",
-    subtitle: "Protecting Our Planet Together",
-    description: “Nurturing the environment through awareness, action, and responsibility.”,
+    description: "Nurturing the environment through awareness, action, and responsibility.",
     image: "/IMG-21.jpg",
     imagePosition: "right",
   },
   {
     id: 5,
-    icon: Stethoscope,
     title: "Nutrition",
-    subtitle: "Nourishing Bodies and Minds",
     description: "Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.",
     image: "/IMG-26.jpeg",
     imagePosition: "center",
   },
   {
     id: 6,
-    icon: Home,
     title: "Shelter",
-    subtitle: "A Roof Over Every Head",
     description: "Transforming rural lives through sustainable development and hope.",
     image: "/IMG-25.jpeg",
     imagePosition: "right",
   },
   {
     id: 7,
-    icon: Lightbulb,
     title: "Skill Development",
-    subtitle: "Empowering Through Knowledge",
     description: "Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth.",
     image: "/IMG-20.jpg",
     imagePosition: "center",
@@ -84,25 +69,25 @@ export default function HeroBanner() {
     return () => clearInterval(interval);
   }, [isAutoPlaying]);
 
-  const handleNext = () => {
+  const handleTouchStart = () => {
     setIsAutoPlaying(false);
-    setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
   };
 
-  const handlePrev = () => {
+  const handleSlide = (direction: 'next' | 'prev') => {
     setIsAutoPlaying(false);
-    setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    if (direction === 'next') {
+      setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+    } else {
+      setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    }
   };
-
-  const handleDotClick = (index: number) => {
-    setIsAutoPlaying(false);
-    setCurrentSlide(index);
-  };
-
-  const CurrentIcon = SLIDES[currentSlide].icon;
 
   return (
-    <section className="relative w-full overflow-hidden bg-gray-900" style={{ height: '100vh', maxHeight: '800px' }}>
+    <section 
+      className="relative w-full overflow-hidden bg-gray-900" 
+      style={{ height: '100vh', maxHeight: '800px' }}
+      onTouchStart={handleTouchStart}
+    >
       
       {/* Main Banner Image with Text Overlay */}
       <AnimatePresence mode="wait">
@@ -129,8 +114,8 @@ export default function HeroBanner() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
           
-          {/* Content - Mobile: Bottom aligned, Desktop: Center aligned */}
-          <div className="absolute inset-0 flex items-end md:items-center pb-24 md:pb-0 pt-20 md:pt-20">
+          {/* Content - Only Description */}
+          <div className="absolute inset-0 flex items-end md:items-center pb-24 md:pb-0">
             <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
               <div className="max-w-2xl">
                 <motion.div
@@ -139,54 +124,10 @@ export default function HeroBanner() {
                   transition={{ delay: 0.2, duration: 0.5 }}
                   className="text-center md:text-left"
                 >
-                  {/* Icon - Hidden on mobile */}
-                  <div className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFF314] mb-4 md:mb-6">
-                    <CurrentIcon size={18} className="text-gray-900" />
-                    <span className="text-sm font-bold text-gray-900 uppercase tracking-wider">
-                      {SLIDES[currentSlide].title}
-                    </span>
-                  </div>
-                  
-                  {/* Mobile Icon */}
-                  <div className="flex justify-center md:hidden mb-3">
-                    <div className="w-12 h-12 rounded-full bg-[#FFF314]/20 flex items-center justify-center">
-                      <CurrentIcon size={24} className="text-[#FFF314]" />
-                    </div>
-                  </div>
-                  
-                  {/* Title - Responsive sizing */}
-                  <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-2 md:mb-4 leading-tight">
-                    {SLIDES[currentSlide].title}
-                  </h1>
-                  
-                  {/* Subtitle */}
-                  <p className="text-lg sm:text-2xl md:text-3xl font-semibold text-[#FFF314] mb-3 md:mb-6">
-                    {SLIDES[currentSlide].subtitle}
-                  </p>
-                  
-                  {/* Description - Visible on all screens now */}
-                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/80 md:text-white/90 leading-relaxed mb-6 md:mb-8 max-w-xl mx-auto md:mx-0 px-2 md:px-0">
+                  {/* Description Only */}
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 leading-relaxed max-w-xl mx-auto md:mx-0 px-2 md:px-0">
                     {SLIDES[currentSlide].description}
                   </p>
-                  
-                  {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-6 md:px-8 py-3 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
-                    >
-                      Donate Now
-                      <HeartHandshake size={20} />
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center justify-center px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-sm md:text-base text-white border-2 border-white/50 hover:bg-white/10 transition-all duration-300 hover:border-[#FFF314]"
-                    >
-                      Learn More
-                    </motion.button>
-                  </div>
                 </motion.div>
               </div>
             </div>
@@ -194,64 +135,17 @@ export default function HeroBanner() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation Arrows */}
+      {/* Touch Areas for Swipe Navigation (Invisible) */}
       <button
-        onClick={handlePrev}
-        className="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/30 border border-white/20 flex items-center justify-center hover:bg-black/50 transition-all duration-300 group z-10"
-      >
-        <ChevronLeft size={20} className="md:w-6 md:h-6 text-white group-hover:scale-110 transition-transform" />
-      </button>
+        onClick={() => handleSlide('prev')}
+        className="absolute left-0 top-0 w-1/2 h-full z-10"
+        aria-label="Previous slide"
+      />
       <button
-        onClick={handleNext}
-        className="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/30 border border-white/20 flex items-center justify-center hover:bg-black/50 transition-all duration-300 group z-10"
-      >
-        <ChevronRight size={20} className="md:w-6 md:h-6 text-white group-hover:scale-110 transition-transform" />
-      </button>
-
-      {/* Slide Counter */}
-      <div className="absolute top-24 md:top-28 right-4 md:right-8 z-10">
-        <div className="flex items-center gap-2 bg-black/50 rounded-full px-3 py-1.5 md:px-4 md:py-2 border border-white/10">
-          <span className="text-[#FFF314] font-bold text-sm md:text-lg">{(currentSlide + 1).toString().padStart(2, '0')}</span>
-          <span className="text-white/30">/</span>
-          <span className="text-white/50 font-semibold text-sm md:text-base">{SLIDES.length.toString().padStart(2, '0')}</span>
-        </div>
-      </div>
-
-      {/* Bottom Navigation Dots */}
-      <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-10">
-        <div className="flex items-center gap-2 md:gap-3">
-          {SLIDES.map((slide, index) => {
-            const Icon = slide.icon;
-            const isActive = index === currentSlide;
-            
-            return (
-              <motion.button
-                key={slide.id}
-                onClick={() => handleDotClick(index)}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="group relative"
-              >
-                <div className={`h-2.5 md:h-3 rounded-full transition-all duration-300 ${
-                  isActive 
-                    ? 'bg-[#FFF314] w-6 md:w-8' 
-                    : 'bg-white/30 hover:bg-white/60 w-2.5 md:w-3'
-                }`} />
-                
-                {/* Tooltip on Hover - Desktop only */}
-                <div className="hidden md:block absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="bg-gray-900/90 rounded-lg px-3 py-2 whitespace-nowrap border border-white/10">
-                    <div className="flex items-center gap-2">
-                      <Icon size={14} className="text-[#FFF314]" />
-                      <span className="text-sm font-bold text-white">{slide.title}</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.button>
-            );
-          })}
-        </div>
-      </div>
+        onClick={() => handleSlide('next')}
+        className="absolute right-0 top-0 w-1/2 h-full z-10"
+        aria-label="Next slide"
+      />
 
     </section>
   )
