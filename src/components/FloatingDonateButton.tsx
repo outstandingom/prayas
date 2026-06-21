@@ -60,7 +60,7 @@ export default function FloatingDonateButton() {
       to={`/donate?cause=${currentMessage.id}`}
       className="fixed bottom-8 right-8 z-50 flex flex-col items-center gap-2 hover:scale-110 transition-transform duration-200"
     >
-      {/* Circular Image - Increased size */}
+      {/* Circular Image */}
       <div className="w-20 h-20 rounded-full overflow-hidden shadow-2xl border-4 border-white/30">
         <img 
           src={currentMessage.imageUrl} 
@@ -73,14 +73,14 @@ export default function FloatingDonateButton() {
         />
       </div>
       
-      {/* Text Below Image - Increased size */}
+      {/* Text Below Image - Now with #FFF314 background */}
       <motion.div
         key={currentIndex}
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -5 }}
         transition={{ duration: 0.3 }}
-        className="text-sm font-semibold text-[#263238] bg-white/95 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap"
+        className="text-sm font-semibold text-[#263238] bg-[#FFF314] px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap"
       >
         {currentMessage.text}
       </motion.div>
