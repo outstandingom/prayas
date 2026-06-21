@@ -4,6 +4,14 @@ import { Link } from 'react-router-dom'
 import { Heart, X, Utensils, GraduationCap, Leaf, HeartPulse, Home, Droplets, Dog, Users } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// Replace these with your actual image URLs
+const CAUSE_IMAGES = {
+  birds: 'https://i.ibb.co/d01n9H1K/In-Shot-20260621-143002419.png',
+  education: 'https://i.ibb.co/zWtRCgG0/In-Shot-20260621-143300328.png',
+  water: 'https://i.ibb.co/5xjFCftw/In-Shot-20260621-143509552.png',
+  // Add more images as needed
+}
+
 const donationCauses = [
   { id: 'food', label: 'Food Security', icon: Utensils, color: 'text-orange-500' },
   { id: 'education', label: 'Education', icon: GraduationCap, color: 'text-blue-500' },
@@ -15,16 +23,48 @@ const donationCauses = [
   { id: 'community', label: 'Community Support', icon: Users, color: 'text-indigo-500' },
 ]
 
-// Marquee messages with emojis - simple and clean
+// Marquee messages with image icons instead of emojis
 const MARQUEE_MESSAGES = [
-  { icon: '🌿', text: 'Donate for Nature' },
-  { icon: '✍️', text: 'Donate for Education' },
-  { icon: '🍲', text: 'Donate for Food' },
-  { icon: '🏥', text: 'Donate for Healthcare' },
-  { icon: '🏠', text: 'Donate for Shelter' },
-  { icon: '💧', text: 'Donate for Water' },
-  { icon: '🐾', text: 'Donate for Animals' },
-  { icon: '🤝', text: 'Donate for Community' },
+  { 
+    icon: '🌿', 
+    text: 'Donate for Nature',
+    imageUrl: null // You can add image URLs for specific messages
+  },
+  { 
+    icon: '✍️', 
+    text: 'Donate for Education',
+    imageUrl: CAUSE_IMAGES.education // This will use your custom image
+  },
+  { 
+    icon: '🍲', 
+    text: 'Donate for Food',
+    imageUrl: null
+  },
+  { 
+    icon: '🏥', 
+    text: 'Donate for Healthcare',
+    imageUrl: null
+  },
+  { 
+    icon: '🏠', 
+    text: 'Donate for Shelter',
+    imageUrl: null
+  },
+  { 
+    icon: '💧', 
+    text: 'Donate for Water',
+    imageUrl: CAUSE_IMAGES.water // This will use your custom image
+  },
+  { 
+    icon: '🐾', 
+    text: 'Donate for Animals',
+    imageUrl: null
+  },
+  { 
+    icon: '🕊️', 
+    text: 'Donate for Birds',
+    imageUrl: CAUSE_IMAGES.birds // This will use your custom image
+  },
 ]
 
 export default function FloatingDonateButton() {
@@ -77,8 +117,16 @@ export default function FloatingDonateButton() {
         className="bg-[#FFF314] text-[#263238] px-4 py-2.5 rounded-full shadow-2xl hover:scale-105 transition-transform duration-200 flex items-center justify-center gap-2.5 group"
         aria-label="Donate"
       >
-        {/* Icon with emoji */}
-        <span className="text-xl leading-none">{currentMessage.icon}</span>
+        {/* Icon - Use image if available, otherwise fallback to emoji */}
+        {currentMessage.imageUrl ? (
+          <img 
+            src={currentMessage.imageUrl} 
+            alt={currentMessage.text}
+            className="w-6 h-6 rounded-full object-cover flex-shrink-0"
+          />
+        ) : (
+          <span className="text-xl leading-none">{currentMessage.icon}</span>
+        )}
         
         {/* Rotating Text */}
         <div className="overflow-hidden relative h-6 min-w-[140px]">
