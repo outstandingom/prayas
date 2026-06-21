@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import SmoothLoader from './SmoothLoader'
+import FloatingDonateButton from './FloatingDonateButton'   // <-- import
 
 export default function Layout() {
   const { pathname } = useLocation()
@@ -22,7 +23,6 @@ export default function Layout() {
     window.scrollTo(0, 0)
   }, [pathname])
 
-  // Hide loader after 2 seconds (or when content is ready)
   useEffect(() => {
     const timer = setTimeout(() => setLoaderVisible(false), 2000)
     return () => clearTimeout(timer)
@@ -33,7 +33,6 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#263238] font-sans flex flex-col relative overflow-x-hidden">
-      {/* SmoothLoader – only visible while loading */}
       {loaderVisible && <SmoothLoader />}
       
       <Navbar />
@@ -51,6 +50,9 @@ export default function Layout() {
         <Outlet />
       </motion.main>
       <Footer />
+      
+      {/* Floating donate button - visible on all pages inside Layout */}
+      <FloatingDonateButton />
     </div>
   )
 }
