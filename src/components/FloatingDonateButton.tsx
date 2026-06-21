@@ -1,5 +1,5 @@
 // src/components/FloatingDonateButton.tsx
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Heart, X, Utensils, GraduationCap, Leaf, HeartPulse, Home, Droplets, Dog, Users } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -15,8 +15,29 @@ const donationCauses = [
   { id: 'community', label: 'Community Support', icon: Users, color: 'text-indigo-500' },
 ]
 
+// Marquee messages that rotate
+const MARQUEE_MESSAGES = [
+  '❤️ Donate for Food',
+  '📚 Donate for Education',
+  '🏥 Donate for Healthcare',
+  '🌿 Donate for Environment',
+  '🏠 Donate for Shelter',
+  '💧 Donate for Clean Water',
+  '🐾 Donate for Animals',
+  '🤝 Donate for Community',
+]
+
 export default function FloatingDonateButton() {
   const [isOpen, setIsOpen] = useState(false)
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
+
+  // Rotate marquee messages every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMessageIndex((prev) => (prev + 1) % MARQUEE_MESSAGES.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
 
   const toggle = () => setIsOpen((prev) => !prev)
   const close = () => setIsOpen(false)
@@ -51,16 +72,33 @@ export default function FloatingDonateButton() {
 
       <button
         onClick={toggle}
-        className="bg-[#FFF314] text-[#263238] p-4 rounded-full shadow-2xl hover:scale-105 transition-transform duration-200 flex items-center justify-center gap-2 group"
+        className="bg-[#FFF314] text-[#263238] px-4 py-3 rounded-full shadow-2xl hover:scale-105 transition-transform duration-200 flex items-center justify-center gap-3 group min-w-[180px] sm:min-w-[200px]"
         aria-label="Donate"
       >
+        <Heart className="w-5 h-5 fill-current flex-shrink-0" />
+        
+        {/* Marquee Text */}
+        <div className="overflow-hidden relative flex-1 h-6">
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={currentMessageIndex}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="absolute left-0 top-0 text-sm font-medium whitespace-nowrap"
+            >
+              {MARQUEE_MESSAGES[currentMessageIndex]}
+            </motion.span>
+          </AnimatePresence>
+        </div>
+
         {isOpen ? (
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5 flex-shrink-0" />
         ) : (
-          <>
-            <Heart className="w-6 h-6 fill-current" />
-            <span className="hidden sm:inline font-bold">Donate</span>
-          </>
+          <span className="text-xs font-bold bg-[#263238] text-[#FFF314] px-2 py-0.5 rounded-full flex-shrink-0">
+            DONATE
+          </span>
         )}
       </button>
     </div>
