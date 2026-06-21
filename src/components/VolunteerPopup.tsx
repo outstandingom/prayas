@@ -2,15 +2,13 @@
 import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Heart, ArrowRight, Users } from 'lucide-react'
-import { Link } from 'react-router-dom'
 
 interface VolunteerPopupProps {
   isOpen: boolean
   onClose: () => void
-  className?: string
 }
 
-export default function VolunteerPopup({ isOpen, onClose, className = '' }: VolunteerPopupProps) {
+export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -42,6 +40,14 @@ export default function VolunteerPopup({ isOpen, onClose, className = '' }: Volu
     }
   }
 
+  const handleVolunteerClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onClose()
+    // Redirect to external volunteer page
+    window.location.href = 'https://prayassamajsevisanstha.org/volunteer'
+  }
+
   return (
     <AnimatePresence mode="wait">
       {isOpen && (
@@ -50,7 +56,7 @@ export default function VolunteerPopup({ isOpen, onClose, className = '' }: Volu
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className={`fixed inset-0 z-[99999] flex items-start justify-center p-4 bg-black/50 backdrop-blur-sm ${className}`}
+          className="fixed inset-0 z-[99999] flex items-start justify-center p-4 bg-black/50 backdrop-blur-sm"
           onClick={handleOverlayClick}
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
         >
@@ -107,15 +113,14 @@ export default function VolunteerPopup({ isOpen, onClose, className = '' }: Volu
                 Join our community of passionate volunteers and make a real difference in people's lives.
               </p>
 
-              <Link
-                to="/volunteer"
-                onClick={handleClose}
-                className="w-full py-3 sm:py-4 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-base sm:text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2 cursor-pointer mt-4 sm:mt-6"
+              <button
+                onClick={handleVolunteerClick}
+                className="w-full py-3 sm:py-4 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-base sm:text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Heart className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
                 Become a Volunteer
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-              </Link>
+              </button>
             </div>
           </motion.div>
         </motion.div>
