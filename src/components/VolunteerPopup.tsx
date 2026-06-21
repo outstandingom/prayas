@@ -26,23 +26,11 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
     }
   }, [isOpen])
 
-  const handleClose = (e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault()
-      e.stopPropagation()
-    }
+  const handleClose = () => {
     onClose()
   }
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      handleClose()
-    }
-  }
-
-  const handleVolunteerClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const handleVolunteerClick = () => {
     onClose()
     // Redirect to external volunteer page
     window.location.href = 'https://prayassamajsevisanstha.org/volunteer'
@@ -57,7 +45,6 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[99999] flex items-start justify-center p-4 bg-black/50 backdrop-blur-sm"
-          onClick={handleOverlayClick}
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
         >
           <motion.div
