@@ -9,8 +9,8 @@ const SLIDES = [
     icon: GraduationCap,
     title: "Education",
     subtitle: "Improver Children for a Better World",
-    description: "We provide quality education to underprivileged children, building foundations for lifelong learning and empowering the next generation of leaders.",
-    image: "/IMG-26.jpeg",
+    description:“Opening doors to a better future through the power of education.”,
+    image: "/IMG-24.jpeg",
     imagePosition: "center", // Center position for IMG-20
   },
   {
@@ -18,13 +18,13 @@ const SLIDES = [
     icon: Users,
     title: "Women Empowerment",
     subtitle: "Building Strong, Independent Women",
-    description: "Through skill development, entrepreneurship programs, and leadership training, we help women gain financial independence and social confidence.",
+    description:“Empowering women to break away from the vicious cycle of poverty.”,
     image: "/IMG-21.jpg",
     imagePosition: "right", // Show right side for IMG-21
   },
   {
     id: 3,
-    icon: HeartHandshake,
+    icon: Health,
     title: "Healthcare",
     subtitle: "Ensuring Healthy Communities",
     description: "Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.",
@@ -36,7 +36,7 @@ const SLIDES = [
     icon: Leaf,
     title: "Environment",
     subtitle: "Protecting Our Planet Together",
-    description: "Nurturing the environment through awareness, action, and responsibility",
+    description: “Nurturing the environment through awareness, action, and responsibility.”,
     image: "/IMG-21.jpg",
     imagePosition: "right",
   },
@@ -46,7 +46,7 @@ const SLIDES = [
     title: "Nutrition",
     subtitle: "Nourishing Bodies and Minds",
     description: "Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.",
-    image: "/IMG-24.jpeg",
+    image: "/IMG-26.jpeg",
     imagePosition: "center",
   },
   {
