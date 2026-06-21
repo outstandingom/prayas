@@ -88,7 +88,7 @@ export default function ImageCarousel() {
           Our Reach
         </span>
         <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold mt-4 text-[#263238] px-2">
-          Explore Our Core Sectors
+          Achivement & Accreditations
         </h2>
       </div>
 
