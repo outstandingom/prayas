@@ -88,16 +88,17 @@ export default function Navbar() {
   const isAuthPage = location.pathname === '/auth';
   const showAuthLink = !isAuthPage;
 
-  // Determine if navbar should use light text (white) or dark text (#263238)
-  const useLightText = isHome && !isScrolled;
-  const textColor = useLightText ? 'text-white' : 'text-[#263238]';
+  // Always use white text with transparent background
+  const textColor = 'text-white';
   const textColorHover = 'hover:text-[#FFF314]';
-  const textColorMuted = useLightText ? 'text-white/70' : 'text-[#263238]/60';
-  const borderColor = useLightText ? 'border-white/30' : 'border-[#FFF314]/40';
-  const bgButton = useLightText ? 'bg-white/10 hover:bg-white/20' : 'hover:bg-[#FFF314]/10';
-  const bgHeader = isHome && !isScrolled 
-    ? 'bg-white/10 backdrop-blur-sm' 
-    : 'bg-white/95 backdrop-blur-lg shadow-[0_10px_30px_-20px_rgba(38,50,56,0.15)]';
+  const textColorMuted = 'text-white/70';
+  const borderColor = 'border-white/30';
+  const bgButton = 'bg-white/10 hover:bg-white/20';
+  
+  // Fully transparent header with subtle blur on scroll
+  const bgHeader = isScrolled 
+    ? 'bg-black/30 backdrop-blur-md' 
+    : 'bg-transparent';
 
   return (
     <header
@@ -150,11 +151,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
               to="/donate"
-              className={`hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 ${
-                useLightText
-                  ? 'bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90'
-                  : 'bg-[#FFF314] text-[#263238] shadow-[#FFF314]/20 hover:bg-[#FFF314]/90'
-              }`}
+              className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
             >
               Donate Now
               <Heart className="w-4 h-4" />
@@ -163,11 +160,7 @@ export default function Navbar() {
             {!loading && isAdmin && (
               <Link
                 to="/admin"
-                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${
-                  useLightText
-                    ? `${borderColor} text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]`
-                    : `${borderColor} text-[#263238] hover:text-[#FFF314] hover:bg-[#FFF314]/10`
-                }`}
+                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <Shield className="w-4 h-4" />
                 Admin
@@ -177,11 +170,7 @@ export default function Navbar() {
             {showAuthLink && !loading && (
               <Link
                 to={isAuthenticated ? "/profile" : "/auth"}
-                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${
-                  useLightText
-                    ? `${borderColor} text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]`
-                    : `${borderColor} text-[#263238] hover:text-[#FFF314] hover:bg-[#FFF314]/10`
-                }`}
+                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} text-white hover:bg-white/10 hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <User className="w-4 h-4" />
                 {isAuthenticated ? "Profile" : "Sign In"}
@@ -207,7 +196,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-white/95 backdrop-blur-lg border-t border-[#FFF314]/10 mt-2 overflow-hidden shadow-xl"
+            className="md:hidden bg-black/80 backdrop-blur-lg border-t border-white/10 mt-2 overflow-hidden shadow-xl"
           >
             <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
               {navLinks.map((link) => (
@@ -217,7 +206,7 @@ export default function Navbar() {
                   className={`text-lg font-medium py-3 px-2 rounded-lg transition-colors ${
                     location.pathname === link.path
                       ? 'text-[#FFF314] bg-[#FFF314]/10'
-                      : 'text-[#263238] hover:text-[#FFF314] hover:bg-[#FFF314]/5'
+                      : 'text-white hover:text-[#FFF314] hover:bg-white/5'
                   }`}
                 >
                   {link.name}
@@ -243,7 +232,7 @@ export default function Navbar() {
               {showAuthLink && !loading && (
                 <Link
                   to={isAuthenticated ? "/profile" : "/auth"}
-                  className="mt-2 w-full text-center rounded-full border border-[#FFF314]/40 px-6 py-3.5 font-semibold text-[#263238] hover:text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+                  className="mt-2 w-full text-center rounded-full border border-white/40 px-6 py-3.5 font-semibold text-white hover:text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
                 >
                   <User className="w-5 h-5" />
                   {isAuthenticated ? "Profile" : "Sign In"}
