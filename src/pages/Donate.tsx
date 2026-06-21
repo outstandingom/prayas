@@ -1,5 +1,6 @@
 // src/pages/Donate.tsx
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'   // <-- new import
 import { motion } from 'framer-motion'
 import { Heart, CreditCard, Smartphone, Building2, IndianRupee, Gift, Loader2 } from 'lucide-react'
 
@@ -11,7 +12,23 @@ const DONATION_AMOUNTS = [
   { value: 10000, label: '₹10,000' },
 ]
 
+// Mapping for cause display
+const CAUSE_MAP: Record<string, { title: string; description: string }> = {
+  food: { title: 'Food Security', description: 'Provide meals to families in need' },
+  education: { title: 'Education', description: 'Support quality education for children' },
+  health: { title: 'Healthcare', description: 'Fund medical care and health camps' },
+  environment: { title: 'Environment', description: 'Help protect our planet' },
+  shelter: { title: 'Shelter & Housing', description: 'Provide safe homes for the homeless' },
+  water: { title: 'Clean Water', description: 'Ensure access to safe drinking water' },
+  animals: { title: 'Animal Welfare', description: 'Care for stray and abandoned animals' },
+  community: { title: 'Community Support', description: 'Empower local communities' },
+}
+
 export default function Donate() {
+  const [searchParams] = useSearchParams()
+  const causeParam = searchParams.get('cause') || ''
+  const cause = CAUSE_MAP[causeParam] || null
+
   const [selectedAmount, setSelectedAmount] = useState<number | null>(1000)
   const [customAmount, setCustomAmount] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('upi')
@@ -29,17 +46,9 @@ export default function Donate() {
     }
 
     setLoading(true)
-
-    // Construct UPI payment link
     const upiUrl = `upi://pay?pa=rp7682428@okaxis&pn=Raj%20Parmar&am=${amount}&cu=INR&tn=Payment%20for%20service`
-
-    // Redirect to UPI app
     window.location.href = upiUrl
-
-    // Reset loading after a short delay in case user returns without completing payment
-    setTimeout(() => {
-      setLoading(false)
-    }, 5000)
+    setTimeout(() => setLoading(false), 5000)
   }
 
   return (
@@ -50,7 +59,12 @@ export default function Donate() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FFF314]/10 mb-4">
             <Heart className="w-8 h-8 text-[#FFF314] fill-[#FFF314]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-[#263238]">Make a Donation</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-[#263238]">
+            {cause ? `Donate for ${cause.title}` : 'Make a Donation'}
+          </h1>
+          {cause && (
+            <p className="text-[#263238]/70 text-sm mt-1">{cause.description}</p>
+          )}
           <p className="text-[#263238]/60 mt-2 max-w-md mx-auto">
             Your support empowers children, families, and communities to build a brighter future.
           </p>
@@ -148,6 +162,7 @@ export default function Donate() {
                     : amount && amount >= 1000
                     ? 'Your donation can provide meals to 50 people'
                     : 'Every contribution makes a difference'}
+                  {cause && ` for ${cause.title}`}
                 </p>
               </div>
             </div>
