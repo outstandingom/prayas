@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { Heart, Mail, Phone, MapPin, ArrowUpRight } from 'lucide-react';
 
+
 export default function Footer() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
