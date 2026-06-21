@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
+import { HeartHandshake } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 // Slides Data - 7 meaningful slides with 2 local images
@@ -114,7 +115,7 @@ export default function HeroBanner() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
           
-          {/* Content - Only Description */}
+          {/* Content - Title, Description, and Donate Button */}
           <div className="absolute inset-0 flex items-end md:items-center pb-24 md:pb-0">
             <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
               <div className="max-w-2xl">
@@ -124,10 +125,27 @@ export default function HeroBanner() {
                   transition={{ delay: 0.2, duration: 0.5 }}
                   className="text-center md:text-left"
                 >
-                  {/* Description Only */}
-                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 leading-relaxed max-w-xl mx-auto md:mx-0 px-2 md:px-0">
+                  {/* Title */}
+                  <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-2 md:mb-4 leading-tight">
+                    {SLIDES[currentSlide].title}
+                  </h1>
+                  
+                  {/* Description */}
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 leading-relaxed mb-6 md:mb-8 max-w-xl mx-auto md:mx-0 px-2 md:px-0">
                     {SLIDES[currentSlide].description}
                   </p>
+                  
+                  {/* Donate Button */}
+                  <div className="flex justify-center md:justify-start">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-6 md:px-8 py-3 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
+                    >
+                      Donate Now
+                      <HeartHandshake size={20} />
+                    </motion.button>
+                  </div>
                 </motion.div>
               </div>
             </div>
