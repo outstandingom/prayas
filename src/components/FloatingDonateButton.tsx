@@ -15,32 +15,34 @@ const donationCauses = [
   { id: 'community', label: 'Community Support', icon: Users, color: 'text-indigo-500' },
 ]
 
-// Marquee messages that rotate
+// Marquee messages with emojis - simple and clean
 const MARQUEE_MESSAGES = [
-  '❤️ Donate for Food',
-  '📚 Donate for Education',
-  '🏥 Donate for Healthcare',
-  '🌿 Donate for Environment',
-  '🏠 Donate for Shelter',
-  '💧 Donate for Clean Water',
-  '🐾 Donate for Animals',
-  '🤝 Donate for Community',
+  { icon: '🌿', text: 'Donate for Nature' },
+  { icon: '✍️', text: 'Donate for Education' },
+  { icon: '🍲', text: 'Donate for Food' },
+  { icon: '🏥', text: 'Donate for Healthcare' },
+  { icon: '🏠', text: 'Donate for Shelter' },
+  { icon: '💧', text: 'Donate for Water' },
+  { icon: '🐾', text: 'Donate for Animals' },
+  { icon: '🤝', text: 'Donate for Community' },
 ]
 
 export default function FloatingDonateButton() {
   const [isOpen, setIsOpen] = useState(false)
-  const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0)
 
-  // Rotate marquee messages every 3 seconds
+  // Rotate messages every 2.5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentMessageIndex((prev) => (prev + 1) % MARQUEE_MESSAGES.length)
-    }, 3000)
+      setCurrentIndex((prev) => (prev + 1) % MARQUEE_MESSAGES.length)
+    }, 2500)
     return () => clearInterval(interval)
   }, [])
 
   const toggle = () => setIsOpen((prev) => !prev)
   const close = () => setIsOpen(false)
+
+  const currentMessage = MARQUEE_MESSAGES[currentIndex]
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
@@ -72,34 +74,33 @@ export default function FloatingDonateButton() {
 
       <button
         onClick={toggle}
-        className="bg-[#FFF314] text-[#263238] px-4 py-3 rounded-full shadow-2xl hover:scale-105 transition-transform duration-200 flex items-center justify-center gap-3 group min-w-[180px] sm:min-w-[200px]"
+        className="bg-[#FFF314] text-[#263238] px-4 py-2.5 rounded-full shadow-2xl hover:scale-105 transition-transform duration-200 flex items-center justify-center gap-2.5 group"
         aria-label="Donate"
       >
-        <Heart className="w-5 h-5 fill-current flex-shrink-0" />
+        {/* Icon with emoji */}
+        <span className="text-xl leading-none">{currentMessage.icon}</span>
         
-        {/* Marquee Text */}
-        <div className="overflow-hidden relative flex-1 h-6">
+        {/* Rotating Text */}
+        <div className="overflow-hidden relative h-6 min-w-[140px]">
           <AnimatePresence mode="wait">
             <motion.span
-              key={currentMessageIndex}
+              key={currentIndex}
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
-              transition={{ duration: 0.4 }}
+              transition={{ 
+                duration: 0.4,
+                ease: [0.19, 1, 0.22, 1]
+              }}
               className="absolute left-0 top-0 text-sm font-medium whitespace-nowrap"
             >
-              {MARQUEE_MESSAGES[currentMessageIndex]}
+              {currentMessage.text}
             </motion.span>
           </AnimatePresence>
         </div>
 
-        {isOpen ? (
-          <X className="w-5 h-5 flex-shrink-0" />
-        ) : (
-          <span className="text-xs font-bold bg-[#263238] text-[#FFF314] px-2 py-0.5 rounded-full flex-shrink-0">
-            DONATE
-          </span>
-        )}
+        {/* Small heart indicator */}
+        <Heart className="w-4 h-4 fill-current flex-shrink-0 opacity-60" />
       </button>
     </div>
   )
