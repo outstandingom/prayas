@@ -48,23 +48,23 @@ export default function ImpactCategories() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="font-mono text-[#263238] text-xs sm:text-sm tracking-[0.2em] uppercase font-bold">
+            <span className="font-sans text-[#263238] text-xs sm:text-sm tracking-[0.2em] uppercase font-bold">
               Our Work
             </span>
-            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#263238] mt-1 sm:mt-2">
+            <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#263238] mt-1 sm:mt-2">
               Impact <span className="text-[#263238]">Initiatives</span>
             </h1>
-            <p className="text-[#263238]/60 text-sm sm:text-base max-w-2xl mt-2 sm:mt-3 font-mono">
+            <p className="text-[#263238]/60 text-sm sm:text-base max-w-2xl mt-2 sm:mt-3 font-sans">
               Explore our 12 key focus areas driving meaningful change in communities across the globe.
             </p>
             
             {/* Progress Indicator */}
             <div className="flex items-center gap-3 mt-3 sm:mt-4">
               <div className="flex items-center gap-2">
-                <span className="text-[#263238] font-mono text-lg sm:text-xl font-bold">
+                <span className="text-[#263238] font-sans text-lg sm:text-xl font-bold">
                   {String(activeIndex + 1).padStart(2, '0')}
                 </span>
-                <span className="text-[#263238]/30 font-mono text-sm">/ {String(CATEGORIES.length).padStart(2, '0')}</span>
+                <span className="text-[#263238]/30 font-sans text-sm">/ {String(CATEGORIES.length).padStart(2, '0')}</span>
               </div>
               <div className="h-px flex-1 max-w-[200px] bg-[#263238]/10 relative overflow-hidden">
                 <motion.div 
@@ -73,7 +73,7 @@ export default function ImpactCategories() {
                   transition={{ duration: 0.3 }}
                 />
               </div>
-              <span className="text-[#263238]/40 font-mono text-xs truncate max-w-[120px] sm:max-w-[200px]">
+              <span className="text-[#263238]/40 font-sans text-xs truncate max-w-[120px] sm:max-w-[200px]">
                 {CATEGORIES[activeIndex]?.title}
               </span>
             </div>
@@ -98,7 +98,7 @@ export default function ImpactCategories() {
               <motion.span 
                 initial={{ opacity: 0, x: 5 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="text-xs font-mono font-bold text-[#263238]"
+                className="text-xs font-sans font-bold text-[#263238]"
               >
                 {cat.id}
               </motion.span>
@@ -123,17 +123,17 @@ export default function ImpactCategories() {
               className="pointer-events-auto w-full max-w-sm sm:max-w-md bg-[#263238] p-4 sm:p-5 rounded-2xl shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/20 transition-all duration-300 border border-[#FFF314]/20"
             >
               <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#FFF314]/20">
-                <span className="font-mono text-[10px] tracking-[0.15em] text-[#FFF314] font-bold">
+                <span className="font-sans text-[10px] tracking-[0.15em] text-[#FFF314] font-bold">
                   {cat.id} — {cat.title}
                 </span>
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FFF314]" />
               </div>
 
-              <h3 className="font-display text-xl sm:text-2xl font-bold text-[#FFF314] mb-1.5">
+              <h3 className="font-sans text-xl sm:text-2xl font-bold text-[#FFF314] mb-1.5">
                 {cat.title}
               </h3>
 
-              <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-3">
+              <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-3 font-sans">
                 {cat.desc}
               </p>
 
@@ -143,7 +143,7 @@ export default function ImpactCategories() {
 
               <button 
                 onClick={() => navigate(cat.path)}
-                className="inline-flex items-center gap-2 text-[#FFF314] font-mono text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white"
+                className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white"
               >
                 Learn More <span className="text-base leading-none">→</span>
               </button>
@@ -151,18 +151,6 @@ export default function ImpactCategories() {
           </section>
         ))}
       </div>
-
-      <style>{`
-        @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap");
-        
-        .font-mono {
-          font-family: "JetBrains Mono", monospace;
-        }
-
-        .font-display {
-          font-family: "Outfit", sans-serif;
-        }
-      `}</style>
     </div>
   )
 }
