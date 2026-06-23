@@ -247,11 +247,14 @@ export default function Navbar() {
 
           {/* Right side actions */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Language Switcher – Desktop */}
-            <div className="hidden sm:relative sm:inline-block">
+            {/* Language Switcher – Desktop (FIXED) */}
+            <div className="hidden sm:relative sm:inline-block z-20">
               <button
-                onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLangDropdownOpen(!langDropdownOpen);
+                }}
+                className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <Globe className="w-4 h-4" />
                 <span>{currentLangLabel}</span>
@@ -264,13 +267,15 @@ export default function Navbar() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[150px] py-2 z-50"
+                    className="absolute right-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[150px] py-2 z-50 pointer-events-auto"
                   >
                     {LANGUAGES.map((lang) => (
                       <button
                         key={lang.code}
-                        onClick={() => changeLanguage(lang.code)}
-                        className={`block w-full text-left px-5 py-2.5 text-sm transition-colors ${
+                        onClick={() => {
+                          changeLanguage(lang.code);
+                        }}
+                        className={`block w-full text-left px-5 py-2.5 text-sm transition-colors cursor-pointer ${
                           i18n.language === lang.code
                             ? 'text-[#FFF314] bg-[#FFF314]/10'
                             : 'text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]'
@@ -410,7 +415,7 @@ export default function Navbar() {
                         changeLanguage(lang.code);
                         setIsMobileOpen(false);
                       }}
-                      className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                      className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                         i18n.language === lang.code
                           ? 'bg-[#FFF314] text-[#263238]'
                           : 'bg-white/10 text-white hover:bg-white/20'
