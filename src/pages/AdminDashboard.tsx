@@ -6,7 +6,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import AdminVolunteers from '@/components/admin/AdminVolunteers';
 import AdminUsers from '@/components/admin/AdminUsers';
 import AdminContacts from '@/components/admin/AdminContacts'; // ✅ existing component
-import AdminGallery from '@/components/admin/AdminGallery';   // ✅ create this if missing
+import AdminGallery from '@/components/admin/AdminGallery';   // ✅ your new component
 import { Loader2 } from 'lucide-react';
 
 export default function AdminDashboard() {
