@@ -111,10 +111,8 @@ export default function HeroBanner() {
             }}
           />
           
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
-          
+          {/* ❌ Removed both gradient overlays */}
+
           {/* Content - Title, Description, and Donate Button */}
           <div className="absolute inset-0 flex items-end md:items-center pb-24 md:pb-0">
             <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
