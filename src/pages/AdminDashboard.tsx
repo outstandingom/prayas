@@ -5,8 +5,8 @@ import { supabase } from '@/lib/supabase';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminVolunteers from '@/components/admin/AdminVolunteers';
 import AdminUsers from '@/components/admin/AdminUsers';
-import AdminContactMessages from '@/components/admin/AdminContactMessages'; // rename if needed
-import AdminGallery from '@/components/admin/AdminGallery'; // new component
+import AdminContacts from '@/components/admin/AdminContacts'; // ✅ existing component
+import AdminGallery from '@/components/admin/AdminGallery';   // ✅ create this if missing
 import { Loader2 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -65,8 +65,8 @@ export default function AdminDashboard() {
         <Route path="/" element={<Navigate to="/admin/volunteers" replace />} />
         <Route path="/volunteers" element={<AdminVolunteers isSuperAdmin={isSuperAdmin} />} />
         <Route path="/users" element={<AdminUsers />} />
-        <Route path="/messages" element={<AdminContactMessages />} /> {/* Match nav */}
-        <Route path="/gallery" element={<AdminGallery />} /> {/* New gallery route */}
+        <Route path="/contacts" element={<AdminContacts />} /> {/* ✅ matches nav */}
+        <Route path="/gallery" element={<AdminGallery />} />   {/* ✅ new gallery route */}
         <Route path="*" element={<Navigate to="/admin/volunteers" />} />
       </Routes>
     </AdminLayout>
