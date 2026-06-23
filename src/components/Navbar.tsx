@@ -2,12 +2,20 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Heart, User, Shield } from 'lucide-react';
+import { Menu, X, Heart, User, Shield, ChevronDown } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 const navLinks = [
   { name: 'Home', path: '/' },
-  { name: 'About Us', path: '/about' },
+  { 
+    name: 'About Us', 
+    path: '/about',
+    submenu: [
+      { name: 'Our Story & Mission', path: '/about' },
+      { name: 'Our Members', path: '/about/members' },
+      { name: 'Certifications & Achievements', path: '/about/certifications' },
+    ]
+  },
   { name: 'Programs', path: '/programs' },
   { name: 'Gallery', path: '/gallery' },
   { name: 'Stories', path: '/stories' },
@@ -21,6 +29,8 @@ export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState<string | null>(null);
   const location = useLocation();
 
   const isHome = location.pathname === '/';
@@ -75,11 +85,16 @@ export default function Navbar() {
 
   useEffect(() => {
     setIsMobileOpen(false);
+    setOpenDropdown(null);
+    setMobileSubmenuOpen(null);
   }, [location]);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) setIsMobileOpen(false);
+      if (window.innerWidth >= 768) {
+        setIsMobileOpen(false);
+        setMobileSubmenuOpen(null);
+      }
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -100,6 +115,20 @@ export default function Navbar() {
   const bgHeader = isHome 
     ? (isScrolled ? 'bg-black/30 backdrop-blur-md' : 'bg-transparent')
     : (isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white border-b border-[#263238]/5');
+
+  // Handle desktop dropdown hover
+  const handleMouseEnter = (name: string) => setOpenDropdown(name);
+  const handleMouseLeave = () => setOpenDropdown(null);
+
+  // Handle mobile submenu toggle
+  const toggleMobileSubmenu = (name: string) => {
+    setMobileSubmenuOpen(mobileSubmenuOpen === name ? null : name);
+  };
+
+  // Check if any submenu item is active
+  const isSubmenuActive = (submenu: { path: string }[]) => {
+    return submenu.some(item => location.pathname === item.path);
+  };
 
   return (
     <header
@@ -128,24 +157,79 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-4 lg:gap-7">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`text-sm font-medium transition-colors relative py-2 group whitespace-nowrap ${
-                  location.pathname === link.path
-                    ? 'text-[#FFF314]'
-                    : `${textColor} ${textColorHover}`
-                }`}
-              >
-                {link.name}
-                <span
-                  className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
-                    location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
+            {navLinks.map((link) => {
+              const hasSubmenu = link.submenu && link.submenu.length > 0;
+              const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
+              
+              if (hasSubmenu) {
+                return (
+                  <div
+                    key={link.name}
+                    className="relative group"
+                    onMouseEnter={() => handleMouseEnter(link.name)}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <button
+                      className={`text-sm font-medium transition-colors relative py-2 group flex items-center gap-1 whitespace-nowrap ${
+                        isActive ? 'text-[#FFF314]' : `${textColor} ${textColorHover}`
+                      }`}
+                    >
+                      {link.name}
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
+                      <span
+                        className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                          isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                        }`}
+                      />
+                    </button>
+                    <AnimatePresence>
+                      {openDropdown === link.name && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute left-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[220px] py-2 z-50"
+                        >
+                          {link.submenu!.map((sub) => (
+                            <Link
+                              key={sub.path}
+                              to={sub.path}
+                              className={`block px-5 py-2.5 text-sm transition-colors ${
+                                location.pathname === sub.path
+                                  ? 'text-[#FFF314] bg-[#FFF314]/10'
+                                  : `text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]`
+                              }`}
+                            >
+                              {sub.name}
+                            </Link>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              }
+
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={`text-sm font-medium transition-colors relative py-2 group whitespace-nowrap ${
+                    location.pathname === link.path
+                      ? 'text-[#FFF314]'
+                      : `${textColor} ${textColorHover}`
                   }`}
-                />
-              </Link>
-            ))}
+                >
+                  {link.name}
+                  <span
+                    className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                      location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
+                    }`}
+                  />
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Right side actions */}
@@ -200,19 +284,70 @@ export default function Navbar() {
             className="md:hidden bg-black/80 backdrop-blur-lg border-t border-white/10 mt-2 overflow-hidden shadow-xl"
           >
             <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`text-lg font-medium py-3 px-2 rounded-lg transition-colors ${
-                    location.pathname === link.path
-                      ? 'text-[#FFF314] bg-[#FFF314]/10'
-                      : 'text-white hover:text-[#FFF314] hover:bg-white/5'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const hasSubmenu = link.submenu && link.submenu.length > 0;
+                const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
+
+                if (hasSubmenu) {
+                  const isOpen = mobileSubmenuOpen === link.name;
+                  return (
+                    <div key={link.name} className="border-b border-white/5 last:border-0">
+                      <button
+                        onClick={() => toggleMobileSubmenu(link.name)}
+                        className={`w-full text-left text-lg font-medium py-3 px-2 rounded-lg transition-colors flex items-center justify-between ${
+                          isActive
+                            ? 'text-[#FFF314] bg-[#FFF314]/10'
+                            : 'text-white hover:text-[#FFF314] hover:bg-white/5'
+                        }`}
+                      >
+                        {link.name}
+                        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="pl-4 pb-2 flex flex-col gap-0.5">
+                              {link.submenu!.map((sub) => (
+                                <Link
+                                  key={sub.path}
+                                  to={sub.path}
+                                  className={`py-2 px-2 rounded-lg text-sm transition-colors ${
+                                    location.pathname === sub.path
+                                      ? 'text-[#FFF314] bg-[#FFF314]/10'
+                                      : 'text-white/70 hover:text-[#FFF314] hover:bg-white/5'
+                                  }`}
+                                >
+                                  {sub.name}
+                                </Link>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`text-lg font-medium py-3 px-2 rounded-lg transition-colors ${
+                      location.pathname === link.path
+                        ? 'text-[#FFF314] bg-[#FFF314]/10'
+                        : 'text-white hover:text-[#FFF314] hover:bg-white/5'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
               <Link
                 to="/donate"
                 className="mt-3 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
