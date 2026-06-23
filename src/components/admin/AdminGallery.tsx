@@ -145,13 +145,14 @@ export default function AdminGallery() {
   };
 
   if (loading && items.length === 0) {
-    return <div className="flex justify-center py-8"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>;
+    return <div className="flex justify-center py-8"><Loader2 className="w-8 h-8 animate-spin text-emerald-600" /></div>;
   }
 
   return (
-    <div className="p-4">
+    // Add pt-20 to push content below the fixed admin header
+    <div className="pt-20 px-4 md:px-6 pb-8">
       {/* HEADER WITH BUTTON */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <h2 className="text-2xl font-bold">Gallery Images</h2>
         <button
           onClick={() => openModal()}
