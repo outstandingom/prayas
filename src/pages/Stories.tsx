@@ -265,9 +265,9 @@ export default function Stories() {
           min-height: 100vh;
         }
 
-        /* Hero Section */
+        /* Hero Section - added more bottom padding */
         .hero {
-          padding: 8rem 2rem 4rem;
+          padding: 8rem 2rem 6rem; /* increased bottom padding */
           text-align: center;
           display: flex;
           flex-direction: column;
@@ -319,6 +319,8 @@ export default function Stories() {
           align-items: center;
           perspective: 1000px;
           overflow: visible;
+          /* Shift sphere downward to avoid overlapping hero text */
+          transform: translateY(8%);
         }
 
         .sphere {
@@ -585,6 +587,10 @@ export default function Stories() {
         }
 
         @media (max-width: 768px) {
+          .hero {
+            padding: 6rem 1.5rem 4rem; /* adjusted for mobile */
+          }
+
           .clay-card {
             width: 130px;
             height: 170px;
