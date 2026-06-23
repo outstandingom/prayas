@@ -1,7 +1,7 @@
 // src/components/admin/AdminGallery.tsx
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Loader2, Plus, Edit, Trash2, X, Check, Image as ImageIcon, ArrowUp, ArrowDown, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Plus, Edit, Trash2, X, Check, ImageIcon, ArrowUp, ArrowDown, Eye, EyeOff } from 'lucide-react';
 
 type GalleryItem = {
   id: string;
@@ -106,7 +106,6 @@ export default function AdminGallery() {
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= items.length) return;
     
-    // Swap display_order values
     const current = items[index];
     const target = items[targetIndex];
     try {
