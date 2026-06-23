@@ -12,8 +12,8 @@ interface AdminLayoutProps {
 const navItems = [
   { name: 'Volunteers', path: '/admin/volunteers', icon: Heart },
   { name: 'Users', path: '/admin/users', icon: Users },
-  { name: 'Messages', path: '/admin/messages', icon: MessageSquare },
-  { name: 'Gallery', path: '/admin/gallery', icon: ImageIcon }, // Added Gallery
+  { name: 'Contact Messages', path: '/admin/contacts', icon: MessageSquare }, // ✅ path matches
+  { name: 'Gallery', path: '/admin/gallery', icon: ImageIcon },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
