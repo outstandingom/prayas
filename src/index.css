@@ -60,7 +60,10 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
+  * { 
+    border-color: var(--color-border); 
+    font-family: "Fredoka", sans-serif !important;
+  }
 
   html {
     scroll-behavior: smooth;

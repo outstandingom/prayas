@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 const navLinks = [
   { name: 'nav.home', path: '/' },
   { 
-    name: 'nav.about', 
+    name: 'nav.aboutUs', 
     path: '/about',
     submenu: [
       { name: 'nav.about.story', path: '/about' },
