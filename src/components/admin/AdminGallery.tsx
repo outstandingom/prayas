@@ -149,21 +149,26 @@ export default function AdminGallery() {
   }
 
   return (
-    <div>
+    <div className="p-4">
+      {/* HEADER WITH BUTTON */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Gallery Images</h2>
+        <h2 className="text-2xl font-bold">Gallery Images</h2>
         <button
           onClick={() => openModal()}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white font-semibold rounded-lg shadow hover:bg-emerald-700 transition-colors"
         >
-          <Plus className="w-4 h-4" /> Add Image
+          <Plus className="w-5 h-5" />
+          Add New Image
         </button>
       </div>
 
-      {error && <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md">{error}</div>}
+      {error && <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md border border-red-200">{error}</div>}
 
       {items.length === 0 ? (
-        <p className="text-gray-500">No images in the gallery yet. Click "Add Image" to upload.</p>
+        <div className="text-center py-12 text-gray-500">
+          <p className="text-lg">No images in the gallery yet.</p>
+          <p className="text-sm">Click the <strong>"Add New Image"</strong> button above to get started.</p>
+        </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {items.map((item) => (
@@ -202,12 +207,12 @@ export default function AdminGallery() {
         </div>
       )}
 
-      {/* Modal */}
+      {/* MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto shadow-xl">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold">{editing ? 'Edit Image' : 'Add Image'}</h3>
+              <h3 className="text-xl font-bold">{editing ? 'Edit Image' : 'Add New Image'}</h3>
               <button onClick={closeModal} className="p-1 rounded hover:bg-gray-100">
                 <X className="w-5 h-5" />
               </button>
@@ -219,7 +224,7 @@ export default function AdminGallery() {
                   type="text"
                   value={formData.image_url || ''}
                   onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   required
                   placeholder="https://example.com/image.jpg"
                 />
@@ -235,7 +240,7 @@ export default function AdminGallery() {
                   type="text"
                   value={formData.title || ''}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
               <div>
@@ -243,7 +248,7 @@ export default function AdminGallery() {
                 <textarea
                   value={formData.description || ''}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   rows={3}
                 />
               </div>
@@ -253,7 +258,7 @@ export default function AdminGallery() {
                   type="text"
                   value={formData.category || ''}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   placeholder="e.g., Education, Healthcare"
                 />
               </div>
@@ -263,7 +268,7 @@ export default function AdminGallery() {
                   type="number"
                   value={formData.display_order || 0}
                   onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
-                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
               <div className="flex items-center gap-2">
@@ -280,7 +285,7 @@ export default function AdminGallery() {
                 <button type="button" onClick={closeModal} className="px-4 py-2 border rounded-md hover:bg-gray-50">
                   Cancel
                 </button>
-                <button type="submit" disabled={loading} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
+                <button type="submit" disabled={loading} className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 disabled:opacity-50">
                   {loading ? <Loader2 className="w-4 h-4 animate-spin inline mr-1" /> : 'Save'}
                 </button>
               </div>
