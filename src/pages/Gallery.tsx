@@ -1,9 +1,7 @@
-// src/pages/Gallery.tsx
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-// Replace these with your actual NGO photos
 const ASSETS = [
   {
     src: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80',
@@ -56,16 +54,16 @@ const ASSETS = [
 ];
 
 export default function Gallery() {
-  const [activeIndex, setActiveIndex] = useState(0);
   const itemsPerView = 4;
-  const maxIndex = Math.max(0, ASSETS.length - itemsPerView);
+  const totalSlides = Math.max(0, ASSETS.length - itemsPerView + 1);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const toPrev = () => {
     setActiveIndex((prev) => Math.max(0, prev - 1));
   };
 
   const toNext = () => {
-    setActiveIndex((prev) => Math.min(maxIndex, prev + 1));
+    setActiveIndex((prev) => Math.min(totalSlides - 1, prev + 1));
   };
 
   return (
@@ -86,10 +84,9 @@ export default function Gallery() {
 
       {/* Carousel Wrapper */}
       <div className="w-full max-w-6xl mx-auto overflow-hidden z-10">
-        {/* Animated Track */}
         <motion.div
           className="flex gap-4"
-          animate={{ x: `-${activeIndex * (100 / ASSETS.length)}%` }}
+          animate={{ x: `-${activeIndex * (100 / ASSETS.length) * itemsPerView}%` }}
           transition={{ type: 'spring', bounce: 0.1, duration: 0.8 }}
           style={{ width: `${(ASSETS.length / itemsPerView) * 100}%` }}
         >
@@ -115,7 +112,6 @@ export default function Gallery() {
 
       {/* Controls */}
       <div className="fixed bottom-6 left-0 right-0 w-fit px-2 mx-auto flex items-center gap-4 justify-center text-[#263238] rounded-full bg-white/80 backdrop-blur-sm px-4 py-2 border border-[#FFF314]/20 shadow-lg z-20">
-        {/* Previous Button */}
         <button
           onClick={toPrev}
           disabled={activeIndex === 0}
@@ -125,9 +121,8 @@ export default function Gallery() {
           <ChevronLeft className="w-5 h-5" />
         </button>
 
-        {/* Dots */}
         <div className="w-[180px] flex justify-center items-center gap-2">
-          {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+          {Array.from({ length: totalSlides }).map((_, i) => (
             <div
               key={i}
               onClick={() => setActiveIndex(i)}
@@ -140,10 +135,9 @@ export default function Gallery() {
           ))}
         </div>
 
-        {/* Next Button */}
         <button
           onClick={toNext}
-          disabled={activeIndex === maxIndex}
+          disabled={activeIndex === totalSlides - 1}
           className="p-2 cursor-pointer hover:bg-[#FFF314]/10 rounded-full transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           aria-label="Next"
         >
