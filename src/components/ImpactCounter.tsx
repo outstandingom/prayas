@@ -1,7 +1,8 @@
 // src/components/ImpactCounter.tsx
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface CounterProps {
   end: number
@@ -56,36 +57,38 @@ function Counter({ end, suffix = '', label, description, duration = 2000 }: Coun
 }
 
 export default function ImpactCounter() {
-  const counters = [
+  const { t } = useTranslation();
+
+  const counters = useMemo(() => [
     { 
       end: 25000, 
       suffix: "+", 
-      label: "LIVES IMPACTED",
-      description: "Through our healthcare camps, education programs, and women empowerment initiatives across rural India",
+      label: t('impact.counters.lives.label', "LIVES IMPACTED"),
+      description: t('impact.counters.lives.desc', "Through our healthcare camps, education programs, and women empowerment initiatives across rural India"),
       duration: 2000 
     },
     { 
       end: 1200, 
       suffix: "+", 
-      label: "ACTIVE VOLUNTEERS",
-      description: "Dedicated individuals working tirelessly in 27 states to bring change at the grassroots level",
+      label: t('impact.counters.volunteers.label', "ACTIVE VOLUNTEERS"),
+      description: t('impact.counters.volunteers.desc', "Dedicated individuals working tirelessly in 27 states to bring change at the grassroots level"),
       duration: 1800 
     },
     { 
       end: 350, 
       suffix: "+", 
-      label: "PROJECTS COMPLETED",
-      description: "From building schools to organizing health camps, each project has transformed communities",
+      label: t('impact.counters.projects.label', "PROJECTS COMPLETED"),
+      description: t('impact.counters.projects.desc', "From building schools to organizing health camps, each project has transformed communities"),
       duration: 1500 
     },
     { 
       end: 500, 
       suffix: "+", 
-      label: "REGULAR DONORS",
-      description: "Compassionate supporters who believe in our mission and contribute monthly to sustain our work",
+      label: t('impact.counters.donors.label', "REGULAR DONORS"),
+      description: t('impact.counters.donors.desc', "Compassionate supporters who believe in our mission and contribute monthly to sustain our work"),
       duration: 1700 
     }
-  ]
+  ], [t]);
 
   return (
     <section className="py-16 md:py-20 relative z-20">
@@ -99,14 +102,14 @@ export default function ImpactCounter() {
           className="text-center mb-12"
         >
           <span className="text-[#FFF314] font-mono text-xs uppercase tracking-widest font-semibold bg-[#FFF314]/10 px-4 py-2 rounded-full inline-block">
-            Our Impact in Numbers
+            {t('impact.header.subtitle', 'Our Impact in Numbers')}
           </span>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-[#263238] mt-4">
-            Making a Difference Together
+            {t('impact.header.title', 'Making a Difference Together')}
           </h2>
           <div className="w-20 h-1 bg-[#FFF314] mx-auto mt-4 rounded-full"></div>
           <p className="text-[#263238]/60 mt-4 max-w-2xl mx-auto">
-            Every number represents a life touched, a community empowered, and hope restored.
+            {t('impact.header.desc', 'Every number represents a life touched, a community empowered, and hope restored.')}
           </p>
         </motion.div>
 

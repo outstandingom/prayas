@@ -7,6 +7,7 @@ import hi from '../public/locales/hi/translation.json';
 import en from '../public/locales/en/translation.json';
 import mr from '../public/locales/mr/translation.json';
 import gu from '../public/locales/gu/translation.json';
+import bn from '../public/locales/bn/translation.json';
 
 i18n
   .use(LanguageDetector)
@@ -17,6 +18,7 @@ i18n
       en: { translation: en },
       mr: { translation: mr },
       gu: { translation: gu },
+      bn: { translation: bn },
     },
     fallbackLng: 'hi',
     debug: true, // enable debug to see warnings

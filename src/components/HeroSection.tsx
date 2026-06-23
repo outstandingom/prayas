@@ -1,63 +1,65 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { HeartHandshake } from 'lucide-react'
-import { useState, useEffect } from 'react'
-
-// Slides Data - 7 meaningful slides with local images
-const SLIDES = [
-  {
-    id: 1,
-    title: "Education",
-    description: "Opening doors to a better future through the power of education.",
-    image: "/IMG-24.jpeg",
-    imagePosition: "center",
-  },
-  {
-    id: 2,
-    title: "Women Empowerment",
-    description: "Empowering women to break away from the vicious cycle of poverty.",
-    image: "/IMG-21.jpg",
-    imagePosition: "right",
-  },
-  {
-    id: 3,
-    title: "Healthcare",
-    description: "Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.",
-    image: "/IMG-23.jpeg",
-    imagePosition: "center",
-  },
-  {
-    id: 4,
-    title: "Environment",
-    description: "Nurturing the environment through awareness, action, and responsibility.",
-    image: "/IMG-21.jpg",
-    imagePosition: "right",
-  },
-  {
-    id: 5,
-    title: "Nutrition",
-    description: "Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.",
-    image: "/IMG-26.jpeg",
-    imagePosition: "center",
-  },
-  {
-    id: 6,
-    title: "Shelter",
-    description: "Transforming rural lives through sustainable development and hope.",
-    image: "/IMG-25.jpeg",
-    imagePosition: "right",
-  },
-  {
-    id: 7,
-    title: "Skill Development",
-    description: "Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth.",
-    image: "/IMG-20.jpg",
-    imagePosition: "center",
-  }
-];
+import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export default function HeroBanner() {
+  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  // Slides Data - 7 meaningful slides with local images
+  const SLIDES = useMemo(() => [
+    {
+      id: 1,
+      title: t('hero.slides.education.title', 'Education'),
+      description: t('hero.slides.education.desc', 'Opening doors to a better future through the power of education.'),
+      image: "/IMG-24.jpeg",
+      imagePosition: "center",
+    },
+    {
+      id: 2,
+      title: t('hero.slides.women.title', 'Women Empowerment'),
+      description: t('hero.slides.women.desc', 'Empowering women to break away from the vicious cycle of poverty.'),
+      image: "/IMG-21.jpg",
+      imagePosition: "right",
+    },
+    {
+      id: 3,
+      title: t('hero.slides.healthcare.title', 'Healthcare'),
+      description: t('hero.slides.healthcare.desc', 'Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.'),
+      image: "/IMG-23.jpeg",
+      imagePosition: "center",
+    },
+    {
+      id: 4,
+      title: t('hero.slides.environment.title', 'Environment'),
+      description: t('hero.slides.environment.desc', 'Nurturing the environment through awareness, action, and responsibility.'),
+      image: "/IMG-21.jpg",
+      imagePosition: "right",
+    },
+    {
+      id: 5,
+      title: t('hero.slides.nutrition.title', 'Nutrition'),
+      description: t('hero.slides.nutrition.desc', 'Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.'),
+      image: "/IMG-26.jpeg",
+      imagePosition: "center",
+    },
+    {
+      id: 6,
+      title: t('hero.slides.shelter.title', 'Shelter'),
+      description: t('hero.slides.shelter.desc', 'Transforming rural lives through sustainable development and hope.'),
+      image: "/IMG-25.jpeg",
+      imagePosition: "right",
+    },
+    {
+      id: 7,
+      title: t('hero.slides.skill.title', 'Skill Development'),
+      description: t('hero.slides.skill.desc', 'Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth.'),
+      image: "/IMG-20.jpg",
+      imagePosition: "center",
+    }
+  ], [t]);
 
   // Auto-play functionality
   useEffect(() => {
@@ -137,7 +139,7 @@ export default function HeroBanner() {
                       whileTap={{ scale: 0.95 }}
                       className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-6 md:px-8 py-3 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
                     >
-                      Donate Now
+                      {t('hero.donateNow', 'Donate Now')}
                       <HeartHandshake size={20} />
                     </motion.button>
                   </div>

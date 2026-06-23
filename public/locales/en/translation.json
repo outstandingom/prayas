@@ -20,7 +20,38 @@
   "hero": {
     "title": "Every child deserves a chance to learn",
     "subtitle": "Changing lives through education, health, and empowerment",
-    "cta": "Donate Now"
+    "cta": "Donate Now",
+    "donateNow": "Donate Now",
+    "slides": {
+      "education": {
+        "title": "Education",
+        "desc": "Opening doors to a better future through the power of education."
+      },
+      "women": {
+        "title": "Women Empowerment",
+        "desc": "Empowering women to break away from the vicious cycle of poverty."
+      },
+      "healthcare": {
+        "title": "Healthcare",
+        "desc": "Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities."
+      },
+      "environment": {
+        "title": "Environment",
+        "desc": "Nurturing the environment through awareness, action, and responsibility."
+      },
+      "nutrition": {
+        "title": "Nutrition",
+        "desc": "Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits."
+      },
+      "shelter": {
+        "title": "Shelter",
+        "desc": "Transforming rural lives through sustainable development and hope."
+      },
+      "skill": {
+        "title": "Skill Development",
+        "desc": "Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth."
+      }
+    }
   },
   "home": {
     "impact": {
@@ -30,6 +61,43 @@
         "health": "Health Camps",
         "women": "Women Empowered"
       }
+    }
+  },
+  "impact": {
+    "header": {
+      "subtitle": "Our Impact in Numbers",
+      "title": "Making a Difference Together",
+      "desc": "Every number represents a life touched, a community empowered, and hope restored."
+    },
+    "counters": {
+      "lives": {
+        "label": "LIVES IMPACTED",
+        "desc": "Through our healthcare camps, education programs, and women empowerment initiatives across rural India"
+      },
+      "volunteers": {
+        "label": "ACTIVE VOLUNTEERS",
+        "desc": "Dedicated individuals working tirelessly in 27 states to bring change at the grassroots level"
+      },
+      "projects": {
+        "label": "PROJECTS COMPLETED",
+        "desc": "From building schools to organizing health camps, each project has transformed communities"
+      },
+      "donors": {
+        "label": "REGULAR DONORS",
+        "desc": "Compassionate supporters who believe in our mission and contribute monthly to sustain our work"
+      }
+    }
+  },
+  "story": {
+    "header": {
+      "part1": "Our ",
+      "part2": "Journey",
+      "part3": " & Mission"
+    },
+    "paragraphs": {
+      "p1": "Prayas is a non-profit organization dedicated to creating meaningful and sustainable change in society. Established in 2001, we have been working towards empowering communities and improving lives through education, healthcare, social awareness, and community development initiatives.",
+      "p2": "For over two decades, Prayas has been committed to supporting underprivileged families, children, women, and communities by providing opportunities, resources, and guidance for a better future. Our efforts focus on building a society where every individual gets the chance to learn, grow, and live with dignity.",
+      "p3": "With the support of volunteers, donors, and well-wishers, we have positively impacted thousands of lives across different communities. Through our various initiatives, we continue to work towards education, empowerment, environmental awareness, skill development, and social welfare. Our journey is driven by compassion, commitment, and the belief that even small efforts can create a lasting impact. Together, we strive to bring hope, opportunity, and transformation to those who need it the most."
     }
   }
 }
