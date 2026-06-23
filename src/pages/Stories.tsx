@@ -265,9 +265,9 @@ export default function Stories() {
           min-height: 100vh;
         }
 
-        /* Hero Section - added more bottom padding */
+        /* Hero Section – increased bottom padding */
         .hero {
-          padding: 8rem 2rem 6rem; /* increased bottom padding */
+          padding: 8rem 2rem 10rem; /* more bottom padding */
           text-align: center;
           display: flex;
           flex-direction: column;
@@ -302,11 +302,12 @@ export default function Stories() {
           font-size: 1.1rem;
         }
 
-        /* 3D Sphere Gallery */
+        /* 3D Sphere Gallery – added margin-top to push the sphere further down */
         .gallery-container {
           position: relative;
           height: 250vh;
           width: 100%;
+          margin-top: 5rem; /* extra space between hero text and globe */
         }
 
         .scene {
@@ -319,8 +320,7 @@ export default function Stories() {
           align-items: center;
           perspective: 1000px;
           overflow: visible;
-          /* Shift sphere downward to avoid overlapping hero text */
-          transform: translateY(8%);
+          transform: translateY(10%); /* slight downward shift */
         }
 
         .sphere {
@@ -588,7 +588,11 @@ export default function Stories() {
 
         @media (max-width: 768px) {
           .hero {
-            padding: 6rem 1.5rem 4rem; /* adjusted for mobile */
+            padding: 6rem 1.5rem 6rem; /* adjusted for mobile */
+          }
+
+          .gallery-container {
+            margin-top: 2rem; /* less on mobile but still spacing */
           }
 
           .clay-card {
