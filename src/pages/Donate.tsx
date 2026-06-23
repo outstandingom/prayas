@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Heart, CreditCard, Smartphone, Building2, IndianRupee, Gift, Loader2, Banknote, Copy, Check } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const DONATION_AMOUNTS = [
   { value: 500, label: '₹500' },
@@ -57,6 +58,7 @@ const CAUSE_MAP: Record<string, { title: string; description: string; image: str
 }
 
 export default function Donate() {
+  const { t } = useTranslation()
   const [searchParams] = useSearchParams()
   const causeParam = searchParams.get('cause') || ''
   const cause = CAUSE_MAP[causeParam] || null
@@ -102,7 +104,7 @@ export default function Donate() {
             <Heart className="w-8 h-8 text-[#FFF314] fill-[#FFF314]" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-[#263238]">
-            {cause ? `Donate for ${cause.title}` : 'Make a Donation'}
+            {cause ? `${t('donate.header.donateFor', 'Donate for')} ${cause.title}` : t('donate.header.title', 'Make a Donation')}
           </h1>
           {cause && (
             <>
@@ -119,7 +121,7 @@ export default function Donate() {
             </>
           )}
           <p className="text-[#263238]/60 mt-2 max-w-md mx-auto">
-            Your support empowers children, families, and communities to build a brighter future.
+            {t('donate.header.subtitle', 'Your support empowers children, families, and communities to build a brighter future.')}
           </p>
         </div>
 
@@ -135,7 +137,7 @@ export default function Donate() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-3">
                 <IndianRupee className="w-4 h-4 text-[#FFF314]" />
-                Select Amount
+                {t('donate.form.selectAmount', 'Select Amount')}
               </label>
               <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-3">
                 {DONATION_AMOUNTS.map((amt) => (
@@ -160,7 +162,7 @@ export default function Donate() {
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#263238]/40 font-medium">₹</span>
                 <input
                   type="number"
-                  placeholder="Custom amount"
+                  placeholder={t('donate.form.customAmount', 'Custom amount')}
                   value={customAmount}
                   onChange={(e) => {
                     setCustomAmount(e.target.value)
@@ -175,7 +177,7 @@ export default function Donate() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-[#263238] mb-3">
                 <Smartphone className="w-4 h-4 text-[#FFF314]" />
-                Payment Method
+                {t('donate.form.paymentMethod', 'Payment Method')}
               </label>
               <div className="grid grid-cols-3 gap-2">
                 {[
@@ -198,7 +200,7 @@ export default function Donate() {
                   >
                     <method.icon className="w-5 h-5" />
                     <span className="text-xs font-medium">{method.label}</span>
-                    {method.disabled && <span className="text-[8px] text-gray-400">(coming soon)</span>}
+                    {method.disabled && <span className="text-[8px] text-gray-400">({t('donate.form.comingSoon', 'coming soon')})</span>}
                   </button>
                 ))}
               </div>
@@ -208,14 +210,14 @@ export default function Donate() {
             <div className="bg-[#FFF314]/5 rounded-lg p-4 flex items-start gap-3 border border-[#FFF314]/10">
               <Gift className="w-5 h-5 text-[#FFF314] mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-[#263238]">Your Impact</p>
+                <p className="text-sm font-medium text-[#263238]">{t('donate.impact.title', 'Your Impact')}</p>
                 <p className="text-xs text-[#263238]/60">
                   {amount && amount >= 5000
-                    ? 'Your donation can educate 5 children for a month'
+                    ? t('donate.impact.high', 'Your donation can educate 5 children for a month')
                     : amount && amount >= 1000
-                    ? 'Your donation can provide meals to 50 people'
-                    : 'Every contribution makes a difference'}
-                  {cause && ` for ${cause.title}`}
+                    ? t('donate.impact.mid', 'Your donation can provide meals to 50 people')
+                    : t('donate.impact.low', 'Every contribution makes a difference')}
+                  {cause && ` ${t('donate.impact.for', 'for')} ${cause.title}`}
                 </p>
               </div>
             </div>
@@ -229,18 +231,18 @@ export default function Donate() {
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Redirecting...
+                  {t('donate.form.redirecting', 'Redirecting...')}
                 </>
               ) : (
                 <>
                   <Heart className="w-5 h-5 fill-current" />
-                  Donate ₹{amount?.toLocaleString() || '0'}
+                  {t('donate.form.donateBtn', 'Donate')} ₹{amount?.toLocaleString() || '0'}
                 </>
               )}
             </button>
 
             <p className="text-center text-xs text-[#263238]/40">
-              You will be redirected to your UPI app to complete the payment.
+              {t('donate.form.upiNote', 'You will be redirected to your UPI app to complete the payment.')}
             </p>
           </form>
         </motion.div>
@@ -254,10 +256,10 @@ export default function Donate() {
         >
           <div className="flex items-center gap-3 mb-4">
             <Banknote className="w-6 h-6 text-[#263238]" />
-            <h2 className="text-lg font-bold text-[#263238]">Direct Bank Transfer</h2>
+            <h2 className="text-lg font-bold text-[#263238]">{t('donate.bank.title', 'Direct Bank Transfer')}</h2>
           </div>
           <p className="text-sm text-[#263238]/60 mb-4">
-            You can also donate directly to our bank account via NEFT / RTGS / IMPS.
+            {t('donate.bank.subtitle', 'You can also donate directly to our bank account via NEFT / RTGS / IMPS.')}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             <div className="bg-gray-50 p-3 rounded-lg">
@@ -301,8 +303,8 @@ export default function Donate() {
         </motion.div>
 
         <div className="mt-8 text-center text-sm text-[#263238]/40">
-          <p>100% of your donation goes directly to our programs.</p>
-          <p className="mt-1">Prayas Samaj Sevi Sanstha is a registered NGO.</p>
+          <p>100% {t('donate.footer.p1', 'of your donation goes directly to our programs.')}</p>
+          <p className="mt-1">{t('donate.footer.p2', 'Prayas Samaj Sevi Sanstha is a registered NGO.')}</p>
         </div>
       </div>
     </div>
