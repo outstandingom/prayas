@@ -1,7 +1,7 @@
 // src/components/admin/AdminGallery.tsx
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Loader2, Plus, Edit, Trash2, X, Check, ImageIcon, ArrowUp, ArrowDown, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Plus, Edit, Trash2, X, ArrowUp, ArrowDown, Eye, EyeOff } from 'lucide-react';
 
 type GalleryItem = {
   id: string;
@@ -145,7 +145,7 @@ export default function AdminGallery() {
   };
 
   if (loading && items.length === 0) {
-    return <div className="flex justify-center py-8"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+    return <div className="flex justify-center py-8"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>;
   }
 
   return (
@@ -154,20 +154,20 @@ export default function AdminGallery() {
         <h2 className="text-xl font-semibold">Gallery Images</h2>
         <button
           onClick={() => openModal()}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
         >
           <Plus className="w-4 h-4" /> Add Image
         </button>
       </div>
 
-      {error && <div className="mb-4 p-3 bg-destructive/10 text-destructive rounded-md">{error}</div>}
+      {error && <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md">{error}</div>}
 
       {items.length === 0 ? (
-        <p className="text-muted-foreground">No images in the gallery yet.</p>
+        <p className="text-gray-500">No images in the gallery yet. Click "Add Image" to upload.</p>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {items.map((item) => (
-            <div key={item.id} className="relative bg-card border rounded-lg overflow-hidden shadow-sm group">
+            <div key={item.id} className="relative bg-white border rounded-lg overflow-hidden shadow-sm group">
               <div className="relative aspect-square">
                 <img src={item.image_url} alt={item.title || 'Gallery image'} className="w-full h-full object-cover" />
                 {!item.is_active && (
@@ -178,21 +178,21 @@ export default function AdminGallery() {
               </div>
               <div className="p-3">
                 <p className="font-medium text-sm truncate">{item.title || 'Untitled'}</p>
-                {item.category && <p className="text-xs text-muted-foreground truncate">{item.category}</p>}
+                {item.category && <p className="text-xs text-gray-500 truncate">{item.category}</p>}
                 <div className="flex flex-wrap items-center gap-1 mt-2">
-                  <button onClick={() => moveOrder(item.id, 'up')} className="p-1 rounded hover:bg-muted" title="Move up">
+                  <button onClick={() => moveOrder(item.id, 'up')} className="p-1 rounded hover:bg-gray-100" title="Move up">
                     <ArrowUp className="w-3.5 h-3.5" />
                   </button>
-                  <button onClick={() => moveOrder(item.id, 'down')} className="p-1 rounded hover:bg-muted" title="Move down">
+                  <button onClick={() => moveOrder(item.id, 'down')} className="p-1 rounded hover:bg-gray-100" title="Move down">
                     <ArrowDown className="w-3.5 h-3.5" />
                   </button>
-                  <button onClick={() => toggleActive(item.id, item.is_active)} className="p-1 rounded hover:bg-muted" title={item.is_active ? 'Hide' : 'Show'}>
+                  <button onClick={() => toggleActive(item.id, item.is_active)} className="p-1 rounded hover:bg-gray-100" title={item.is_active ? 'Hide' : 'Show'}>
                     {item.is_active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                   </button>
-                  <button onClick={() => openModal(item)} className="p-1 rounded hover:bg-muted" title="Edit">
+                  <button onClick={() => openModal(item)} className="p-1 rounded hover:bg-gray-100" title="Edit">
                     <Edit className="w-3.5 h-3.5" />
                   </button>
-                  <button onClick={() => handleDelete(item.id)} className="p-1 rounded hover:bg-destructive/10 text-destructive" title="Delete">
+                  <button onClick={() => handleDelete(item.id)} className="p-1 rounded hover:bg-red-50 text-red-600" title="Delete">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -205,10 +205,10 @@ export default function AdminGallery() {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-lg max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto shadow-xl">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold">{editing ? 'Edit Image' : 'Add Image'}</h3>
-              <button onClick={closeModal} className="p-1 rounded hover:bg-muted">
+              <button onClick={closeModal} className="p-1 rounded hover:bg-gray-100">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -219,7 +219,7 @@ export default function AdminGallery() {
                   type="text"
                   value={formData.image_url || ''}
                   onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full border rounded-md px-3 py-2"
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                   placeholder="https://example.com/image.jpg"
                 />
@@ -235,7 +235,7 @@ export default function AdminGallery() {
                   type="text"
                   value={formData.title || ''}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full border rounded-md px-3 py-2"
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -243,7 +243,7 @@ export default function AdminGallery() {
                 <textarea
                   value={formData.description || ''}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full border rounded-md px-3 py-2"
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={3}
                 />
               </div>
@@ -253,7 +253,7 @@ export default function AdminGallery() {
                   type="text"
                   value={formData.category || ''}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full border rounded-md px-3 py-2"
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="e.g., Education, Healthcare"
                 />
               </div>
@@ -263,7 +263,7 @@ export default function AdminGallery() {
                   type="number"
                   value={formData.display_order || 0}
                   onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
-                  className="w-full border rounded-md px-3 py-2"
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div className="flex items-center gap-2">
@@ -275,13 +275,13 @@ export default function AdminGallery() {
                 />
                 <label className="text-sm font-medium">Active (visible on site)</label>
               </div>
-              {error && <div className="text-destructive text-sm">{error}</div>}
+              {error && <div className="text-red-600 text-sm">{error}</div>}
               <div className="flex justify-end gap-2">
-                <button type="button" onClick={closeModal} className="px-4 py-2 border rounded-md hover:bg-muted">
+                <button type="button" onClick={closeModal} className="px-4 py-2 border rounded-md hover:bg-gray-50">
                   Cancel
                 </button>
-                <button type="submit" disabled={loading} className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 disabled:opacity-50">
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}
+                <button type="submit" disabled={loading} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin inline mr-1" /> : 'Save'}
                 </button>
               </div>
             </form>
