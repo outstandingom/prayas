@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-// Import translations from public/locales
+// Import translations
 import hi from '../public/locales/hi/translation.json';
 import en from '../public/locales/en/translation.json';
 import mr from '../public/locales/mr/translation.json';
@@ -18,11 +18,11 @@ i18n
       mr: { translation: mr },
       gu: { translation: gu },
     },
-    fallbackLng: 'hi', // default to Hindi
-    debug: false,
+    fallbackLng: 'hi',
+    debug: true, // enable debug to see warnings
     interpolation: { escapeValue: false },
     detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
+      order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
     },
   });

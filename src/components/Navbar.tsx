@@ -45,7 +45,13 @@ export default function Navbar() {
 
   const isHome = location.pathname === '/';
 
-  // Auth logic (unchanged)
+  // Debug: log language and loaded translations
+  useEffect(() => {
+    console.log('🌐 Current language:', i18n.language);
+    console.log('📦 Translations for', i18n.language, ':', i18n.getResourceBundle(i18n.language, 'translation'));
+  }, [i18n.language]);
+
+  // Auth logic
   useEffect(() => {
     checkAuthAndAdmin();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -137,11 +143,18 @@ export default function Navbar() {
   };
 
   const changeLanguage = (code: string) => {
+    console.log('🔄 Changing language to:', code);
     i18n.changeLanguage(code);
     setLangDropdownOpen(false);
   };
 
   const currentLangLabel = LANGUAGES.find(l => l.code === i18n.language)?.label || 'English';
+
+  // Helper to safely translate with fallback
+  const safeT = (key: string) => {
+    const translated = t(key);
+    return translated === key ? key.replace(/^nav\./, '') : translated;
+  };
 
   return (
     <header
@@ -187,7 +200,7 @@ export default function Navbar() {
                         isActive ? 'text-[#FFF314]' : `${textColor} ${textColorHover}`
                       }`}
                     >
-                      {t(link.name)}
+                      {safeT(link.name)}
                       <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
                       <span
                         className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
@@ -214,7 +227,7 @@ export default function Navbar() {
                                   : `text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]`
                               }`}
                             >
-                              {t(sub.name)}
+                              {safeT(sub.name)}
                             </Link>
                           ))}
                         </motion.div>
@@ -234,7 +247,7 @@ export default function Navbar() {
                       : `${textColor} ${textColorHover}`
                   }`}
                 >
-                  {t(link.name)}
+                  {safeT(link.name)}
                   <span
                     className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
                       location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
@@ -247,7 +260,7 @@ export default function Navbar() {
 
           {/* Right side actions */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Language Switcher – Desktop (FIXED) */}
+            {/* Language Switcher – Desktop */}
             <div className="hidden sm:relative sm:inline-block z-20">
               <button
                 onClick={(e) => {
@@ -272,9 +285,7 @@ export default function Navbar() {
                     {LANGUAGES.map((lang) => (
                       <button
                         key={lang.code}
-                        onClick={() => {
-                          changeLanguage(lang.code);
-                        }}
+                        onClick={() => changeLanguage(lang.code)}
                         className={`block w-full text-left px-5 py-2.5 text-sm transition-colors cursor-pointer ${
                           i18n.language === lang.code
                             ? 'text-[#FFF314] bg-[#FFF314]/10'
@@ -293,7 +304,7 @@ export default function Navbar() {
               to="/donate"
               className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
             >
-              {t('nav.donate')}
+              {safeT('nav.donate')}
               <Heart className="w-4 h-4" />
             </Link>
 
@@ -303,7 +314,7 @@ export default function Navbar() {
                 className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <Shield className="w-4 h-4" />
-                {t('nav.admin')}
+                {safeT('nav.admin')}
               </Link>
             )}
 
@@ -313,7 +324,7 @@ export default function Navbar() {
                 className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <User className="w-4 h-4" />
-                {isAuthenticated ? t('nav.profile') : t('nav.signin')}
+                {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
               </Link>
             )}
 
@@ -355,7 +366,7 @@ export default function Navbar() {
                             : 'text-white hover:text-[#FFF314] hover:bg-white/5'
                         }`}
                       >
-                        {t(link.name)}
+                        {safeT(link.name)}
                         <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                       </button>
                       <AnimatePresence>
@@ -378,7 +389,7 @@ export default function Navbar() {
                                       : 'text-white/70 hover:text-[#FFF314] hover:bg-white/5'
                                   }`}
                                 >
-                                  {t(sub.name)}
+                                  {safeT(sub.name)}
                                 </Link>
                               ))}
                             </div>
@@ -399,7 +410,7 @@ export default function Navbar() {
                         : 'text-white hover:text-[#FFF314] hover:bg-white/5'
                     }`}
                   >
-                    {t(link.name)}
+                    {safeT(link.name)}
                   </Link>
                 );
               })}
@@ -431,7 +442,7 @@ export default function Navbar() {
                 to="/donate"
                 className="mt-3 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
               >
-                {t('nav.donate')} <Heart className="w-5 h-5" />
+                {safeT('nav.donate')} <Heart className="w-5 h-5" />
               </Link>
 
               {!loading && isAdmin && (
@@ -440,7 +451,7 @@ export default function Navbar() {
                   className="w-full text-center rounded-full border border-[#FFF314]/40 px-6 py-3.5 font-semibold text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
                 >
                   <Shield className="w-5 h-5" />
-                  {t('nav.admin')}
+                  {safeT('nav.admin')}
                 </Link>
               )}
 
@@ -450,7 +461,7 @@ export default function Navbar() {
                   className="mt-2 w-full text-center rounded-full border border-white/40 px-6 py-3.5 font-semibold text-white hover:text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
                 >
                   <User className="w-5 h-5" />
-                  {isAuthenticated ? t('nav.profile') : t('nav.signin')}
+                  {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
                 </Link>
               )}
             </nav>
