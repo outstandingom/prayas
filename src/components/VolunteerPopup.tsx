@@ -2,6 +2,7 @@
 import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Heart, ArrowRight, Users } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface VolunteerPopupProps {
   isOpen: boolean
@@ -9,6 +10,7 @@ interface VolunteerPopupProps {
 }
 
 export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps) {
+  const { t } = useTranslation();
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -89,15 +91,15 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
               </div>
               
               <h2 className="text-xl sm:text-2xl font-bold text-[#263238] mb-3">
-                Join Our Mission
+                {t('volunteer.popup.title', 'Join Our Mission')}
               </h2>
               
               <p className="text-[#000000] text-sm sm:text-base md:text-lg italic leading-relaxed px-2 mb-2">
-                <span className="font-bold">Be the change</span> you wish to see in the world.
+                <span className="font-bold">{t('volunteer.popup.quote1', 'Be the change')}</span> {t('volunteer.popup.quote2', 'you wish to see in the world.')}
               </p>
               
               <p className="text-[#263238]/60 text-sm mb-6">
-                Join our community of passionate volunteers and make a real difference in people's lives.
+                {t('volunteer.popup.desc', "Join our community of passionate volunteers and make a real difference in people's lives.")}
               </p>
 
               <button
@@ -105,7 +107,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
                 className="w-full py-3 sm:py-4 bg-[#FFF314] text-[#263238] rounded-lg font-bold text-base sm:text-lg hover:bg-[#FFF314]/90 transition-all shadow-lg shadow-[#FFF314]/20 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Heart className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
-                Become a Volunteer
+                {t('volunteer.popup.cta', 'Become a Volunteer')}
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>

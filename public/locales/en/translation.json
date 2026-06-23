@@ -99,5 +99,102 @@
       "p2": "For over two decades, Prayas has been committed to supporting underprivileged families, children, women, and communities by providing opportunities, resources, and guidance for a better future. Our efforts focus on building a society where every individual gets the chance to learn, grow, and live with dignity.",
       "p3": "With the support of volunteers, donors, and well-wishers, we have positively impacted thousands of lives across different communities. Through our various initiatives, we continue to work towards education, empowerment, environmental awareness, skill development, and social welfare. Our journey is driven by compassion, commitment, and the belief that even small efforts can create a lasting impact. Together, we strive to bring hope, opportunity, and transformation to those who need it the most."
     }
+  },
+  "categories": {
+    "header": {
+      "label": "Our Work",
+      "title": "Impact",
+      "titleHighlight": "Initiatives",
+      "desc": "Explore our 12 key focus areas driving meaningful change in communities across the globe."
+    },
+    "learnMore": "Learn More",
+    "education": {
+      "title": "Child Growth & Education",
+      "desc": "Every child deserves a chance to learn, grow, and dream."
+    },
+    "healthcare": {
+      "title": "Healthcare",
+      "desc": "Free medical camps, health awareness programs, and essential healthcare access for underserved communities."
+    },
+    "women": {
+      "title": "Women Empowerment",
+      "desc": "Skill development, self-help groups, and financial independence programs transforming women's lives."
+    },
+    "childWelfare": {
+      "title": "Child Welfare",
+      "desc": "Protecting children's rights, nutrition programs, and safe shelter initiatives for vulnerable children."
+    },
+    "environment": {
+      "title": "Environment",
+      "desc": "Tree plantation drives, waste management, and environmental awareness campaigns for a greener future."
+    },
+    "rural": {
+      "title": "Rural Development",
+      "desc": "Infrastructure development, clean water access, and livelihood programs for rural communities."
+    },
+    "skill": {
+      "title": "Skill Training",
+      "desc": "Vocational training and skill development programs empowering youth and adults with employable skills."
+    },
+    "disaster": {
+      "title": "Disaster Relief",
+      "desc": "Emergency response, relief distribution, and rehabilitation for disaster-affected communities."
+    },
+    "animal": {
+      "title": "Animal Welfare",
+      "desc": "Rescue, shelter, and medical care for stray and injured animals in both urban and rural areas."
+    },
+    "elderly": {
+      "title": "Elderly Care",
+      "desc": "Support, healthcare, and dignity for senior citizens through dedicated community programs."
+    },
+    "food": {
+      "title": "Food Security",
+      "desc": "Food distribution, nutrition programs, and sustainable agriculture for vulnerable communities."
+    },
+    "mental": {
+      "title": "Mental Health",
+      "desc": "Mental health awareness, counseling services, and emotional wellbeing programs for all age groups."
+    }
+  },
+  "footer": {
+    "brand": {
+      "desc": "Empowering communities through education, healthcare, and sustainable development initiatives across India since 2015."
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "about": "About Us",
+      "programs": "Programs",
+      "gallery": "Gallery",
+      "stories": "Success Stories",
+      "volunteer": "Volunteer"
+    },
+    "contact": {
+      "title": "Contact Us"
+    },
+    "newsletter": {
+      "title": "Stay Connected",
+      "desc": "Subscribe to our newsletter for updates on our initiatives and impact stories.",
+      "placeholder": "Your email",
+      "join": "Join",
+      "donate": "Make a Donation"
+    },
+    "bottom": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    }
+  },
+  "volunteer": {
+    "popup": {
+      "title": "Join Our Mission",
+      "quote1": "Be the change",
+      "quote2": "you wish to see in the world.",
+      "desc": "Join our community of passionate volunteers and make a real difference in people's lives.",
+      "cta": "Become a Volunteer"
+    }
+  },
+  "carousel": {
+    "label": "Our Reach",
+    "title": "Achievement & Accreditations"
   }
 }

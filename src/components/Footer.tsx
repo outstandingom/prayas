@@ -1,9 +1,10 @@
 // src/components/Footer.tsx
 import { Link } from 'react-router-dom';
 import { Heart, Mail, Phone, MapPin, ArrowUpRight } from 'lucide-react';
-
+import { useTranslation } from 'react-i18next';
 
 export default function Footer() {
+  const { t } = useTranslation();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -45,20 +46,20 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-white/60 text-sm leading-relaxed mt-4 max-w-xs">
-              Empowering communities through education, healthcare, and sustainable development initiatives across India since 2015.
+              {t('footer.brand.desc', 'Empowering communities through education, healthcare, and sustainable development initiatives across India since 2015.')}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Quick Links</h4>
+            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">{t('footer.quickLinks.title', 'Quick Links')}</h4>
             <ul className="space-y-2.5">
               {[
-                { name: 'About Us', path: '/about' },
-                { name: 'Programs', path: '/programs' },
-                { name: 'Gallery', path: '/gallery' },
-                { name: 'Success Stories', path: '/stories' },
-                { name: 'Volunteer', path: '/volunteer' },
+                { name: t('footer.quickLinks.about', 'About Us'), path: '/about' },
+                { name: t('footer.quickLinks.programs', 'Programs'), path: '/programs' },
+                { name: t('footer.quickLinks.gallery', 'Gallery'), path: '/gallery' },
+                { name: t('footer.quickLinks.stories', 'Success Stories'), path: '/stories' },
+                { name: t('footer.quickLinks.volunteer', 'Volunteer'), path: '/volunteer' },
               ].map((link) => (
                 <li key={link.name}>
                   <Link
@@ -75,7 +76,7 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Contact Us</h4>
+            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">{t('footer.contact.title', 'Contact Us')}</h4>
             <ul className="space-y-3">
               <li>
                 <a href="mailto:info@prayasfoundation.org" className="flex items-start gap-3 text-white/60 hover:text-[#FFF314] text-sm transition-colors group">
@@ -100,21 +101,21 @@ export default function Footer() {
 
           {/* Newsletter / CTA */}
           <div>
-            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Stay Connected</h4>
+            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">{t('footer.newsletter.title', 'Stay Connected')}</h4>
             <p className="text-white/60 text-sm mb-4">
-              Subscribe to our newsletter for updates on our initiatives and impact stories.
+              {t('footer.newsletter.desc', 'Subscribe to our newsletter for updates on our initiatives and impact stories.')}
             </p>
             <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
               <input
                 type="email"
-                placeholder="Your email"
+                placeholder={t('footer.newsletter.placeholder', 'Your email')}
                 className="flex-1 bg-white/10 border border-white/20 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#FFF314] focus:bg-white/15 transition-all placeholder:text-white/40"
               />
               <button
                 type="submit"
                 className="bg-[#FFF314] text-[#263238] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#FFF314]/90 transition-all hover:scale-105"
               >
-                Join
+                {t('footer.newsletter.join', 'Join')}
               </button>
             </form>
             <div className="mt-6">
@@ -123,7 +124,7 @@ export default function Footer() {
                 className="inline-flex items-center gap-2 bg-[#FFF314] text-[#263238] px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#FFF314]/90 transition-all hover:scale-105"
               >
                 <Heart className="w-4 h-4 text-[#263238] fill-current" />
-                Make a Donation
+                {t('footer.newsletter.donate', 'Make a Donation')}
               </Link>
             </div>
           </div>
@@ -135,8 +136,8 @@ export default function Footer() {
             © {new Date().getFullYear()} Prayas Samaj Sevi Sanstha. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-white/40 hover:text-white text-xs transition-colors">Privacy Policy</a>
-            <a href="#" className="text-white/40 hover:text-white text-xs transition-colors">Terms of Service</a>
+            <a href="#" className="text-white/40 hover:text-white text-xs transition-colors">{t('footer.bottom.privacy', 'Privacy Policy')}</a>
+            <a href="#" className="text-white/40 hover:text-white text-xs transition-colors">{t('footer.bottom.terms', 'Terms of Service')}</a>
             <span className="text-white/20 text-xs">|</span>
             <span className="text-white/40 text-xs flex items-center gap-1">
               Made with <Heart className="w-3 h-3 text-[#FFF314] fill-[#FFF314]" /> in India

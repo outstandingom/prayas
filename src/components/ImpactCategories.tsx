@@ -1,7 +1,8 @@
 // src/components/ImpactCategories.tsx
-import { useRef, useState } from 'react'
+import { useRef, useState, useMemo } from 'react'
 import { motion, useScroll, useSpring, useMotionValueEvent } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const CATEGORIES = [
   { id: '01', title: 'Child growth & Education', desc: 'Every child deserves a chance to learn, grow, and dream.', img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&h=500&fit=crop&q=80', path: '/impact/education' },
@@ -19,9 +20,25 @@ const CATEGORIES = [
 ]
 
 export default function ImpactCategories() {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const navigate = useNavigate()
+
+  const CATEGORIES = useMemo(() => [
+    { id: '01', title: t('categories.education.title', 'Child Growth & Education'), desc: t('categories.education.desc', 'Every child deserves a chance to learn, grow, and dream.'), img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&h=500&fit=crop&q=80', path: '/impact/education' },
+    { id: '02', title: t('categories.healthcare.title', 'Healthcare'), desc: t('categories.healthcare.desc', 'Free medical camps, health awareness programs, and essential healthcare access for underserved communities.'), img: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=500&fit=crop&q=80', path: '/impact/healthcare' },
+    { id: '03', title: t('categories.women.title', 'Women Empowerment'), desc: t('categories.women.desc', 'Skill development, self-help groups, and financial independence programs transforming women\'s lives.'), img: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=800&h=500&fit=crop&q=80', path: '/impact/women-empowerment' },
+    { id: '04', title: t('categories.childWelfare.title', 'Child Welfare'), desc: t('categories.childWelfare.desc', 'Protecting children\'s rights, nutrition programs, and safe shelter initiatives for vulnerable children.'), img: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop&q=80', path: '/impact/child-welfare' },
+    { id: '05', title: t('categories.environment.title', 'Environment'), desc: t('categories.environment.desc', 'Tree plantation drives, waste management, and environmental awareness campaigns for a greener future.'), img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=500&fit=crop&q=80', path: '/impact/environment' },
+    { id: '06', title: t('categories.rural.title', 'Rural Development'), desc: t('categories.rural.desc', 'Infrastructure development, clean water access, and livelihood programs for rural communities.'), img: 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=800&h=500&fit=crop&q=80', path: '/impact/rural-development' },
+    { id: '07', title: t('categories.skill.title', 'Skill Training'), desc: t('categories.skill.desc', 'Vocational training and skill development programs empowering youth and adults with employable skills.'), img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&h=500&fit=crop&q=80', path: '/impact/skill-training' },
+    { id: '08', title: t('categories.disaster.title', 'Disaster Relief'), desc: t('categories.disaster.desc', 'Emergency response, relief distribution, and rehabilitation for disaster-affected communities.'), img: 'https://images.unsplash.com/photo-1536643155-33d268924c93?w=800&h=500&fit=crop&q=80', path: '/impact/disaster-relief' },
+    { id: '09', title: t('categories.animal.title', 'Animal Welfare'), desc: t('categories.animal.desc', 'Rescue, shelter, and medical care for stray and injured animals in both urban and rural areas.'), img: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=800&h=500&fit=crop&q=80', path: '/impact/animal-welfare' },
+    { id: '10', title: t('categories.elderly.title', 'Elderly Care'), desc: t('categories.elderly.desc', 'Support, healthcare, and dignity for senior citizens through dedicated community programs.'), img: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&h=500&fit=crop&q=80', path: '/impact/elderly-care' },
+    { id: '11', title: t('categories.food.title', 'Food Security'), desc: t('categories.food.desc', 'Food distribution, nutrition programs, and sustainable agriculture for vulnerable communities.'), img: 'https://images.unsplash.com/photo-1593113514619-33b934789d6e?w=800&h=500&fit=crop&q=80', path: '/impact/food-security' },
+    { id: '12', title: t('categories.mental.title', 'Mental Health'), desc: t('categories.mental.desc', 'Mental health awareness, counseling services, and emotional wellbeing programs for all age groups.'), img: 'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=800&h=500&fit=crop&q=80', path: '/impact/mental-health' },
+  ], [t]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -49,13 +66,13 @@ export default function ImpactCategories() {
             transition={{ duration: 0.6 }}
           >
             <span className="font-sans text-[#263238] text-xs sm:text-sm tracking-[0.2em] uppercase font-bold">
-              Our Work
+              {t('categories.header.label', 'Our Work')}
             </span>
             <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#263238] mt-1 sm:mt-2">
-              Impact <span className="text-[#263238]">Initiatives</span>
+              {t('categories.header.title', 'Impact')} <span className="text-[#263238]">{t('categories.header.titleHighlight', 'Initiatives')}</span>
             </h1>
             <p className="text-[#263238]/60 text-sm sm:text-base max-w-2xl mt-2 sm:mt-3 font-sans">
-              Explore our 12 key focus areas driving meaningful change in communities across the globe.
+              {t('categories.header.desc', 'Explore our 12 key focus areas driving meaningful change in communities across the globe.')}
             </p>
             
             {/* Progress Indicator */}
@@ -145,7 +162,7 @@ export default function ImpactCategories() {
                 onClick={() => navigate(cat.path)}
                 className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white"
               >
-                Learn More <span className="text-base leading-none">→</span>
+                {t('categories.learnMore', 'Learn More')} <span className="text-base leading-none">→</span>
               </button>
             </motion.div>
           </section>

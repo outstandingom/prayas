@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, useAnimationFrame, useMotionValue, useTransform, animate, useSpring } from 'framer-motion'
 import type { PanInfo } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const ASSETS = [
   { src: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=500&auto=format&fit=crop', title: 'Women Welfare' },
@@ -39,6 +40,7 @@ function useResponsiveItemWidth() {
 }
 
 export default function ImageCarousel() {
+  const { t } = useTranslation();
   const [isPaused, setIsPaused] = useState(false)
   const isInteracting = useRef(false)
   const xOffset = useMotionValue(0)
@@ -85,10 +87,10 @@ export default function ImageCarousel() {
     <div className="relative py-16 sm:py-24 md:py-32 bg-[#263238]/5 border-y border-[#FFF314]/10 overflow-hidden select-none">
       <div className="text-center mb-12 sm:mb-16 md:mb-24 px-4 sm:px-6">
         <span className="text-[#FFF314] font-mono text-[10px] sm:text-xs uppercase tracking-widest font-semibold">
-          Our Reach
+          {t('carousel.label', 'Our Reach')}
         </span>
         <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold mt-4 text-[#263238] px-2">
-          Achivement & Accreditations
+          {t('carousel.title', 'Achievement & Accreditations')}
         </h2>
       </div>
 
