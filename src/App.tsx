@@ -14,6 +14,7 @@ import Auth from './pages/Auth';
 import Profile from './pages/Profile';
 import Volunteer from './pages/Volunteer';
 import AdminDashboard from './pages/AdminDashboard';
+// Impact pages
 import Education from './pages/impact/Education';
 import Healthcare from './pages/impact/Healthcare';
 import WomenEmpowerment from './pages/impact/WomenEmpowerment';
@@ -26,6 +27,9 @@ import AnimalWelfare from './pages/impact/AnimalWelfare';
 import ElderlyCare from './pages/impact/ElderlyCare';
 import FoodSecurity from './pages/impact/FoodSecurity';
 import MentalHealth from './pages/impact/MentalHealth';
+// New About sub‑pages
+import Members from './pages/Members';
+import Certifications from './pages/Certifications';
 
 export default function App() {
   return (
@@ -38,6 +42,8 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/about/members" element={<Members />} />
+          <Route path="/about/certifications" element={<Certifications />} />
           <Route path="/programs" element={<Programs />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/stories" element={<Stories />} />
