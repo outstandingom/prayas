@@ -1,4 +1,4 @@
-// src/pages/Gallery.tsx
+ // src/pages/Gallery.tsx
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Loader2 } from 'lucide-react';
