@@ -1,0 +1,35 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "programs": "Programs",
+    "gallery": "Gallery",
+    "stories": "Stories",
+    "volunteer": "Volunteer",
+    "contact": "Contact",
+    "about": {
+      "story": "Our Story & Mission",
+      "members": "Our Members",
+      "certifications": "Certifications & Achievements"
+    },
+    "donate": "Donate Now",
+    "signin": "Sign In",
+    "profile": "Profile",
+    "admin": "Admin"
+  },
+  "hero": {
+    "title": "Every child deserves a chance to learn",
+    "subtitle": "Changing lives through education, health, and empowerment",
+    "cta": "Donate Now"
+  },
+  "home": {
+    "impact": {
+      "heading": "Our Impact",
+      "stats": {
+        "education": "Children Educated",
+        "health": "Health Camps",
+        "women": "Women Empowered"
+      }
+    }
+  }
+}
