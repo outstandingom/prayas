@@ -3,10 +3,21 @@ import { motion } from 'framer-motion';
 import { Users, Mail, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-// Member IDs – all translatable fields (name, role, bio) are fetched via i18n
+// Member IDs
 const MEMBER_IDS = ['rekha', 'sudha', 'pooja', 'anjali', 'amit', 'dharmendra', 'neetu'];
 
-// Static contact info (email and phone) – these are the same in all languages
+// Fallback names and roles (in English) – used when translation is missing
+const FALLBACK_MEMBERS: Record<string, { name: string; role: string; bio: string }> = {
+  rekha: { name: 'Rekha Thakkar', role: 'President', bio: 'Executive Committee Member and founder, dedicated to social welfare.' },
+  sudha: { name: 'Sudha Sugga', role: 'Vice President', bio: 'Executive Committee Member, committed to community empowerment.' },
+  pooja: { name: 'Pooja Dave', role: 'Secretary', bio: 'Executive Committee Member, overseeing daily operations and programs.' },
+  anjali: { name: 'Anjali Thakkar', role: 'Treasurer', bio: 'Executive Committee Member, handling finances and accounts.' },
+  amit: { name: 'Amit Jain', role: 'Joint Secretary', bio: 'Executive Committee Member, assisting in administration and coordination.' },
+  dharmendra: { name: 'Dharmendra Kushwah', role: 'Executive Member', bio: 'Executive Committee Member, actively involved in field activities.' },
+  neetu: { name: 'Neetu Joshi', role: 'Executive Member', bio: 'Executive Committee Member, contributing to social initiatives.' },
+};
+
+// Static contact info
 const MEMBER_CONTACTS: Record<string, { email: string; phone: string }> = {
   rekha: { email: 'info@prayas.org', phone: '+91 7000705284' },
   sudha: { email: 'info@prayas.org', phone: '+91 9755555916' },
@@ -40,6 +51,7 @@ export default function Members() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {MEMBER_IDS.map((id, index) => {
             const contact = MEMBER_CONTACTS[id];
+            const fallback = FALLBACK_MEMBERS[id];
             return (
               <motion.div
                 key={id}
@@ -51,15 +63,21 @@ export default function Members() {
                 <div className="aspect-square overflow-hidden bg-[#FFF314]/10">
                   <img
                     src={`/images/team/${id}.jpg`}
-                    alt={t(`members.list.${id}.name`)}
+                    alt={t(`members.list.${id}.name`, fallback.name)}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     onError={(e) => (e.currentTarget.src = '/images/placeholder-team.jpg')}
                   />
                 </div>
                 <div className="p-5">
-                  <h3 className="text-xl font-bold text-[#263238]">{t(`members.list.${id}.name`)}</h3>
-                  <p className="text-sm font-medium text-[#FFF314]">{t(`members.list.${id}.role`)}</p>
-                  <p className="text-sm text-[#263238]/60 mt-2 leading-relaxed">{t(`members.list.${id}.bio`)}</p>
+                  <h3 className="text-xl font-bold text-[#263238]">
+                    {t(`members.list.${id}.name`, fallback.name)}
+                  </h3>
+                  <p className="text-sm font-medium text-[#FFF314]">
+                    {t(`members.list.${id}.role`, fallback.role)}
+                  </p>
+                  <p className="text-sm text-[#263238]/60 mt-2 leading-relaxed">
+                    {t(`members.list.${id}.bio`, fallback.bio)}
+                  </p>
                   <div className="mt-3 space-y-1.5">
                     <a
                       href={`mailto:${contact.email}`}
