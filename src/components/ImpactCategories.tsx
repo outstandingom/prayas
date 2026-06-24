@@ -26,7 +26,7 @@ export default function ImpactCategories() {
   const navigate = useNavigate()
 
   const CATEGORIES = useMemo(() => [
-    { id: '01', title: t('categories.education.title', 'Child Growth & Education'), desc: t('categories.education.desc', 'Every child deserves a chance to learn, grow, and dream.'), img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&h=500&fit=crop&q=80', path: '/impact/education' },
+    { id: '01', title: t('categories.education.title', 'Child Growth & Education'), desc: t('categories.education.desc', 'Every child deserves a chance to learn, grow, and dream.'), img: '/CHILDRENGROUP.jpg', path: '/impact/education' },
     { id: '02', title: t('categories.healthcare.title', 'Healthcare'), desc: t('categories.healthcare.desc', 'Free medical camps, health awareness programs, and essential healthcare access for underserved communities.'), img: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=500&fit=crop&q=80', path: '/impact/healthcare' },
     { id: '03', title: t('categories.women.title', 'Women Empowerment'), desc: t('categories.women.desc', 'Skill development, self-help groups, and financial independence programs transforming women\'s lives.'), img: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=800&h=500&fit=crop&q=80', path: '/impact/women-empowerment' },
     { id: '04', title: t('categories.childWelfare.title', 'Child Welfare'), desc: t('categories.childWelfare.desc', 'Protecting children\'s rights, nutrition programs, and safe shelter initiatives for vulnerable children.'), img: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop&q=80', path: '/impact/child-welfare' },
