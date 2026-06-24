@@ -14,7 +14,7 @@ export default function HeroBanner() {
       id: 1,
       title: t('hero.slides.education.title', 'Education'),
       description: t('hero.slides.education.desc', 'Opening doors to a better future through the power of education.'),
-      image: "/IMG-24.jpeg",
+      image: "/EDUCATION.JPG",
       imagePosition: "center",
     },
     {
