@@ -35,7 +35,7 @@ export default function HeroBanner() {
       id: 4,
       title: t('hero.slides.environment.title', 'Environment'),
       description: t('hero.slides.environment.desc', 'Nurturing the environment through awareness, action, and responsibility.'),
-      image: "/IMG-21.jpg",
+      image: "/TREEGROW.jpg",
       imagePosition: "right",
     },
     {
