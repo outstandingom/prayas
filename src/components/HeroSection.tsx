@@ -28,7 +28,7 @@ export default function HeroBanner() {
       id: 3,
       title: t('hero.slides.healthcare.title', 'Healthcare'),
       description: t('hero.slides.healthcare.desc', 'Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.'),
-      image: "/health.JPG",
+      image: "/HEALTH.jpg",
       imagePosition: "center",
     },
     {
