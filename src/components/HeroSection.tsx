@@ -56,7 +56,7 @@ export default function HeroBanner() {
       id: 7,
       title: t('hero.slides.skill.title', 'Skill Development'),
       description: t('hero.slides.skill.desc', 'Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth.'),
-      image: "/IMG-20.jpg",
+      image: "/P1039409.JPG",
       imagePosition: "center",
     }
   ], [t]);
