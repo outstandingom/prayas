@@ -167,7 +167,7 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <img
-                src="https://i.ibb.co/N6Cft6S3/IMG-20260614-015637.jpg"
+                src="https://i.ibb.co/7JR7zD39/IMG-20260624-104333.png"
                 alt="Prayas Logo"
                 className="w-full h-full object-cover"
               />
