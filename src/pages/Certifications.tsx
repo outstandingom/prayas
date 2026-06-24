@@ -1,116 +1,115 @@
-// src/pages/Certifications.tsx
+// src/pages/Documents.tsx
 import { motion } from 'framer-motion';
-import { Award, Calendar, CheckCircle } from 'lucide-react';
+import { FileText, FileImage, Download, ExternalLink, Eye } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-// Replace with actual certifications and achievements
-const CERTIFICATIONS = [
+// List all documents from public/documents
+const DOCUMENTS = [
   {
     id: 1,
-    title: 'NGO Registration Certificate',
-    description: 'Registered under the Societies Registration Act, 1860.',
-    year: '2015',
-    image: '/images/certificates/registration.jpg',
+    name: 'Form 10AB Approval',
+    fileName: 'AABTP3001D_Form 10AB Approval .pdf',
+    type: 'pdf',
+    path: '/documents/AABTP3001D_Form 10AB Approval .pdf',
   },
   {
     id: 2,
-    title: '12A Certification',
-    description: 'Exemption under Section 12A of the Income Tax Act for NGO donations.',
-    year: '2016',
-    image: '/images/certificates/12a.jpg',
+    name: 'CSR-1 Registration Letter',
+    fileName: 'CSR-1_Registration letter_AB5600296 (1).pdf',
+    type: 'pdf',
+    path: '/documents/CSR-1_Registration letter_AB5600296 (1).pdf',
   },
   {
     id: 3,
-    title: '80G Certification',
-    description: 'Donors can claim tax deductions under Section 80G of the Income Tax Act.',
-    year: '2017',
-    image: '/images/certificates/80g.jpg',
+    name: 'List of Members',
+    fileName: 'list of members (1).pdf',
+    type: 'pdf',
+    path: '/documents/list of members (1).pdf',
   },
   {
     id: 4,
-    title: 'CSR Registration',
-    description: 'Approved for Corporate Social Responsibility (CSR) funding.',
-    year: '2018',
-    image: '/images/certificates/csr.jpg',
+    name: 'Prayas Bylaws',
+    fileName: 'prayas bylaws (1).pdf',
+    type: 'pdf',
+    path: '/documents/prayas bylaws (1).pdf',
   },
   {
     id: 5,
-    title: 'FCRA Registration',
-    description: 'Authorized to receive foreign contributions and donations.',
-    year: '2019',
-    image: '/images/certificates/fcra.jpg',
-  },
-  {
-    id: 6,
-    title: 'Best NGO Award 2022',
-    description: 'Recognized for outstanding work in education and community health.',
-    year: '2022',
-    image: '/images/certificates/award-2022.jpg',
-  },
-  {
-    id: 7,
-    title: 'UN SDG Partnership',
-    description: 'Partnered with the United Nations for Sustainable Development Goals (SDGs).',
-    year: '2023',
-    image: '/images/certificates/un-sdg.jpg',
-  },
-  {
-    id: 8,
-    title: 'ISO 9001:2015 Certification',
-    description: 'Quality management systems certified for NGO operations.',
-    year: '2024',
-    image: '/images/certificates/iso-9001.jpg',
+    name: 'Samatipanjayan',
+    fileName: 'samatipanjayan.jpeg',
+    type: 'image',
+    path: '/documents/samatipanjayan.jpeg',
   },
 ];
 
-export default function Certifications() {
+export default function Documents() {
+  const { t } = useTranslation();
+
+  const getFileIcon = (type: string) => {
+    if (type === 'pdf') return <FileText className="w-8 h-8 text-red-500" />;
+    if (type === 'image') return <FileImage className="w-8 h-8 text-blue-500" />;
+    return <FileText className="w-8 h-8 text-gray-500" />;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FFF314]/10 mb-4">
-            <Award className="w-8 h-8 text-[#FFF314]" />
+            <FileText className="w-8 h-8 text-[#FFF314]" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-[#263238]">
-            Certifications & <span className="text-[#FFF314]">Achievements</span>
+            {t('documents.title', 'Documents &')}{' '}
+            <span className="text-[#FFF314]">{t('documents.titleHighlight', 'Records')}</span>
           </h1>
           <p className="text-[#263238]/60 text-sm mt-2 max-w-2xl mx-auto">
-            Recognitions that validate our commitment to transparency, quality, and social impact.
+            {t(
+              'documents.subtitle',
+              'Download official documents, registrations, and important records of Prayas Samaj Sevi Sanstha.'
+            )}
           </p>
         </div>
 
-        {/* Certifications Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {CERTIFICATIONS.map((cert, index) => (
+        {/* Documents Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {DOCUMENTS.map((doc, index) => (
             <motion.div
-              key={cert.id}
+              key={doc.id}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
               className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-[#FFF314]/10 flex flex-col"
             >
-              <div className="aspect-video overflow-hidden bg-[#FFF314]/10">
-                <img
-                  src={cert.image}
-                  alt={cert.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  onError={(e) => (e.currentTarget.src = '/images/placeholder-cert.jpg')}
-                />
+              <div className="flex items-center justify-center p-6 bg-[#FFF314]/5 border-b border-[#FFF314]/10">
+                {getFileIcon(doc.type)}
+                <span className="ml-2 text-xs font-medium text-[#263238]/40 uppercase">
+                  {doc.type}
+                </span>
               </div>
               <div className="p-5 flex-1 flex flex-col">
-                <div className="flex items-start justify-between">
-                  <h3 className="text-lg font-bold text-[#263238]">{cert.title}</h3>
-                  <span className="flex items-center gap-1 text-xs font-medium text-[#FFF314]">
-                    <Calendar className="w-3.5 h-3.5" />
-                    {cert.year}
-                  </span>
-                </div>
-                <p className="text-sm text-[#263238]/60 mt-2 leading-relaxed flex-1">
-                  {cert.description}
-                </p>
-                <div className="mt-3 flex items-center gap-1.5 text-xs text-[#263238]/40">
-                  <CheckCircle className="w-3.5 h-3.5 text-green-600" />
-                  Verified
+                <h3 className="text-lg font-bold text-[#263238] mb-1 line-clamp-2">
+                  {t(`documents.list.${doc.id}.name`, doc.name)}
+                </h3>
+                <p className="text-xs text-[#263238]/40 truncate">{doc.fileName}</p>
+                <div className="mt-4 flex items-center gap-3">
+                  <a
+                    href={doc.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#FFF314]/10 text-[#263238] rounded-lg text-sm font-medium hover:bg-[#FFF314]/20 transition-colors"
+                  >
+                    <Eye className="w-4 h-4" />
+                    {t('documents.actions.view', 'View')}
+                  </a>
+                  <a
+                    href={doc.path}
+                    download={doc.fileName}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#263238] text-white rounded-lg text-sm font-medium hover:bg-[#263238]/90 transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    {t('documents.actions.download', 'Download')}
+                  </a>
                 </div>
               </div>
             </motion.div>
