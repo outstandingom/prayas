@@ -1,9 +1,8 @@
 // src/pages/Documents.tsx
 import { motion } from 'framer-motion';
-import { FileText, FileImage, Download, ExternalLink, Eye } from 'lucide-react';
+import { FileText, FileImage, Download, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-// List all documents from public/documents
 const DOCUMENTS = [
   {
     id: 1,
@@ -51,6 +50,30 @@ export default function Documents() {
     return <FileText className="w-8 h-8 text-gray-500" />;
   };
 
+  // Download the file using fetch to ensure we get the correct binary data
+  const handleDownload = async (doc: typeof DOCUMENTS[0]) => {
+    try {
+      // Encode the URL to handle special characters
+      const encodedPath = encodeURI(doc.path);
+      const response = await fetch(encodedPath);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = doc.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert(t('documents.downloadError', 'Failed to download the file. Please try again later.'));
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -94,7 +117,7 @@ export default function Documents() {
                 <p className="text-xs text-[#263238]/40 truncate">{doc.fileName}</p>
                 <div className="mt-4 flex items-center gap-3">
                   <a
-                    href={doc.path}
+                    href={encodeURI(doc.path)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#FFF314]/10 text-[#263238] rounded-lg text-sm font-medium hover:bg-[#FFF314]/20 transition-colors"
@@ -102,14 +125,13 @@ export default function Documents() {
                     <Eye className="w-4 h-4" />
                     {t('documents.actions.view', 'View')}
                   </a>
-                  <a
-                    href={doc.path}
-                    download={doc.fileName}
+                  <button
+                    onClick={() => handleDownload(doc)}
                     className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#263238] text-white rounded-lg text-sm font-medium hover:bg-[#263238]/90 transition-colors"
                   >
                     <Download className="w-4 h-4" />
                     {t('documents.actions.download', 'Download')}
-                  </a>
+                  </button>
                 </div>
               </div>
             </motion.div>
