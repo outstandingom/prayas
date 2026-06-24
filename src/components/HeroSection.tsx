@@ -21,7 +21,7 @@ export default function HeroBanner() {
       id: 2,
       title: t('hero.slides.women.title', 'Women Empowerment'),
       description: t('hero.slides.women.desc', 'Empowering women to break away from the vicious cycle of poverty.'),
-      image: "/women.JPG",
+      image: "/P1039322.JPG",
       imagePosition: "right",
     },
     {
