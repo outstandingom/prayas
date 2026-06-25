@@ -165,15 +165,15 @@ export default function AdminImpactCategories() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header – improved responsiveness */}
-      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm -mx-4 px-4 py-4 sm:py-6 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 pb-24">
+      {/* Sticky Header – always visible */}
+      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm -mx-4 px-4 py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Layers className="w-6 h-6 text-primary flex-shrink-0" />
             <span className="truncate">Impact Categories</span>
           </h1>
-          <p className="text-muted-foreground text-sm mt-1">
+          <p className="text-muted-foreground text-sm mt-0.5">
             {categories.length} categories • Manage your impact areas
           </p>
         </div>
@@ -287,6 +287,17 @@ export default function AdminImpactCategories() {
           </div>
         </div>
       )}
+
+      {/* Fixed Bottom Action Bar (mobile-friendly) */}
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-sm border-t border-border/50 p-4 flex justify-center md:hidden">
+        <button
+          onClick={openAddModal}
+          className="flex items-center justify-center gap-2 w-full max-w-sm px-6 py-3 bg-[#263238] text-white rounded-xl shadow-lg hover:bg-[#263238]/90 transition font-medium"
+        >
+          <Plus className="w-5 h-5" />
+          Add New Category
+        </button>
+      </div>
 
       {/* Modal for Add/Edit */}
       <AnimatePresence>
