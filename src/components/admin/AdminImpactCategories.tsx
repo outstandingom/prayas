@@ -254,9 +254,9 @@ export default function AdminImpactCategories() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6 pb-24 pt-16 sm:pt-20 px-3 sm:px-4 md:px-6">
-      {/* Sticky Header - improved for mobile */}
-      <div className="sticky top-[72px] md:top-0 z-30 bg-white/95 backdrop-blur-sm -mx-3 sm:-mx-4 px-3 sm:px-4 py-3 sm:py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="space-y-4 sm:space-y-6 pb-24 pt-20 sm:pt-24 px-3 sm:px-4 md:px-6">
+      {/* Sticky Header - increased top offset to avoid overlapping */}
+      <div className="sticky top-[88px] md:top-0 z-30 bg-white/95 backdrop-blur-sm -mx-3 sm:-mx-4 px-3 sm:px-4 py-3 sm:py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
             <Layers className="w-5 h-5 sm:w-6 sm:h-6 text-primary flex-shrink-0" />
@@ -266,7 +266,6 @@ export default function AdminImpactCategories() {
             {categories.length} categories • Manage your impact areas
           </p>
         </div>
-        {/* Buttons stack on very small screens */}
         <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
           <button 
             onClick={fetchCategories} 
@@ -302,7 +301,6 @@ export default function AdminImpactCategories() {
         </div>
       ) : (
         <div className="bg-card rounded-2xl border border-border overflow-hidden">
-          {/* Table – horizontal scroll on small screens */}
           <div className="overflow-x-auto -mx-3 sm:mx-0">
             <table className="w-full text-sm min-w-[640px]">
               <thead className="bg-muted/30 border-b border-border">
@@ -480,7 +478,7 @@ export default function AdminImpactCategories() {
                   />
                 </div>
 
-                {/* Initiatives Management - responsive */}
+                {/* Initiatives Management */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Initiatives (3 recommended)</label>
                   <div className="mt-2 space-y-2">
@@ -502,7 +500,7 @@ export default function AdminImpactCategories() {
                         </div>
                       </div>
                     ))}
-                    {/* Add / Edit Initiative Form - responsive */}
+                    {/* Add / Edit Initiative Form */}
                     <div className="border border-dashed border-border rounded-lg p-3 space-y-2">
                       <div className="flex flex-wrap gap-2">
                         <input
