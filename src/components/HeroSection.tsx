@@ -11,12 +11,16 @@ export default function HeroBanner() {
   // Slides Data - 7 meaningful slides with local images
   const SLIDES = useMemo(() => [
     {
-      id: 1,
-      title: t('hero.slides.education.title', 'Education'),
-      description: t('hero.slides.education.desc', 'Opening doors to a better future through the power of education.'),
-      image: "/EDUCATION.JPG",
-      imagePosition: "right",
-    },
+  id: 1,
+  title: t('hero.slides.education.title', 'Education'),
+  description: t('hero.slides.education.desc', 'Opening doors to a better future through the power of education.'),
+  image: "/EDUCATION.JPG",
+  imagePosition: "right",
+  imageStyle: {
+    objectFit: 'cover',
+    objectPosition: '70% center',   // shift focus to the right (70% from left)
+    // or use transform: 'translateX(30px)' if object-position isn't suitable
+  },
     {
       id: 2,
       title: t('hero.slides.women.title', 'Women Empowerment'),
