@@ -1,3 +1,4 @@
+
 // src/components/admin/AdminImpactCategories.tsx
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
