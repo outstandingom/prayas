@@ -1,4 +1,3 @@
-
 // src/components/admin/AdminImpactCategories.tsx
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
@@ -86,7 +85,6 @@ export default function AdminImpactCategories() {
     }
 
     if (editing) {
-      // Update
       const { error } = await supabase
         .from('impact_categories')
         .update({
@@ -106,7 +104,6 @@ export default function AdminImpactCategories() {
         alert('Error updating: ' + error.message)
       }
     } else {
-      // Insert new – get max order
       const maxOrder = categories.reduce((max, c) => Math.max(max, c.display_order), 0)
       const { error } = await supabase
         .from('impact_categories')
@@ -150,12 +147,10 @@ export default function AdminImpactCategories() {
     const current = categories[index]
     const target = categories[targetIndex]
 
-    // Swap display_order
     const tempOrder = current.display_order
     current.display_order = target.display_order
     target.display_order = tempOrder
 
-    // Update both in DB
     const { error } = await supabase
       .from('impact_categories')
       .upsert([
@@ -171,28 +166,28 @@ export default function AdminImpactCategories() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      {/* Header – improved responsiveness */}
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm -mx-4 px-4 py-4 sm:py-6 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Layers className="w-6 h-6 text-primary" />
-            Impact Categories
+            <Layers className="w-6 h-6 text-primary flex-shrink-0" />
+            <span className="truncate">Impact Categories</span>
           </h1>
           <p className="text-muted-foreground text-sm mt-1">
             {categories.length} categories • Manage your impact areas
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
           <button
             onClick={fetchCategories}
-            className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition text-sm font-medium whitespace-nowrap"
           >
             <RefreshCw className="w-4 h-4" />
             Refresh
           </button>
           <button
             onClick={openAddModal}
-            className="flex items-center gap-2 px-4 py-2 bg-[#263238] text-white rounded-lg hover:bg-[#263238]/90 transition text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-[#263238] text-white rounded-lg hover:bg-[#263238]/90 transition text-sm font-medium whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             Add Category
