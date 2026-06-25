@@ -167,7 +167,7 @@ export default function AdminImpactCategories() {
   return (
     <div className="space-y-6 pb-24 pt-[80px] md:pt-0">
       {/* Sticky Header – offset for mobile admin header (80px) */}
-      <div className="sticky top-[80px] md:top-0 z-30 bg-white/95 backdrop-blur-sm -mx-4 px-4 py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="sticky top-[120px] md:top-0 z-30 bg-white/95 backdrop-blur-sm -mx-4 px-4 py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Layers className="w-6 h-6 text-primary flex-shrink-0" />
