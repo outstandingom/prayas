@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, Heart, LogOut, Menu, X, MessageSquare, ImageIcon } from 'lucide-react'; // Import ImageIcon
 import { supabase } from '@/lib/supabase';
-
 import { LayoutDashboard, Users, Heart, LogOut, Menu, X, MessageSquare, ImageIcon, Layers } from 'lucide-react'; // import Layers for categories
 
 interface AdminLayoutProps {
