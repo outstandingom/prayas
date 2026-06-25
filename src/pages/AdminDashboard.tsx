@@ -5,8 +5,9 @@ import { supabase } from '@/lib/supabase';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminVolunteers from '@/components/admin/AdminVolunteers';
 import AdminUsers from '@/components/admin/AdminUsers';
-import AdminContacts from '@/components/admin/AdminContacts'; // ✅ existing
-import AdminGallery from '@/components/admin/AdminGallery';   // ✅ new
+import AdminContacts from '@/components/admin/AdminContacts';
+import AdminGallery from '@/components/admin/AdminGallery';
+import AdminImpactCategories from '@/components/admin/AdminImpactCategories'; // ✅ new import
 import { Loader2 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -65,8 +66,9 @@ export default function AdminDashboard() {
         <Route path="/" element={<Navigate to="/admin/volunteers" replace />} />
         <Route path="/volunteers" element={<AdminVolunteers isSuperAdmin={isSuperAdmin} />} />
         <Route path="/users" element={<AdminUsers />} />
-        <Route path="/contacts" element={<AdminContacts />} />   {/* matches nav */}
-        <Route path="/gallery" element={<AdminGallery />} />     {/* new */}
+        <Route path="/contacts" element={<AdminContacts />} />
+        <Route path="/gallery" element={<AdminGallery />} />
+        <Route path="/categories" element={<AdminImpactCategories />} /> {/* ✅ new route */}
         <Route path="*" element={<Navigate to="/admin/volunteers" />} />
       </Routes>
     </AdminLayout>
