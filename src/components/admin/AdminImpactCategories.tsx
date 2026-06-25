@@ -1,8 +1,17 @@
 // src/components/admin/AdminImpactCategories.tsx
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Plus, Edit, Trash2, RefreshCw, ArrowUp, ArrowDown, X, Save, AlertCircle, Layers, Loader2 } from 'lucide-react'
+import { 
+  Plus, Edit, Trash2, RefreshCw, ArrowUp, ArrowDown, X, Save, AlertCircle, Layers, Loader2, 
+  GripVertical, DollarSign, Target
+} from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+
+interface Initiative {
+  icon: string
+  title: string
+  description: string
+}
 
 interface Category {
   id: string
@@ -12,6 +21,9 @@ interface Category {
   slug: string
   display_order: number
   is_active: boolean
+  initiatives: Initiative[]
+  funds_collected: number
+  goal_funds: number
 }
 
 type CategoryForm = Omit<Category, 'id' | 'display_order' | 'created_at' | 'updated_at'> & { display_order?: number }
@@ -31,9 +43,15 @@ export default function AdminImpactCategories() {
     image_url: '',
     slug: '',
     is_active: true,
+    initiatives: [],
+    funds_collected: 0,
+    goal_funds: 0,
   })
 
-  // Fetch categories
+  // Initiative management
+  const [initiativeInput, setInitiativeInput] = useState<Initiative>({ icon: '', title: '', description: '' })
+  const [editingInitiativeIndex, setEditingInitiativeIndex] = useState<number | null>(null)
+
   const fetchCategories = async () => {
     setLoading(true)
     const { data, error } = await supabase
@@ -43,7 +61,12 @@ export default function AdminImpactCategories() {
     if (error) {
       setError(error.message)
     } else {
-      setCategories(data || [])
+      // Ensure initiatives is parsed if it's a string
+      const parsed = data?.map(item => ({
+        ...item,
+        initiatives: typeof item.initiatives === 'string' ? JSON.parse(item.initiatives) : item.initiatives || []
+      })) || []
+      setCategories(parsed)
     }
     setLoading(false)
   }
@@ -52,32 +75,22 @@ export default function AdminImpactCategories() {
     fetchCategories()
   }, [])
 
-  // Upload image to Supabase Storage – using existing 'gallery' bucket
   const uploadImage = async (file: File): Promise<string> => {
     const fileExt = file.name.split('.').pop()
     const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}.${fileExt}`
-    const filePath = `impact-categories/${fileName}` // subfolder inside 'gallery'
+    const filePath = `impact-categories/${fileName}`
 
     const { error: uploadError } = await supabase.storage
-      .from('gallery') // ✅ use existing bucket
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false,
-      })
-
-    if (uploadError) throw uploadError
-
-    const { data: urlData } = supabase.storage
       .from('gallery')
-      .getPublicUrl(filePath)
-
+      .upload(filePath, file, { cacheControl: '3600', upsert: false })
+    if (uploadError) throw uploadError
+    const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(filePath)
     return urlData.publicUrl
   }
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-
     setUploading(true)
     try {
       const publicUrl = await uploadImage(file)
@@ -97,8 +110,13 @@ export default function AdminImpactCategories() {
       image_url: '',
       slug: '',
       is_active: true,
+      initiatives: [],
+      funds_collected: 0,
+      goal_funds: 0,
     })
     setEditing(null)
+    setInitiativeInput({ icon: '', title: '', description: '' })
+    setEditingInitiativeIndex(null)
   }
 
   const openAddModal = () => {
@@ -114,29 +132,75 @@ export default function AdminImpactCategories() {
       image_url: cat.image_url,
       slug: cat.slug,
       is_active: cat.is_active,
+      initiatives: cat.initiatives || [],
+      funds_collected: cat.funds_collected || 0,
+      goal_funds: cat.goal_funds || 0,
     })
     setModalOpen(true)
   }
 
+  // Initiative handlers
+  const addInitiative = () => {
+    if (!initiativeInput.title || !initiativeInput.description) {
+      alert('Please fill in title and description for the initiative.')
+      return
+    }
+    const newInit = { ...initiativeInput, icon: initiativeInput.icon || '📌' }
+    if (editingInitiativeIndex !== null) {
+      const updated = [...(formData.initiatives || [])]
+      updated[editingInitiativeIndex] = newInit
+      setFormData({ ...formData, initiatives: updated })
+      setEditingInitiativeIndex(null)
+    } else {
+      setFormData({
+        ...formData,
+        initiatives: [...(formData.initiatives || []), newInit]
+      })
+    }
+    setInitiativeInput({ icon: '', title: '', description: '' })
+  }
+
+  const removeInitiative = (index: number) => {
+    const updated = (formData.initiatives || []).filter((_, i) => i !== index)
+    setFormData({ ...formData, initiatives: updated })
+    if (editingInitiativeIndex === index) {
+      setEditingInitiativeIndex(null)
+      setInitiativeInput({ icon: '', title: '', description: '' })
+    }
+  }
+
+  const editInitiative = (index: number) => {
+    const item = formData.initiatives?.[index]
+    if (item) {
+      setInitiativeInput(item)
+      setEditingInitiativeIndex(index)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const { title, description, image_url, slug, is_active } = formData
+    const { title, description, image_url, slug, is_active, initiatives, funds_collected, goal_funds } = formData
     if (!title || !description || !image_url || !slug) {
       alert('All fields are required.')
       return
     }
 
+    const payload = {
+      title,
+      description,
+      image_url,
+      slug,
+      is_active,
+      initiatives: initiatives || [],
+      funds_collected: funds_collected || 0,
+      goal_funds: goal_funds || 0,
+      updated_at: new Date().toISOString(),
+    }
+
     if (editing) {
       const { error } = await supabase
         .from('impact_categories')
-        .update({
-          title,
-          description,
-          image_url,
-          slug,
-          is_active,
-          updated_at: new Date().toISOString(),
-        })
+        .update(payload)
         .eq('id', editing.id)
       if (!error) {
         fetchCategories()
@@ -149,14 +213,7 @@ export default function AdminImpactCategories() {
       const maxOrder = categories.reduce((max, c) => Math.max(max, c.display_order), 0)
       const { error } = await supabase
         .from('impact_categories')
-        .insert([{
-          title,
-          description,
-          image_url,
-          slug,
-          display_order: maxOrder + 1,
-          is_active,
-        }])
+        .insert([{ ...payload, display_order: maxOrder + 1 }])
       if (!error) {
         fetchCategories()
         setModalOpen(false)
@@ -169,10 +226,7 @@ export default function AdminImpactCategories() {
 
   const deleteCategory = async (id: string) => {
     if (!confirm('Delete this category permanently?')) return
-    const { error } = await supabase
-      .from('impact_categories')
-      .delete()
-      .eq('id', id)
+    const { error } = await supabase.from('impact_categories').delete().eq('id', id)
     if (!error) {
       fetchCategories()
     } else {
@@ -184,15 +238,12 @@ export default function AdminImpactCategories() {
     const index = categories.findIndex(c => c.id === id)
     if (direction === 'up' && index === 0) return
     if (direction === 'down' && index === categories.length - 1) return
-
     const targetIndex = direction === 'up' ? index - 1 : index + 1
     const current = categories[index]
     const target = categories[targetIndex]
-
     const tempOrder = current.display_order
     current.display_order = target.display_order
     target.display_order = tempOrder
-
     const { error } = await supabase
       .from('impact_categories')
       .upsert([
@@ -220,36 +271,24 @@ export default function AdminImpactCategories() {
           </p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
-          <button
-            onClick={fetchCategories}
-            className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition text-sm font-medium whitespace-nowrap"
-          >
-            <RefreshCw className="w-4 h-4" />
-            Refresh
+          <button onClick={fetchCategories} className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition text-sm font-medium whitespace-nowrap">
+            <RefreshCw className="w-4 h-4" /> Refresh
           </button>
-          <button
-            onClick={openAddModal}
-            className="flex items-center gap-2 px-4 py-2 bg-[#263238] text-white rounded-lg hover:bg-[#263238]/90 transition text-sm font-medium whitespace-nowrap"
-          >
-            <Plus className="w-4 h-4" />
-            Add Category
+          <button onClick={openAddModal} className="flex items-center gap-2 px-4 py-2 bg-[#263238] text-white rounded-lg hover:bg-[#263238]/90 transition text-sm font-medium whitespace-nowrap">
+            <Plus className="w-4 h-4" /> Add Category
           </button>
         </div>
       </div>
 
-      {/* Error */}
       {error && (
         <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-center gap-2 border border-red-200">
-          <AlertCircle className="w-5 h-5" />
-          {error}
+          <AlertCircle className="w-5 h-5" /> {error}
         </div>
       )}
 
-      {/* List */}
       {loading ? (
         <div className="flex items-center justify-center py-20 text-muted-foreground">
-          <Loader2 className="w-6 h-6 animate-spin text-primary mr-2" />
-          Loading...
+          <Loader2 className="w-6 h-6 animate-spin text-primary mr-2" /> Loading...
         </div>
       ) : categories.length === 0 ? (
         <div className="text-center py-20 text-muted-foreground border border-dashed rounded-xl bg-muted/20">
@@ -277,18 +316,10 @@ export default function AdminImpactCategories() {
                       <div className="flex items-center gap-1">
                         <span className="font-mono text-xs">{idx + 1}</span>
                         <div className="flex flex-col ml-2">
-                          <button
-                            onClick={() => moveCategory(cat.id, 'up')}
-                            disabled={idx === 0}
-                            className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20"
-                          >
+                          <button onClick={() => moveCategory(cat.id, 'up')} disabled={idx === 0} className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20">
                             <ArrowUp className="w-3 h-3" />
                           </button>
-                          <button
-                            onClick={() => moveCategory(cat.id, 'down')}
-                            disabled={idx === categories.length - 1}
-                            className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20"
-                          >
+                          <button onClick={() => moveCategory(cat.id, 'down')} disabled={idx === categories.length - 1} className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20">
                             <ArrowDown className="w-3 h-3" />
                           </button>
                         </div>
@@ -308,16 +339,10 @@ export default function AdminImpactCategories() {
                     </td>
                     <td className="p-4 text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <button
-                          onClick={() => openEditModal(cat)}
-                          className="p-1.5 rounded-lg hover:bg-primary/10 text-muted-foreground hover:text-primary transition"
-                        >
+                        <button onClick={() => openEditModal(cat)} className="p-1.5 rounded-lg hover:bg-primary/10 text-muted-foreground hover:text-primary transition">
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button
-                          onClick={() => deleteCategory(cat.id)}
-                          className="p-1.5 rounded-lg hover:bg-red-50 text-muted-foreground hover:text-red-600 transition"
-                        >
+                        <button onClick={() => deleteCategory(cat.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-muted-foreground hover:text-red-600 transition">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -332,12 +357,8 @@ export default function AdminImpactCategories() {
 
       {/* Fixed Bottom Action Bar (mobile) */}
       <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-sm border-t border-border/50 p-4 flex justify-center md:hidden">
-        <button
-          onClick={openAddModal}
-          className="flex items-center justify-center gap-2 w-full max-w-sm px-6 py-3 bg-[#263238] text-white rounded-xl shadow-lg hover:bg-[#263238]/90 transition font-medium"
-        >
-          <Plus className="w-5 h-5" />
-          Add New Category
+        <button onClick={openAddModal} className="flex items-center justify-center gap-2 w-full max-w-sm px-6 py-3 bg-[#263238] text-white rounded-xl shadow-lg hover:bg-[#263238]/90 transition font-medium">
+          <Plus className="w-5 h-5" /> Add New Category
         </button>
       </div>
 
@@ -348,7 +369,7 @@ export default function AdminImpactCategories() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
             onClick={() => setModalOpen(false)}
           >
             <motion.div
@@ -356,7 +377,7 @@ export default function AdminImpactCategories() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-card rounded-2xl shadow-2xl border border-border w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto"
+              className="bg-card rounded-2xl shadow-2xl border border-border w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-foreground">
@@ -368,7 +389,7 @@ export default function AdminImpactCategories() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* File Upload */}
+                {/* File Upload & Image URL */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Upload Image *</label>
                   <div className="flex items-center gap-2 mt-1">
@@ -383,11 +404,6 @@ export default function AdminImpactCategories() {
                     {uploading && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">Or paste a URL below</p>
-                </div>
-
-                {/* Image URL */}
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Image URL</label>
                   <input
                     type="url"
                     value={formData.image_url}
@@ -395,26 +411,39 @@ export default function AdminImpactCategories() {
                     className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     placeholder="https://example.com/image.jpg"
                   />
+                  {formData.image_url && (
+                    <div className="mt-2 aspect-video rounded-lg border border-border overflow-hidden">
+                      <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
                 </div>
 
-                {/* Preview */}
-                {formData.image_url && (
-                  <div className="mt-2 aspect-video rounded-lg border border-border overflow-hidden">
-                    <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                {/* Title & Slug */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Title *</label>
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                      required
+                    />
                   </div>
-                )}
-
-                {/* Other fields */}
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Title *</label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
-                    required
-                  />
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Slug (URL path) *</label>
+                    <input
+                      type="text"
+                      value={formData.slug}
+                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                      placeholder="e.g., education"
+                      className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                      required
+                    />
+                  </div>
                 </div>
+
+                {/* Description */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Description *</label>
                   <textarea
@@ -425,51 +454,123 @@ export default function AdminImpactCategories() {
                     required
                   />
                 </div>
+
+                {/* Initiatives Management */}
                 <div>
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Slug (URL path) *</label>
-                  <input
-                    type="text"
-                    value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    placeholder="e.g., education"
-                    className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
-                    required
-                  />
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Initiatives (3 recommended)</label>
+                  <div className="mt-2 space-y-2">
+                    {formData.initiatives?.map((init, idx) => (
+                      <div key={idx} className="flex items-center gap-2 bg-muted/30 p-2 rounded-lg">
+                        <GripVertical className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-2xl">{init.icon}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{init.title}</p>
+                          <p className="text-xs text-muted-foreground truncate">{init.description}</p>
+                        </div>
+                        <button type="button" onClick={() => editInitiative(idx)} className="p-1 rounded hover:bg-primary/10">
+                          <Edit className="w-4 h-4 text-primary" />
+                        </button>
+                        <button type="button" onClick={() => removeInitiative(idx)} className="p-1 rounded hover:bg-red-50">
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </button>
+                      </div>
+                    ))}
+                    {/* Add / Edit Initiative Form */}
+                    <div className="border border-dashed border-border rounded-lg p-3 space-y-2">
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          placeholder="Icon (emoji)"
+                          value={initiativeInput.icon}
+                          onChange={(e) => setInitiativeInput({ ...initiativeInput, icon: e.target.value })}
+                          className="w-16 px-2 py-1 rounded border border-border bg-background text-sm text-center"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Title"
+                          value={initiativeInput.title}
+                          onChange={(e) => setInitiativeInput({ ...initiativeInput, title: e.target.value })}
+                          className="flex-1 px-3 py-1 rounded border border-border bg-background text-sm"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Description"
+                        value={initiativeInput.description}
+                        onChange={(e) => setInitiativeInput({ ...initiativeInput, description: e.target.value })}
+                        className="w-full px-3 py-1 rounded border border-border bg-background text-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={addInitiative}
+                        className="text-sm font-medium text-primary hover:text-primary/80"
+                      >
+                        {editingInitiativeIndex !== null ? 'Update Initiative' : 'Add Initiative'}
+                      </button>
+                      {editingInitiativeIndex !== null && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInitiativeInput({ icon: '', title: '', description: '' })
+                            setEditingInitiativeIndex(null)
+                          }}
+                          className="text-sm text-muted-foreground ml-2"
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
+
+                {/* Funds */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <DollarSign className="w-4 h-4" /> Funds Collected
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={formData.funds_collected || 0}
+                      onChange={(e) => setFormData({ ...formData, funds_collected: parseFloat(e.target.value) || 0 })}
+                      className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <Target className="w-4 h-4" /> Goal Funds
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={formData.goal_funds || 0}
+                      onChange={(e) => setFormData({ ...formData, goal_funds: parseFloat(e.target.value) || 0 })}
+                      className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    />
+                  </div>
+                </div>
+
+                {/* Status */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</label>
                   <div className="flex items-center gap-3 mt-1">
                     <label className="flex items-center gap-1 text-sm">
-                      <input
-                        type="radio"
-                        checked={formData.is_active === true}
-                        onChange={() => setFormData({ ...formData, is_active: true })}
-                      />
-                      Active
+                      <input type="radio" checked={formData.is_active === true} onChange={() => setFormData({ ...formData, is_active: true })} /> Active
                     </label>
                     <label className="flex items-center gap-1 text-sm">
-                      <input
-                        type="radio"
-                        checked={formData.is_active === false}
-                        onChange={() => setFormData({ ...formData, is_active: false })}
-                      />
-                      Inactive
+                      <input type="radio" checked={formData.is_active === false} onChange={() => setFormData({ ...formData, is_active: false })} /> Inactive
                     </label>
                   </div>
                 </div>
+
                 <div className="flex justify-end gap-3 pt-4 border-t border-border">
-                  <button
-                    type="button"
-                    onClick={() => setModalOpen(false)}
-                    className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition"
-                  >
+                  <button type="button" onClick={() => setModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition">
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    disabled={loading || uploading}
-                    className="px-6 py-2 bg-[#263238] text-white rounded-lg text-sm font-semibold hover:bg-[#263238]/90 transition flex items-center gap-2 disabled:opacity-50"
-                  >
+                  <button type="submit" disabled={loading || uploading} className="px-6 py-2 bg-[#263238] text-white rounded-lg text-sm font-semibold hover:bg-[#263238]/90 transition flex items-center gap-2 disabled:opacity-50">
                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                     {loading ? 'Saving...' : (editing ? 'Update' : 'Create')}
                   </button>
