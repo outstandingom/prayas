@@ -42,11 +42,10 @@ export default function ImpactPage() {
       if (error) {
         setError(error.message)
       } else if (data) {
-        // Parse initiatives if needed
         const parsed = {
           ...data,
-          initiatives: typeof data.initiatives === 'string' 
-            ? JSON.parse(data.initiatives) 
+          initiatives: typeof data.initiatives === 'string'
+            ? JSON.parse(data.initiatives)
             : data.initiatives || []
         }
         setData(parsed)
@@ -75,28 +74,6 @@ export default function ImpactPage() {
     )
   }
 
-  // Dynamic background color based on slug (or we can let admin choose later)
-  const getBgColor = (slug: string) => {
-    const map: Record<string, string> = {
-      'education': '#FDFDFD',
-      'healthcare': '#F0FDF4',
-      'women-empowerment': '#FAF5FF',
-      'child-welfare': '#FFF7ED',
-      'environment': '#F0FDF4',
-      'rural-development': '#FEF3C7',
-      'skill-training': '#F8FAFC',
-      'disaster-relief': '#FEF2F2',
-      'animal-welfare': '#FDF8F5',
-      'elderly-care': '#F8FAFC',
-      'food-security': '#FFFBEB',
-      'mental-health': '#F5F3FF',
-    }
-    return map[slug] || '#FFFFFF'
-  }
-
-  const bgColor = getBgColor(data.slug)
-
-  // Random accent color – we can map slug to a color
   const accentColorMap: Record<string, string> = {
     'education': '#0056B3',
     'healthcare': '#0D9488',
@@ -114,8 +91,7 @@ export default function ImpactPage() {
   const accentColor = accentColorMap[data.slug] || '#263238'
 
   return (
-    <div className="min-h-screen pt-24 pb-12" style={{ backgroundColor: bgColor }}>
-      {/* Hero Section */}
+    <div className="min-h-screen pt-24 pb-12" style={{ backgroundColor: '#F8FAFC' }}>
       <section className="px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto mb-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -133,7 +109,6 @@ export default function ImpactPage() {
             <p className="text-gray-700 text-lg md:text-xl font-mono mb-8 max-w-md">
               {data.description}
             </p>
-            {/* Funds progress */}
             {data.goal_funds > 0 && (
               <div className="mb-6">
                 <div className="flex justify-between text-sm font-mono">
@@ -181,7 +156,6 @@ export default function ImpactPage() {
         </motion.div>
       </section>
 
-      {/* Initiatives Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-12" style={{ backgroundColor: accentColor }}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
