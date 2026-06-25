@@ -1,7 +1,7 @@
 // src/components/admin/AdminImpactCategories.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Plus, Edit, Trash2, RefreshCw, ArrowUp, ArrowDown, X, Save, AlertCircle, Layers } from 'lucide-react'
+import { Plus, Edit, Trash2, RefreshCw, ArrowUp, ArrowDown, X, Save, AlertCircle, Layers, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface Category {
@@ -22,6 +22,9 @@ export default function AdminImpactCategories() {
   const [error, setError] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<Category | null>(null)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const [formData, setFormData] = useState<CategoryForm>({
     title: '',
     description: '',
@@ -30,6 +33,7 @@ export default function AdminImpactCategories() {
     is_active: true,
   })
 
+  // Fetch categories
   const fetchCategories = async () => {
     setLoading(true)
     const { data, error } = await supabase
@@ -47,6 +51,44 @@ export default function AdminImpactCategories() {
   useEffect(() => {
     fetchCategories()
   }, [])
+
+  // Upload image to Supabase Storage (using 'impact-categories' bucket)
+  const uploadImage = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}.${fileExt}`
+    const filePath = `public/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('impact-categories') // you can change bucket name if needed
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+      })
+
+    if (uploadError) throw uploadError
+
+    const { data: urlData } = supabase.storage
+      .from('impact-categories')
+      .getPublicUrl(filePath)
+
+    return urlData.publicUrl
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    try {
+      const publicUrl = await uploadImage(file)
+      setFormData({ ...formData, image_url: publicUrl })
+    } catch (err: any) {
+      alert('Upload failed: ' + err.message)
+    } finally {
+      setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
 
   const resetForm = () => {
     setFormData({
@@ -166,7 +208,7 @@ export default function AdminImpactCategories() {
 
   return (
     <div className="space-y-6 pb-24 pt-20 px-4 md:px-6">
-      {/* Sticky Header – offset to clear admin navbar */}
+      {/* Sticky Header */}
       <div className="sticky top-[80px] md:top-0 z-30 bg-white/95 backdrop-blur-sm -mx-4 px-4 py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
@@ -206,7 +248,7 @@ export default function AdminImpactCategories() {
       {/* List */}
       {loading ? (
         <div className="flex items-center justify-center py-20 text-muted-foreground">
-          <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mr-2" />
+          <Loader2 className="w-6 h-6 animate-spin text-primary mr-2" />
           Loading...
         </div>
       ) : categories.length === 0 ? (
@@ -326,6 +368,43 @@ export default function AdminImpactCategories() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* File Upload */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Upload Image *</label>
+                  <div className="flex items-center gap-2 mt-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      ref={fileInputRef}
+                      className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                      disabled={uploading}
+                    />
+                    {uploading && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">Or paste a URL below</p>
+                </div>
+
+                {/* Image URL */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Image URL</label>
+                  <input
+                    type="url"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+
+                {/* Preview */}
+                {formData.image_url && (
+                  <div className="mt-2 aspect-video rounded-lg border border-border overflow-hidden">
+                    <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
+
+                {/* Other fields */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Title *</label>
                   <input
@@ -345,21 +424,6 @@ export default function AdminImpactCategories() {
                     className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                   />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Image URL *</label>
-                  <input
-                    type="url"
-                    value={formData.image_url}
-                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                    className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
-                    required
-                  />
-                  {formData.image_url && (
-                    <div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-border">
-                      <img src={formData.image_url} alt="preview" className="w-full h-full object-cover" />
-                    </div>
-                  )}
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Slug (URL path) *</label>
@@ -403,10 +467,11 @@ export default function AdminImpactCategories() {
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2 bg-[#263238] text-white rounded-lg text-sm font-semibold hover:bg-[#263238]/90 transition flex items-center gap-2"
+                    disabled={loading || uploading}
+                    className="px-6 py-2 bg-[#263238] text-white rounded-lg text-sm font-semibold hover:bg-[#263238]/90 transition flex items-center gap-2 disabled:opacity-50"
                   >
-                    <Save className="w-4 h-4" />
-                    {editing ? 'Update' : 'Create'}
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    {loading ? 'Saving...' : (editing ? 'Update' : 'Create')}
                   </button>
                 </div>
               </form>
