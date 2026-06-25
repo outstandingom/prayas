@@ -48,7 +48,6 @@ export default function AdminImpactCategories() {
     goal_funds: 0,
   })
 
-  // Initiative management
   const [initiativeInput, setInitiativeInput] = useState<Initiative>({ icon: '', title: '', description: '' })
   const [editingInitiativeIndex, setEditingInitiativeIndex] = useState<number | null>(null)
 
@@ -61,7 +60,6 @@ export default function AdminImpactCategories() {
     if (error) {
       setError(error.message)
     } else {
-      // Ensure initiatives is parsed if it's a string
       const parsed = data?.map(item => ({
         ...item,
         initiatives: typeof item.initiatives === 'string' ? JSON.parse(item.initiatives) : item.initiatives || []
@@ -79,7 +77,6 @@ export default function AdminImpactCategories() {
     const fileExt = file.name.split('.').pop()
     const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}.${fileExt}`
     const filePath = `impact-categories/${fileName}`
-
     const { error: uploadError } = await supabase.storage
       .from('gallery')
       .upload(filePath, file, { cacheControl: '3600', upsert: false })
@@ -139,7 +136,6 @@ export default function AdminImpactCategories() {
     setModalOpen(true)
   }
 
-  // Initiative handlers
   const addInitiative = () => {
     if (!initiativeInput.title || !initiativeInput.description) {
       alert('Please fill in title and description for the initiative.')
@@ -258,31 +254,40 @@ export default function AdminImpactCategories() {
   }
 
   return (
-    <div className="space-y-6 pb-24 pt-20 px-4 md:px-6">
-      {/* Sticky Header */}
-      <div className="sticky top-[80px] md:top-0 z-30 bg-white/95 backdrop-blur-sm -mx-4 px-4 py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="space-y-4 sm:space-y-6 pb-24 pt-16 sm:pt-20 px-3 sm:px-4 md:px-6">
+      {/* Sticky Header - improved for mobile */}
+      <div className="sticky top-[72px] md:top-0 z-30 bg-white/95 backdrop-blur-sm -mx-3 sm:-mx-4 px-3 sm:px-4 py-3 sm:py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Layers className="w-6 h-6 text-primary flex-shrink-0" />
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
+            <Layers className="w-5 h-5 sm:w-6 sm:h-6 text-primary flex-shrink-0" />
             <span className="truncate">Impact Categories</span>
           </h1>
-          <p className="text-muted-foreground text-sm mt-0.5">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
             {categories.length} categories • Manage your impact areas
           </p>
         </div>
+        {/* Buttons stack on very small screens */}
         <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
-          <button onClick={fetchCategories} className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition text-sm font-medium whitespace-nowrap">
-            <RefreshCw className="w-4 h-4" /> Refresh
+          <button 
+            onClick={fetchCategories} 
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition text-xs sm:text-sm font-medium whitespace-nowrap"
+          >
+            <RefreshCw className="w-4 h-4" /> 
+            <span className="hidden xs:inline">Refresh</span>
           </button>
-          <button onClick={openAddModal} className="flex items-center gap-2 px-4 py-2 bg-[#263238] text-white rounded-lg hover:bg-[#263238]/90 transition text-sm font-medium whitespace-nowrap">
-            <Plus className="w-4 h-4" /> Add Category
+          <button 
+            onClick={openAddModal} 
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#263238] text-white rounded-lg hover:bg-[#263238]/90 transition text-xs sm:text-sm font-medium whitespace-nowrap"
+          >
+            <Plus className="w-4 h-4" /> 
+            <span>Add</span>
           </button>
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-center gap-2 border border-red-200">
-          <AlertCircle className="w-5 h-5" /> {error}
+        <div className="bg-red-50 text-red-600 p-3 sm:p-4 rounded-xl flex items-center gap-2 border border-red-200 text-sm">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" /> {error}
         </div>
       )}
 
@@ -297,52 +302,69 @@ export default function AdminImpactCategories() {
         </div>
       ) : (
         <div className="bg-card rounded-2xl border border-border overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          {/* Table – horizontal scroll on small screens */}
+          <div className="overflow-x-auto -mx-3 sm:mx-0">
+            <table className="w-full text-sm min-w-[640px]">
               <thead className="bg-muted/30 border-b border-border">
                 <tr>
-                  <th className="text-left p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Order</th>
-                  <th className="text-left p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Title</th>
-                  <th className="text-left p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Slug</th>
-                  <th className="text-left p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Image</th>
-                  <th className="text-left p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Status</th>
-                  <th className="text-center p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Actions</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Order</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Title</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider hidden sm:table-cell">Slug</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Image</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider hidden md:table-cell">Status</th>
+                  <th className="text-center p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {categories.map((cat, idx) => (
                   <tr key={cat.id} className="border-b border-border last:border-0 hover:bg-muted/10 transition">
-                    <td className="p-4 text-muted-foreground">
+                    <td className="p-3 sm:p-4 text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <span className="font-mono text-xs">{idx + 1}</span>
-                        <div className="flex flex-col ml-2">
-                          <button onClick={() => moveCategory(cat.id, 'up')} disabled={idx === 0} className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20">
+                        <div className="flex flex-col ml-1 sm:ml-2">
+                          <button 
+                            onClick={() => moveCategory(cat.id, 'up')} 
+                            disabled={idx === 0} 
+                            className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20 p-0.5"
+                          >
                             <ArrowUp className="w-3 h-3" />
                           </button>
-                          <button onClick={() => moveCategory(cat.id, 'down')} disabled={idx === categories.length - 1} className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20">
+                          <button 
+                            onClick={() => moveCategory(cat.id, 'down')} 
+                            disabled={idx === categories.length - 1} 
+                            className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20 p-0.5"
+                          >
                             <ArrowDown className="w-3 h-3" />
                           </button>
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 font-medium text-foreground">{cat.title}</td>
-                    <td className="p-4 text-muted-foreground text-xs font-mono">{cat.slug}</td>
-                    <td className="p-4">
-                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted">
+                    <td className="p-3 sm:p-4 font-medium text-foreground text-xs sm:text-sm truncate max-w-[100px] sm:max-w-none">{cat.title}</td>
+                    <td className="p-3 sm:p-4 text-muted-foreground text-xs font-mono hidden sm:table-cell">{cat.slug}</td>
+                    <td className="p-3 sm:p-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                         <img src={cat.image_url} alt={cat.title} className="w-full h-full object-cover" />
                       </div>
                     </td>
-                    <td className="p-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${cat.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                    <td className="p-3 sm:p-4 hidden md:table-cell">
+                      <span className={`px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${cat.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                         {cat.is_active ? 'Active' : 'Inactive'}
                       </span>
                     </td>
-                    <td className="p-4 text-center">
+                    <td className="p-3 sm:p-4 text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <button onClick={() => openEditModal(cat)} className="p-1.5 rounded-lg hover:bg-primary/10 text-muted-foreground hover:text-primary transition">
+                        <button 
+                          onClick={() => openEditModal(cat)} 
+                          className="p-1.5 rounded-lg hover:bg-primary/10 text-muted-foreground hover:text-primary transition"
+                          title="Edit"
+                        >
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button onClick={() => deleteCategory(cat.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-muted-foreground hover:text-red-600 transition">
+                        <button 
+                          onClick={() => deleteCategory(cat.id)} 
+                          className="p-1.5 rounded-lg hover:bg-red-50 text-muted-foreground hover:text-red-600 transition"
+                          title="Delete"
+                        >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -356,20 +378,23 @@ export default function AdminImpactCategories() {
       )}
 
       {/* Fixed Bottom Action Bar (mobile) */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-sm border-t border-border/50 p-4 flex justify-center md:hidden">
-        <button onClick={openAddModal} className="flex items-center justify-center gap-2 w-full max-w-sm px-6 py-3 bg-[#263238] text-white rounded-xl shadow-lg hover:bg-[#263238]/90 transition font-medium">
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-sm border-t border-border/50 p-3 sm:p-4 flex justify-center md:hidden">
+        <button 
+          onClick={openAddModal} 
+          className="flex items-center justify-center gap-2 w-full max-w-xs px-6 py-3 bg-[#263238] text-white rounded-xl shadow-lg hover:bg-[#263238]/90 transition font-medium text-sm"
+        >
           <Plus className="w-5 h-5" /> Add New Category
         </button>
       </div>
 
-      {/* Modal for Add/Edit */}
+      {/* Modal - fully responsive */}
       <AnimatePresence>
         {modalOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
             onClick={() => setModalOpen(false)}
           >
             <motion.div
@@ -377,10 +402,10 @@ export default function AdminImpactCategories() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-card rounded-2xl shadow-2xl border border-border w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto"
+              className="bg-card rounded-2xl shadow-2xl border border-border w-full max-w-3xl p-4 sm:p-6 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-foreground">
+                <h2 className="text-lg sm:text-xl font-bold text-foreground">
                   {editing ? 'Edit Category' : 'Add New Category'}
                 </h2>
                 <button onClick={() => setModalOpen(false)} className="p-1 rounded-lg hover:bg-muted transition">
@@ -392,7 +417,7 @@ export default function AdminImpactCategories() {
                 {/* File Upload & Image URL */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Upload Image *</label>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mt-1">
                     <input
                       type="file"
                       accept="image/*"
@@ -401,43 +426,43 @@ export default function AdminImpactCategories() {
                       className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
                       disabled={uploading}
                     />
-                    {uploading && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
+                    {uploading && <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0" />}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">Or paste a URL below</p>
                   <input
                     type="url"
                     value={formData.image_url}
                     onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                    className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     placeholder="https://example.com/image.jpg"
                   />
                   {formData.image_url && (
-                    <div className="mt-2 aspect-video rounded-lg border border-border overflow-hidden">
+                    <div className="mt-2 aspect-video rounded-lg border border-border overflow-hidden max-h-48 sm:max-h-64">
                       <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
                     </div>
                   )}
                 </div>
 
                 {/* Title & Slug */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Title *</label>
                     <input
                       type="text"
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                       required
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Slug (URL path) *</label>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Slug (URL) *</label>
                     <input
                       type="text"
                       value={formData.slug}
                       onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                       placeholder="e.g., education"
-                      className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                       required
                     />
                   </div>
@@ -450,47 +475,49 @@ export default function AdminImpactCategories() {
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={3}
-                    className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                   />
                 </div>
 
-                {/* Initiatives Management */}
+                {/* Initiatives Management - responsive */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Initiatives (3 recommended)</label>
                   <div className="mt-2 space-y-2">
                     {formData.initiatives?.map((init, idx) => (
-                      <div key={idx} className="flex items-center gap-2 bg-muted/30 p-2 rounded-lg">
-                        <GripVertical className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-2xl">{init.icon}</span>
+                      <div key={idx} className="flex flex-wrap items-center gap-2 bg-muted/30 p-2 sm:p-3 rounded-lg">
+                        <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                        <span className="text-2xl flex-shrink-0">{init.icon}</span>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-sm truncate">{init.title}</p>
                           <p className="text-xs text-muted-foreground truncate">{init.description}</p>
                         </div>
-                        <button type="button" onClick={() => editInitiative(idx)} className="p-1 rounded hover:bg-primary/10">
-                          <Edit className="w-4 h-4 text-primary" />
-                        </button>
-                        <button type="button" onClick={() => removeInitiative(idx)} className="p-1 rounded hover:bg-red-50">
-                          <Trash2 className="w-4 h-4 text-red-500" />
-                        </button>
+                        <div className="flex items-center gap-1 ml-auto">
+                          <button type="button" onClick={() => editInitiative(idx)} className="p-1.5 rounded hover:bg-primary/10">
+                            <Edit className="w-4 h-4 text-primary" />
+                          </button>
+                          <button type="button" onClick={() => removeInitiative(idx)} className="p-1.5 rounded hover:bg-red-50">
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </button>
+                        </div>
                       </div>
                     ))}
-                    {/* Add / Edit Initiative Form */}
+                    {/* Add / Edit Initiative Form - responsive */}
                     <div className="border border-dashed border-border rounded-lg p-3 space-y-2">
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         <input
                           type="text"
-                          placeholder="Icon (emoji)"
+                          placeholder="Icon"
                           value={initiativeInput.icon}
                           onChange={(e) => setInitiativeInput({ ...initiativeInput, icon: e.target.value })}
-                          className="w-16 px-2 py-1 rounded border border-border bg-background text-sm text-center"
+                          className="w-16 px-2 py-1.5 rounded border border-border bg-background text-sm text-center"
                         />
                         <input
                           type="text"
                           placeholder="Title"
                           value={initiativeInput.title}
                           onChange={(e) => setInitiativeInput({ ...initiativeInput, title: e.target.value })}
-                          className="flex-1 px-3 py-1 rounded border border-border bg-background text-sm"
+                          className="flex-1 min-w-[120px] px-3 py-1.5 rounded border border-border bg-background text-sm"
                         />
                       </div>
                       <input
@@ -498,33 +525,35 @@ export default function AdminImpactCategories() {
                         placeholder="Description"
                         value={initiativeInput.description}
                         onChange={(e) => setInitiativeInput({ ...initiativeInput, description: e.target.value })}
-                        className="w-full px-3 py-1 rounded border border-border bg-background text-sm"
+                        className="w-full px-3 py-1.5 rounded border border-border bg-background text-sm"
                       />
-                      <button
-                        type="button"
-                        onClick={addInitiative}
-                        className="text-sm font-medium text-primary hover:text-primary/80"
-                      >
-                        {editingInitiativeIndex !== null ? 'Update Initiative' : 'Add Initiative'}
-                      </button>
-                      {editingInitiativeIndex !== null && (
+                      <div className="flex flex-wrap items-center gap-2">
                         <button
                           type="button"
-                          onClick={() => {
-                            setInitiativeInput({ icon: '', title: '', description: '' })
-                            setEditingInitiativeIndex(null)
-                          }}
-                          className="text-sm text-muted-foreground ml-2"
+                          onClick={addInitiative}
+                          className="text-sm font-medium text-primary hover:text-primary/80"
                         >
-                          Cancel
+                          {editingInitiativeIndex !== null ? 'Update Initiative' : 'Add Initiative'}
                         </button>
-                      )}
+                        {editingInitiativeIndex !== null && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setInitiativeInput({ icon: '', title: '', description: '' })
+                              setEditingInitiativeIndex(null)
+                            }}
+                            className="text-sm text-muted-foreground"
+                          >
+                            Cancel
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Funds */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                       <DollarSign className="w-4 h-4" /> Funds Collected
@@ -535,7 +564,7 @@ export default function AdminImpactCategories() {
                       step="0.01"
                       value={formData.funds_collected || 0}
                       onChange={(e) => setFormData({ ...formData, funds_collected: parseFloat(e.target.value) || 0 })}
-                      className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     />
                   </div>
                   <div>
@@ -548,7 +577,7 @@ export default function AdminImpactCategories() {
                       step="0.01"
                       value={formData.goal_funds || 0}
                       onChange={(e) => setFormData({ ...formData, goal_funds: parseFloat(e.target.value) || 0 })}
-                      className="w-full mt-1 px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     />
                   </div>
                 </div>
@@ -566,11 +595,11 @@ export default function AdminImpactCategories() {
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-3 pt-4 border-t border-border">
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-border">
                   <button type="button" onClick={() => setModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition">
                     Cancel
                   </button>
-                  <button type="submit" disabled={loading || uploading} className="px-6 py-2 bg-[#263238] text-white rounded-lg text-sm font-semibold hover:bg-[#263238]/90 transition flex items-center gap-2 disabled:opacity-50">
+                  <button type="submit" disabled={loading || uploading} className="px-6 py-2 bg-[#263238] text-white rounded-lg text-sm font-semibold hover:bg-[#263238]/90 transition flex items-center justify-center gap-2 disabled:opacity-50">
                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                     {loading ? 'Saving...' : (editing ? 'Update' : 'Create')}
                   </button>
