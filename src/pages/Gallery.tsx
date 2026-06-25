@@ -1,5 +1,5 @@
 // src/pages/Gallery.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Loader2, Heart } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -17,23 +17,30 @@ export default function Gallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0); // index of the first image in the central pair
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [wrapperWidth, setWrapperWidth] = useState(0);
 
   useEffect(() => {
     fetchImages();
   }, []);
 
+  useEffect(() => {
+    if (wrapperRef.current) {
+      setWrapperWidth(wrapperRef.current.offsetWidth);
+    }
+  }, [images]);
+
   const fetchImages = async () => {
     setLoading(true);
     try {
-      // Fetch only 2 images (adjust limit as needed)
+      // Fetch all active images (you can limit if needed)
       const { data, error } = await supabase
         .from('gallery')
         .select('id, image_url, title, description, category, display_order')
         .eq('is_active', true)
         .order('display_order', { ascending: true })
-        .order('created_at', { ascending: false })
-        .limit(2);
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       if (data && data.length > 0) {
@@ -49,12 +56,38 @@ export default function Gallery() {
     }
   };
 
+  const totalImages = images.length;
+  const pairCount = Math.max(1, totalImages - 1); // number of possible pairs (for 2 images, it's 1)
+
+  const canPrev = activeIndex > 0;
+  const canNext = activeIndex < totalImages - 2;
+
   const toPrev = () => {
-    setActiveIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    if (canPrev) setActiveIndex(activeIndex - 1);
   };
 
   const toNext = () => {
-    setActiveIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    if (canNext) setActiveIndex(activeIndex + 1);
+  };
+
+  const goToPair = (index: number) => {
+    setActiveIndex(Math.min(Math.max(0, index), totalImages - 2));
+  };
+
+  // Item width: we want two items to fit in the wrapper, with some margin
+  const itemWidth = Math.min(200, wrapperWidth * 0.4); // responsive
+  const gap = 16;
+  const step = itemWidth + gap;
+
+  // Calculate container translateX to center the active pair
+  const getTranslateX = () => {
+    if (wrapperWidth === 0) return 0;
+    // Center of the active pair in the container's coordinate
+    const leftEdge = activeIndex * step;
+    const rightEdge = (activeIndex + 1) * step + itemWidth;
+    const pairCenter = (leftEdge + rightEdge) / 2;
+    // We want pairCenter to align with wrapper center
+    return wrapperWidth / 2 - pairCenter;
   };
 
   if (loading) {
@@ -82,13 +115,6 @@ export default function Gallery() {
     );
   }
 
-  // ===== TWO‑IMAGE CAROUSEL =====
-  // We show both images side by side, each taking half the container.
-  // The activeIndex toggles which image is "highlighted" (you can use this
-  // for additional effects), but both remain fully visible.
-  const containerWidth = images.length * 100; // 200% for 2 images
-  const translateX = -50; // center the container so both images are centered
-
   return (
     <div className="bg-[#F1F8F5]">
       {/* GALLERY SECTION */}
@@ -108,32 +134,66 @@ export default function Gallery() {
         </div>
 
         {/* Carousel Wrapper */}
-        <div className="w-[clamp(120px,80vmin,300px)] mt-4 z-10">
+        <div
+          ref={wrapperRef}
+          className="w-[clamp(120px,80vmin,300px)] overflow-hidden mt-4 z-10"
+          style={{ height: itemWidth * 1.1 }} // maintain aspect ratio
+        >
           <motion.div
-            className="flex w-[200%] will-change-transform"
-            animate={{ x: `${translateX}%` }}
+            className="flex h-full items-center"
+            animate={{ x: getTranslateX() }}
             transition={{ type: 'spring', bounce: 0.1, duration: 0.8 }}
+            style={{ gap: `${gap}px` }}
           >
             {images.map((item, i) => {
-              // For two images, we want both to be fully visible.
-              // We give them a slight tilt: left image tilts left, right tilts right.
-              const isLeft = i === 0;
-              const rotate = isLeft ? -10 : 10; // degrees
-              const scale = 1; // both full size
+              // Calculate distance from the active pair
+              const dist = i - activeIndex; // negative = left, 0 or 1 = central, >1 = right
+              let scale = 1;
+              let rotateY = 0;
+              let yOffset = 0;
+
+              if (dist < 0) {
+                // images to the left – scale down and tilt left
+                const absDist = Math.abs(dist);
+                scale = Math.max(0.6, 1 - absDist * 0.2);
+                rotateY = -20 * absDist;
+                yOffset = -10 * absDist;
+              } else if (dist >= 2) {
+                // images to the right – scale down and tilt right
+                const absDist = dist - 1; // because we have two central
+                scale = Math.max(0.6, 1 - absDist * 0.2);
+                rotateY = 20 * absDist;
+                yOffset = -10 * absDist;
+              } else {
+                // central two images – full size, no tilt
+                scale = 1;
+                rotateY = 0;
+                yOffset = 0;
+              }
+
+              // Determine if this image is in the active pair (for title opacity)
+              const isActive = dist === 0 || dist === 1;
 
               return (
                 <motion.div
                   key={item.id}
-                  className="w-[50%] aspect-square flex flex-col items-center gap-2 px-2"
+                  className="flex-shrink-0 flex flex-col items-center gap-2"
+                  style={{
+                    width: itemWidth,
+                    height: itemWidth,
+                    perspective: 800,
+                  }}
                   animate={{
-                    rotateY: rotate,
+                    rotateY: rotateY,
                     scale: scale,
+                    y: yOffset,
                   }}
                   transition={{ type: 'spring', bounce: 0.2, duration: 0.8 }}
-                  style={{ perspective: 800 }}
                 >
                   <div
-                    className={`text-xs md:text-sm whitespace-nowrap transition-all duration-300 text-[#263238] font-medium`}
+                    className={`text-xs md:text-sm whitespace-nowrap transition-all duration-300 ${
+                      isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-70'
+                    } text-[#263238] font-medium`}
                   >
                     {item.title || item.category || 'Untitled'}
                   </div>
@@ -142,6 +202,7 @@ export default function Gallery() {
                     src={item.image_url}
                     alt={item.title || 'Gallery image'}
                     className="w-full h-full object-cover rounded-2xl shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
+                    onClick={() => goToPair(i - (i >= activeIndex + 2 ? 1 : 0))} // snap to pair
                   />
                 </motion.div>
               );
@@ -149,22 +210,23 @@ export default function Gallery() {
           </motion.div>
         </div>
 
-        {/* Controls – rotate between the two images (swap order) */}
+        {/* Controls */}
         <div className="mt-8 w-fit px-2 mx-auto flex items-center gap-4 justify-center text-[#263238] rounded-full bg-white/80 backdrop-blur-sm px-4 py-2 border border-[#FFF314]/20 shadow-lg z-20">
           <button
             onClick={toPrev}
-            className="p-2 cursor-pointer hover:bg-[#FFF314]/10 rounded-full transition-colors"
+            disabled={!canPrev}
+            className="p-2 cursor-pointer hover:bg-[#FFF314]/10 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Previous"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
 
-          {/* Dots – show which image is "active" but both are visible */}
+          {/* Dots – one per possible pair */}
           <div className="w-[100px] flex justify-center items-center gap-2">
-            {images.map((_, i) => (
+            {Array.from({ length: Math.max(1, totalImages - 1) }).map((_, i) => (
               <div
                 key={i}
-                onClick={() => setActiveIndex(i)}
+                onClick={() => goToPair(i)}
                 className={`rounded-full cursor-pointer h-2 transition-[width,background-color] duration-300 ${
                   activeIndex === i
                     ? 'w-7 bg-[#FFF314]'
@@ -176,7 +238,8 @@ export default function Gallery() {
 
           <button
             onClick={toNext}
-            className="p-2 cursor-pointer hover:bg-[#FFF314]/10 rounded-full transition-colors"
+            disabled={!canNext}
+            className="p-2 cursor-pointer hover:bg-[#FFF314]/10 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Next"
           >
             <ChevronRight className="w-5 h-5" />
