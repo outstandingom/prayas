@@ -52,14 +52,14 @@ export default function AdminImpactCategories() {
     fetchCategories()
   }, [])
 
-  // Upload image to Supabase Storage (using 'impact-categories' bucket)
+  // Upload image to Supabase Storage – using existing 'gallery' bucket
   const uploadImage = async (file: File): Promise<string> => {
     const fileExt = file.name.split('.').pop()
     const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}.${fileExt}`
-    const filePath = `public/${fileName}`
+    const filePath = `impact-categories/${fileName}` // subfolder inside 'gallery'
 
     const { error: uploadError } = await supabase.storage
-      .from('impact-categories') // you can change bucket name if needed
+      .from('gallery') // ✅ use existing bucket
       .upload(filePath, file, {
         cacheControl: '3600',
         upsert: false,
@@ -68,7 +68,7 @@ export default function AdminImpactCategories() {
     if (uploadError) throw uploadError
 
     const { data: urlData } = supabase.storage
-      .from('impact-categories')
+      .from('gallery')
       .getPublicUrl(filePath)
 
     return urlData.publicUrl
