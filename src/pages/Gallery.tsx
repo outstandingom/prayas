@@ -17,7 +17,7 @@ export default function Gallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeIndex, setActiveIndex] = useState(0); // leftmost image of the central pair
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     fetchImages();
@@ -36,9 +36,7 @@ export default function Gallery() {
       if (error) throw error;
       if (data && data.length > 0) {
         setImages(data);
-        // start with the middle pair (if possible)
-        const mid = Math.floor((data.length - 1) / 2);
-        setActiveIndex(Math.min(mid, data.length - 2));
+        setActiveIndex(Math.floor(data.length / 2)); // start in the middle
       } else {
         setImages([]);
       }
@@ -49,19 +47,16 @@ export default function Gallery() {
     }
   };
 
-  const total = images.length;
-  const maxIndex = total - 2; // last possible pair start
-
   const toPrev = () => {
     setActiveIndex((prev) => Math.max(0, prev - 1));
   };
 
   const toNext = () => {
-    setActiveIndex((prev) => Math.min(maxIndex, prev + 1));
+    setActiveIndex((prev) => Math.min(images.length - 1, prev + 1));
   };
 
   const toSlide = (index: number) => {
-    setActiveIndex(Math.min(Math.max(0, index), maxIndex));
+    setActiveIndex(index);
   };
 
   if (loading) {
@@ -89,16 +84,6 @@ export default function Gallery() {
     );
   }
 
-  // Each image takes full wrapper width; we'll have two central images.
-  const imageWidth = 'clamp(120px, 80vmin, 300px)';
-
-  // Translate X to center the pair: we want the middle of the two central images
-  // to align with the center of the wrapper.
-  // The total width is total * imageWidth. We shift so that the pair's center
-  // (at index activeIndex + 0.5) is at the center of the wrapper.
-  // Using percentage: - (activeIndex + 0.5) / total * 100%
-  const translateX = `-${((activeIndex + 0.5) / total) * 100}%`;
-
   return (
     <div className="min-h-screen bg-[#F1F8F5] flex flex-col items-center justify-center relative overflow-hidden">
       {/* Background decoration */}
@@ -116,53 +101,29 @@ export default function Gallery() {
       </div>
 
       {/* Carousel Wrapper */}
-      <div className={`w-[${imageWidth}] mt-4 z-10 overflow-hidden`}>
+      <div className="w-[clamp(120px,80vmin,300px)] mt-4 z-10">
+        {/* Slides Container */}
         <motion.div
           className="flex w-fit"
-          animate={{ x: translateX }}
+          animate={{ x: `${(-activeIndex * 100) / images.length}%` }}
           transition={{ type: 'spring', bounce: 0.1, duration: 0.8 }}
         >
           {images.map((item, i) => {
-            // Distance from the leftmost central image
-            const dist = i - activeIndex;
-            // Two central images: dist = 0 or 1
-            const isCentral = dist === 0 || dist === 1;
-            // For left side (dist < 0) we rotate negatively; for right side (dist > 1) positively.
-            // Use the distance to compute rotation, scale, and y offset.
-            let rotate = 0;
-            let scale = 1;
-            let yOffset = 0;
-            if (dist < 0) {
-              const absDist = Math.abs(dist);
-              rotate = -30 * absDist;
-              scale = 1 - 0.4 * Math.min(absDist, 1.5); // scale down to 0.6 min
-              yOffset = -50 * absDist;
-            } else if (dist > 1) {
-              const absDist = dist - 1; // because the first right image (dist=2) should be like dist=1 on right
-              rotate = 30 * absDist;
-              scale = 1 - 0.4 * Math.min(absDist, 1.5);
-              yOffset = 50 * absDist;
-            } else {
-              // central pair: no rotation, full scale, no y offset
-              rotate = 0;
-              scale = 1;
-              yOffset = 0;
-            }
-
+            const isActive = activeIndex === i;
             return (
               <motion.div
                 key={item.id}
-                className={`w-[${imageWidth}] aspect-square flex flex-col items-center gap-2 will-change-[transform,scale]`}
+                className="w-[clamp(120px,80vmin,300px)] aspect-square flex flex-col items-center gap-2 will-change-[transform,scale]"
                 animate={{
-                  rotate: rotate,
-                  scale: scale,
-                  y: `${yOffset}%`,
+                  rotate: (i - activeIndex) * 30,
+                  scale: isActive ? 1 : 0.6,
+                  y: `${(i - activeIndex) * 50}%`,
                 }}
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.8 }}
               >
                 <div
                   className={`text-xs md:text-sm whitespace-nowrap will-change-[opacity,filter] transition-all duration-300 ${
-                    isCentral ? 'opacity-100 scale-100' : 'opacity-0 scale-70'
+                    isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-70'
                   } text-[#263238] font-medium`}
                 >
                   {item.title || item.category || 'Untitled'}
@@ -192,9 +153,9 @@ export default function Gallery() {
           <ChevronLeft className="w-5 h-5" />
         </button>
 
-        {/* Dots – one per pair */}
+        {/* Dots */}
         <div className="w-[180px] flex justify-center items-center gap-2">
-          {Array.from({ length: Math.max(1, total - 1) }).map((_, i) => (
+          {images.map((_, i) => (
             <div
               key={i}
               onClick={() => toSlide(i)}
@@ -210,7 +171,7 @@ export default function Gallery() {
         {/* Next Button */}
         <button
           onClick={toNext}
-          disabled={activeIndex === maxIndex}
+          disabled={activeIndex === images.length - 1}
           className="p-2 cursor-pointer hover:bg-[#FFF314]/10 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label="Next"
         >
