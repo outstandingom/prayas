@@ -1,7 +1,7 @@
 // src/components/admin/AdminGallery.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Loader2, Plus, Edit, Trash2, X, ArrowUp, ArrowDown, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Plus, Edit, Trash2, X, ArrowUp, ArrowDown, Eye, EyeOff, Upload } from 'lucide-react';
 
 type GalleryItem = {
   id: string;
@@ -21,6 +21,9 @@ export default function AdminGallery() {
   const [error, setError] = useState('');
   const [editing, setEditing] = useState<GalleryItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState<Partial<GalleryItem>>({
     image_url: '',
     title: '',
@@ -30,6 +33,7 @@ export default function AdminGallery() {
     is_active: true,
   });
 
+  // Fetch gallery items
   const fetchItems = async () => {
     setLoading(true);
     try {
@@ -51,8 +55,53 @@ export default function AdminGallery() {
     fetchItems();
   }, []);
 
+  // Upload image to Supabase Storage
+  const uploadImage = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}.${fileExt}`;
+    const filePath = `public/${fileName}`; // You can organise into folders
+
+    const { error: uploadError } = await supabase.storage
+      .from('gallery')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+
+    if (uploadError) throw uploadError;
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('gallery')
+      .getPublicUrl(filePath);
+
+    return urlData.publicUrl;
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const publicUrl = await uploadImage(file);
+      setFormData({ ...formData, image_url: publicUrl });
+      // Optionally show a success message
+    } catch (err: any) {
+      alert('Upload failed: ' + err.message);
+    } finally {
+      setUploading(false);
+      // Reset input so same file can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.image_url) {
+      alert('Please provide an image (upload a file or enter a URL).');
+      return;
+    }
     setLoading(true);
     try {
       if (editing) {
@@ -149,9 +198,7 @@ export default function AdminGallery() {
   }
 
   return (
-    // Add pt-20 to push content below the fixed admin header
     <div className="pt-20 px-4 md:px-6 pb-8">
-      {/* HEADER WITH BUTTON */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <h2 className="text-2xl font-bold">Gallery Images</h2>
         <button
@@ -219,22 +266,43 @@ export default function AdminGallery() {
               </button>
             </div>
             <form onSubmit={handleSave} className="space-y-4">
+              {/* File Upload */}
               <div>
-                <label className="block text-sm font-medium mb-1">Image URL *</label>
+                <label className="block text-sm font-medium mb-1">Upload Image *</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
+                    disabled={uploading}
+                  />
+                  {uploading && <Loader2 className="w-5 h-5 animate-spin text-emerald-600" />}
+                </div>
+                <p className="text-xs text-gray-400 mt-1">Or paste a URL below</p>
+              </div>
+
+              {/* Image URL (manual entry or after upload) */}
+              <div>
+                <label className="block text-sm font-medium mb-1">Image URL</label>
                 <input
                   type="text"
                   value={formData.image_url || ''}
                   onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
                   className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  required
                   placeholder="https://example.com/image.jpg"
                 />
-                {formData.image_url && (
-                  <div className="mt-2 aspect-video rounded border overflow-hidden">
-                    <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
-                  </div>
-                )}
               </div>
+
+              {/* Preview */}
+              {formData.image_url && (
+                <div className="mt-2 aspect-video rounded border overflow-hidden">
+                  <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              {/* Other fields */}
               <div>
                 <label className="block text-sm font-medium mb-1">Title</label>
                 <input
@@ -286,7 +354,7 @@ export default function AdminGallery() {
                 <button type="button" onClick={closeModal} className="px-4 py-2 border rounded-md hover:bg-gray-50">
                   Cancel
                 </button>
-                <button type="submit" disabled={loading} className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 disabled:opacity-50">
+                <button type="submit" disabled={loading || uploading} className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 disabled:opacity-50">
                   {loading ? <Loader2 className="w-4 h-4 animate-spin inline mr-1" /> : 'Save'}
                 </button>
               </div>
