@@ -34,7 +34,7 @@ const DOCUMENTS = [
   },
   {
     id: 5,
-    name: 'Samatipanjayan',
+    name: 'Samati Panjayan',
     fileName: 'samatipanjayan.jpeg',
     type: 'image',
     path: '/documents/samatipanjayan.jpeg',
