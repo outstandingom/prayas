@@ -21,7 +21,7 @@ export default function HeroBanner() {
         image: '/EDUCATION.JPG',
         imagePosition: 'right',
         // Custom background position – shift even further right (crops left side)
-        backgroundPosition: '80% center',
+        backgroundPosition: '85% center',
       },
       {
         id: 2,
