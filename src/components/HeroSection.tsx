@@ -13,12 +13,12 @@ export default function HeroBanner() {
     () => [
       {
         id: 1,
-        title: t('hero.slides.education.title', 'Educat'),
+        title: t('hero.slides.education.title', 'Education'),
         description: t(
           'hero.slides.education.desc',
           'Opening doors to a better future through the power of education.'
         ),
-        image: '/EDUCATN.JPG',
+        image: '/EDUCATION.JPG',
         imagePosition: 'right',
         // Custom background position – shift even further right (crops left side)
         backgroundPosition: '85% center',
