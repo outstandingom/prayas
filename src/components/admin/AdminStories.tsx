@@ -87,7 +87,6 @@ export default function AdminStories() {
     const file = e.target.files?.[0]
     if (!file) return
     
-    // Create preview
     const reader = new FileReader()
     reader.onloadend = () => {
       setImagePreview(reader.result as string)
@@ -146,7 +145,6 @@ export default function AdminStories() {
     e.preventDefault()
     const { image_url, title, story, name, location, is_active } = formData
     
-    // Validation
     if (!image_url || !title || !story || !name || !location) {
       setError('All fields are required. Please fill in all fields.')
       return
@@ -220,26 +218,48 @@ export default function AdminStories() {
     const index = stories.findIndex(s => s.id === id)
     if (direction === 'up' && index === 0) return
     if (direction === 'down' && index === stories.length - 1) return
+    
     const targetIndex = direction === 'up' ? index - 1 : index + 1
     const current = stories[index]
     const target = stories[targetIndex]
+    
+    // Swap display_order values
     const tempOrder = current.display_order
     current.display_order = target.display_order
     target.display_order = tempOrder
+    
     try {
-      const { error } = await supabase
+      // Update current story with only display_order
+      const { error: error1 } = await supabase
         .from('stories')
-        .upsert([
-          { id: current.id, display_order: current.display_order },
-          { id: target.id, display_order: target.display_order },
-        ])
-      if (!error) {
-        setSuccessMessage('Order updated successfully!')
-        setTimeout(() => setSuccessMessage(''), 3000)
-        await fetchStories()
-      } else {
-        alert('Error reordering: ' + error.message)
+        .update({ 
+          display_order: current.display_order,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', current.id)
+      
+      if (error1) {
+        alert('Error reordering: ' + error1.message)
+        return
       }
+      
+      // Update target story with only display_order
+      const { error: error2 } = await supabase
+        .from('stories')
+        .update({ 
+          display_order: target.display_order,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', target.id)
+      
+      if (error2) {
+        alert('Error reordering: ' + error2.message)
+        return
+      }
+      
+      setSuccessMessage('Order updated successfully!')
+      setTimeout(() => setSuccessMessage(''), 3000)
+      await fetchStories()
     } catch (err: any) {
       alert('Error: ' + err.message)
     }
@@ -604,7 +624,6 @@ export default function AdminStories() {
         )}
       </AnimatePresence>
 
-      {/* Add custom styles for animations */}
       <style>{`
         @keyframes slide-in {
           from {
