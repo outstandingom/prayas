@@ -1,8 +1,8 @@
 // src/pages/Donate.tsx
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Heart, CreditCard, Smartphone, Building2, IndianRupee, Gift, Loader2, Banknote, Copy, Check, QrCode } from 'lucide-react'
+import { motion } from 'motion/react'
+import { Heart, CreditCard, Smartphone, Building2, IndianRupee, Gift, Loader2, Banknote, Copy, Check, QrCode, ChevronDown, ChevronUp } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 const DONATION_AMOUNTS = [
@@ -98,7 +98,6 @@ export default function Donate() {
   }
 
   const copyQRToClipboard = () => {
-    // This will copy the QR image URL
     navigator.clipboard.writeText('public/BANKQR.jpeg')
     setQrCopied(true)
     setTimeout(() => setQrCopied(false), 2000)
@@ -118,7 +117,6 @@ export default function Donate() {
           {cause && (
             <>
               <p className="text-[#263238]/70 text-sm mt-1">{cause.description}</p>
-              {/* Demo Image for the cause */}
               <div className="mt-3 max-w-xs mx-auto rounded-xl overflow-hidden shadow-md border border-[#FFF314]/20">
                 <img 
                   src={cause.image} 
@@ -256,103 +254,148 @@ export default function Donate() {
           </form>
         </motion.div>
 
-        {/* Bank Transfer Details with QR Code */}
+        {/* Bank Transfer Details with HIGHLIGHTED QR Code */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="mt-8 bg-white rounded-2xl shadow-lg p-6 sm:p-8 border border-[#263238]/5"
+          className="mt-8 bg-white rounded-2xl shadow-lg p-6 sm:p-8 border-2 border-[#FFF314]/30 relative overflow-hidden"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <Banknote className="w-6 h-6 text-[#263238]" />
-            <h2 className="text-lg font-bold text-[#263238]">{t('donate.bank.title', 'Direct Bank Transfer')}</h2>
-          </div>
-          <p className="text-sm text-[#263238]/60 mb-4">
-            {t('donate.bank.subtitle', 'You can also donate directly to our bank account via NEFT / RTGS / IMPS.')}
-          </p>
+          {/* Highlighted Banner */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FFF314] via-[#FFD700] to-[#FFF314]"></div>
           
-          {/* Bank QR Code Section */}
-          <div className="mb-6">
-            <button
-              onClick={() => setShowQR(!showQR)}
-              className="flex items-center gap-2 text-sm font-medium text-[#263238] hover:text-[#263238]/70 transition-colors"
-            >
-              <QrCode className="w-5 h-5" />
-              {showQR ? 'Hide Bank QR Code' : 'Show Bank QR Code'}
-            </button>
+          {/* Glowing Effect */}
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#FFF314]/5 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-[#FFF314]/5 rounded-full blur-3xl"></div>
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-[#FFF314]/10 rounded-lg">
+                <QrCode className="w-6 h-6 text-[#263238]" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-[#263238] flex items-center gap-2">
+                  {t('donate.bank.title', 'Direct Bank Transfer')}
+                  <span className="text-xs bg-[#FFF314] text-[#263238] px-2 py-0.5 rounded-full font-medium animate-pulse">
+                    QR Available
+                  </span>
+                </h2>
+                <p className="text-sm text-[#263238]/60">
+                  {t('donate.bank.subtitle', 'You can also donate directly to our bank account via NEFT / RTGS / IMPS.')}
+                </p>
+              </div>
+            </div>
             
-            {showQR && (
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-[#263238]/10">
-                <div className="flex flex-col items-center">
-                  <div className="relative group">
-                    <img 
-                      src="/BANKQR.jpeg" 
-                      alt="Bank QR Code for UPI Payment" 
-                      className="w-48 h-48 object-contain rounded-lg shadow-md"
-                      onError={(e) => {
-                        // Fallback if image doesn't load
-                        e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50" y="100" font-family="Arial" font-size="16" fill="%236b7280"%3EQR Code%3C/text%3E%3Ctext x="30" y="130" font-family="Arial" font-size="14" fill="%236b7280"%3ENot Available%3C/text%3E%3C/svg%3E';
-                      }}
-                    />
-                    <button
-                      onClick={copyQRToClipboard}
-                      className="absolute top-2 right-2 bg-white/90 p-2 rounded-full shadow-md hover:bg-white transition-colors"
-                      title="Copy QR URL"
-                    >
-                      {qrCopied ? (
-                        <Check className="w-4 h-4 text-green-600" />
-                      ) : (
-                        <Copy className="w-4 h-4 text-[#263238]" />
-                      )}
-                    </button>
+            {/* Highlighted QR Code Section */}
+            <div className="mb-6 bg-gradient-to-r from-[#FFF314]/5 to-[#FFF314]/10 rounded-xl p-4 border-2 border-[#FFF314]/30 shadow-lg shadow-[#FFF314]/10">
+              <button
+                onClick={() => setShowQR(!showQR)}
+                className="w-full flex items-center justify-between gap-2 text-sm font-semibold text-[#263238] hover:text-[#263238]/80 transition-colors group"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 bg-[#FFF314] rounded-lg">
+                    <QrCode className="w-5 h-5 text-[#263238]" />
                   </div>
-                  <p className="text-xs text-[#263238]/60 mt-2 text-center">
-                    Scan this QR code with any UPI app to donate
-                  </p>
+                  <span className="text-base">
+                    {showQR ? 'Hide Bank QR Code' : '📱 Scan to Pay with Bank QR'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs bg-[#FFF314] text-[#263238] px-2 py-1 rounded-full font-medium animate-bounce">
+                    NEW
+                  </span>
+                  {showQR ? (
+                    <ChevronUp className="w-5 h-5 text-[#263238]/60 group-hover:text-[#263238] transition" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-[#263238]/60 group-hover:text-[#263238] transition" />
+                  )}
+                </div>
+              </button>
+              
+              {showQR && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-4 pt-4 border-t border-[#FFF314]/20"
+                >
+                  <div className="flex flex-col items-center">
+                    <div className="relative group bg-white p-4 rounded-xl shadow-lg">
+                      <img 
+                        src="/BANKQR.jpeg" 
+                        alt="Bank QR Code for UPI Payment" 
+                        className="w-56 h-56 object-contain rounded-lg"
+                        onError={(e) => {
+                          e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50" y="100" font-family="Arial" font-size="16" fill="%236b7280"%3EQR Code%3C/text%3E%3Ctext x="30" y="130" font-family="Arial" font-size="14" fill="%236b7280"%3ENot Available%3C/text%3E%3C/svg%3E';
+                        }}
+                      />
+                      <button
+                        onClick={copyQRToClipboard}
+                        className="absolute top-2 right-2 bg-white/90 p-2 rounded-full shadow-lg hover:bg-white transition-colors hover:scale-110 transform"
+                        title="Copy QR URL"
+                      >
+                        {qrCopied ? (
+                          <Check className="w-4 h-4 text-green-600" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-[#263238]" />
+                        )}
+                      </button>
+                    </div>
+                    <div className="mt-3 flex items-center gap-2">
+                      <div className="flex items-center gap-1 text-xs text-[#263238]/60">
+                        <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        Scan with any UPI app
+                      </div>
+                    </div>
+                    <p className="text-xs text-[#263238]/40 mt-1">
+                      UPI ID: 8818882178.1@hdfc
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Bank Account Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <span className="text-[#263238]/50 text-xs">Bank Name</span>
+                <p className="font-semibold text-[#263238]">HDFC Bank</p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <span className="text-[#263238]/50 text-xs">IFSC Code</span>
+                <div className="flex items-center justify-between">
+                  <p className="font-semibold text-[#263238]">HDFC0003886</p>
+                  <button 
+                    onClick={() => copyToClipboard('HDFC0003886')}
+                    className="text-[#263238]/40 hover:text-[#263238] transition"
+                  >
+                    {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
-            )}
-          </div>
-
-          {/* Bank Account Details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <span className="text-[#263238]/50 text-xs">Bank Name</span>
-              <p className="font-semibold text-[#263238]">HDFC Bank</p>
-            </div>
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <span className="text-[#263238]/50 text-xs">IFSC Code</span>
-              <div className="flex items-center justify-between">
-                <p className="font-semibold text-[#263238]">HDFC0003886</p>
-                <button 
-                  onClick={() => copyToClipboard('HDFC0003886')}
-                  className="text-[#263238]/40 hover:text-[#263238] transition"
-                >
-                  {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
-                </button>
+              <div className="bg-gray-50 p-3 rounded-lg md:col-span-2">
+                <span className="text-[#263238]/50 text-xs">Account Number</span>
+                <div className="flex items-center justify-between">
+                  <p className="font-semibold text-[#263238]">50200118537529</p>
+                  <button 
+                    onClick={() => copyToClipboard('50200118537529')}
+                    className="text-[#263238]/40 hover:text-[#263238] transition"
+                  >
+                    {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-lg md:col-span-2">
+                <span className="text-[#263238]/50 text-xs">Branch Address</span>
+                <p className="font-semibold text-[#263238] text-sm">
+                  Upper Ground Floor, G-9, HIG Colony, Main Road, Near Police Station, Indore - 452011, Madhya Pradesh
+                </p>
               </div>
             </div>
-            <div className="bg-gray-50 p-3 rounded-lg md:col-span-2">
-              <span className="text-[#263238]/50 text-xs">Account Number</span>
-              <div className="flex items-center justify-between">
-                <p className="font-semibold text-[#263238]">50200118537529</p>
-                <button 
-                  onClick={() => copyToClipboard('50200118537529')}
-                  className="text-[#263238]/40 hover:text-[#263238] transition"
-                >
-                  {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
+            <div className="mt-4 text-xs text-[#263238]/40 bg-[#FFF314]/5 p-3 rounded-lg border border-[#FFF314]/10">
+              <p>💡 After transferring, please email us at <strong className="text-[#263238]">info.growhaz@gmail.com</strong> with your transaction details and name so we can acknowledge your contribution.</p>
             </div>
-            <div className="bg-gray-50 p-3 rounded-lg md:col-span-2">
-              <span className="text-[#263238]/50 text-xs">Branch Address</span>
-              <p className="font-semibold text-[#263238] text-sm">
-                Upper Ground Floor, G-9, HIG Colony, Main Road, Near Police Station, Indore - 452011, Madhya Pradesh
-              </p>
-            </div>
-          </div>
-          <div className="mt-4 text-xs text-[#263238]/40 bg-[#FFF314]/5 p-3 rounded-lg border border-[#FFF314]/10">
-            <p>💡 After transferring, please email us at <strong className="text-[#263238]">info.growhaz@gmail.com</strong> with your transaction details and name so we can acknowledge your contribution.</p>
           </div>
         </motion.div>
 
