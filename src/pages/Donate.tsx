@@ -1,7 +1,7 @@
 // src/pages/Donate.tsx
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { motion } from 'motion/react'
+import { motion } from 'framer-motion'  // Fixed import
 import { Heart, CreditCard, Smartphone, Building2, IndianRupee, Gift, Loader2, Banknote, Copy, Check, QrCode, ChevronDown, ChevronUp } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
