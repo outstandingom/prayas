@@ -3,9 +3,10 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { 
   Plus, Edit, Trash2, RefreshCw, ArrowUp, ArrowDown, X, Save, AlertCircle, Layers, Loader2, 
-  GripVertical, DollarSign, Target
+  GripVertical, DollarSign, Target, Link as LinkIcon, Eye
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 interface Initiative {
   icon: string
@@ -24,6 +25,9 @@ interface Category {
   initiatives: Initiative[]
   funds_collected: number
   goal_funds: number
+  redirect_url?: string
+  created_at?: string
+  updated_at?: string
 }
 
 type CategoryForm = Omit<Category, 'id' | 'display_order' | 'created_at' | 'updated_at'> & { display_order?: number }
@@ -35,7 +39,9 @@ export default function AdminImpactCategories() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<Category | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState<CategoryForm>({
     title: '',
@@ -46,6 +52,7 @@ export default function AdminImpactCategories() {
     initiatives: [],
     funds_collected: 0,
     goal_funds: 0,
+    redirect_url: '',
   })
 
   const [initiativeInput, setInitiativeInput] = useState<Initiative>({ icon: '', title: '', description: '' })
@@ -53,20 +60,26 @@ export default function AdminImpactCategories() {
 
   const fetchCategories = async () => {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('impact_categories')
-      .select('*')
-      .order('display_order', { ascending: true })
-    if (error) {
-      setError(error.message)
-    } else {
-      const parsed = data?.map(item => ({
-        ...item,
-        initiatives: typeof item.initiatives === 'string' ? JSON.parse(item.initiatives) : item.initiatives || []
-      })) || []
-      setCategories(parsed)
+    try {
+      const { data, error } = await supabase
+        .from('impact_categories')
+        .select('*')
+        .order('display_order', { ascending: true })
+      
+      if (error) {
+        setError(error.message)
+      } else {
+        const parsed = data?.map(item => ({
+          ...item,
+          initiatives: typeof item.initiatives === 'string' ? JSON.parse(item.initiatives) : item.initiatives || []
+        })) || []
+        setCategories(parsed)
+      }
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   useEffect(() => {
@@ -92,6 +105,8 @@ export default function AdminImpactCategories() {
     try {
       const publicUrl = await uploadImage(file)
       setFormData({ ...formData, image_url: publicUrl })
+      setSuccessMessage('Image uploaded successfully!')
+      setTimeout(() => setSuccessMessage(''), 3000)
     } catch (err: any) {
       alert('Upload failed: ' + err.message)
     } finally {
@@ -110,10 +125,12 @@ export default function AdminImpactCategories() {
       initiatives: [],
       funds_collected: 0,
       goal_funds: 0,
+      redirect_url: '',
     })
     setEditing(null)
     setInitiativeInput({ icon: '', title: '', description: '' })
     setEditingInitiativeIndex(null)
+    setSuccessMessage('')
   }
 
   const openAddModal = () => {
@@ -132,6 +149,7 @@ export default function AdminImpactCategories() {
       initiatives: cat.initiatives || [],
       funds_collected: cat.funds_collected || 0,
       goal_funds: cat.goal_funds || 0,
+      redirect_url: cat.redirect_url || '',
     })
     setModalOpen(true)
   }
@@ -154,6 +172,8 @@ export default function AdminImpactCategories() {
       })
     }
     setInitiativeInput({ icon: '', title: '', description: '' })
+    setSuccessMessage('Initiative added successfully!')
+    setTimeout(() => setSuccessMessage(''), 3000)
   }
 
   const removeInitiative = (index: number) => {
@@ -175,7 +195,7 @@ export default function AdminImpactCategories() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const { title, description, image_url, slug, is_active, initiatives, funds_collected, goal_funds } = formData
+    const { title, description, image_url, slug, is_active, initiatives, funds_collected, goal_funds, redirect_url } = formData
     if (!title || !description || !image_url || !slug) {
       alert('All fields are required.')
       return
@@ -190,43 +210,58 @@ export default function AdminImpactCategories() {
       initiatives: initiatives || [],
       funds_collected: funds_collected || 0,
       goal_funds: goal_funds || 0,
+      redirect_url: redirect_url || '',
       updated_at: new Date().toISOString(),
     }
 
-    if (editing) {
-      const { error } = await supabase
-        .from('impact_categories')
-        .update(payload)
-        .eq('id', editing.id)
-      if (!error) {
-        fetchCategories()
-        setModalOpen(false)
-        resetForm()
+    try {
+      if (editing) {
+        const { error } = await supabase
+          .from('impact_categories')
+          .update(payload)
+          .eq('id', editing.id)
+        if (!error) {
+          setSuccessMessage('Category updated successfully!')
+          setTimeout(() => setSuccessMessage(''), 3000)
+          fetchCategories()
+          setModalOpen(false)
+          resetForm()
+        } else {
+          alert('Error updating: ' + error.message)
+        }
       } else {
-        alert('Error updating: ' + error.message)
+        const maxOrder = categories.reduce((max, c) => Math.max(max, c.display_order), 0)
+        const { error } = await supabase
+          .from('impact_categories')
+          .insert([{ ...payload, display_order: maxOrder + 1 }])
+        if (!error) {
+          setSuccessMessage('Category created successfully!')
+          setTimeout(() => setSuccessMessage(''), 3000)
+          fetchCategories()
+          setModalOpen(false)
+          resetForm()
+        } else {
+          alert('Error creating: ' + error.message)
+        }
       }
-    } else {
-      const maxOrder = categories.reduce((max, c) => Math.max(max, c.display_order), 0)
-      const { error } = await supabase
-        .from('impact_categories')
-        .insert([{ ...payload, display_order: maxOrder + 1 }])
-      if (!error) {
-        fetchCategories()
-        setModalOpen(false)
-        resetForm()
-      } else {
-        alert('Error creating: ' + error.message)
-      }
+    } catch (err: any) {
+      alert('Error: ' + err.message)
     }
   }
 
   const deleteCategory = async (id: string) => {
     if (!confirm('Delete this category permanently?')) return
-    const { error } = await supabase.from('impact_categories').delete().eq('id', id)
-    if (!error) {
-      fetchCategories()
-    } else {
-      alert('Error deleting: ' + error.message)
+    try {
+      const { error } = await supabase.from('impact_categories').delete().eq('id', id)
+      if (!error) {
+        setSuccessMessage('Category deleted successfully!')
+        setTimeout(() => setSuccessMessage(''), 3000)
+        fetchCategories()
+      } else {
+        alert('Error deleting: ' + error.message)
+      }
+    } catch (err: any) {
+      alert('Error: ' + err.message)
     }
   }
 
@@ -240,22 +275,53 @@ export default function AdminImpactCategories() {
     const tempOrder = current.display_order
     current.display_order = target.display_order
     target.display_order = tempOrder
-    const { error } = await supabase
-      .from('impact_categories')
-      .upsert([
-        { id: current.id, display_order: current.display_order },
-        { id: target.id, display_order: target.display_order },
-      ])
-    if (!error) {
-      fetchCategories()
-    } else {
-      alert('Error reordering: ' + error.message)
+    try {
+      const { error } = await supabase
+        .from('impact_categories')
+        .upsert([
+          { id: current.id, display_order: current.display_order },
+          { id: target.id, display_order: target.display_order },
+        ])
+      if (!error) {
+        setSuccessMessage('Order updated successfully!')
+        setTimeout(() => setSuccessMessage(''), 3000)
+        fetchCategories()
+      } else {
+        alert('Error reordering: ' + error.message)
+      }
+    } catch (err: any) {
+      alert('Error: ' + err.message)
     }
+  }
+
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+  }
+
+  const handleTitleChange = (title: string) => {
+    setFormData({ 
+      ...formData, 
+      title,
+      slug: formData.slug || generateSlug(title)
+    })
   }
 
   return (
     <div className="space-y-4 sm:space-y-6 pb-24 pt-20 sm:pt-24 px-3 sm:px-4 md:px-6">
-      {/* Sticky Header - increased top offset to avoid overlapping */}
+      {/* Success Message */}
+      {successMessage && (
+        <div className="fixed top-20 right-4 z-50 bg-green-50 text-green-700 px-4 py-3 rounded-lg shadow-lg border border-green-200 max-w-sm animate-slide-in">
+          <div className="flex items-center gap-2">
+            <Check className="w-5 h-5" />
+            <span className="text-sm font-medium">{successMessage}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Sticky Header */}
       <div className="sticky top-[88px] md:top-0 z-30 bg-white/95 backdrop-blur-sm -mx-3 sm:-mx-4 px-3 sm:px-4 py-3 sm:py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
@@ -302,14 +368,15 @@ export default function AdminImpactCategories() {
       ) : (
         <div className="bg-card rounded-2xl border border-border overflow-hidden">
           <div className="overflow-x-auto -mx-3 sm:mx-0">
-            <table className="w-full text-sm min-w-[640px]">
+            <table className="w-full text-sm min-w-[768px]">
               <thead className="bg-muted/30 border-b border-border">
                 <tr>
-                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Order</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider w-12">#</th>
                   <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Title</th>
                   <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider hidden sm:table-cell">Slug</th>
-                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Image</th>
-                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider hidden md:table-cell">Status</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider hidden md:table-cell">Redirect URL</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider w-12">Image</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider hidden lg:table-cell">Status</th>
                   <th className="text-center p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -337,20 +404,47 @@ export default function AdminImpactCategories() {
                         </div>
                       </div>
                     </td>
-                    <td className="p-3 sm:p-4 font-medium text-foreground text-xs sm:text-sm truncate max-w-[100px] sm:max-w-none">{cat.title}</td>
+                    <td className="p-3 sm:p-4">
+                      <div>
+                        <div className="font-medium text-foreground text-sm truncate max-w-[150px]">{cat.title}</div>
+                        <div className="text-xs text-muted-foreground truncate max-w-[150px]">{cat.description}</div>
+                      </div>
+                    </td>
                     <td className="p-3 sm:p-4 text-muted-foreground text-xs font-mono hidden sm:table-cell">{cat.slug}</td>
+                    <td className="p-3 sm:p-4 hidden md:table-cell">
+                      {cat.redirect_url ? (
+                        <a 
+                          href={cat.redirect_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary hover:text-primary/80 text-xs font-mono truncate max-w-[150px] block flex items-center gap-1"
+                        >
+                          <LinkIcon className="w-3 h-3 flex-shrink-0" />
+                          <span className="truncate">{cat.redirect_url}</span>
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground/40 text-xs">Not set</span>
+                      )}
+                    </td>
                     <td className="p-3 sm:p-4">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                         <img src={cat.image_url} alt={cat.title} className="w-full h-full object-cover" />
                       </div>
                     </td>
-                    <td className="p-3 sm:p-4 hidden md:table-cell">
+                    <td className="p-3 sm:p-4 hidden lg:table-cell">
                       <span className={`px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${cat.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                         {cat.is_active ? 'Active' : 'Inactive'}
                       </span>
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       <div className="flex items-center justify-center gap-1">
+                        <button 
+                          onClick={() => navigate(`/impact/${cat.slug}`)} 
+                          className="p-1.5 rounded-lg hover:bg-blue-50 text-muted-foreground hover:text-blue-600 transition"
+                          title="View on site"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
                         <button 
                           onClick={() => openEditModal(cat)} 
                           className="p-1.5 rounded-lg hover:bg-primary/10 text-muted-foreground hover:text-primary transition"
@@ -385,7 +479,7 @@ export default function AdminImpactCategories() {
         </button>
       </div>
 
-      {/* Modal - fully responsive */}
+      {/* Modal */}
       <AnimatePresence>
         {modalOpen && (
           <motion.div
@@ -448,7 +542,7 @@ export default function AdminImpactCategories() {
                     <input
                       type="text"
                       value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      onChange={(e) => handleTitleChange(e.target.value)}
                       className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                       required
                     />
@@ -463,6 +557,7 @@ export default function AdminImpactCategories() {
                       className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                       required
                     />
+                    <p className="text-xs text-muted-foreground mt-1">URL: /impact/{formData.slug || 'slug'}</p>
                   </div>
                 </div>
 
@@ -476,6 +571,23 @@ export default function AdminImpactCategories() {
                     className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                   />
+                </div>
+
+                {/* Redirect URL */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                    <LinkIcon className="w-4 h-4" /> Redirect URL (Optional)
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.redirect_url || ''}
+                    onChange={(e) => setFormData({ ...formData, redirect_url: e.target.value })}
+                    placeholder="https://example.com/your-page"
+                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Leave empty to use the default page. Users clicking "Learn More" will be redirected to this URL.
+                  </p>
                 </div>
 
                 {/* Initiatives Management */}
@@ -610,3 +722,10 @@ export default function AdminImpactCategories() {
     </div>
   )
 }
+
+// Add Check icon for success message
+const Check = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+  </svg>
+)
