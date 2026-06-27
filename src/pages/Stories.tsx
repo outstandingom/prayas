@@ -231,7 +231,7 @@ export default function Stories() {
           min-height: 100vh;
         }
 
-        /* Hero Section – increased bottom padding */
+        /* Hero Section */
         .hero {
           padding: 8rem 2rem 10rem;
           text-align: center;
