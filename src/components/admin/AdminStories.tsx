@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { 
   Plus, Edit, Trash2, RefreshCw, ArrowUp, ArrowDown, X, Save, AlertCircle, 
-  Image as ImageIcon, Loader2, Eye, GripVertical, Users, MapPin, BookOpen
+  Image as ImageIcon, Loader2, Eye, GripVertical, Users, MapPin, BookOpen, CheckCircle
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
@@ -31,6 +31,7 @@ export default function AdminStories() {
   const [editing, setEditing] = useState<Story | null>(null)
   const [uploading, setUploading] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const [imagePreview, setImagePreview] = useState<string>('')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
 
@@ -45,6 +46,7 @@ export default function AdminStories() {
 
   const fetchStories = async () => {
     setLoading(true)
+    setError('')
     try {
       const { data, error } = await supabase
         .from('stories')
@@ -53,11 +55,13 @@ export default function AdminStories() {
       
       if (error) {
         setError(error.message)
+        console.error('Fetch error:', error)
       } else {
         setStories(data || [])
       }
     } catch (err: any) {
       setError(err.message)
+      console.error('Error:', err)
     } finally {
       setLoading(false)
     }
@@ -82,6 +86,14 @@ export default function AdminStories() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+    
+    // Create preview
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+    
     setUploading(true)
     try {
       const publicUrl = await uploadImage(file)
@@ -105,8 +117,10 @@ export default function AdminStories() {
       location: '',
       is_active: true,
     })
+    setImagePreview('')
     setEditing(null)
     setSuccessMessage('')
+    setError('')
   }
 
   const openAddModal = () => {
@@ -124,59 +138,65 @@ export default function AdminStories() {
       location: story.location,
       is_active: story.is_active,
     })
+    setImagePreview(story.image_url)
     setModalOpen(true)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const { image_url, title, story, name, location, is_active } = formData
+    
+    // Validation
     if (!image_url || !title || !story || !name || !location) {
-      alert('All fields are required.')
+      setError('All fields are required. Please fill in all fields.')
       return
     }
 
     const payload = {
-      image_url,
-      title,
-      story,
-      name,
-      location,
+      image_url: image_url.trim(),
+      title: title.trim(),
+      story: story.trim(),
+      name: name.trim(),
+      location: location.trim(),
       is_active,
       updated_at: new Date().toISOString(),
     }
 
+    setLoading(true)
     try {
       if (editing) {
         const { error } = await supabase
           .from('stories')
           .update(payload)
           .eq('id', editing.id)
-        if (!error) {
+        if (error) {
+          setError('Error updating: ' + error.message)
+        } else {
           setSuccessMessage('Story updated successfully!')
           setTimeout(() => setSuccessMessage(''), 3000)
-          fetchStories()
+          await fetchStories()
           setModalOpen(false)
           resetForm()
-        } else {
-          alert('Error updating: ' + error.message)
         }
       } else {
         const maxOrder = stories.reduce((max, s) => Math.max(max, s.display_order), 0)
         const { error } = await supabase
           .from('stories')
           .insert([{ ...payload, display_order: maxOrder + 1 }])
-        if (!error) {
+        if (error) {
+          setError('Error creating: ' + error.message)
+        } else {
           setSuccessMessage('Story created successfully!')
           setTimeout(() => setSuccessMessage(''), 3000)
-          fetchStories()
+          await fetchStories()
           setModalOpen(false)
           resetForm()
-        } else {
-          alert('Error creating: ' + error.message)
         }
       }
     } catch (err: any) {
-      alert('Error: ' + err.message)
+      setError('Error: ' + err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -187,7 +207,7 @@ export default function AdminStories() {
       if (!error) {
         setSuccessMessage('Story deleted successfully!')
         setTimeout(() => setSuccessMessage(''), 3000)
-        fetchStories()
+        await fetchStories()
       } else {
         alert('Error deleting: ' + error.message)
       }
@@ -216,7 +236,7 @@ export default function AdminStories() {
       if (!error) {
         setSuccessMessage('Order updated successfully!')
         setTimeout(() => setSuccessMessage(''), 3000)
-        fetchStories()
+        await fetchStories()
       } else {
         alert('Error reordering: ' + error.message)
       }
@@ -231,9 +251,20 @@ export default function AdminStories() {
       {successMessage && (
         <div className="fixed top-20 right-4 z-50 bg-green-50 text-green-700 px-4 py-3 rounded-lg shadow-lg border border-green-200 max-w-sm animate-slide-in">
           <div className="flex items-center gap-2">
-            <Check className="w-5 h-5" />
+            <CheckCircle className="w-5 h-5" />
             <span className="text-sm font-medium">{successMessage}</span>
           </div>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 text-red-600 p-3 sm:p-4 rounded-xl flex items-center gap-2 border border-red-200 text-sm">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" /> 
+          <span>{error}</span>
+          <button onClick={() => setError('')} className="ml-auto text-red-400 hover:text-red-600">
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
 
@@ -241,7 +272,7 @@ export default function AdminStories() {
       <div className="sticky top-[88px] md:top-0 z-30 bg-white/95 backdrop-blur-sm -mx-3 sm:-mx-4 px-3 sm:px-4 py-3 sm:py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
-            <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-primary flex-shrink-0" />
+            <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-[#263238] flex-shrink-0" />
             <span className="truncate">Impact Stories</span>
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
@@ -266,13 +297,7 @@ export default function AdminStories() {
         </div>
       </div>
 
-      {error && (
-        <div className="bg-red-50 text-red-600 p-3 sm:p-4 rounded-xl flex items-center gap-2 border border-red-200 text-sm">
-          <AlertCircle className="w-5 h-5 flex-shrink-0" /> {error}
-        </div>
-      )}
-
-      {loading ? (
+      {loading && stories.length === 0 ? (
         <div className="flex items-center justify-center py-20 text-muted-foreground">
           <Loader2 className="w-6 h-6 animate-spin text-primary mr-2" /> Loading...
         </div>
@@ -321,8 +346,14 @@ export default function AdminStories() {
                       </div>
                     </td>
                     <td className="p-3 sm:p-4">
-                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                        <img src={story.image_url} alt={story.title} className="w-full h-full object-cover" />
+                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0 border border-border/50">
+                        {story.image_url ? (
+                          <img src={story.image_url} alt={story.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                            <ImageIcon className="w-4 h-4 text-gray-400" />
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td className="p-3 sm:p-4">
@@ -391,7 +422,7 @@ export default function AdminStories() {
         </button>
       </div>
 
-      {/* Modal */}
+      {/* Modal - Add/Edit Story */}
       <AnimatePresence>
         {modalOpen && (
           <motion.div
@@ -399,20 +430,26 @@ export default function AdminStories() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
-            onClick={() => setModalOpen(false)}
+            onClick={() => {
+              if (!loading) setModalOpen(false)
+            }}
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-card rounded-2xl shadow-2xl border border-border w-full max-w-2xl p-4 sm:p-6 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-2xl p-4 sm:p-6 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg sm:text-xl font-bold text-foreground">
+                <h2 className="text-lg sm:text-xl font-bold text-[#263238]">
                   {editing ? 'Edit Story' : 'Add New Story'}
                 </h2>
-                <button onClick={() => setModalOpen(false)} className="p-1 rounded-lg hover:bg-muted transition">
+                <button 
+                  onClick={() => setModalOpen(false)} 
+                  className="p-1 rounded-lg hover:bg-gray-100 transition"
+                  disabled={loading}
+                >
                   <X className="w-5 h-5 text-muted-foreground" />
                 </button>
               </div>
@@ -427,24 +464,39 @@ export default function AdminStories() {
                       accept="image/*"
                       onChange={handleFileChange}
                       ref={fileInputRef}
-                      className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                      className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#FFF314]/10 file:text-[#263238] hover:file:bg-[#FFF314]/20"
                       disabled={uploading}
                     />
                     {uploading && <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0" />}
                   </div>
+                  
+                  {/* Image Preview */}
+                  {(imagePreview || formData.image_url) && (
+                    <div className="mt-2 aspect-video rounded-lg border border-gray-200 overflow-hidden max-h-48 sm:max-h-64 bg-gray-50 relative">
+                      <img 
+                        src={imagePreview || formData.image_url} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover" 
+                      />
+                      {uploading && (
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                          <Loader2 className="w-8 h-8 animate-spin text-white" />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
                   <p className="text-xs text-muted-foreground mt-1">Or paste a URL below</p>
                   <input
                     type="url"
                     value={formData.image_url}
-                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    onChange={(e) => {
+                      setFormData({ ...formData, image_url: e.target.value })
+                      if (!imagePreview) setImagePreview(e.target.value)
+                    }}
+                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#263238] focus:ring-2 focus:ring-[#263238]/10 transition"
                     placeholder="https://example.com/image.jpg"
                   />
-                  {formData.image_url && (
-                    <div className="mt-2 aspect-video rounded-lg border border-border overflow-hidden max-h-48 sm:max-h-64">
-                      <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
-                    </div>
-                  )}
                 </div>
 
                 {/* Title */}
@@ -455,7 +507,7 @@ export default function AdminStories() {
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder="e.g., Education for All"
-                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#263238] focus:ring-2 focus:ring-[#263238]/10 transition"
                     required
                   />
                 </div>
@@ -468,7 +520,7 @@ export default function AdminStories() {
                     onChange={(e) => setFormData({ ...formData, story: e.target.value })}
                     rows={4}
                     placeholder="Write the inspiring story here..."
-                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#263238] focus:ring-2 focus:ring-[#263238]/10 transition resize-none"
                     required
                   />
                 </div>
@@ -484,7 +536,7 @@ export default function AdminStories() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="e.g., Priya Sharma"
-                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#263238] focus:ring-2 focus:ring-[#263238]/10 transition"
                       required
                     />
                   </div>
@@ -497,7 +549,7 @@ export default function AdminStories() {
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                       placeholder="e.g., Rajasthan, India"
-                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#263238] focus:ring-2 focus:ring-[#263238]/10 transition"
                       required
                     />
                   </div>
@@ -506,23 +558,44 @@ export default function AdminStories() {
                 {/* Status */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</label>
-                  <div className="flex items-center gap-3 mt-1">
-                    <label className="flex items-center gap-1 text-sm">
-                      <input type="radio" checked={formData.is_active === true} onChange={() => setFormData({ ...formData, is_active: true })} /> Active
+                  <div className="flex items-center gap-4 mt-1">
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input 
+                        type="radio" 
+                        checked={formData.is_active === true} 
+                        onChange={() => setFormData({ ...formData, is_active: true })} 
+                        className="w-4 h-4 text-[#263238]"
+                      /> 
+                      Active
                     </label>
-                    <label className="flex items-center gap-1 text-sm">
-                      <input type="radio" checked={formData.is_active === false} onChange={() => setFormData({ ...formData, is_active: false })} /> Inactive
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input 
+                        type="radio" 
+                        checked={formData.is_active === false} 
+                        onChange={() => setFormData({ ...formData, is_active: false })} 
+                        className="w-4 h-4 text-[#263238]"
+                      /> 
+                      Inactive
                     </label>
                   </div>
                 </div>
 
-                <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-border">
-                  <button type="button" onClick={() => setModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition">
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-gray-200">
+                  <button 
+                    type="button" 
+                    onClick={() => setModalOpen(false)} 
+                    className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-gray-100 transition"
+                    disabled={loading}
+                  >
                     Cancel
                   </button>
-                  <button type="submit" disabled={loading || uploading} className="px-6 py-2 bg-[#263238] text-white rounded-lg text-sm font-semibold hover:bg-[#263238]/90 transition flex items-center justify-center gap-2 disabled:opacity-50">
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    {loading ? 'Saving...' : (editing ? 'Update' : 'Create')}
+                  <button 
+                    type="submit" 
+                    disabled={loading || uploading} 
+                    className="px-6 py-2 bg-[#263238] text-white rounded-lg text-sm font-semibold hover:bg-[#263238]/90 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading || uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    {loading || uploading ? 'Saving...' : (editing ? 'Update Story' : 'Create Story')}
                   </button>
                 </div>
               </form>
@@ -530,13 +603,23 @@ export default function AdminStories() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Add custom styles for animations */}
+      <style>{`
+        @keyframes slide-in {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        .animate-slide-in {
+          animation: slide-in 0.3s ease-out;
+        }
+      `}</style>
     </div>
   )
 }
-
-// Check icon for success message
-const Check = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-  </svg>
-)
