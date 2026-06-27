@@ -1,121 +1,65 @@
+// src/components/Stories.tsx
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { supabase } from '@/lib/supabase'
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger)
 
-// Impact Stories with NGO images
 interface StoryItem {
-  src: string
+  id: string
+  image_url: string
   title: string
   story: string
   name: string
   location: string
+  display_order: number
+  is_active: boolean
 }
-
-const galleryItemsWithStories: StoryItem[] = [
-  { 
-    src: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500", 
-    title: "Education for All", 
-    story: "Meet Priya, a 12-year-old girl from a remote village in Rajasthan. Through our education program, she learned to read and write. Today, she dreams of becoming a doctor and serving her community.",
-    name: "Priya Sharma",
-    location: "Rajasthan, India"
-  },
-  { 
-    src: "https://images.unsplash.com/photo-1584515933487-779824d29309?w=500", 
-    title: "Healthcare Heroes", 
-    story: "Dr. Rajesh Kumar has been running free health camps in slum areas for 5 years. He has treated over 10,000 patients.",
-    name: "Dr. Rajesh Kumar",
-    location: "Mumbai, India"
-  },
-  { 
-    src: "https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=500", 
-    title: "Women Empowerment", 
-    story: "Sunita Devi started her own tailoring business after completing our skill development program. She now employs 15 women.",
-    name: "Sunita Devi",
-    location: "Uttar Pradesh, India"
-  },
-  { 
-    src: "https://images.unsplash.com/photo-1593113514619-33b934789d6e?w=500", 
-    title: "Clean Water Initiative", 
-    story: "Thanks to our clean water project, the village of Budhpur now has access to safe drinking water.",
-    name: "Village Community",
-    location: "Madhya Pradesh, India"
-  },
-  { 
-    src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=500", 
-    title: "Green Earth Project", 
-    story: "Ramesh and his team have planted over 50,000 trees across deforested areas.",
-    name: "Ramesh Patel",
-    location: "Kerala, India"
-  },
-  { 
-    src: "https://images.unsplash.com/photo-1518398046578-8cca57782e17?w=500", 
-    title: "Urban Development", 
-    story: "The slum of Dharavi now has proper sanitation facilities benefiting over 5,000 families.",
-    name: "Community Leaders",
-    location: "Mumbai, India"
-  },
-  { 
-    src: "https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=500", 
-    title: "Special Needs Care", 
-    story: "Arjun, a child with autism, found hope through our special needs program.",
-    name: "Arjun & Family",
-    location: "Delhi, India"
-  },
-  { 
-    src: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=500", 
-    title: "Cultural Preservation", 
-    story: "We helped local artisans preserve traditional crafts by connecting them with global markets.",
-    name: "Artisan Collective",
-    location: "Gujarat, India"
-  },
-  { 
-    src: "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=500", 
-    title: "Sports for Change", 
-    story: "Underprivileged youth are finding purpose through our sports program.",
-    name: "Young Athletes",
-    location: "Punjab, India"
-  },
-  { 
-    src: "https://images.unsplash.com/photo-1552697664-1505303c2bb6?w=500", 
-    title: "Mental Health Support", 
-    story: "Our counseling center has helped over 1,000 individuals dealing with depression.",
-    name: "Mental Health Team",
-    location: "Bangalore, India"
-  },
-  { 
-    src: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=500", 
-    title: "Disaster Relief", 
-    story: "When floods hit Assam, our team reached affected areas within 24 hours.",
-    name: "Relief Workers",
-    location: "Assam, India"
-  },
-  { 
-    src: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=500", 
-    title: "Global Partnership", 
-    story: "We've brought sustainable farming techniques to 100 villages, increasing crop yields.",
-    name: "Farming Communities",
-    location: "Multiple States, India"
-  }
-]
-
-// Duplicate for dense sphere (36 items for full sphere)
-const galleryItems: StoryItem[] = [...galleryItemsWithStories, ...galleryItemsWithStories, ...galleryItemsWithStories].slice(0, 36)
 
 export default function Stories() {
   const sphereRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [stories, setStories] = useState<StoryItem[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Build sphere on mount
+  // Fetch stories from Supabase
   useEffect(() => {
-    if (!sphereRef.current) return
+    const fetchStories = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('stories')
+          .select('*')
+          .eq('is_active', true)
+          .order('display_order', { ascending: true })
+
+        if (error) {
+          console.error('Error fetching stories:', error)
+          return
+        }
+
+        setStories(data || [])
+      } catch (err) {
+        console.error('Error:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStories()
+  }, [])
+
+  // Build sphere when stories are loaded
+  useEffect(() => {
+    if (!sphereRef.current || stories.length === 0) return
+
+    // Duplicate for dense sphere (36 items for full sphere)
+    const items = [...stories, ...stories, ...stories].slice(0, 36)
 
     const radius = window.innerWidth < 768 ? 280 : 480
-    const items = galleryItems
     const sphere = sphereRef.current
     sphere.innerHTML = ''
 
@@ -124,7 +68,7 @@ export default function Stories() {
       card.className = 'clay-card'
 
       const img = document.createElement('img')
-      img.src = item.src
+      img.src = item.image_url
       img.alt = item.title
       card.appendChild(img)
 
@@ -170,11 +114,32 @@ export default function Stories() {
       tl.kill()
       ScrollTrigger.getAll().forEach((trigger: ScrollTrigger) => trigger.kill())
     }
-  }, [])
+  }, [stories])
 
   const closeModal = () => {
     setIsModalOpen(false)
     setSelectedStory(null)
+  }
+
+  if (loading) {
+    return (
+      <div className="stories-page" style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#FFD700] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p style={{ color: '#4a4a6a' }}>Loading stories...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (stories.length === 0) {
+    return (
+      <div className="stories-page" style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="text-center">
+          <p style={{ color: '#4a4a6a' }}>No stories available yet.</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -224,7 +189,7 @@ export default function Stories() {
           <div className="story-modal" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
             <button className="modal-close" onClick={closeModal}>×</button>
             <div className="modal-image">
-              <img src={selectedStory.src} alt={selectedStory.title} />
+              <img src={selectedStory.image_url} alt={selectedStory.title} />
             </div>
             <div className="modal-content">
               <span className="modal-badge">Impact Story</span>
@@ -265,9 +230,9 @@ export default function Stories() {
           min-height: 100vh;
         }
 
-        /* Hero Section – increased bottom padding */
+        /* Hero Section */
         .hero {
-          padding: 8rem 2rem 10rem; /* more bottom padding */
+          padding: 8rem 2rem 10rem;
           text-align: center;
           display: flex;
           flex-direction: column;
@@ -302,12 +267,12 @@ export default function Stories() {
           font-size: 1.1rem;
         }
 
-        /* 3D Sphere Gallery – added margin-top to push the sphere further down */
+        /* 3D Sphere Gallery */
         .gallery-container {
           position: relative;
           height: 250vh;
           width: 100%;
-          margin-top: 5rem; /* extra space between hero text and globe */
+          margin-top: 5rem;
         }
 
         .scene {
@@ -320,7 +285,7 @@ export default function Stories() {
           align-items: center;
           perspective: 1000px;
           overflow: visible;
-          transform: translateY(10%); /* slight downward shift */
+          transform: translateY(10%);
         }
 
         .sphere {
@@ -588,11 +553,11 @@ export default function Stories() {
 
         @media (max-width: 768px) {
           .hero {
-            padding: 6rem 1.5rem 6rem; /* adjusted for mobile */
+            padding: 6rem 1.5rem 6rem;
           }
 
           .gallery-container {
-            margin-top: 2rem; /* less on mobile but still spacing */
+            margin-top: 2rem;
           }
 
           .clay-card {
