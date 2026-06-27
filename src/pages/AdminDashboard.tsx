@@ -7,7 +7,8 @@ import AdminVolunteers from '@/components/admin/AdminVolunteers';
 import AdminUsers from '@/components/admin/AdminUsers';
 import AdminContacts from '@/components/admin/AdminContacts';
 import AdminGallery from '@/components/admin/AdminGallery';
-import AdminImpactCategories from '@/components/admin/AdminImpactCategories'; // ✅ new import
+import AdminImpactCategories from '@/components/admin/AdminImpactCategories';
+import AdminStories from '@/components/admin/AdminStories'; // ✅ Import AdminStories
 import { Loader2 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -68,7 +69,8 @@ export default function AdminDashboard() {
         <Route path="/users" element={<AdminUsers />} />
         <Route path="/contacts" element={<AdminContacts />} />
         <Route path="/gallery" element={<AdminGallery />} />
-        <Route path="/categories" element={<AdminImpactCategories />} /> {/* ✅ new route */}
+        <Route path="/categories" element={<AdminImpactCategories />} />
+        <Route path="/stories" element={<AdminStories />} /> {/* ✅ Added stories route */}
         <Route path="*" element={<Navigate to="/admin/volunteers" />} />
       </Routes>
     </AdminLayout>
