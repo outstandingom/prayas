@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Heart, LogOut, Menu, X, MessageSquare, ImageIcon, Layers } from 'lucide-react';
+import { LayoutDashboard, Users, Heart, LogOut, Menu, X, MessageSquare, ImageIcon, Layers, BookOpen } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 interface AdminLayoutProps {
@@ -15,6 +15,7 @@ const navItems = [
   { name: 'Contact Messages', path: '/admin/contacts', icon: MessageSquare },
   { name: 'Gallery', path: '/admin/gallery', icon: ImageIcon },
   { name: 'Impact Categories', path: '/admin/categories', icon: Layers },
+  { name: 'Impact Stories', path: '/admin/stories', icon: BookOpen }, // Added Stories
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
