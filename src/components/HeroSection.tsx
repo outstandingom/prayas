@@ -13,7 +13,7 @@ export default function HeroBanner() {
     () => [
       {
         id: 1,
-        title: t('hero.slides.education.title', 'Education'),
+        title: t('hero.slides.education.title', 'Educat'),
         description: t(
           'hero.slides.education.desc',
           'Opening doors to a better future through the power of education.'
