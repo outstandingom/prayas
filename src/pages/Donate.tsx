@@ -394,7 +394,7 @@ export default function Donate() {
               </div>
             </div>
             <div className="mt-4 text-xs text-[#263238]/40 bg-[#FFF314]/5 p-3 rounded-lg border border-[#FFF314]/10">
-              <p>💡 After transferring, please email us at <strong className="text-[#263238]">info.growhaz@gmail.com</strong> with your transaction details and name so we can acknowledge your contribution.</p>
+              <p>💡 After transferring, please email us at <strong className="text-[#263238]">prayas1samajiksevisanstha@gmail.com</strong> with your transaction details and name so we can acknowledge your contribution.</p>
             </div>
           </div>
         </motion.div>
