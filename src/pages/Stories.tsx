@@ -70,6 +70,7 @@ export default function Stories() {
       const img = document.createElement('img')
       img.src = item.image_url
       img.alt = item.title
+      img.loading = 'lazy'
       card.appendChild(img)
 
       // Fibonacci sphere distribution for even spacing
@@ -230,7 +231,7 @@ export default function Stories() {
           min-height: 100vh;
         }
 
-        /* Hero Section */
+        /* Hero Section – increased bottom padding */
         .hero {
           padding: 8rem 2rem 10rem;
           text-align: center;
