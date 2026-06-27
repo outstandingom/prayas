@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { 
   Plus, Edit, Trash2, RefreshCw, ArrowUp, ArrowDown, X, Save, AlertCircle, 
-  Image as ImageIcon, Loader2, Eye, GripVertical, Users, MapPin, BookOpen, CheckCircle
+  Image as ImageIcon, Loader2, Eye, Users, MapPin, BookOpen, CheckCircle
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
