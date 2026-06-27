@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Heart, CreditCard, Smartphone, Building2, IndianRupee, Gift, Loader2, Banknote, Copy, Check } from 'lucide-react'
+import { Heart, CreditCard, Smartphone, Building2, IndianRupee, Gift, Loader2, Banknote, Copy, Check, QrCode } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 const DONATION_AMOUNTS = [
@@ -68,6 +68,8 @@ export default function Donate() {
   const [paymentMethod, setPaymentMethod] = useState('upi')
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [qrCopied, setQrCopied] = useState(false)
+  const [showQR, setShowQR] = useState(false)
 
   const amount = customAmount ? parseInt(customAmount) : selectedAmount
 
@@ -93,6 +95,13 @@ export default function Donate() {
     navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const copyQRToClipboard = () => {
+    // This will copy the QR image URL
+    navigator.clipboard.writeText('public/BANKQR.jpeg')
+    setQrCopied(true)
+    setTimeout(() => setQrCopied(false), 2000)
   }
 
   return (
@@ -247,7 +256,7 @@ export default function Donate() {
           </form>
         </motion.div>
 
-        {/* Bank Transfer Details */}
+        {/* Bank Transfer Details with QR Code */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -261,6 +270,51 @@ export default function Donate() {
           <p className="text-sm text-[#263238]/60 mb-4">
             {t('donate.bank.subtitle', 'You can also donate directly to our bank account via NEFT / RTGS / IMPS.')}
           </p>
+          
+          {/* Bank QR Code Section */}
+          <div className="mb-6">
+            <button
+              onClick={() => setShowQR(!showQR)}
+              className="flex items-center gap-2 text-sm font-medium text-[#263238] hover:text-[#263238]/70 transition-colors"
+            >
+              <QrCode className="w-5 h-5" />
+              {showQR ? 'Hide Bank QR Code' : 'Show Bank QR Code'}
+            </button>
+            
+            {showQR && (
+              <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-[#263238]/10">
+                <div className="flex flex-col items-center">
+                  <div className="relative group">
+                    <img 
+                      src="/BANKQR.jpeg" 
+                      alt="Bank QR Code for UPI Payment" 
+                      className="w-48 h-48 object-contain rounded-lg shadow-md"
+                      onError={(e) => {
+                        // Fallback if image doesn't load
+                        e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50" y="100" font-family="Arial" font-size="16" fill="%236b7280"%3EQR Code%3C/text%3E%3Ctext x="30" y="130" font-family="Arial" font-size="14" fill="%236b7280"%3ENot Available%3C/text%3E%3C/svg%3E';
+                      }}
+                    />
+                    <button
+                      onClick={copyQRToClipboard}
+                      className="absolute top-2 right-2 bg-white/90 p-2 rounded-full shadow-md hover:bg-white transition-colors"
+                      title="Copy QR URL"
+                    >
+                      {qrCopied ? (
+                        <Check className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-[#263238]" />
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-xs text-[#263238]/60 mt-2 text-center">
+                    Scan this QR code with any UPI app to donate
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Bank Account Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             <div className="bg-gray-50 p-3 rounded-lg">
               <span className="text-[#263238]/50 text-xs">Bank Name</span>
