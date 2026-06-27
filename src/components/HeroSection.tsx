@@ -18,7 +18,7 @@ export default function HeroBanner() {
           'hero.slides.education.desc',
           'Opening doors to a better future through the power of education.'
         ),
-        image: '/EDUCATION.JPG',
+        image: '/EDUCATN.JPG',
         imagePosition: 'right',
         // Custom background position – shift even further right (crops left side)
         backgroundPosition: '85% center',
