@@ -122,21 +122,17 @@ export default function ImpactCategories() {
     const deltaX = touch.clientX - touchStartX
     const deltaY = touch.clientY - touchStartY
 
-    // Only treat as horizontal swipe if horizontal movement is significantly larger than vertical
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
-      e.preventDefault() // prevent vertical scroll while swiping horizontally
+      e.preventDefault()
       setIsSwiping(true)
     }
 
     if (isSwiping && Math.abs(deltaX) > SWIPE_THRESHOLD) {
       if (deltaX < 0) {
-        // swipe left → next
         goToCategory(activeIndex + 1)
       } else {
-        // swipe right → previous
         goToCategory(activeIndex - 1)
       }
-      // Reset start positions to avoid repeated triggers
       setTouchStartX(0)
       setTouchStartY(0)
       setIsSwiping(false)
@@ -149,7 +145,7 @@ export default function ImpactCategories() {
     setIsSwiping(false)
   }
 
-  // --- Arrow keyboard / mouse navigation ---
+  // --- Arrow navigation ---
   const handlePrev = () => goToCategory(activeIndex - 1)
   const handleNext = () => goToCategory(activeIndex + 1)
 
@@ -224,7 +220,7 @@ export default function ImpactCategories() {
         </div>
       </div>
 
-      {/* Left/Right Navigation Arrows (visible on hover over container) */}
+      {/* Left/Right Navigation Arrows */}
       <div className="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 flex items-center justify-between px-2 md:px-4">
         <button
           onClick={handlePrev}
@@ -244,7 +240,7 @@ export default function ImpactCategories() {
         </button>
       </div>
 
-      {/* Right Side Navigation Dots (hidden on small screens) */}
+      {/* Right Side Navigation Dots */}
       <div className="fixed right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30 items-center">
         {translatedCategories.map((cat, i) => (
           <div key={cat.id} className="flex items-center gap-2">
@@ -271,11 +267,11 @@ export default function ImpactCategories() {
         ))}
       </div>
 
-      {/* Category Sections – each takes full viewport height */}
+      {/* Category Sections */}
       {translatedCategories.map((cat, i) => (
         <section
           key={cat.id}
-          ref={(el) => (sectionRefs.current[i] = el)}
+          ref={(el) => { sectionRefs.current[i] = el; }}   // ✅ FIXED: block return
           className="w-full min-h-[80vh] sm:min-h-[100vh] flex items-center px-3 sm:px-4 md:px-12 py-8"
           style={{ justifyContent: i % 2 === 0 ? 'flex-start' : 'flex-end' }}
         >
