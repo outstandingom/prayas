@@ -1,6 +1,6 @@
 // src/components/ImpactCategories.tsx
 import { useRef, useState, useEffect, useMemo, useCallback } from 'react'
-import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion'
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '@/lib/supabase'
@@ -28,7 +28,7 @@ export default function ImpactCategories() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerWidth, setContainerWidth] = useState(0)
 
-  // Fetch data
+  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true)
@@ -71,36 +71,32 @@ export default function ImpactCategories() {
     }))
   }, [categories, t])
 
-  // --- Carousel logic ---
   const total = translatedCategories.length
   const [activeIndex, setActiveIndex] = useState(0)
+
+  // Container width for drag constraints
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth)
+      }
+    }
+    updateWidth()
+    window.addEventListener('resize', updateWidth)
+    return () => window.removeEventListener('resize', updateWidth)
+  }, [])
 
   // Motion values for drag
   const x = useMotionValue(0)
   const springX = useSpring(x, { damping: 30, stiffness: 200 })
 
-  // Track container width for snap calculations
-  useEffect(() => {
-    if (containerRef.current) {
-      setContainerWidth(containerRef.current.offsetWidth)
-    }
-    const handleResize = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.offsetWidth)
-      }
-    }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  // Transform x to index (for progress display)
+  // Sync activeIndex with position
   const rawIndex = useTransform(springX, (xPos) => {
     if (!containerWidth) return 0
     const index = -xPos / containerWidth
     return Math.round(index)
   })
 
-  // Update activeIndex when rawIndex changes
   useEffect(() => {
     const unsubscribe = rawIndex.onChange((latest) => {
       const clamped = Math.max(0, Math.min(total - 1, latest))
@@ -109,7 +105,7 @@ export default function ImpactCategories() {
     return unsubscribe
   }, [rawIndex, total])
 
-  // Navigate to a specific slide
+  // Navigate to slide
   const goToSlide = useCallback((index: number) => {
     const target = Math.max(0, Math.min(total - 1, index))
     if (target === activeIndex) return
@@ -119,7 +115,7 @@ export default function ImpactCategories() {
     }
   }, [activeIndex, containerWidth, total, x])
 
-  // Drag end handler – snap to nearest slide
+  // Drag end snap
   const handleDragEnd = (event: any, info: any) => {
     const offset = info.offset.x
     const velocity = info.velocity.x
@@ -141,7 +137,7 @@ export default function ImpactCategories() {
   const handlePrev = () => goToSlide(activeIndex - 1)
   const handleNext = () => goToSlide(activeIndex + 1)
 
-  // --- Loading / empty ---
+  // Loading & empty states
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] bg-white">
@@ -269,73 +265,132 @@ export default function ImpactCategories() {
               key={cat.id}
               className="flex-shrink-0 w-full h-full flex items-center justify-center px-3 sm:px-4 md:px-12"
             >
-              <motion.div
-                className="w-full max-w-sm sm:max-w-md lg:max-w-lg bg-[#263238] p-4 sm:p-5 md:p-6 rounded-2xl shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/20 transition-all duration-300 border border-[#FFF314]/20"
-              >
-                <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#FFF314]/20">
-                  <span className="font-sans text-[10px] tracking-[0.15em] text-[#FFF314] font-bold">
-                    {String(i + 1).padStart(2, '0')} — {cat.title}
-                  </span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFF314]" />
-                </div>
-
-                <h3 className="font-sans text-xl sm:text-2xl lg:text-3xl font-bold text-[#FFF314] mb-1.5">
-                  {cat.title}
-                </h3>
-
-                <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-3 font-sans">
-                  {cat.description}
-                </p>
-
-                <div className="w-full h-40 sm:h-48 md:h-56 rounded-xl overflow-hidden mb-3 opacity-90 hover:opacity-100 transition-opacity border-2 border-[#FFF314]/20">
-                  <img
-                    src={cat.image_url}
-                    alt={cat.title}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/800x500/263238/FFF314?text=No+Image'
-                    }}
-                  />
-                </div>
-
-                {/* Funds Progress Bar */}
-                {cat.goal_funds > 0 && (
-                  <div className="mb-3">
-                    <div className="flex justify-between text-xs text-white/60 mb-1">
-                      <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
-                      <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
+              {/* Card Stack with Blueprint Overlay */}
+              <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg perspective-800">
+                {/* Blueprint card (behind) */}
+                <div
+                  className="absolute inset-0 rounded-2xl bg-[#263238]/10 border-2 border-dashed border-[#263238]/30 transform rotate-[-4deg] scale-[0.98] pointer-events-none"
+                  style={{
+                    backgroundImage: `
+                      linear-gradient(rgba(38,50,56,0.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(38,50,56,0.05) 1px, transparent 1px)
+                    `,
+                    backgroundSize: '20px 20px',
+                  }}
+                >
+                  {/* Blueprint content (wireframe copy) */}
+                  <div className="p-4 sm:p-5 md:p-6 flex flex-col h-full opacity-40">
+                    <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#263238]/30">
+                      <span className="font-sans text-[10px] tracking-[0.15em] text-[#263238] font-bold">
+                        {String(i + 1).padStart(2, '0')} — {cat.title}
+                      </span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#263238]" />
                     </div>
-                    <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-[#FFF314] rounded-full transition-all duration-500"
-                        style={{
-                          width: `${Math.min((cat.funds_collected || 0) / (cat.goal_funds || 1) * 100, 100)}%`
+                    <h3 className="font-sans text-xl sm:text-2xl lg:text-3xl font-bold text-[#263238] mb-1.5">
+                      {cat.title}
+                    </h3>
+                    <p className="text-[#263238]/50 text-xs sm:text-sm leading-relaxed mb-3 font-sans">
+                      {cat.description}
+                    </p>
+                    <div className="w-full h-40 sm:h-48 md:h-56 rounded-xl overflow-hidden mb-3 border-2 border-[#263238]/20">
+                      <img
+                        src={cat.image_url}
+                        alt={cat.title}
+                        className="w-full h-full object-cover grayscale"
+                        loading="lazy"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://via.placeholder.com/800x500/263238/FFF314?text=No+Image'
                         }}
                       />
                     </div>
-                  </div>
-                )}
-
-                {/* Initiatives */}
-                {cat.initiatives && cat.initiatives.length > 0 && (
-                  <div className="mb-3 space-y-1">
-                    {cat.initiatives.slice(0, 3).map((init, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-white/60 text-xs">
-                        <span className="text-sm">{init.icon || '📌'}</span>
-                        <span className="truncate">{init.title}</span>
+                    {/* Funds skeleton */}
+                    <div className="mb-3">
+                      <div className="flex justify-between text-xs text-[#263238]/40 mb-1">
+                        <span>₹0 raised</span>
+                        <span>Goal: ₹0</span>
                       </div>
-                    ))}
+                      <div className="w-full h-1.5 bg-[#263238]/10 rounded-full overflow-hidden">
+                        <div className="h-full bg-[#263238] rounded-full" style={{ width: '0%' }} />
+                      </div>
+                    </div>
+                    <div className="mt-auto flex items-center gap-2 text-[#263238] font-sans text-xs uppercase tracking-wider">
+                      Learn More →
+                    </div>
                   </div>
-                )}
+                </div>
 
-                <button
-                  onClick={() => navigate(`/impact/${cat.slug}`)}
-                  className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white"
+                {/* Main Card */}
+                <motion.div
+                  initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+                  className="relative z-10 bg-[#263238] p-4 sm:p-5 md:p-6 rounded-2xl shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/20 transition-all duration-300 border border-[#FFF314]/20"
                 >
-                  {t('categories.learnMore', 'Learn More')} <span className="text-base leading-none">→</span>
-                </button>
-              </motion.div>
+                  <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#FFF314]/20">
+                    <span className="font-sans text-[10px] tracking-[0.15em] text-[#FFF314] font-bold">
+                      {String(i + 1).padStart(2, '0')} — {cat.title}
+                    </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FFF314]" />
+                  </div>
+
+                  <h3 className="font-sans text-xl sm:text-2xl lg:text-3xl font-bold text-[#FFF314] mb-1.5">
+                    {cat.title}
+                  </h3>
+
+                  <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-3 font-sans">
+                    {cat.description}
+                  </p>
+
+                  <div className="w-full h-40 sm:h-48 md:h-56 rounded-xl overflow-hidden mb-3 opacity-90 hover:opacity-100 transition-opacity border-2 border-[#FFF314]/20">
+                    <img
+                      src={cat.image_url}
+                      alt={cat.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/800x500/263238/FFF314?text=No+Image'
+                      }}
+                    />
+                  </div>
+
+                  {/* Funds Progress Bar */}
+                  {cat.goal_funds > 0 && (
+                    <div className="mb-3">
+                      <div className="flex justify-between text-xs text-white/60 mb-1">
+                        <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
+                        <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#FFF314] rounded-full transition-all duration-500"
+                          style={{
+                            width: `${Math.min((cat.funds_collected || 0) / (cat.goal_funds || 1) * 100, 100)}%`
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Initiatives */}
+                  {cat.initiatives && cat.initiatives.length > 0 && (
+                    <div className="mb-3 space-y-1">
+                      {cat.initiatives.slice(0, 3).map((init, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-white/60 text-xs">
+                          <span className="text-sm">{init.icon || '📌'}</span>
+                          <span className="truncate">{init.title}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => navigate(`/impact/${cat.slug}`)}
+                    className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white"
+                  >
+                    {t('categories.learnMore', 'Learn More')} <span className="text-base leading-none">→</span>
+                  </button>
+                </motion.div>
+              </div>
             </div>
           ))}
         </motion.div>
