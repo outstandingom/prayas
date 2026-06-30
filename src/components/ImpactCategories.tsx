@@ -28,7 +28,7 @@ export default function ImpactCategories() {
   const trackRef = useRef<HTMLDivElement>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  // Fetch categories from Supabase
+  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true)
@@ -74,28 +74,20 @@ export default function ImpactCategories() {
   }, [categories, t])
 
   const total = translatedCategories.length
+  const angleStep = total > 0 ? 360 / total : 0
 
-  // --- 3D carousel settings ---
-  const cardWidth = 260
-  const cardHeight = 380
-  const radius = 750
-  const angleStep = total > 0 ? Math.min(22, 180 / total) : 22
-
-  const updateCards = useCallback(() => {
+  // Update track rotation when currentIndex changes
+  const updateTrack = useCallback(() => {
     if (!trackRef.current) return
-    const cards = trackRef.current.children
-    for (let i = 0; i < cards.length; i++) {
-      const card = cards[i] as HTMLElement
-      const rotation = (i - currentIndex) * angleStep
-      card.style.transform = `rotate(${rotation}deg)`
-      card.classList.toggle('active', i === currentIndex)
-    }
+    const rotation = -currentIndex * angleStep
+    trackRef.current.style.transform = `rotateY(${rotation}deg)`
   }, [currentIndex, angleStep])
 
   useEffect(() => {
-    updateCards()
-  }, [updateCards])
+    updateTrack()
+  }, [updateTrack])
 
+  // Navigation
   const goTo = (dir: number) => {
     const newIndex = currentIndex + dir
     if (newIndex >= 0 && newIndex < total) {
@@ -103,7 +95,7 @@ export default function ImpactCategories() {
     }
   }
 
-  // Mouse wheel with debounce
+  // Mouse wheel
   const lastScrollRef = useRef(0)
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -115,7 +107,7 @@ export default function ImpactCategories() {
     return () => window.removeEventListener('wheel', handleWheel)
   }, [total])
 
-  // Loading / empty states
+  // Loading / empty
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] bg-white">
@@ -137,11 +129,15 @@ export default function ImpactCategories() {
     )
   }
 
+  // Calculate card positions
+  const radius = 400 // distance from centre (adjust to fit)
+  const cardWidth = 240
+  const cardHeight = 360
+
   return (
-    // Main container – overflow visible so the carousel can extend beyond
-    <div className="relative w-full h-screen bg-white overflow-visible">
+    <div className="relative w-full min-h-screen bg-white overflow-hidden">
       {/* Sticky Header */}
-      <div className="absolute top-0 left-0 right-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-[#263238]/10">
+      <div className="sticky top-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-[#263238]/10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -185,7 +181,7 @@ export default function ImpactCategories() {
       </div>
 
       {/* Navigation Arrows */}
-      <div className="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 flex items-center justify-between px-2 md:px-4">
+      <div className="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 flex items-center justify-between px-2 md:px-4" style={{ top: '120px' }}>
         <button
           onClick={() => goTo(-1)}
           disabled={currentIndex === 0}
@@ -231,150 +227,127 @@ export default function ImpactCategories() {
         ))}
       </div>
 
-      {/* 3D Carousel Stage – overflow visible */}
-      <div className="stage absolute top-[15%] left-0 right-0 bottom-0 flex items-center justify-center overflow-visible perspective-2000 pointer-events-none">
+      {/* 3D Carousel – placed below header */}
+      <div className="relative z-10 w-full flex items-center justify-center perspective-1200" style={{ height: 'calc(100vh - 180px)', marginTop: '20px' }}>
         <div
           ref={trackRef}
-          className="carousel-track relative"
+          className="relative"
           style={{
             width: `${cardWidth}px`,
             height: `${cardHeight}px`,
             transformStyle: 'preserve-3d',
+            transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)',
           }}
         >
-          {translatedCategories.map((cat, i) => (
-            <div
-              key={cat.id}
-              className="card absolute inset-0 rounded-2xl transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] pointer-events-auto"
-              style={{
-                transformOrigin: `50% ${radius}px`,
-                backfaceVisibility: 'hidden',
-                filter: i === currentIndex ? 'brightness(1)' : 'brightness(0.4)',
-                scale: i === currentIndex ? '1.1' : '0.8',
-                zIndex: i === currentIndex ? 10 : 1,
-                pointerEvents: i === currentIndex ? 'auto' : 'none',
-              }}
-            >
-              <div className="w-full h-full bg-[#263238] p-4 sm:p-5 md:p-6 rounded-2xl border border-[#FFF314]/20 shadow-xl flex flex-col">
-                <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#FFF314]/20">
-                  <span className="font-sans text-[10px] tracking-[0.15em] text-[#FFF314] font-bold">
-                    {String(i + 1).padStart(2, '0')} — {cat.title}
-                  </span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFF314]" />
-                </div>
+          {translatedCategories.map((cat, i) => {
+            const angle = (i / total) * 360
+            const rad = (angle * Math.PI) / 180
+            const x = radius * Math.sin(rad)
+            const z = radius * Math.cos(rad)
+            const isActive = i === currentIndex
 
-                <h3 className="font-sans text-xl sm:text-2xl lg:text-3xl font-bold text-[#FFF314] mb-1.5 leading-tight">
-                  {cat.title}
-                </h3>
-
-                <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-3 flex-1 line-clamp-3">
-                  {cat.description}
-                </p>
-
-                <div className="w-full h-32 sm:h-40 md:h-48 rounded-xl overflow-hidden mb-3 border-2 border-[#FFF314]/20 flex-shrink-0">
-                  <img
-                    src={cat.image_url}
-                    alt={cat.title}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        'https://via.placeholder.com/800x500/263238/FFF314?text=No+Image'
-                    }}
-                  />
-                </div>
-
-                {cat.goal_funds > 0 && (
-                  <div className="mb-2 flex-shrink-0">
-                    <div className="flex justify-between text-xs text-white/60 mb-1">
-                      <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
-                      <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
-                    </div>
-                    <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-[#FFF314] rounded-full transition-all duration-500"
-                        style={{
-                          width: `${Math.min((cat.funds_collected || 0) / (cat.goal_funds || 1) * 100, 100)}%`,
-                        }}
-                      />
-                    </div>
+            return (
+              <div
+                key={cat.id}
+                className="absolute inset-0 rounded-2xl transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+                style={{
+                  transform: `translate3d(${x}px, 0, ${z}px) rotateY(${-angle}deg)`,
+                  backfaceVisibility: 'hidden',
+                  filter: isActive ? 'brightness(1)' : 'brightness(0.4)',
+                  scale: isActive ? '1.1' : '0.85',
+                  zIndex: isActive ? 10 : 1,
+                  pointerEvents: isActive ? 'auto' : 'none',
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                {/* Card content */}
+                <div className="w-full h-full bg-[#263238] p-4 sm:p-5 md:p-6 rounded-2xl border border-[#FFF314]/20 shadow-xl flex flex-col">
+                  <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#FFF314]/20">
+                    <span className="font-sans text-[10px] tracking-[0.15em] text-[#FFF314] font-bold">
+                      {String(i + 1).padStart(2, '0')} — {cat.title}
+                    </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FFF314]" />
                   </div>
-                )}
 
-                {cat.initiatives && cat.initiatives.length > 0 && (
-                  <div className="mb-2 space-y-0.5 flex-shrink-0">
-                    {cat.initiatives.slice(0, 2).map((init, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-white/60 text-xs">
-                        <span className="text-sm">{init.icon || '📌'}</span>
-                        <span className="truncate">{init.title}</span>
+                  <h3 className="font-sans text-xl sm:text-2xl lg:text-3xl font-bold text-[#FFF314] mb-1.5 leading-tight">
+                    {cat.title}
+                  </h3>
+
+                  <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-3 flex-1 line-clamp-3">
+                    {cat.description}
+                  </p>
+
+                  <div className="w-full h-32 sm:h-40 md:h-48 rounded-xl overflow-hidden mb-3 border-2 border-[#FFF314]/20 flex-shrink-0">
+                    <img
+                      src={cat.image_url}
+                      alt={cat.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://via.placeholder.com/800x500/263238/FFF314?text=No+Image'
+                      }}
+                    />
+                  </div>
+
+                  {cat.goal_funds > 0 && (
+                    <div className="mb-2 flex-shrink-0">
+                      <div className="flex justify-between text-xs text-white/60 mb-1">
+                        <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
+                        <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
                       </div>
-                    ))}
-                  </div>
-                )}
+                      <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#FFF314] rounded-full transition-all duration-500"
+                          style={{
+                            width: `${Math.min((cat.funds_collected || 0) / (cat.goal_funds || 1) * 100, 100)}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
 
-                <button
-                  onClick={() => navigate(`/impact/${cat.slug}`)}
-                  className="mt-auto inline-flex items-center gap-2 text-[#FFF314] font-sans text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white"
-                >
-                  {t('categories.learnMore', 'Learn More')} <span className="text-base leading-none">→</span>
-                </button>
+                  {cat.initiatives && cat.initiatives.length > 0 && (
+                    <div className="mb-2 space-y-0.5 flex-shrink-0">
+                      {cat.initiatives.slice(0, 2).map((init, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-white/60 text-xs">
+                          <span className="text-sm">{init.icon || '📌'}</span>
+                          <span className="truncate">{init.title}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => navigate(`/impact/${cat.slug}`)}
+                    className="mt-auto inline-flex items-center gap-2 text-[#FFF314] font-sans text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white"
+                  >
+                    {t('categories.learnMore', 'Learn More')} <span className="text-base leading-none">→</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
-      {/* Global carousel styles */}
+      {/* Global styles */}
       <style>{`
-        .perspective-2000 {
-          perspective: 2000px;
-        }
-        .stage {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-        }
-        .carousel-track {
-          transform-style: preserve-3d;
-          transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-          pointer-events: none;
-        }
-        .card {
-          transform-origin: 50% 750px; /* fallback, overridden by inline style */
-          backface-visibility: hidden;
-          transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
-                      filter 0.8s,
-                      scale 0.8s;
-          pointer-events: none;
-        }
-        .card.active {
-          filter: brightness(1) !important;
-          scale: 1.1 !important;
-          z-index: 10 !important;
-          pointer-events: auto !important;
-        }
-        .card:not(.active) {
-          filter: brightness(0.4) !important;
-          scale: 0.8 !important;
-          pointer-events: none !important;
+        .perspective-1200 {
+          perspective: 1200px;
         }
         /* Responsive adjustments */
         @media (max-width: 640px) {
-          .carousel-track {
+          .card-container {
             width: 200px !important;
             height: 300px !important;
           }
-          .card .p-4 {
-            padding: 1rem !important;
-          }
         }
         @media (min-width: 641px) and (max-width: 1024px) {
-          .carousel-track {
-            width: 230px !important;
-            height: 340px !important;
+          .card-container {
+            width: 220px !important;
+            height: 330px !important;
           }
         }
       `}</style>
