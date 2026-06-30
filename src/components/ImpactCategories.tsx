@@ -44,11 +44,10 @@ export default function ImpactCategories() {
           return
         }
 
-        // Parse initiatives if they're stored as JSON string
         const parsedData = data?.map(item => ({
           ...item,
-          initiatives: typeof item.initiatives === 'string' 
-            ? JSON.parse(item.initiatives) 
+          initiatives: typeof item.initiatives === 'string'
+            ? JSON.parse(item.initiatives)
             : item.initiatives || []
         })) || []
 
@@ -63,11 +62,10 @@ export default function ImpactCategories() {
     fetchCategories()
   }, [])
 
-  // Memoize categories for translations - now using fetched data
+  // Memoize categories with translations
   const translatedCategories = useMemo(() => {
     return categories.map(cat => ({
       ...cat,
-      // Use translation keys if available, fallback to stored values
       title: t(`categories.${cat.slug}.title`, cat.title),
       description: t(`categories.${cat.slug}.desc`, cat.description),
     }))
@@ -88,11 +86,6 @@ export default function ImpactCategories() {
       setActiveIndex(currentIndex)
     }
   })
-
-  // Calculate container height based on number of categories
-  const containerHeight = translatedCategories.length > 0 
-    ? `${translatedCategories.length * 55 + 30}vh` 
-    : '100vh'
 
   if (loading) {
     return (
@@ -116,9 +109,8 @@ export default function ImpactCategories() {
   }
 
   return (
-    <div ref={containerRef} className="relative w-full bg-white" style={{ height: containerHeight }}>
-      
-      {/* Heading Section at the Start */}
+    <div ref={containerRef} className="relative w-full bg-white">
+      {/* Sticky Header */}
       <div className="sticky top-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-[#263238]/10">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -135,7 +127,7 @@ export default function ImpactCategories() {
             <p className="text-[#263238]/60 text-sm sm:text-base max-w-2xl mt-2 sm:mt-3 font-sans">
               {t('categories.header.desc', 'Explore our key focus areas driving meaningful change in communities across the globe.')}
             </p>
-            
+
             {/* Progress Indicator */}
             <div className="flex items-center gap-3 mt-3 sm:mt-4">
               <div className="flex items-center gap-2">
@@ -145,7 +137,7 @@ export default function ImpactCategories() {
                 <span className="text-[#263238]/30 font-sans text-sm">/ {String(translatedCategories.length).padStart(2, '0')}</span>
               </div>
               <div className="h-px flex-1 max-w-[200px] bg-[#263238]/10 relative overflow-hidden">
-                <motion.div 
+                <motion.div
                   className="h-full bg-[#263238] absolute left-0 top-0"
                   style={{ width: `${((activeIndex + 1) / translatedCategories.length) * 100}%` }}
                   transition={{ duration: 0.3 }}
@@ -159,11 +151,11 @@ export default function ImpactCategories() {
         </div>
       </div>
 
-      {/* Right Side Navigation Dots */}
+      {/* Right Side Navigation Dots (hidden on small screens) */}
       <div className="fixed right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30 items-center">
         {translatedCategories.map((cat, i) => (
           <div key={cat.id} className="flex items-center gap-2">
-            <div 
+            <div
               className="transition-all duration-300 rounded-full"
               style={{
                 width: i === activeIndex ? '10px' : '5px',
@@ -173,7 +165,7 @@ export default function ImpactCategories() {
               }}
             />
             {i === activeIndex && (
-              <motion.span 
+              <motion.span
                 initial={{ opacity: 0, x: 5 }}
                 animate={{ opacity: 1, x: 0 }}
                 className="text-xs font-sans font-bold text-[#263238]"
@@ -185,88 +177,86 @@ export default function ImpactCategories() {
         ))}
       </div>
 
-      {/* Detail Cards Overlay */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20" style={{ paddingTop: '40vh' }}>
-        {translatedCategories.map((cat, i) => (
-          <section 
-            key={cat.id} 
-            className="h-[55vh] w-full flex items-end md:items-center pb-20 md:pb-0 px-3 sm:px-4 md:px-12"
-            style={{ justifyContent: i % 2 === 0 ? 'flex-start' : 'flex-end' }}
+      {/* Category Sections – each takes full viewport height */}
+      {translatedCategories.map((cat, i) => (
+        <section
+          key={cat.id}
+          className="w-full min-h-[80vh] sm:min-h-[100vh] flex items-center px-3 sm:px-4 md:px-12 py-8"
+          style={{ justifyContent: i % 2 === 0 ? 'flex-start' : 'flex-end' }}
+        >
+          <motion.div
+            initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: false, margin: "-5% 0px -5% 0px" }}
+            transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+            className="w-full max-w-sm sm:max-w-md lg:max-w-lg bg-[#263238] p-4 sm:p-5 md:p-6 rounded-2xl shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/20 transition-all duration-300 border border-[#FFF314]/20"
           >
-            <motion.div 
-              initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false, margin: "-5% 0px -5% 0px" }}
-              transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
-              className="pointer-events-auto w-full max-w-sm sm:max-w-md bg-[#263238] p-4 sm:p-5 rounded-2xl shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/20 transition-all duration-300 border border-[#FFF314]/20"
+            <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#FFF314]/20">
+              <span className="font-sans text-[10px] tracking-[0.15em] text-[#FFF314] font-bold">
+                {String(i + 1).padStart(2, '0')} — {cat.title}
+              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FFF314]" />
+            </div>
+
+            <h3 className="font-sans text-xl sm:text-2xl lg:text-3xl font-bold text-[#FFF314] mb-1.5">
+              {cat.title}
+            </h3>
+
+            <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-3 font-sans">
+              {cat.description}
+            </p>
+
+            <div className="w-full h-40 sm:h-48 md:h-56 rounded-xl overflow-hidden mb-3 opacity-90 hover:opacity-100 transition-opacity border-2 border-[#FFF314]/20">
+              <img
+                src={cat.image_url}
+                alt={cat.title}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/800x500/263238/FFF314?text=No+Image'
+                }}
+              />
+            </div>
+
+            {/* Funds Progress Bar */}
+            {cat.goal_funds > 0 && (
+              <div className="mb-3">
+                <div className="flex justify-between text-xs text-white/60 mb-1">
+                  <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
+                  <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
+                </div>
+                <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#FFF314] rounded-full transition-all duration-500"
+                    style={{
+                      width: `${Math.min((cat.funds_collected || 0) / (cat.goal_funds || 1) * 100, 100)}%`
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Initiatives */}
+            {cat.initiatives && cat.initiatives.length > 0 && (
+              <div className="mb-3 space-y-1">
+                {cat.initiatives.slice(0, 3).map((init, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-white/60 text-xs">
+                    <span className="text-sm">{init.icon || '📌'}</span>
+                    <span className="truncate">{init.title}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button
+              onClick={() => navigate(`/impact/${cat.slug}`)}
+              className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white"
             >
-              <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#FFF314]/20">
-                <span className="font-sans text-[10px] tracking-[0.15em] text-[#FFF314] font-bold">
-                  {String(i + 1).padStart(2, '0')} — {cat.title}
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#FFF314]" />
-              </div>
-
-              <h3 className="font-sans text-xl sm:text-2xl font-bold text-[#FFF314] mb-1.5">
-                {cat.title}
-              </h3>
-
-              <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-3 font-sans">
-                {cat.description}
-              </p>
-
-              <div className="w-full h-40 sm:h-48 md:h-56 rounded-xl overflow-hidden mb-3 opacity-90 hover:opacity-100 transition-opacity border-2 border-[#FFF314]/20">
-                <img 
-                  src={cat.image_url} 
-                  alt={cat.title} 
-                  className="w-full h-full object-cover" 
-                  loading="lazy"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/800x500/263238/FFF314?text=No+Image'
-                  }}
-                />
-              </div>
-
-              {/* Funds Progress Bar */}
-              {cat.goal_funds > 0 && (
-                <div className="mb-3">
-                  <div className="flex justify-between text-xs text-white/60 mb-1">
-                    <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
-                    <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-[#FFF314] rounded-full transition-all duration-500"
-                      style={{ 
-                        width: `${Math.min((cat.funds_collected || 0) / (cat.goal_funds || 1) * 100, 100)}%` 
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Initiatives */}
-              {cat.initiatives && cat.initiatives.length > 0 && (
-                <div className="mb-3 space-y-1">
-                  {cat.initiatives.slice(0, 3).map((init, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-white/60 text-xs">
-                      <span className="text-sm">{init.icon || '📌'}</span>
-                      <span className="truncate">{init.title}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <button 
-                onClick={() => navigate(`/impact/${cat.slug}`)}
-                className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white"
-              >
-                {t('categories.learnMore', 'Learn More')} <span className="text-base leading-none">→</span>
-              </button>
-            </motion.div>
-          </section>
-        ))}
-      </div>
+              {t('categories.learnMore', 'Learn More')} <span className="text-base leading-none">→</span>
+            </button>
+          </motion.div>
+        </section>
+      ))}
     </div>
   )
 }
