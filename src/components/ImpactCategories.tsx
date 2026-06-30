@@ -1,5 +1,5 @@
 // src/components/ImpactCategories.tsx
-import { useRef, useState, useEffect, useMemo } from 'react'
+import { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import { motion, useScroll, useSpring, useMotionValueEvent } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -23,10 +23,17 @@ interface Category {
 export default function ImpactCategories() {
   const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
+  const sectionRefs = useRef<(HTMLElement | null)[]>([])
   const [activeIndex, setActiveIndex] = useState(0)
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
+
+  // --- Swipe state ---
+  const [touchStartX, setTouchStartX] = useState(0)
+  const [touchStartY, setTouchStartY] = useState(0)
+  const [isSwiping, setIsSwiping] = useState(false)
+  const SWIPE_THRESHOLD = 50
 
   // Fetch categories from Supabase
   useEffect(() => {
@@ -71,6 +78,7 @@ export default function ImpactCategories() {
     }))
   }, [categories, t])
 
+  // --- Scroll tracking ---
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -87,6 +95,65 @@ export default function ImpactCategories() {
     }
   })
 
+  // --- Navigate to a specific category (scroll into view) ---
+  const goToCategory = useCallback((index: number) => {
+    const total = translatedCategories.length
+    if (total === 0) return
+    const target = Math.max(0, Math.min(total - 1, index))
+    if (target === activeIndex) return
+
+    const section = sectionRefs.current[target]
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [translatedCategories.length, activeIndex])
+
+  // --- Swipe handlers ---
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0]
+    setTouchStartX(touch.clientX)
+    setTouchStartY(touch.clientY)
+    setIsSwiping(false)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!touchStartX || !touchStartY) return
+    const touch = e.touches[0]
+    const deltaX = touch.clientX - touchStartX
+    const deltaY = touch.clientY - touchStartY
+
+    // Only treat as horizontal swipe if horizontal movement is significantly larger than vertical
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+      e.preventDefault() // prevent vertical scroll while swiping horizontally
+      setIsSwiping(true)
+    }
+
+    if (isSwiping && Math.abs(deltaX) > SWIPE_THRESHOLD) {
+      if (deltaX < 0) {
+        // swipe left → next
+        goToCategory(activeIndex + 1)
+      } else {
+        // swipe right → previous
+        goToCategory(activeIndex - 1)
+      }
+      // Reset start positions to avoid repeated triggers
+      setTouchStartX(0)
+      setTouchStartY(0)
+      setIsSwiping(false)
+    }
+  }
+
+  const handleTouchEnd = () => {
+    setTouchStartX(0)
+    setTouchStartY(0)
+    setIsSwiping(false)
+  }
+
+  // --- Arrow keyboard / mouse navigation ---
+  const handlePrev = () => goToCategory(activeIndex - 1)
+  const handleNext = () => goToCategory(activeIndex + 1)
+
+  // --- Loading / empty states ---
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] bg-white">
@@ -109,7 +176,13 @@ export default function ImpactCategories() {
   }
 
   return (
-    <div ref={containerRef} className="relative w-full bg-white">
+    <div
+      ref={containerRef}
+      className="relative w-full bg-white"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Sticky Header */}
       <div className="sticky top-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-[#263238]/10">
         <div className="max-w-7xl mx-auto">
@@ -151,18 +224,39 @@ export default function ImpactCategories() {
         </div>
       </div>
 
+      {/* Left/Right Navigation Arrows (visible on hover over container) */}
+      <div className="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 flex items-center justify-between px-2 md:px-4">
+        <button
+          onClick={handlePrev}
+          disabled={activeIndex === 0}
+          className="pointer-events-auto p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] text-xl font-bold"
+          aria-label="Previous category"
+        >
+          ‹
+        </button>
+        <button
+          onClick={handleNext}
+          disabled={activeIndex === translatedCategories.length - 1}
+          className="pointer-events-auto p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] text-xl font-bold"
+          aria-label="Next category"
+        >
+          ›
+        </button>
+      </div>
+
       {/* Right Side Navigation Dots (hidden on small screens) */}
       <div className="fixed right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30 items-center">
         {translatedCategories.map((cat, i) => (
           <div key={cat.id} className="flex items-center gap-2">
             <div
-              className="transition-all duration-300 rounded-full"
+              className="transition-all duration-300 rounded-full cursor-pointer"
               style={{
                 width: i === activeIndex ? '10px' : '5px',
                 height: i === activeIndex ? '10px' : '5px',
                 backgroundColor: i === activeIndex ? '#FFF314' : '#26323820',
                 boxShadow: i === activeIndex ? '0 0 8px rgba(255,243,20,0.5)' : 'none'
               }}
+              onClick={() => goToCategory(i)}
             />
             {i === activeIndex && (
               <motion.span
@@ -181,6 +275,7 @@ export default function ImpactCategories() {
       {translatedCategories.map((cat, i) => (
         <section
           key={cat.id}
+          ref={(el) => (sectionRefs.current[i] = el)}
           className="w-full min-h-[80vh] sm:min-h-[100vh] flex items-center px-3 sm:px-4 md:px-12 py-8"
           style={{ justifyContent: i % 2 === 0 ? 'flex-start' : 'flex-end' }}
         >
