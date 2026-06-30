@@ -1,6 +1,6 @@
 // src/components/ImpactCategories.tsx
 import { useRef, useState, useEffect, useMemo, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '@/lib/supabase'
@@ -65,7 +65,6 @@ export default function ImpactCategories() {
     fetchCategories()
   }, [])
 
-  // Translated categories
   const translatedCategories = useMemo(() => {
     return categories.map(cat => ({
       ...cat,
@@ -76,13 +75,12 @@ export default function ImpactCategories() {
 
   const total = translatedCategories.length
 
-  // --- 3D carousel configuration ---
-  const cardWidth = 260         // responsive: adjust via CSS later
+  // --- 3D carousel settings ---
+  const cardWidth = 260
   const cardHeight = 380
-  const radius = 750            // distance from centre
+  const radius = 750
   const angleStep = total > 0 ? Math.min(22, 180 / total) : 22
 
-  // Update card transforms whenever currentIndex changes
   const updateCards = useCallback(() => {
     if (!trackRef.current) return
     const cards = trackRef.current.children
@@ -98,7 +96,6 @@ export default function ImpactCategories() {
     updateCards()
   }, [updateCards])
 
-  // Navigation functions
   const goTo = (dir: number) => {
     const newIndex = currentIndex + dir
     if (newIndex >= 0 && newIndex < total) {
@@ -106,7 +103,7 @@ export default function ImpactCategories() {
     }
   }
 
-  // Mouse wheel support (with debounce)
+  // Mouse wheel with debounce
   const lastScrollRef = useRef(0)
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -118,7 +115,7 @@ export default function ImpactCategories() {
     return () => window.removeEventListener('wheel', handleWheel)
   }, [total])
 
-  // --- Loading & empty states ---
+  // Loading / empty states
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] bg-white">
@@ -141,7 +138,8 @@ export default function ImpactCategories() {
   }
 
   return (
-    <div className="relative w-full h-screen bg-white overflow-hidden">
+    // Main container – overflow visible so the carousel can extend beyond
+    <div className="relative w-full h-screen bg-white overflow-visible">
       {/* Sticky Header */}
       <div className="absolute top-0 left-0 right-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-[#263238]/10">
         <div className="max-w-7xl mx-auto">
@@ -186,7 +184,7 @@ export default function ImpactCategories() {
         </div>
       </div>
 
-      {/* Left/Right Navigation Arrows */}
+      {/* Navigation Arrows */}
       <div className="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 flex items-center justify-between px-2 md:px-4">
         <button
           onClick={() => goTo(-1)}
@@ -206,7 +204,7 @@ export default function ImpactCategories() {
         </button>
       </div>
 
-      {/* Right Side Navigation Dots */}
+      {/* Right Side Dots */}
       <div className="fixed right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30 items-center">
         {translatedCategories.map((cat, i) => (
           <div key={cat.id} className="flex items-center gap-2">
@@ -218,9 +216,7 @@ export default function ImpactCategories() {
                 backgroundColor: i === currentIndex ? '#FFF314' : '#26323820',
                 boxShadow: i === currentIndex ? '0 0 8px rgba(255,243,20,0.5)' : 'none',
               }}
-              onClick={() => {
-                if (i !== currentIndex) setCurrentIndex(i)
-              }}
+              onClick={() => setCurrentIndex(i)}
             />
             {i === currentIndex && (
               <motion.span
@@ -235,8 +231,8 @@ export default function ImpactCategories() {
         ))}
       </div>
 
-      {/* 3D Carousel Stage */}
-      <div className="stage absolute top-[10%] left-0 right-0 bottom-0 flex items-center justify-center perspective-2000">
+      {/* 3D Carousel Stage – overflow visible */}
+      <div className="stage absolute top-[15%] left-0 right-0 bottom-0 flex items-center justify-center overflow-visible perspective-2000 pointer-events-none">
         <div
           ref={trackRef}
           className="carousel-track relative"
@@ -249,7 +245,7 @@ export default function ImpactCategories() {
           {translatedCategories.map((cat, i) => (
             <div
               key={cat.id}
-              className="card absolute inset-0 rounded-2xl transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+              className="card absolute inset-0 rounded-2xl transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] pointer-events-auto"
               style={{
                 transformOrigin: `50% ${radius}px`,
                 backfaceVisibility: 'hidden',
@@ -259,7 +255,6 @@ export default function ImpactCategories() {
                 pointerEvents: i === currentIndex ? 'auto' : 'none',
               }}
             >
-              {/* Card Content */}
               <div className="w-full h-full bg-[#263238] p-4 sm:p-5 md:p-6 rounded-2xl border border-[#FFF314]/20 shadow-xl flex flex-col">
                 <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#FFF314]/20">
                   <span className="font-sans text-[10px] tracking-[0.15em] text-[#FFF314] font-bold">
@@ -289,7 +284,6 @@ export default function ImpactCategories() {
                   />
                 </div>
 
-                {/* Funds */}
                 {cat.goal_funds > 0 && (
                   <div className="mb-2 flex-shrink-0">
                     <div className="flex justify-between text-xs text-white/60 mb-1">
@@ -307,7 +301,6 @@ export default function ImpactCategories() {
                   </div>
                 )}
 
-                {/* Initiatives */}
                 {cat.initiatives && cat.initiatives.length > 0 && (
                   <div className="mb-2 space-y-0.5 flex-shrink-0">
                     {cat.initiatives.slice(0, 2).map((init, idx) => (
@@ -331,7 +324,7 @@ export default function ImpactCategories() {
         </div>
       </div>
 
-      {/* Global styles for the carousel (placed here for convenience) */}
+      {/* Global carousel styles */}
       <style>{`
         .perspective-2000 {
           perspective: 2000px;
@@ -342,17 +335,20 @@ export default function ImpactCategories() {
           justify-content: center;
           width: 100%;
           height: 100%;
+          pointer-events: none;
         }
         .carousel-track {
           transform-style: preserve-3d;
           transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+          pointer-events: none;
         }
         .card {
-          transform-origin: 50% 750px; /* will be overridden by inline style */
+          transform-origin: 50% 750px; /* fallback, overridden by inline style */
           backface-visibility: hidden;
           transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
                       filter 0.8s,
                       scale 0.8s;
+          pointer-events: none;
         }
         .card.active {
           filter: brightness(1) !important;
@@ -365,7 +361,7 @@ export default function ImpactCategories() {
           scale: 0.8 !important;
           pointer-events: none !important;
         }
-        /* Responsive card sizing */
+        /* Responsive adjustments */
         @media (max-width: 640px) {
           .carousel-track {
             width: 200px !important;
