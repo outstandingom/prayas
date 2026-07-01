@@ -144,10 +144,32 @@ export default function Navbar() {
   const volunteerText = safeT('nav.volunteer');
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[9999] flex flex-col">
-      {/* ---------- TOP STRIP (visible on ALL screen sizes) ---------- */}
+    <header className="fixed top-0 left-0 right-0 z-[9999] relative">
+      {/* ---------- OVERLAPPING LOGO (absolute) ---------- */}
+      <Link
+        to="/"
+        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group"
+      >
+        <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
+          <img
+            src="https://i.ibb.co/7JR7zD39/IMG-20260624-104333.png"
+            alt="Prayas Logo"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="flex flex-col leading-tight">
+          <span className={`font-display font-bold text-xl sm:text-3xl tracking-tight ${textColor} group-hover:text-[#FFF314] transition drop-shadow-md`}>
+            Prayas
+          </span>
+          <span className={`font-display text-[10px] sm:text-sm font-medium opacity-90 ${textColor} group-hover:text-[#FFF314] transition`}>
+            Samaj Sevi Sanstha
+          </span>
+        </div>
+      </Link>
+
+      {/* ---------- TOP STRIP (visible on ALL sizes) ---------- */}
       {isStripVisible && (
-        <div className="block bg-[#263238] text-white py-2 px-4 flex flex-col sm:flex-row items-center justify-between w-full shadow-md gap-2">
+        <div className="block bg-[#263238] text-white py-2 px-4 pl-20 sm:pl-36 flex flex-col sm:flex-row items-center justify-between w-full shadow-md gap-2">
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-center sm:text-left">
             <span className="font-bold text-sm sm:text-base tracking-wide">CHILD RIGHTS AND YOU</span>
             <span className="text-[10px] sm:text-xs opacity-80">Let's ensure happy childhoods for India's children</span>
@@ -184,34 +206,15 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* ---------- MAIN NAVBAR (unchanged) ---------- */}
+      {/* ---------- MAIN NAVBAR ---------- */}
       <div
         className={`transition-all duration-500 ${bgHeader} 
-          min-h-[70px] sm:min-h-[80px] flex items-center py-2 sm:py-3`}
+          min-h-[70px] sm:min-h-[80px] flex items-center py-2 sm:py-3 pl-20 sm:pl-36`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
-          <div className="flex items-center justify-between gap-3">
-            {/* Logo – two lines: "Prayas" + "Samaj Sevi Sanstha" */}
-            <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <img
-                  src="https://i.ibb.co/7JR7zD39/IMG-20260624-104333.png"
-                  alt="Prayas Logo"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex flex-col leading-tight">
-                <span className={`font-display font-bold text-xl sm:text-2xl tracking-tight ${textColor} group-hover:text-[#FFF314] transition`}>
-                  Prayas
-                </span>
-                <span className={`font-display text-[10px] sm:text-xs font-medium opacity-80 ${textColor} group-hover:text-[#FFF314] transition`}>
-                  Samaj Sevi Sanstha
-                </span>
-              </div>
-            </Link>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2 lg:gap-4">
+          <div className="flex items-center justify-end gap-3">
+            {/* Desktop Navigation - we align to the right */}
+            <nav className="hidden md:flex items-center gap-2 lg:gap-4 ml-auto">
               {navLinks.map((link) => {
                 const hasSubmenu = link.submenu && link.submenu.length > 0;
                 const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
