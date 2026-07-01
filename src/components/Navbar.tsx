@@ -191,7 +191,7 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
           <div className="flex items-center justify-between gap-3">
-            {/* Logo – now two lines: "Prayas" + "Samaj Sevi Sanstha" */}
+            {/* Logo – two lines: "Prayas" + "Samaj Sevi Sanstha" */}
             <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
               <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                 <img
