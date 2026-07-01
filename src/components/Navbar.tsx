@@ -180,12 +180,12 @@ export default function Navbar() {
           className="flex flex-col leading-tight"
         >
           <span
-            className={`font-display font-bold text-xl sm:text-3xl tracking-tight ${textColor} group-hover:text-[#FFF314] transition drop-shadow-md`}
+            className={`font-display font-bold text-xl sm:text-3xl tracking-tight group-hover:text-[#FFF314] transition drop-shadow-md ${isHome ? 'text-white' : 'text-[#263238]'}`}
           >
             {brandFirstLine[brandLangIndex]}
           </span>
           <span
-            className={`font-display text-[10px] sm:text-sm font-medium opacity-90 ${textColor} group-hover:text-[#FFF314] transition`}
+            className={`font-display text-[10px] sm:text-sm font-medium opacity-90 group-hover:text-[#FFF314] transition ${isHome ? 'text-white' : 'text-[#263238]'}`}
           >
             {brandSecondLine[brandLangIndex]}
           </span>
@@ -194,7 +194,7 @@ export default function Navbar() {
 
       {/* ---------- TOP STRIP – gradient from SmoothLoader ---------- */}
       {isStripVisible && (
-        <div className="block bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white py-2 px-4 pl-20 sm:pl-36 flex flex-col sm:flex-row items-center justify-between w-full shadow-md gap-2">
+        <div className="hidden sm:flex bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white py-2 px-4 pl-20 sm:pl-36 flex-col sm:flex-row items-center justify-between w-full shadow-md gap-2">
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-center sm:text-left">
             <span className="font-bold text-sm sm:text-base tracking-wide">CHILD RIGHTS AND YOU</span>
             <span className="text-[10px] sm:text-xs opacity-80">Let's ensure happy childhoods for India's children</span>
