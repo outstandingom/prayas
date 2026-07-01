@@ -111,23 +111,20 @@ export default function ImpactCategories() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goTo])
 
-  // Mouse wheel navigation (throttled, no small‑scroll filter)
+  // Mouse wheel navigation – throttled and prevents page scroll
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault()
-
+      e.preventDefault() // prevent page scroll
       const now = Date.now()
-      if (now - lastWheelTime.current < 500) return // throttle
+      if (now - lastWheelTime.current < 500) return
       lastWheelTime.current = now
 
-      // Determine primary direction: use deltaX if it's larger, else deltaY
       const deltaX = Math.abs(e.deltaX)
       const deltaY = Math.abs(e.deltaY)
       let delta = deltaX > deltaY ? e.deltaX : e.deltaY
-
       if (delta === 0) return
 
       const direction = delta > 0 ? 1 : -1
@@ -138,7 +135,7 @@ export default function ImpactCategories() {
     return () => container.removeEventListener('wheel', handleWheel)
   }, [goTo])
 
-  // Drag handlers
+  // Drag handlers – prevent default to stop page scroll
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
     setIsDragging(true)
@@ -147,6 +144,7 @@ export default function ImpactCategories() {
     if (trackRef.current) {
       trackRef.current.style.cursor = 'grabbing'
     }
+    if ('touches' in e) e.preventDefault() // prevent page scroll on touch
   }
 
   const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
@@ -154,6 +152,7 @@ export default function ImpactCategories() {
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
     const diff = clientX - startX
     setDragOffset(diff)
+    if ('touches' in e) e.preventDefault() // prevent page scroll
   }
 
   const handleDragEnd = () => {
@@ -204,9 +203,9 @@ export default function ImpactCategories() {
   const transformValue = -(currentIndex * slideWidth) + (dragOffset / containerWidth) * 100
 
   return (
-    <div className="relative w-full min-h-screen bg-white overflow-hidden">
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-[#263238]/10">
+    <div className="relative w-full h-screen bg-white overflow-hidden">
+      {/* Sticky Header – fixed height */}
+      <div className="absolute top-0 left-0 right-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-[#263238]/10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -249,11 +248,13 @@ export default function ImpactCategories() {
         </div>
       </div>
 
-      {/* Carousel Section */}
-      <div className="relative flex items-center justify-center w-full px-4 sm:px-8 py-6" style={{ minHeight: 'calc(100vh - 200px)' }}>
+      {/* Carousel Section – fills remaining height */}
+      <div
+        className="absolute top-[170px] left-0 right-0 bottom-0 flex items-center justify-center px-4 sm:px-8"
+      >
         <div
           ref={containerRef}
-          className="relative w-full max-w-6xl overflow-hidden rounded-2xl select-none"
+          className="relative w-full max-w-6xl h-full overflow-hidden rounded-2xl select-none"
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
           onMouseUp={handleDragEnd}
@@ -266,7 +267,7 @@ export default function ImpactCategories() {
           {/* Track */}
           <div
             ref={trackRef}
-            className="flex transition-transform duration-300 ease-out will-change-transform"
+            className="flex h-full transition-transform duration-300 ease-out will-change-transform"
             style={{
               transform: `translateX(${transformValue}%)`,
               cursor: isDragging ? 'grabbing' : 'grab',
@@ -275,11 +276,11 @@ export default function ImpactCategories() {
             {translatedCategories.map((cat) => (
               <div
                 key={cat.id}
-                className="w-full flex-shrink-0 px-0 py-2"
+                className="w-full flex-shrink-0 h-full px-0 py-2"
               >
-                <div className="bg-[#263238] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
+                <div className="bg-[#263238] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row h-full">
                   {/* Image */}
-                  <div className="md:w-2/5 h-64 md:h-auto relative flex-shrink-0">
+                  <div className="md:w-2/5 h-64 md:h-full relative flex-shrink-0">
                     <img
                       src={cat.image_url}
                       alt={cat.title}
@@ -297,7 +298,7 @@ export default function ImpactCategories() {
                   </div>
 
                   {/* Content */}
-                  <div className="flex-1 p-6 sm:p-8 md:p-10 flex flex-col justify-between">
+                  <div className="flex-1 p-6 sm:p-8 md:p-10 flex flex-col justify-between overflow-y-auto">
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-[#FFF314] text-xs font-bold tracking-widest">
@@ -363,7 +364,7 @@ export default function ImpactCategories() {
             ))}
           </div>
 
-          {/* Navigation Arrows (desktop only) */}
+          {/* Navigation Arrows */}
           <button
             onClick={() => goTo(-1)}
             disabled={currentIndex === 0}
