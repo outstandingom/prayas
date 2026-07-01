@@ -169,6 +169,10 @@ export default function Navbar() {
     return translated === key ? key.replace(/^nav\./, '') : translated;
   };
 
+  // Explicit text for "Donate Now"
+  const donateText = t('nav.donateNow', 'Donate Now');
+  const volunteerText = safeT('nav.volunteer');
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-500 ${bgHeader} 
@@ -178,7 +182,6 @@ export default function Navbar() {
         <div className="flex items-center justify-between gap-3">
           {/* ---------- Logo with increased size ---------- */}
           <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
-            {/* Increased logo container: w-12 h-12 on mobile, w-14 h-14 on desktop */}
             <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <img
                 src="https://i.ibb.co/7JR7zD39/IMG-20260624-104333.png"
@@ -187,7 +190,6 @@ export default function Navbar() {
               />
             </div>
             <div className="flex flex-col leading-tight">
-              {/* Animated brand text */}
               <motion.span
                 key={brandLangIndex}
                 initial={{ opacity: 0, y: 5 }}
@@ -281,20 +283,20 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Right side actions */}
+          {/* Right side actions – always visible */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Language Switcher – Desktop */}
-            <div className="hidden sm:relative sm:inline-block z-20">
+            {/* Language Switcher – icon only on small screens, text on larger */}
+            <div className="relative z-20">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setLangDropdownOpen(!langDropdownOpen);
                 }}
-                className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
+                className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <Globe className="w-4 h-4" />
-                <span>{currentLangLabel}</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${langDropdownOpen ? 'rotate-180' : ''}`} />
+                <span className="hidden sm:inline">{currentLangLabel}</span>
+                <ChevronDown className="hidden sm:block w-3.5 h-3.5 transition-transform" />
               </button>
               <AnimatePresence>
                 {langDropdownOpen && (
@@ -323,43 +325,45 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
-            {/* Donate button (prominent CTA) */}
+            {/* Donate Now button – always visible, icon on mobile, text on desktop */}
             <Link
               to="/donate"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+              className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
             >
-              {safeT('nav.donate')}
               <Heart className="w-4 h-4" />
+              <span className="hidden sm:inline">{donateText}</span>
             </Link>
 
-            {/* Volunteer button – same style as Donate, placed where Admin button used to be */}
+            {/* Volunteer button – always visible, same style */}
             <Link
               to="/volunteer"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+              className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
             >
-              {safeT('nav.volunteer')}
               <UserPlus className="w-4 h-4" />
+              <span className="hidden sm:inline">{volunteerText}</span>
             </Link>
 
-            {/* Admin button – only for admins, placed between Volunteer and Profile */}
+            {/* Admin button – only for admins, always visible (icon‑only on mobile) */}
             {!loading && isAdmin && (
               <Link
                 to="/admin"
-                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
+                className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <Shield className="w-4 h-4" />
-                {safeT('nav.admin')}
+                <span className="hidden sm:inline">{safeT('nav.admin')}</span>
               </Link>
             )}
 
-            {/* Profile / Sign In button – always visible on desktop */}
+            {/* Profile / Sign In button – always visible (icon‑only on mobile) */}
             {showAuthLink && !loading && (
               <Link
                 to={isAuthenticated ? "/profile" : "/auth"}
-                className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
+                className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <User className="w-4 h-4" />
-                {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
+                <span className="hidden sm:inline">
+                  {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
+                </span>
               </Link>
             )}
 
@@ -478,15 +482,15 @@ export default function Navbar() {
                 to="/donate"
                 className="mt-3 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
               >
-                {safeT('nav.donate')} <Heart className="w-5 h-5" />
+                {donateText} <Heart className="w-5 h-5" />
               </Link>
 
-              {/* Volunteer button (mobile) – same style */}
+              {/* Volunteer button (mobile) */}
               <Link
                 to="/volunteer"
                 className="mt-2 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
               >
-                {safeT('nav.volunteer')} <UserPlus className="w-5 h-5" />
+                {volunteerText} <UserPlus className="w-5 h-5" />
               </Link>
 
               {!loading && isAdmin && (
