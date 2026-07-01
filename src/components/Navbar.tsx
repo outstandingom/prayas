@@ -192,9 +192,9 @@ export default function Navbar() {
         </motion.div>
       </Link>
 
-      {/* ---------- TOP STRIP – original black (#263238) with white text ---------- */}
+      {/* ---------- TOP STRIP – white background, black text ---------- */}
       {isStripVisible && (
-        <div className="block bg-[#263238] text-white py-2 px-4 pl-20 sm:pl-36 flex flex-col sm:flex-row items-center justify-between w-full shadow-md gap-2">
+        <div className="block bg-white text-[#263238] py-2 px-4 pl-20 sm:pl-36 flex flex-col sm:flex-row items-center justify-between w-full shadow-md border-b border-[#263238]/10 gap-2">
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-center sm:text-left">
             <span className="font-bold text-sm sm:text-base tracking-wide">CHILD RIGHTS AND YOU</span>
             <span className="text-[10px] sm:text-xs opacity-80">Let's ensure happy childhoods for India's children</span>
@@ -206,7 +206,7 @@ export default function Navbar() {
             >
               Yes! I Want To Help!
             </Link>
-            <div className="flex items-center gap-1 text-white/70">
+            <div className="flex items-center gap-1 text-[#263238]/70">
               <a href="#" aria-label="Facebook" className="hover:text-[#FFF314] transition">
                 <FaFacebook size={14} />
               </a>
@@ -222,7 +222,7 @@ export default function Navbar() {
             </div>
             <button
               onClick={() => setIsStripVisible(false)}
-              className="text-white/50 hover:text-white transition p-0.5"
+              className="text-[#263238]/50 hover:text-[#263238] transition p-0.5"
               aria-label="Close announcement"
             >
               <X size={16} />
