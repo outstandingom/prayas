@@ -30,6 +30,11 @@ export default function ImpactCategories() {
   const trackRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  // Drag state
+  const [isDragging, setIsDragging] = useState(false)
+  const [startX, setStartX] = useState(0)
+  const [dragOffset, setDragOffset] = useState(0)
+
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
@@ -78,12 +83,20 @@ export default function ImpactCategories() {
   const total = translatedCategories.length
 
   // Navigation
-  const goTo = (dir: number) => {
+  const goTo = useCallback((dir: number) => {
     const newIndex = currentIndex + dir
     if (newIndex >= 0 && newIndex < total) {
       setCurrentIndex(newIndex)
+      setDragOffset(0) // reset drag offset
     }
-  }
+  }, [currentIndex, total])
+
+  const goToIndex = useCallback((index: number) => {
+    if (index >= 0 && index < total) {
+      setCurrentIndex(index)
+      setDragOffset(0)
+    }
+  }, [total])
 
   // Keyboard navigation
   useEffect(() => {
@@ -93,17 +106,66 @@ export default function ImpactCategories() {
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [currentIndex, total])
+  }, [goTo])
 
-  // Touch swipe support
-  const [touchStartX, setTouchStartX] = useState(0)
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStartX(e.touches[0].clientX)
+  // Mouse wheel navigation
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault()
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        // horizontal scroll
+        goTo(e.deltaX > 0 ? 1 : -1)
+      } else {
+        // vertical scroll (optional)
+        // goTo(e.deltaY > 0 ? 1 : -1)
+      }
+    }
+
+    container.addEventListener('wheel', handleWheel, { passive: false })
+    return () => container.removeEventListener('wheel', handleWheel)
+  }, [goTo])
+
+  // Drag handlers
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
+    setIsDragging(true)
+    setStartX(clientX)
+    setDragOffset(0)
+    if (trackRef.current) {
+      trackRef.current.style.cursor = 'grabbing'
+    }
   }
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const diff = touchStartX - e.changedTouches[0].clientX
-    if (Math.abs(diff) > 50) {
-      goTo(diff > 0 ? 1 : -1)
+
+  const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDragging) return
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
+    const diff = clientX - startX
+    setDragOffset(diff)
+  }
+
+  const handleDragEnd = () => {
+    if (!isDragging) return
+    setIsDragging(false)
+    if (trackRef.current) {
+      trackRef.current.style.cursor = 'grab'
+    }
+    // Snap to nearest slide if drag distance > 50px
+    const threshold = 50
+    if (Math.abs(dragOffset) > threshold) {
+      goTo(dragOffset < 0 ? 1 : -1)
+    } else {
+      // Reset to current slide
+      setDragOffset(0)
+    }
+  }
+
+  // Cleanup for mouse leave
+  const handleDragLeave = () => {
+    if (isDragging) {
+      handleDragEnd()
     }
   }
 
@@ -128,6 +190,10 @@ export default function ImpactCategories() {
       </div>
     )
   }
+
+  // Calculate transform: offset based on currentIndex + dragOffset fraction
+  const slideWidth = 100 // percentage
+  const transformValue = -(currentIndex * slideWidth) + (dragOffset / (containerRef.current?.offsetWidth || 1)) * 100
 
   return (
     <div className="relative w-full min-h-screen bg-white overflow-hidden">
@@ -180,15 +246,24 @@ export default function ImpactCategories() {
         {/* Carousel Container */}
         <div
           ref={containerRef}
-          className="relative w-full max-w-6xl overflow-hidden rounded-2xl"
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
+          className="relative w-full max-w-6xl overflow-hidden rounded-2xl select-none"
+          onMouseDown={handleDragStart}
+          onMouseMove={handleDragMove}
+          onMouseUp={handleDragEnd}
+          onMouseLeave={handleDragLeave}
+          onTouchStart={handleDragStart}
+          onTouchMove={handleDragMove}
+          onTouchEnd={handleDragEnd}
+          style={{ touchAction: 'none' }}
         >
           {/* Track */}
           <div
             ref={trackRef}
-            className="flex transition-transform duration-500 ease-out will-change-transform"
-            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            className="flex transition-transform duration-300 ease-out will-change-transform"
+            style={{
+              transform: `translateX(${transformValue}%)`,
+              cursor: isDragging ? 'grabbing' : 'grab',
+            }}
           >
             {translatedCategories.map((cat) => (
               <div
@@ -281,11 +356,11 @@ export default function ImpactCategories() {
             ))}
           </div>
 
-          {/* Navigation Arrows (inside the carousel) */}
+          {/* Navigation Arrows (desktop only) */}
           <button
             onClick={() => goTo(-1)}
             disabled={currentIndex === 0}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:block"
             aria-label="Previous"
           >
             <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
@@ -293,7 +368,7 @@ export default function ImpactCategories() {
           <button
             onClick={() => goTo(1)}
             disabled={currentIndex === total - 1}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:block"
             aria-label="Next"
           >
             <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
@@ -305,7 +380,7 @@ export default function ImpactCategories() {
           {translatedCategories.map((_, i) => (
             <button
               key={i}
-              onClick={() => setCurrentIndex(i)}
+              onClick={() => goToIndex(i)}
               className={`transition-all duration-300 rounded-full ${
                 i === currentIndex
                   ? 'w-3 h-3 bg-[#FFF314] shadow-[0_0_8px_rgba(255,243,20,0.5)]'
