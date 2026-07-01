@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '@/lib/supabase'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Category {
   id: string
@@ -25,8 +26,9 @@ export default function ImpactCategories() {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
-  const trackRef = useRef<HTMLDivElement>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   // Fetch categories
   useEffect(() => {
@@ -53,7 +55,7 @@ export default function ImpactCategories() {
 
         setCategories(parsedData)
         if (parsedData.length > 0) {
-          setCurrentIndex(Math.floor(parsedData.length / 2))
+          setCurrentIndex(0)
         }
       } catch (err) {
         console.error('Error:', err)
@@ -74,18 +76,6 @@ export default function ImpactCategories() {
   }, [categories, t])
 
   const total = translatedCategories.length
-  const angleStep = total > 0 ? 360 / total : 0
-
-  // Update track rotation when currentIndex changes
-  const updateTrack = useCallback(() => {
-    if (!trackRef.current) return
-    const rotation = -currentIndex * angleStep
-    trackRef.current.style.transform = `rotateY(${rotation}deg)`
-  }, [currentIndex, angleStep])
-
-  useEffect(() => {
-    updateTrack()
-  }, [updateTrack])
 
   // Navigation
   const goTo = (dir: number) => {
@@ -95,17 +85,29 @@ export default function ImpactCategories() {
     }
   }
 
-  // Mouse wheel
-  const lastScrollRef = useRef(0)
+  // Keyboard navigation
   useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      if (Date.now() - lastScrollRef.current < 600) return
-      lastScrollRef.current = Date.now()
-      goTo(e.deltaY > 0 ? 1 : -1)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') goTo(-1)
+      if (e.key === 'ArrowRight') goTo(1)
     }
-    window.addEventListener('wheel', handleWheel, { passive: true })
-    return () => window.removeEventListener('wheel', handleWheel)
-  }, [total])
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [currentIndex, total])
+
+  // Touch swipe support
+  const [touchStartX, setTouchStartX] = useState(0)
+  const [touchEndX, setTouchEndX] = useState(0)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX)
+  }
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    setTouchEndX(e.changedTouches[0].clientX)
+    const diff = touchStartX - touchEndX
+    if (Math.abs(diff) > 50) {
+      goTo(diff > 0 ? 1 : -1)
+    }
+  }
 
   // Loading / empty
   if (loading) {
@@ -128,11 +130,6 @@ export default function ImpactCategories() {
       </div>
     )
   }
-
-  // Calculate card positions
-  const radius = 400 // distance from centre (adjust to fit)
-  const cardWidth = 240
-  const cardHeight = 360
 
   return (
     <div className="relative w-full min-h-screen bg-white overflow-hidden">
@@ -185,18 +182,18 @@ export default function ImpactCategories() {
         <button
           onClick={() => goTo(-1)}
           disabled={currentIndex === 0}
-          className="pointer-events-auto p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] text-xl font-bold"
+          className="pointer-events-auto p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
           aria-label="Previous category"
         >
-          ‹
+          <ChevronLeft className="w-6 h-6" />
         </button>
         <button
           onClick={() => goTo(1)}
           disabled={currentIndex === total - 1}
-          className="pointer-events-auto p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] text-xl font-bold"
+          className="pointer-events-auto p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
           aria-label="Next category"
         >
-          ›
+          <ChevronRight className="w-6 h-6" />
         </button>
       </div>
 
@@ -227,130 +224,110 @@ export default function ImpactCategories() {
         ))}
       </div>
 
-      {/* 3D Carousel – placed below header */}
-      <div className="relative z-10 w-full flex items-center justify-center perspective-1200" style={{ height: 'calc(100vh - 180px)', marginTop: '20px' }}>
+      {/* Horizontal Slider */}
+      <div
+        ref={containerRef}
+        className="relative w-full overflow-hidden"
+        style={{ height: 'calc(100vh - 180px)' }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <div
           ref={trackRef}
-          className="relative"
-          style={{
-            width: `${cardWidth}px`,
-            height: `${cardHeight}px`,
-            transformStyle: 'preserve-3d',
-            transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)',
-          }}
+          className="flex transition-transform duration-500 ease-in-out h-full items-center"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {translatedCategories.map((cat, i) => {
-            const angle = (i / total) * 360
-            const rad = (angle * Math.PI) / 180
-            const x = radius * Math.sin(rad)
-            const z = radius * Math.cos(rad)
-            const isActive = i === currentIndex
-
-            return (
-              <div
-                key={cat.id}
-                className="absolute inset-0 rounded-2xl transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-                style={{
-                  transform: `translate3d(${x}px, 0, ${z}px) rotateY(${-angle}deg)`,
-                  backfaceVisibility: 'hidden',
-                  filter: isActive ? 'brightness(1)' : 'brightness(0.4)',
-                  scale: isActive ? '1.1' : '0.85',
-                  zIndex: isActive ? 10 : 1,
-                  pointerEvents: isActive ? 'auto' : 'none',
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
-                {/* Card content */}
-                <div className="w-full h-full bg-[#263238] p-4 sm:p-5 md:p-6 rounded-2xl border border-[#FFF314]/20 shadow-xl flex flex-col">
-                  <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#FFF314]/20">
-                    <span className="font-sans text-[10px] tracking-[0.15em] text-[#FFF314] font-bold">
-                      {String(i + 1).padStart(2, '0')} — {cat.title}
+          {translatedCategories.map((cat) => (
+            <div
+              key={cat.id}
+              className="w-full flex-shrink-0 px-4 sm:px-8 md:px-12 lg:px-16 py-4"
+            >
+              <div className="max-w-6xl mx-auto bg-[#263238] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row h-full min-h-[400px] md:min-h-[450px]">
+                {/* Image - left side on desktop, top on mobile */}
+                <div className="md:w-1/2 h-64 md:h-auto relative flex-shrink-0">
+                  <img
+                    src={cat.image_url}
+                    alt={cat.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        'https://via.placeholder.com/800x600/263238/FFF314?text=No+Image'
+                    }}
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 md:hidden">
+                    <span className="text-white/80 text-xs font-bold tracking-widest">
+                      {cat.title}
                     </span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#FFF314]" />
                   </div>
+                </div>
 
-                  <h3 className="font-sans text-xl sm:text-2xl lg:text-3xl font-bold text-[#FFF314] mb-1.5 leading-tight">
-                    {cat.title}
-                  </h3>
-
-                  <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-3 flex-1 line-clamp-3">
-                    {cat.description}
-                  </p>
-
-                  <div className="w-full h-32 sm:h-40 md:h-48 rounded-xl overflow-hidden mb-3 border-2 border-[#FFF314]/20 flex-shrink-0">
-                    <img
-                      src={cat.image_url}
-                      alt={cat.title}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          'https://via.placeholder.com/800x500/263238/FFF314?text=No+Image'
-                      }}
-                    />
-                  </div>
-
-                  {cat.goal_funds > 0 && (
-                    <div className="mb-2 flex-shrink-0">
-                      <div className="flex justify-between text-xs text-white/60 mb-1">
-                        <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
-                        <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#FFF314] rounded-full transition-all duration-500"
-                          style={{
-                            width: `${Math.min((cat.funds_collected || 0) / (cat.goal_funds || 1) * 100, 100)}%`,
-                          }}
-                        />
-                      </div>
+                {/* Content - right side on desktop, below on mobile */}
+                <div className="flex-1 p-6 sm:p-8 md:p-10 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-[#FFF314] text-xs font-bold tracking-widest">
+                        {cat.title}
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-[#FFF314]" />
+                      <span className="text-white/40 text-xs">
+                        {cat.initiatives?.length || 0} initiatives
+                      </span>
                     </div>
-                  )}
 
-                  {cat.initiatives && cat.initiatives.length > 0 && (
-                    <div className="mb-2 space-y-0.5 flex-shrink-0">
-                      {cat.initiatives.slice(0, 2).map((init, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-white/60 text-xs">
-                          <span className="text-sm">{init.icon || '📌'}</span>
-                          <span className="truncate">{init.title}</span>
+                    <h3 className="text-white text-2xl sm:text-3xl font-bold mb-3">
+                      {cat.title}
+                    </h3>
+
+                    <p className="text-white/70 text-sm sm:text-base leading-relaxed mb-4">
+                      {cat.description}
+                    </p>
+
+                    {cat.goal_funds > 0 && (
+                      <div className="mb-4">
+                        <div className="flex justify-between text-xs text-white/60 mb-1">
+                          <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
+                          <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
                         </div>
-                      ))}
-                    </div>
-                  )}
+                        <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-[#FFF314] rounded-full transition-all duration-500"
+                            style={{
+                              width: `${Math.min((cat.funds_collected || 0) / (cat.goal_funds || 1) * 100, 100)}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {cat.initiatives && cat.initiatives.length > 0 && (
+                      <div className="space-y-1 mb-4">
+                        {cat.initiatives.slice(0, 3).map((init, idx) => (
+                          <div key={idx} className="flex items-center gap-2 text-white/60 text-sm">
+                            <span className="text-base">{init.icon || '📌'}</span>
+                            <span>{init.title}</span>
+                          </div>
+                        ))}
+                        {cat.initiatives.length > 3 && (
+                          <div className="text-white/40 text-xs">
+                            +{cat.initiatives.length - 3} more
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
                   <button
                     onClick={() => navigate(`/impact/${cat.slug}`)}
-                    className="mt-auto inline-flex items-center gap-2 text-[#FFF314] font-sans text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white"
+                    className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-sm uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white w-fit"
                   >
-                    {t('categories.learnMore', 'Learn More')} <span className="text-base leading-none">→</span>
+                    {t('categories.learnMore', 'Learn More')} <span className="text-lg leading-none">→</span>
                   </button>
                 </div>
               </div>
-            )
-          })}
+            </div>
+          ))}
         </div>
       </div>
-
-      {/* Global styles */}
-      <style>{`
-        .perspective-1200 {
-          perspective: 1200px;
-        }
-        /* Responsive adjustments */
-        @media (max-width: 640px) {
-          .card-container {
-            width: 200px !important;
-            height: 300px !important;
-          }
-        }
-        @media (min-width: 641px) and (max-width: 1024px) {
-          .card-container {
-            width: 220px !important;
-            height: 330px !important;
-          }
-        }
-      `}</style>
     </div>
   )
 }
