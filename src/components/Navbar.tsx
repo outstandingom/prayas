@@ -1,5 +1,5 @@
 // src/components/Navbar.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Heart, User, Shield, ChevronDown, Globe } from 'lucide-react';
@@ -43,6 +43,17 @@ export default function Navbar() {
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState<string | null>(null);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const location = useLocation();
+
+  // ---------- Auto language toggle for brand name ----------
+  const [brandLangIndex, setBrandLangIndex] = useState(0); // 0 = English, 1 = Hindi
+  const brandTexts = ['Prayas Samaj Sevi Sanstha', 'प्रयास समाज सेवी संस्था'];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBrandLangIndex(prev => (prev === 0 ? 1 : 0));
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const isHome = location.pathname === '/';
 
@@ -127,9 +138,10 @@ export default function Navbar() {
   const textColorMuted = isLightText ? 'text-white/70' : 'text-[#263238]/70';
   const borderColor = isLightText ? 'border-white/30' : 'border-[#263238]/30';
   const bgButton = isLightText ? 'bg-white/10 hover:bg-white/20' : 'bg-[#263238]/5 hover:bg-[#263238]/10';
-  
-  const bgHeader = isHome 
-    ? (isScrolled ? 'bg-black/30 backdrop-blur-md' : 'bg-transparent')
+
+  // ---------- Modified background: always semi‑transparent black on home ----------
+  const bgHeader = isHome
+    ? (isScrolled ? 'bg-black/40 backdrop-blur-md' : 'bg-black/30 backdrop-blur-sm')
     : (isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white border-b border-[#263238]/5');
 
   const handleMouseEnter = (name: string) => setOpenDropdown(name);
@@ -159,11 +171,12 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-500 ${bgHeader} py-2 sm:py-3`}
+      className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-500 ${bgHeader} 
+        min-h-[70px] sm:min-h-[80px] flex items-center py-2 sm:py-3`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
         <div className="flex items-center justify-between gap-3">
-          {/* Logo */}
+          {/* ---------- Logo with auto‑toggling brand name ---------- */}
           <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <img
@@ -173,11 +186,19 @@ export default function Navbar() {
               />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className={`font-display font-bold text-lg sm:text-xl tracking-tight transition-colors ${textColor} group-hover:text-[#FFF314]`}>
-                Prayas
-              </span>
+              {/* Animated brand text that toggles every 3 seconds */}
+              <motion.span
+                key={brandLangIndex}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.4 }}
+                className={`font-display font-bold text-lg sm:text-xl tracking-tight whitespace-nowrap ${textColor} group-hover:text-[#FFF314]`}
+              >
+                {brandTexts[brandLangIndex]}
+              </motion.span>
               <span className={`hidden min-[480px]:block text-[8px] sm:text-[9px] uppercase tracking-[0.15em] sm:tracking-[0.18em] transition-colors ${textColorMuted}`}>
-                Samaj Sevi Sanstha
+                {brandLangIndex === 0 ? 'Social Service Organization' : 'समाज सेवी संस्था'}
               </span>
             </div>
           </Link>
@@ -301,6 +322,7 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
+            {/* Donate button (already like a volunteer/donate CTA) */}
             <Link
               to="/donate"
               className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
