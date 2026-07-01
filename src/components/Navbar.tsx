@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Heart, User, Shield, ChevronDown, Globe, UserPlus } from 'lucide-react';
+import { Menu, X, Heart, User, ChevronDown, Globe, UserPlus } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
 
@@ -37,7 +37,6 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState<string | null>(null);
@@ -57,49 +56,22 @@ export default function Navbar() {
 
   const isHome = location.pathname === '/';
 
-  // Debug: log language and loaded translations
+  // Auth logic – no admin check needed since admin button is removed
   useEffect(() => {
-    console.log('🌐 Current language:', i18n.language);
-    console.log('📦 Translations for', i18n.language, ':', i18n.getResourceBundle(i18n.language, 'translation'));
-  }, [i18n.language]);
-
-  // Auth logic
-  useEffect(() => {
-    checkAuthAndAdmin();
+    checkAuth();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setIsAuthenticated(!!session);
-      if (session?.user) {
-        const { data, error } = await supabase
-          .from('admin_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .maybeSingle();
-        setIsAdmin(!error && !!data);
-      } else {
-        setIsAdmin(false);
-      }
       setLoading(false);
     });
     return () => subscription.unsubscribe();
   }, []);
 
-  async function checkAuthAndAdmin() {
+  async function checkAuth() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
-      if (session?.user) {
-        const { data, error } = await supabase
-          .from('admin_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .maybeSingle();
-        setIsAdmin(!error && !!data);
-      } else {
-        setIsAdmin(false);
-      }
     } catch (err) {
-      console.error('Error checking admin status:', err);
-      setIsAdmin(false);
+      console.error('Auth check error:', err);
     } finally {
       setLoading(false);
     }
@@ -135,11 +107,10 @@ export default function Navbar() {
   const isLightText = isHome;
   const textColor = isLightText ? 'text-white' : 'text-[#263238]';
   const textColorHover = isLightText ? 'hover:text-[#FFF314]' : 'hover:text-[#FFF314]';
-  const textColorMuted = isLightText ? 'text-white/70' : 'text-[#263238]/70';
   const borderColor = isLightText ? 'border-white/30' : 'border-[#263238]/30';
   const bgButton = isLightText ? 'bg-white/10 hover:bg-white/20' : 'bg-[#263238]/5 hover:bg-[#263238]/10';
 
-  // ---------- Background overlay now uses #263238 instead of black ----------
+  // Background overlay – #263238 semi‑transparent
   const bgHeader = isHome
     ? (isScrolled ? 'bg-[#263238]/40 backdrop-blur-md' : 'bg-[#263238]/30 backdrop-blur-sm')
     : (isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white border-b border-[#263238]/5');
@@ -156,20 +127,18 @@ export default function Navbar() {
   };
 
   const changeLanguage = (code: string) => {
-    console.log('🔄 Changing language to:', code);
     i18n.changeLanguage(code);
     setLangDropdownOpen(false);
   };
 
   const currentLangLabel = LANGUAGES.find(l => l.code === i18n.language)?.label || 'English';
 
-  // Helper to safely translate with fallback
+  // Safe translate helper
   const safeT = (key: string) => {
     const translated = t(key);
     return translated === key ? key.replace(/^nav\./, '') : translated;
   };
 
-  // Explicit text for "Donate Now"
   const donateText = t('nav.donateNow', 'Donate Now');
   const volunteerText = safeT('nav.volunteer');
 
@@ -180,7 +149,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
         <div className="flex items-center justify-between gap-3">
-          {/* ---------- Logo with increased size ---------- */}
+          {/* ---------- Logo (no subtitle) ---------- */}
           <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
             <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <img
@@ -189,25 +158,21 @@ export default function Navbar() {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="flex flex-col leading-tight">
-              <motion.span
-                key={brandLangIndex}
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                transition={{ duration: 0.4 }}
-                className={`font-display font-bold text-lg sm:text-xl tracking-tight whitespace-nowrap ${textColor} group-hover:text-[#FFF314]`}
-              >
-                {brandTexts[brandLangIndex]}
-              </motion.span>
-              <span className={`hidden min-[480px]:block text-[8px] sm:text-[9px] uppercase tracking-[0.15em] sm:tracking-[0.18em] transition-colors ${textColorMuted}`}>
-                {brandLangIndex === 0 ? 'Social Service Organization' : 'समाज सेवी संस्था'}
-              </span>
-            </div>
+            {/* Only the toggling brand name, no subtitle */}
+            <motion.span
+              key={brandLangIndex}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.4 }}
+              className={`font-display font-bold text-lg sm:text-xl tracking-tight whitespace-nowrap ${textColor} group-hover:text-[#FFF314]`}
+            >
+              {brandTexts[brandLangIndex]}
+            </motion.span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-4 lg:gap-7">
+          {/* Desktop Navigation – decreased font size to text-xs, tighter gaps */}
+          <nav className="hidden md:flex items-center gap-2 lg:gap-4">
             {navLinks.map((link) => {
               const hasSubmenu = link.submenu && link.submenu.length > 0;
               const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
@@ -221,12 +186,12 @@ export default function Navbar() {
                     onMouseLeave={handleMouseLeave}
                   >
                     <button
-                      className={`text-sm font-medium transition-colors relative py-2 group flex items-center gap-1 whitespace-nowrap ${
+                      className={`text-xs font-medium transition-colors relative py-2 group flex items-center gap-1 whitespace-nowrap ${
                         isActive ? 'text-[#FFF314]' : `${textColor} ${textColorHover}`
                       }`}
                     >
                       {safeT(link.name)}
-                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
                       <span
                         className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
                           isActive ? 'w-full' : 'w-0 group-hover:w-full'
@@ -240,13 +205,13 @@ export default function Navbar() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
                           transition={{ duration: 0.15 }}
-                          className="absolute left-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[220px] py-2 z-50"
+                          className="absolute left-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[200px] py-2 z-50"
                         >
                           {link.submenu!.map((sub) => (
                             <Link
                               key={sub.path}
                               to={sub.path}
-                              className={`block px-5 py-2.5 text-sm transition-colors ${
+                              className={`block px-5 py-2.5 text-xs transition-colors ${
                                 location.pathname === sub.path
                                   ? 'text-[#FFF314] bg-[#FFF314]/10'
                                   : `text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]`
@@ -266,7 +231,7 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`text-sm font-medium transition-colors relative py-2 group whitespace-nowrap ${
+                  className={`text-xs font-medium transition-colors relative py-2 group whitespace-nowrap ${
                     location.pathname === link.path
                       ? 'text-[#FFF314]'
                       : `${textColor} ${textColorHover}`
@@ -283,20 +248,19 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Right side actions – always visible */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Language Switcher – icon only on small screens, text on larger */}
+          {/* Right side actions – all always visible, icons on mobile, text on sm+ */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Language Switcher */}
             <div className="relative z-20">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setLangDropdownOpen(!langDropdownOpen);
                 }}
-                className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
+                className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-xs font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <Globe className="w-4 h-4" />
                 <span className="hidden sm:inline">{currentLangLabel}</span>
-                <ChevronDown className="hidden sm:block w-3.5 h-3.5 transition-transform" />
               </button>
               <AnimatePresence>
                 {langDropdownOpen && (
@@ -325,40 +289,29 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
-            {/* Donate Now button – always visible, icon on mobile, text on desktop */}
+            {/* Donate Now button */}
             <Link
               to="/donate"
-              className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+              className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
             >
               <Heart className="w-4 h-4" />
               <span className="hidden sm:inline">{donateText}</span>
             </Link>
 
-            {/* Volunteer button – always visible, same style */}
+            {/* Volunteer button */}
             <Link
               to="/volunteer"
-              className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+              className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
             >
               <UserPlus className="w-4 h-4" />
               <span className="hidden sm:inline">{volunteerText}</span>
             </Link>
 
-            {/* Admin button – only for admins, always visible (icon‑only on mobile) */}
-            {!loading && isAdmin && (
-              <Link
-                to="/admin"
-                className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
-              >
-                <Shield className="w-4 h-4" />
-                <span className="hidden sm:inline">{safeT('nav.admin')}</span>
-              </Link>
-            )}
-
-            {/* Profile / Sign In button – always visible (icon‑only on mobile) */}
+            {/* Profile / Sign In button – always visible, no admin button */}
             {showAuthLink && !loading && (
               <Link
                 to={isAuthenticated ? "/profile" : "/auth"}
-                className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
+                className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
               >
                 <User className="w-4 h-4" />
                 <span className="hidden sm:inline">
@@ -367,6 +320,7 @@ export default function Navbar() {
               </Link>
             )}
 
+            {/* Hamburger menu (mobile only) */}
             <button
               className={`md:hidden p-2.5 -m-1 rounded-full transition-colors ${textColor} ${textColorHover} ${bgButton}`}
               onClick={() => setIsMobileOpen(!isMobileOpen)}
@@ -378,7 +332,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Menu */}
+      {/* Mobile Navigation Menu – admin button removed */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
@@ -477,7 +431,7 @@ export default function Navbar() {
                 </div>
               </div>
 
-              {/* Donate button (mobile) */}
+              {/* Donate Now – Mobile */}
               <Link
                 to="/donate"
                 className="mt-3 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
@@ -485,7 +439,7 @@ export default function Navbar() {
                 {donateText} <Heart className="w-5 h-5" />
               </Link>
 
-              {/* Volunteer button (mobile) */}
+              {/* Volunteer – Mobile */}
               <Link
                 to="/volunteer"
                 className="mt-2 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
@@ -493,16 +447,7 @@ export default function Navbar() {
                 {volunteerText} <UserPlus className="w-5 h-5" />
               </Link>
 
-              {!loading && isAdmin && (
-                <Link
-                  to="/admin"
-                  className="mt-2 w-full text-center rounded-full border border-[#FFF314]/40 px-6 py-3.5 font-semibold text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
-                >
-                  <Shield className="w-5 h-5" />
-                  {safeT('nav.admin')}
-                </Link>
-              )}
-
+              {/* Profile / Sign In – Mobile (no admin button) */}
               {showAuthLink && !loading && (
                 <Link
                   to={isAuthenticated ? "/profile" : "/auth"}
