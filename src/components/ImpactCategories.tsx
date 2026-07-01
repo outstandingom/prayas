@@ -200,55 +200,47 @@ export default function ImpactCategories() {
 
   return (
     <div className="relative w-full h-screen bg-white overflow-hidden">
-      {/* Very compact Header */}
-      <div className="absolute top-0 left-0 right-0 z-30 bg-white px-3 sm:px-6 md:px-10 py-1.5 sm:py-2 border-b border-[#263238]/10">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="font-sans text-[#263238] text-[9px] sm:text-[10px] tracking-[0.2em] uppercase font-bold">
-                  {t('categories.header.label', 'Our Work')}
-                </span>
-                <span className="hidden sm:inline text-[#263238]/20">|</span>
-                <h1 className="font-sans text-sm sm:text-lg md:text-xl font-bold text-[#263238]">
-                  {t('categories.header.title', 'Impact')}{' '}
-                  <span className="text-[#263238]">
-                    {t('categories.header.titleHighlight', 'Initiatives')}
-                  </span>
-                </h1>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[#263238] font-sans text-xs sm:text-sm font-bold">
-                  {String(currentIndex + 1).padStart(2, '0')}
-                </span>
-                <span className="text-[#263238]/30 font-sans text-[10px]">/ {String(total).padStart(2, '0')}</span>
-                <div className="h-px w-12 sm:w-20 bg-[#263238]/10 relative overflow-hidden hidden sm:block">
-                  <motion.div
-                    className="h-full bg-[#263238] absolute left-0 top-0"
-                    style={{ width: `${((currentIndex + 1) / total) * 100}%` }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </div>
-              </div>
+      {/* Super compact Header */}
+      <div className="absolute top-0 left-0 right-0 z-30 bg-white px-3 sm:px-6 py-1 border-b border-[#263238]/10">
+        <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-1">
+          <div className="flex items-center gap-2">
+            <span className="font-sans text-[#263238] text-[8px] sm:text-[10px] tracking-[0.15em] uppercase font-bold">
+              {t('categories.header.label', 'Our Work')}
+            </span>
+            <span className="text-[#263238]/20 hidden sm:inline">|</span>
+            <h1 className="font-sans text-xs sm:text-base md:text-lg font-bold text-[#263238]">
+              {t('categories.header.title', 'Impact')}{' '}
+              <span className="text-[#263238]">
+                {t('categories.header.titleHighlight', 'Initiatives')}
+              </span>
+            </h1>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[#263238] font-sans text-xs sm:text-sm font-bold">
+              {String(currentIndex + 1).padStart(2, '0')}
+            </span>
+            <span className="text-[#263238]/30 font-sans text-[9px]">/ {String(total).padStart(2, '0')}</span>
+            <div className="h-px w-10 sm:w-16 bg-[#263238]/10 relative overflow-hidden hidden sm:block">
+              <motion.div
+                className="h-full bg-[#263238] absolute left-0 top-0"
+                style={{ width: `${((currentIndex + 1) / total) * 100}%` }}
+                transition={{ duration: 0.3 }}
+              />
             </div>
-            <p className="text-[#263238]/60 text-[10px] sm:text-xs max-w-2xl hidden sm:block -mt-0.5">
-              {t('categories.header.desc', 'Explore our key focus areas driving meaningful change in communities across the globe.')}
-            </p>
-          </motion.div>
+          </div>
         </div>
+        <p className="text-[#263238]/60 text-[9px] sm:text-xs max-w-2xl hidden sm:block leading-tight -mt-0.5">
+          {t('categories.header.desc', 'Explore our key focus areas driving meaningful change in communities across the globe.')}
+        </p>
       </div>
 
-      {/* Carousel Section – fills remaining height without gaps */}
+      {/* Carousel – fills remaining height with no empty space */}
       <div
-        className="absolute top-[40px] sm:top-[50px] left-0 right-0 bottom-0 flex items-stretch px-2 sm:px-4"
+        className="absolute top-[28px] sm:top-[36px] left-0 right-0 bottom-0 flex items-stretch px-1 sm:px-3"
       >
         <div
           ref={containerRef}
-          className="relative w-full max-w-5xl h-full overflow-hidden rounded-xl select-none"
+          className="relative w-full max-w-5xl h-full overflow-hidden rounded-lg select-none"
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
           onMouseUp={handleDragEnd}
@@ -270,11 +262,11 @@ export default function ImpactCategories() {
             {translatedCategories.map((cat) => (
               <div
                 key={cat.id}
-                className="w-full flex-shrink-0 h-full px-0 py-1"
+                className="w-full flex-shrink-0 h-full px-0 py-0.5"
               >
-                <div className="bg-[#263238] rounded-xl overflow-hidden shadow-xl flex flex-col md:flex-row h-full">
-                  {/* Image – auto height on desktop, fixed on mobile */}
-                  <div className="md:w-2/5 h-32 sm:h-40 md:h-full relative flex-shrink-0">
+                <div className="bg-[#263238] rounded-lg overflow-hidden shadow-xl flex flex-col md:flex-row h-full">
+                  {/* Image – smaller */}
+                  <div className="md:w-2/5 h-24 sm:h-32 md:h-full relative flex-shrink-0">
                     <img
                       src={cat.image_url}
                       alt={cat.title}
@@ -284,37 +276,37 @@ export default function ImpactCategories() {
                           'https://via.placeholder.com/600x400/263238/FFF314?text=No+Image'
                       }}
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1.5 md:hidden">
-                      <span className="text-white/80 text-[9px] font-bold tracking-widest">
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1 md:hidden">
+                      <span className="text-white/80 text-[8px] font-bold tracking-widest">
                         {cat.title}
                       </span>
                     </div>
                   </div>
 
-                  {/* Content – fills remaining space */}
-                  <div className="flex-1 p-2.5 sm:p-4 md:p-5 flex flex-col justify-between overflow-y-auto">
+                  {/* Content – tight and full */}
+                  <div className="flex-1 p-2 sm:p-3 md:p-4 flex flex-col justify-between overflow-y-auto">
                     <div>
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-[#FFF314] text-[9px] font-bold tracking-widest">
+                      <div className="flex items-center gap-1 mb-0.5">
+                        <span className="text-[#FFF314] text-[8px] sm:text-[9px] font-bold tracking-widest">
                           {cat.title}
                         </span>
                         <span className="w-1 h-1 rounded-full bg-[#FFF314]" />
-                        <span className="text-white/40 text-[9px]">
+                        <span className="text-white/40 text-[8px] sm:text-[9px]">
                           {cat.initiatives?.length || 0} initiatives
                         </span>
                       </div>
 
-                      <h3 className="text-white text-base sm:text-lg md:text-xl font-bold mb-0.5 leading-tight">
+                      <h3 className="text-white text-sm sm:text-base md:text-lg font-bold mb-0.5 leading-tight">
                         {cat.title}
                       </h3>
 
-                      <p className="text-white/70 text-[10px] sm:text-xs leading-relaxed mb-1.5 line-clamp-2 sm:line-clamp-3">
+                      <p className="text-white/70 text-[9px] sm:text-xs leading-tight mb-1 line-clamp-2 sm:line-clamp-3">
                         {cat.description}
                       </p>
 
                       {cat.goal_funds > 0 && (
-                        <div className="mb-1.5">
-                          <div className="flex justify-between text-[9px] text-white/60 mb-0.5">
+                        <div className="mb-1">
+                          <div className="flex justify-between text-[8px] sm:text-[9px] text-white/60 mb-0.5">
                             <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
                             <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
                           </div>
@@ -332,13 +324,13 @@ export default function ImpactCategories() {
                       {cat.initiatives && cat.initiatives.length > 0 && (
                         <div className="space-y-0.5 mb-1">
                           {cat.initiatives.slice(0, 2).map((init, idx) => (
-                            <div key={idx} className="flex items-center gap-1.5 text-white/60 text-[10px]">
-                              <span className="text-sm">{init.icon || '📌'}</span>
+                            <div key={idx} className="flex items-center gap-1 text-white/60 text-[9px] sm:text-[10px]">
+                              <span className="text-xs">{init.icon || '📌'}</span>
                               <span className="truncate">{init.title}</span>
                             </div>
                           ))}
                           {cat.initiatives.length > 2 && (
-                            <div className="text-white/40 text-[9px]">
+                            <div className="text-white/40 text-[8px]">
                               +{cat.initiatives.length - 2} more
                             </div>
                           )}
@@ -348,9 +340,9 @@ export default function ImpactCategories() {
 
                     <button
                       onClick={() => navigate(`/impact/${cat.slug}`)}
-                      className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-[10px] uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white w-fit"
+                      className="inline-flex items-center gap-1.5 text-[#FFF314] font-sans text-[9px] sm:text-[10px] uppercase tracking-wider font-bold hover:gap-2 transition-all hover:text-white w-fit"
                     >
-                      {t('categories.learnMore', 'Learn More')} <span className="text-sm leading-none">→</span>
+                      {t('categories.learnMore', 'Learn More')} <span className="text-xs leading-none">→</span>
                     </button>
                   </div>
                 </div>
@@ -362,31 +354,31 @@ export default function ImpactCategories() {
           <button
             onClick={() => goTo(-1)}
             disabled={currentIndex === 0}
-            className="absolute left-1 top-1/2 -translate-y-1/2 z-20 p-1 rounded-full bg-white/80 shadow-md hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:flex items-center justify-center"
+            className="absolute left-0.5 top-1/2 -translate-y-1/2 z-20 p-0.5 rounded-full bg-white/70 shadow hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:flex items-center justify-center"
             aria-label="Previous"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={() => goTo(1)}
             disabled={currentIndex === total - 1}
-            className="absolute right-1 top-1/2 -translate-y-1/2 z-20 p-1 rounded-full bg-white/80 shadow-md hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:flex items-center justify-center"
+            className="absolute right-0.5 top-1/2 -translate-y-1/2 z-20 p-0.5 rounded-full bg-white/70 shadow hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:flex items-center justify-center"
             aria-label="Next"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Dots indicator */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+        {/* Dots */}
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1 z-20">
           {translatedCategories.map((_, i) => (
             <button
               key={i}
               onClick={() => goToIndex(i)}
               className={`transition-all duration-300 rounded-full ${
                 i === currentIndex
-                  ? 'w-2 h-2 bg-[#FFF314] shadow-[0_0_6px_rgba(255,243,20,0.5)]'
-                  : 'w-1.5 h-1.5 bg-[#263238]/30 hover:bg-[#263238]/50'
+                  ? 'w-1.5 h-1.5 bg-[#FFF314] shadow-[0_0_4px_rgba(255,243,20,0.5)]'
+                  : 'w-1 h-1 bg-[#263238]/30 hover:bg-[#263238]/50'
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />
