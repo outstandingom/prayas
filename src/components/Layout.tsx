@@ -1,36 +1,57 @@
-// src/App.tsx
-import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Layout from './components/Layout'
-import VolunteerPopup from './components/VolunteerPopup'
-import Home from './pages/Home'
-// ... other page imports
+// src/components/Layout.tsx
+import { Outlet, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import Navbar from './Navbar'
+import Footer from './Footer'
+import SmoothLoader from './SmoothLoader'
+import FloatingDonateButton from './FloatingDonateButton'
 
-function App() {
-  const [isVolunteerPopupOpen, setIsVolunteerPopupOpen] = useState(false)
+export default function Layout() {
+  const { pathname } = useLocation()
+  const [isMobile, setIsMobile] = useState(false)
+  const [loaderVisible, setLoaderVisible] = useState(true)
 
-  // Show popup once when the app loads
   useEffect(() => {
-    // Only show after a short delay, or immediately
-    const timer = setTimeout(() => setIsVolunteerPopupOpen(true), 1000)
+    const checkMobile = () => setIsMobile(window.innerWidth < 640)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoaderVisible(false), 2000)
     return () => clearTimeout(timer)
   }, [])
 
+  const initialY = isMobile ? 8 : 20
+  const exitY = isMobile ? -8 : -20
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          {/* other routes */}
-        </Route>
-      </Routes>
+    <div className="min-h-screen bg-[#FFFFFF] text-[#263238] font-sans flex flex-col relative overflow-x-hidden">
+      {loaderVisible && <SmoothLoader />}
       
-      <VolunteerPopup 
-        isOpen={isVolunteerPopupOpen} 
-        onClose={() => setIsVolunteerPopupOpen(false)} 
-      />
-    </BrowserRouter>
+      <Navbar />
+      <motion.main
+        key={pathname}
+        initial={{ opacity: 0, y: initialY }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: exitY }}
+        transition={{
+          duration: isMobile ? 0.3 : 0.4,
+          ease: [0.19, 1, 0.22, 1]
+        }}
+        className="flex-1 w-full pointer-events-auto relative z-10"
+      >
+        <Outlet />
+      </motion.main>
+      <Footer />
+      
+      <FloatingDonateButton />
+    </div>
   )
 }
-
-export default App
