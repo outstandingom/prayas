@@ -97,13 +97,11 @@ export default function ImpactCategories() {
 
   // Touch swipe support
   const [touchStartX, setTouchStartX] = useState(0)
-  const [touchEndX, setTouchEndX] = useState(0)
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.touches[0].clientX)
   }
   const handleTouchEnd = (e: React.TouchEvent) => {
-    setTouchEndX(e.changedTouches[0].clientX)
-    const diff = touchStartX - touchEndX
+    const diff = touchStartX - e.changedTouches[0].clientX
     if (Math.abs(diff) > 50) {
       goTo(diff > 0 ? 1 : -1)
     }
@@ -177,39 +175,19 @@ export default function ImpactCategories() {
         </div>
       </div>
 
-      {/* Main Carousel Container */}
-      <div className="relative flex items-center justify-center w-full px-4 sm:px-8 md:px-12 lg:px-16 py-6" style={{ minHeight: 'calc(100vh - 200px)' }}>
-        {/* Left Arrow */}
-        <button
-          onClick={() => goTo(-1)}
-          disabled={currentIndex === 0}
-          className="absolute left-2 sm:left-4 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
-          aria-label="Previous"
-        >
-          <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
-        </button>
-
-        {/* Right Arrow */}
-        <button
-          onClick={() => goTo(1)}
-          disabled={currentIndex === total - 1}
-          className="absolute right-2 sm:right-4 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
-          aria-label="Next"
-        >
-          <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
-        </button>
-
-        {/* Carousel Track */}
+      {/* Carousel Section */}
+      <div className="relative flex items-center justify-center w-full px-4 sm:px-8 py-6" style={{ minHeight: 'calc(100vh - 200px)' }}>
+        {/* Carousel Container */}
         <div
           ref={containerRef}
-          className="relative w-full overflow-hidden rounded-2xl"
-          style={{ maxWidth: '1200px' }}
+          className="relative w-full max-w-6xl overflow-hidden rounded-2xl"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
+          {/* Track */}
           <div
             ref={trackRef}
-            className="flex transition-transform duration-500 ease-out"
+            className="flex transition-transform duration-500 ease-out will-change-transform"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
             {translatedCategories.map((cat) => (
@@ -218,7 +196,7 @@ export default function ImpactCategories() {
                 className="w-full flex-shrink-0 px-0 py-2"
               >
                 <div className="bg-[#263238] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
-                  {/* Image - left side on desktop, top on mobile */}
+                  {/* Image */}
                   <div className="md:w-2/5 h-64 md:h-auto relative flex-shrink-0">
                     <img
                       src={cat.image_url}
@@ -302,6 +280,24 @@ export default function ImpactCategories() {
               </div>
             ))}
           </div>
+
+          {/* Navigation Arrows (inside the carousel) */}
+          <button
+            onClick={() => goTo(-1)}
+            disabled={currentIndex === 0}
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
+            aria-label="Previous"
+          >
+            <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
+          </button>
+          <button
+            onClick={() => goTo(1)}
+            disabled={currentIndex === total - 1}
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
+            aria-label="Next"
+          >
+            <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+          </button>
         </div>
 
         {/* Dots indicator */}
