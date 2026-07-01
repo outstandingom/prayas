@@ -44,8 +44,18 @@ export default function Navbar() {
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const location = useLocation();
 
+  // ---------- Top strip visibility (persisted) ----------
+  const [isStripVisible, setIsStripVisible] = useState(() => {
+    const stored = localStorage.getItem('topStripVisible');
+    return stored !== 'false'; // default true
+  });
+
+  useEffect(() => {
+    localStorage.setItem('topStripVisible', String(isStripVisible));
+  }, [isStripVisible]);
+
   // ---------- Auto language toggle for brand name ----------
-  const [brandLangIndex, setBrandLangIndex] = useState(0); // 0 = English, 1 = Hindi
+  const [brandLangIndex, setBrandLangIndex] = useState(0);
   const brandTexts = ['Prayas Samaj Sevi Sanstha', 'प्रयास समाज सेवी संस्था'];
 
   useEffect(() => {
@@ -57,7 +67,7 @@ export default function Navbar() {
 
   const isHome = location.pathname === '/';
 
-  // Auth logic – no admin check needed since admin button is removed
+  // Auth logic
   useEffect(() => {
     checkAuth();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -111,7 +121,7 @@ export default function Navbar() {
   const borderColor = isLightText ? 'border-white/30' : 'border-[#263238]/30';
   const bgButton = isLightText ? 'bg-white/10 hover:bg-white/20' : 'bg-[#263238]/5 hover:bg-[#263238]/10';
 
-  // Background overlay – #263238 semi‑transparent
+  // Background for the navbar part (inner div)
   const bgHeader = isHome
     ? (isScrolled ? 'bg-[#263238]/40 backdrop-blur-md' : 'bg-[#263238]/30 backdrop-blur-sm')
     : (isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white border-b border-[#263238]/5');
@@ -134,7 +144,6 @@ export default function Navbar() {
 
   const currentLangLabel = LANGUAGES.find(l => l.code === i18n.language)?.label || 'English';
 
-  // Safe translate helper
   const safeT = (key: string) => {
     const translated = t(key);
     return translated === key ? key.replace(/^nav\./, '') : translated;
@@ -144,196 +153,227 @@ export default function Navbar() {
   const volunteerText = safeT('nav.volunteer');
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-500 ${bgHeader} 
-        min-h-[70px] sm:min-h-[80px] flex items-center py-2 sm:py-3`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
-        <div className="flex items-center justify-between gap-3">
-          {/* ---------- Logo (no subtitle) ---------- */}
-          <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-              <img
-                src="https://i.ibb.co/7JR7zD39/IMG-20260624-104333.png"
-                alt="Prayas Logo"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {/* Only the toggling brand name, no subtitle */}
-            <motion.span
-              key={brandLangIndex}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -5 }}
-              transition={{ duration: 0.4 }}
-              className={`font-display font-bold text-lg sm:text-xl tracking-tight whitespace-nowrap ${textColor} group-hover:text-[#FFF314]`}
-            >
-              {brandTexts[brandLangIndex]}
-            </motion.span>
-          </Link>
-
-          {/* Desktop Navigation – decreased font size to text-xs, tighter gaps */}
-          <nav className="hidden md:flex items-center gap-2 lg:gap-4">
-            {navLinks.map((link) => {
-              const hasSubmenu = link.submenu && link.submenu.length > 0;
-              const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
-              
-              if (hasSubmenu) {
-                return (
-                  <div
-                    key={link.name}
-                    className="relative group"
-                    onMouseEnter={() => handleMouseEnter(link.name)}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <button
-                      className={`text-xs font-medium transition-colors relative py-2 group flex items-center gap-1 whitespace-nowrap ${
-                        isActive ? 'text-[#FFF314]' : `${textColor} ${textColorHover}`
-                      }`}
-                    >
-                      {safeT(link.name)}
-                      <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
-                      <span
-                        className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
-                          isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                        }`}
-                      />
-                    </button>
-                    <AnimatePresence>
-                      {openDropdown === link.name && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.15 }}
-                          className="absolute left-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[200px] py-2 z-50"
-                        >
-                          {link.submenu!.map((sub) => (
-                            <Link
-                              key={sub.path}
-                              to={sub.path}
-                              className={`block px-5 py-2.5 text-xs transition-colors ${
-                                location.pathname === sub.path
-                                  ? 'text-[#FFF314] bg-[#FFF314]/10'
-                                  : `text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]`
-                              }`}
-                            >
-                              {safeT(sub.name)}
-                            </Link>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                );
-              }
-
-              return (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`text-xs font-medium transition-colors relative py-2 group whitespace-nowrap ${
-                    location.pathname === link.path
-                      ? 'text-[#FFF314]'
-                      : `${textColor} ${textColorHover}`
-                  }`}
-                >
-                  {safeT(link.name)}
-                  <span
-                    className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
-                      location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`}
-                  />
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Right side actions – all always visible, icons on mobile, text on sm+ */}
-          <div className="flex items-center gap-1 sm:gap-2">
-            {/* Language Switcher */}
-            <div className="relative z-20">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLangDropdownOpen(!langDropdownOpen);
-                }}
-                className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-xs font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
-              >
-                <Globe className="w-4 h-4" />
-                <span className="hidden sm:inline">{currentLangLabel}</span>
-              </button>
-              <AnimatePresence>
-                {langDropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[150px] py-2 z-50 pointer-events-auto"
-                  >
-                    {LANGUAGES.map((lang) => (
-                      <button
-                        key={lang.code}
-                        onClick={() => changeLanguage(lang.code)}
-                        className={`block w-full text-left px-5 py-2.5 text-sm transition-colors cursor-pointer ${
-                          i18n.language === lang.code
-                            ? 'text-[#FFF314] bg-[#FFF314]/10'
-                            : 'text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]'
-                        }`}
-                      >
-                        {lang.label}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Donate Now button */}
+    <header className="fixed top-0 left-0 right-0 z-[9999] flex flex-col">
+      {/* ---------- TOP STRIP ---------- */}
+      {isStripVisible && (
+        <div className="bg-[#1E88E5] text-white py-2 px-4 flex items-center justify-between w-full shadow-md">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+            <span className="font-bold text-sm sm:text-base tracking-wide">
+              CHILD RIGHTS AND YOU
+            </span>
+            <span className="text-xs sm:text-sm opacity-90">
+              Let's ensure happy childhoods for India's children
+            </span>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
             <Link
               to="/donate"
-              className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+              className="bg-[#FFF314] text-[#263238] px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-[#FFF314]/90 transition shadow-md"
             >
-              <Heart className="w-4 h-4" />
-              <span className="hidden sm:inline">{donateText}</span>
+              Yes! I Want To Help!
             </Link>
-
-            {/* Volunteer button */}
-            <Link
-              to="/volunteer"
-              className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
-            >
-              <UserPlus className="w-4 h-4" />
-              <span className="hidden sm:inline">{volunteerText}</span>
-            </Link>
-
-            {/* Profile / Sign In button – always visible, no admin button */}
-            {showAuthLink && !loading && (
-              <Link
-                to={isAuthenticated ? "/profile" : "/auth"}
-                className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
-              >
-                <User className="w-4 h-4" />
-                <span className="hidden sm:inline">
-                  {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
-                </span>
-              </Link>
-            )}
-
-            {/* Hamburger menu (mobile only) */}
             <button
-              className={`md:hidden p-2.5 -m-1 rounded-full transition-colors ${textColor} ${textColorHover} ${bgButton}`}
-              onClick={() => setIsMobileOpen(!isMobileOpen)}
-              aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
+              onClick={() => setIsStripVisible(false)}
+              className="text-white/70 hover:text-white transition p-1"
+              aria-label="Close announcement"
             >
-              {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
+              <X size={18} />
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ---------- MAIN NAVBAR (existing) ---------- */}
+      <div
+        className={`transition-all duration-500 ${bgHeader} 
+          min-h-[70px] sm:min-h-[80px] flex items-center py-2 sm:py-3`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
+          <div className="flex items-center justify-between gap-3">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <img
+                  src="https://i.ibb.co/7JR7zD39/IMG-20260624-104333.png"
+                  alt="Prayas Logo"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <motion.span
+                key={brandLangIndex}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.4 }}
+                className={`font-display font-bold text-lg sm:text-xl tracking-tight whitespace-nowrap ${textColor} group-hover:text-[#FFF314]`}
+              >
+                {brandTexts[brandLangIndex]}
+              </motion.span>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-2 lg:gap-4">
+              {navLinks.map((link) => {
+                const hasSubmenu = link.submenu && link.submenu.length > 0;
+                const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
+                
+                if (hasSubmenu) {
+                  return (
+                    <div
+                      key={link.name}
+                      className="relative group"
+                      onMouseEnter={() => handleMouseEnter(link.name)}
+                      onMouseLeave={handleMouseLeave}
+                    >
+                      <button
+                        className={`text-xs font-medium transition-colors relative py-2 group flex items-center gap-1 whitespace-nowrap ${
+                          isActive ? 'text-[#FFF314]' : `${textColor} ${textColorHover}`
+                        }`}
+                      >
+                        {safeT(link.name)}
+                        <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
+                        <span
+                          className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                            isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                          }`}
+                        />
+                      </button>
+                      <AnimatePresence>
+                        {openDropdown === link.name && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ duration: 0.15 }}
+                            className="absolute left-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[200px] py-2 z-50"
+                          >
+                            {link.submenu!.map((sub) => (
+                              <Link
+                                key={sub.path}
+                                to={sub.path}
+                                className={`block px-5 py-2.5 text-xs transition-colors ${
+                                  location.pathname === sub.path
+                                    ? 'text-[#FFF314] bg-[#FFF314]/10'
+                                    : `text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]`
+                                }`}
+                              >
+                                {safeT(sub.name)}
+                              </Link>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`text-xs font-medium transition-colors relative py-2 group whitespace-nowrap ${
+                      location.pathname === link.path
+                        ? 'text-[#FFF314]'
+                        : `${textColor} ${textColorHover}`
+                    }`}
+                  >
+                    {safeT(link.name)}
+                    <span
+                      className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                        location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
+                      }`}
+                    />
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Right side actions */}
+            <div className="flex items-center gap-1 sm:gap-2">
+              {/* Language Switcher */}
+              <div className="relative z-20">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLangDropdownOpen(!langDropdownOpen);
+                  }}
+                  className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-xs font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
+                >
+                  <Globe className="w-4 h-4" />
+                  <span className="hidden sm:inline">{currentLangLabel}</span>
+                </button>
+                <AnimatePresence>
+                  {langDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[150px] py-2 z-50 pointer-events-auto"
+                    >
+                      {LANGUAGES.map((lang) => (
+                        <button
+                          key={lang.code}
+                          onClick={() => changeLanguage(lang.code)}
+                          className={`block w-full text-left px-5 py-2.5 text-sm transition-colors cursor-pointer ${
+                            i18n.language === lang.code
+                              ? 'text-[#FFF314] bg-[#FFF314]/10'
+                              : 'text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]'
+                          }`}
+                        >
+                          {lang.label}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Donate Now button */}
+              <Link
+                to="/donate"
+                className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+              >
+                <Heart className="w-4 h-4" />
+                <span className="hidden sm:inline">{donateText}</span>
+              </Link>
+
+              {/* Volunteer button */}
+              <Link
+                to="/volunteer"
+                className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span className="hidden sm:inline">{volunteerText}</span>
+              </Link>
+
+              {/* Profile / Sign In */}
+              {showAuthLink && !loading && (
+                <Link
+                  to={isAuthenticated ? "/profile" : "/auth"}
+                  className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
+                >
+                  <User className="w-4 h-4" />
+                  <span className="hidden sm:inline">
+                    {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
+                  </span>
+                </Link>
+              )}
+
+              {/* Hamburger menu */}
+              <button
+                className={`md:hidden p-2.5 -m-1 rounded-full transition-colors ${textColor} ${textColorHover} ${bgButton}`}
+                onClick={() => setIsMobileOpen(!isMobileOpen)}
+                aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
+              >
+                {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile Navigation Menu – admin button removed */}
+      {/* Mobile Navigation Menu */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
@@ -448,7 +488,7 @@ export default function Navbar() {
                 {volunteerText} <UserPlus className="w-5 h-5" />
               </Link>
 
-              {/* Profile / Sign In – Mobile (no admin button) */}
+              {/* Profile / Sign In – Mobile */}
               {showAuthLink && !loading && (
                 <Link
                   to={isAuthenticated ? "/profile" : "/auth"}
