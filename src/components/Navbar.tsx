@@ -2,14 +2,17 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Heart, User, ChevronDown, Globe, UserPlus } from 'lucide-react';
+import {
+  Menu, X, Heart, User, ChevronDown, Globe, UserPlus,
+  Facebook, Twitter, Instagram, Youtube
+} from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
 
 const navLinks = [
   { name: 'nav.home', path: '/' },
-  { 
-    name: 'nav.aboutUs', 
+  {
+    name: 'nav.aboutUs',
     path: '/about',
     submenu: [
       { name: 'nav.about.story', path: '/about' },
@@ -47,23 +50,12 @@ export default function Navbar() {
   // ---------- Top strip visibility (persisted) ----------
   const [isStripVisible, setIsStripVisible] = useState(() => {
     const stored = localStorage.getItem('topStripVisible');
-    return stored !== 'false'; // default true
+    return stored !== 'false';
   });
 
   useEffect(() => {
     localStorage.setItem('topStripVisible', String(isStripVisible));
   }, [isStripVisible]);
-
-  // ---------- Auto language toggle for brand name ----------
-  const [brandLangIndex, setBrandLangIndex] = useState(0);
-  const brandTexts = ['Prayas Samaj Sevi Sanstha', 'प्रयास समाज सेवी संस्था'];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBrandLangIndex(prev => (prev === 0 ? 1 : 0));
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
   const isHome = location.pathname === '/';
 
@@ -121,7 +113,6 @@ export default function Navbar() {
   const borderColor = isLightText ? 'border-white/30' : 'border-[#263238]/30';
   const bgButton = isLightText ? 'bg-white/10 hover:bg-white/20' : 'bg-[#263238]/5 hover:bg-[#263238]/10';
 
-  // Background for the navbar part (inner div)
   const bgHeader = isHome
     ? (isScrolled ? 'bg-[#263238]/40 backdrop-blur-md' : 'bg-[#263238]/30 backdrop-blur-sm')
     : (isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white border-b border-[#263238]/5');
@@ -154,43 +145,53 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[9999] flex flex-col">
-      {/* ---------- TOP STRIP ---------- */}
+      {/* ---------- TOP STRIP (mobile only) ---------- */}
       {isStripVisible && (
-        <div className="bg-[#1E88E5] text-white py-2 px-4 flex items-center justify-between w-full shadow-md">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-            <span className="font-bold text-sm sm:text-base tracking-wide">
-              CHILD RIGHTS AND YOU
-            </span>
-            <span className="text-xs sm:text-sm opacity-90">
-              Let's ensure happy childhoods for India's children
-            </span>
+        <div className="block md:hidden bg-[#263238] text-white py-2 px-4 flex items-center justify-between w-full shadow-md">
+          <div className="flex flex-col gap-0.5">
+            <span className="font-bold text-sm tracking-wide">CHILD RIGHTS AND YOU</span>
+            <span className="text-[10px] opacity-80">Let's ensure happy childhoods for India's children</span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <Link
               to="/donate"
-              className="bg-[#FFF314] text-[#263238] px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-[#FFF314]/90 transition shadow-md"
+              className="bg-[#FFF314] text-[#263238] px-3 py-1 rounded-full text-[10px] font-semibold hover:bg-[#FFF314]/90 transition shadow-md whitespace-nowrap"
             >
               Yes! I Want To Help!
             </Link>
+            <div className="flex items-center gap-1 text-white/70">
+              <a href="#" aria-label="Facebook" className="hover:text-[#FFF314] transition">
+                <Facebook size={14} />
+              </a>
+              <a href="#" aria-label="Twitter" className="hover:text-[#FFF314] transition">
+                <Twitter size={14} />
+              </a>
+              <a href="#" aria-label="Instagram" className="hover:text-[#FFF314] transition">
+                <Instagram size={14} />
+              </a>
+              <a href="#" aria-label="YouTube" className="hover:text-[#FFF314] transition">
+                <Youtube size={14} />
+              </a>
+            </div>
             <button
               onClick={() => setIsStripVisible(false)}
-              className="text-white/70 hover:text-white transition p-1"
+              className="text-white/50 hover:text-white transition p-0.5"
               aria-label="Close announcement"
             >
-              <X size={18} />
+              <X size={16} />
             </button>
           </div>
         </div>
       )}
 
-      {/* ---------- MAIN NAVBAR (existing) ---------- */}
+      {/* ---------- MAIN NAVBAR ---------- */}
       <div
         className={`transition-all duration-500 ${bgHeader} 
           min-h-[70px] sm:min-h-[80px] flex items-center py-2 sm:py-3`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
           <div className="flex items-center justify-between gap-3">
-            {/* Logo */}
+            {/* Logo – now two lines: "Prayas" + "Samaj Sevi Sanstha" */}
             <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
               <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                 <img
@@ -199,16 +200,14 @@ export default function Navbar() {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <motion.span
-                key={brandLangIndex}
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                transition={{ duration: 0.4 }}
-                className={`font-display font-bold text-lg sm:text-xl tracking-tight whitespace-nowrap ${textColor} group-hover:text-[#FFF314]`}
-              >
-                {brandTexts[brandLangIndex]}
-              </motion.span>
+              <div className="flex flex-col leading-tight">
+                <span className={`font-display font-bold text-xl sm:text-2xl tracking-tight ${textColor} group-hover:text-[#FFF314] transition`}>
+                  Prayas
+                </span>
+                <span className={`font-display text-[10px] sm:text-xs font-medium opacity-80 ${textColor} group-hover:text-[#FFF314] transition`}>
+                  Samaj Sevi Sanstha
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -373,7 +372,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Menu */}
+      {/* Mobile Navigation Menu (unchanged) */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
