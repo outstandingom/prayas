@@ -47,9 +47,12 @@ export default function Navbar() {
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const location = useLocation();
 
-  // ---------- Animated brand name toggle ----------
+  // ---------- Animated brand name – two lines ----------
   const [brandLangIndex, setBrandLangIndex] = useState(0);
-  const brandTexts = ['Prayas Samaj Sevi Sanstha', 'प्रयास समाज सेवी संस्था'];
+  // First line: "Prayas" / "प्रयास"
+  const brandFirstLine = ['Prayas', 'प्रयास'];
+  // Second line: "Samaj Sevi Sanstha" / "समाज सेवी संस्था"
+  const brandSecondLine = ['Samaj Sevi Sanstha', 'समाज सेवी संस्था'];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -156,7 +159,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[9999] relative">
-      {/* ---------- OVERLAPPING LOGO (absolute) with animated brand name ---------- */}
+      {/* ---------- OVERLAPPING LOGO (absolute) with animated two‑line brand ---------- */}
       <Link
         to="/"
         className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group"
@@ -168,16 +171,27 @@ export default function Navbar() {
             className="w-full h-full object-cover"
           />
         </div>
-        <motion.span
+
+        {/* Animated two‑line brand name */}
+        <motion.div
           key={brandLangIndex}
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -5 }}
           transition={{ duration: 0.4 }}
-          className={`font-display font-bold text-xl sm:text-3xl tracking-tight ${textColor} group-hover:text-[#FFF314] transition drop-shadow-md`}
+          className="flex flex-col leading-tight"
         >
-          {brandTexts[brandLangIndex]}
-        </motion.span>
+          <span
+            className={`font-display font-bold text-xl sm:text-3xl tracking-tight ${textColor} group-hover:text-[#FFF314] transition drop-shadow-md`}
+          >
+            {brandFirstLine[brandLangIndex]}
+          </span>
+          <span
+            className={`font-display text-[10px] sm:text-sm font-medium opacity-90 ${textColor} group-hover:text-[#FFF314] transition`}
+          >
+            {brandSecondLine[brandLangIndex]}
+          </span>
+        </motion.div>
       </Link>
 
       {/* ---------- TOP STRIP (visible on ALL sizes) ---------- */}
