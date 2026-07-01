@@ -200,56 +200,55 @@ export default function ImpactCategories() {
 
   return (
     <div className="relative w-full h-screen bg-white overflow-hidden">
-      {/* Small Header */}
-      <div className="absolute top-0 left-0 right-0 z-30 bg-white px-3 sm:px-6 md:px-10 pt-2 sm:pt-3 pb-1.5 sm:pb-2 border-b border-[#263238]/10">
+      {/* Very compact Header */}
+      <div className="absolute top-0 left-0 right-0 z-30 bg-white px-3 sm:px-6 md:px-10 py-1.5 sm:py-2 border-b border-[#263238]/10">
         <div className="max-w-6xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.4 }}
           >
-            <span className="font-sans text-[#263238] text-[9px] sm:text-[10px] tracking-[0.2em] uppercase font-bold">
-              {t('categories.header.label', 'Our Work')}
-            </span>
-            <h1 className="font-sans text-lg sm:text-2xl md:text-3xl font-bold text-[#263238] leading-tight">
-              {t('categories.header.title', 'Impact')}{' '}
-              <span className="text-[#263238]">
-                {t('categories.header.titleHighlight', 'Initiatives')}
-              </span>
-            </h1>
-            <p className="text-[#263238]/60 text-xs sm:text-sm max-w-2xl hidden sm:block">
-              {t('categories.header.desc', 'Explore our key focus areas driving meaningful change in communities across the globe.')}
-            </p>
-            {/* Progress Indicator */}
-            <div className="flex items-center gap-2 mt-1">
-              <div className="flex items-center gap-1">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="font-sans text-[#263238] text-[9px] sm:text-[10px] tracking-[0.2em] uppercase font-bold">
+                  {t('categories.header.label', 'Our Work')}
+                </span>
+                <span className="hidden sm:inline text-[#263238]/20">|</span>
+                <h1 className="font-sans text-sm sm:text-lg md:text-xl font-bold text-[#263238]">
+                  {t('categories.header.title', 'Impact')}{' '}
+                  <span className="text-[#263238]">
+                    {t('categories.header.titleHighlight', 'Initiatives')}
+                  </span>
+                </h1>
+              </div>
+              <div className="flex items-center gap-2">
                 <span className="text-[#263238] font-sans text-xs sm:text-sm font-bold">
                   {String(currentIndex + 1).padStart(2, '0')}
                 </span>
                 <span className="text-[#263238]/30 font-sans text-[10px]">/ {String(total).padStart(2, '0')}</span>
+                <div className="h-px w-12 sm:w-20 bg-[#263238]/10 relative overflow-hidden hidden sm:block">
+                  <motion.div
+                    className="h-full bg-[#263238] absolute left-0 top-0"
+                    style={{ width: `${((currentIndex + 1) / total) * 100}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
               </div>
-              <div className="h-px flex-1 max-w-[100px] sm:max-w-[150px] bg-[#263238]/10 relative overflow-hidden">
-                <motion.div
-                  className="h-full bg-[#263238] absolute left-0 top-0"
-                  style={{ width: `${((currentIndex + 1) / total) * 100}%` }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
-              <span className="text-[#263238]/40 font-sans text-[9px] truncate max-w-[70px] sm:max-w-[120px]">
-                {translatedCategories[currentIndex]?.title}
-              </span>
             </div>
+            <p className="text-[#263238]/60 text-[10px] sm:text-xs max-w-2xl hidden sm:block -mt-0.5">
+              {t('categories.header.desc', 'Explore our key focus areas driving meaningful change in communities across the globe.')}
+            </p>
           </motion.div>
         </div>
       </div>
 
-      {/* Carousel Section – smaller container */}
+      {/* Carousel Section – fills remaining height without gaps */}
       <div
-        className="absolute top-[60px] sm:top-[70px] left-0 right-0 bottom-0 flex items-center justify-center px-2 sm:px-4"
+        className="absolute top-[40px] sm:top-[50px] left-0 right-0 bottom-0 flex items-stretch px-2 sm:px-4"
       >
         <div
           ref={containerRef}
-          className="relative w-full max-w-4xl h-[420px] max-h-[70vh] overflow-hidden rounded-xl select-none"
+          className="relative w-full max-w-5xl h-full overflow-hidden rounded-xl select-none"
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
           onMouseUp={handleDragEnd}
@@ -274,7 +273,7 @@ export default function ImpactCategories() {
                 className="w-full flex-shrink-0 h-full px-0 py-1"
               >
                 <div className="bg-[#263238] rounded-xl overflow-hidden shadow-xl flex flex-col md:flex-row h-full">
-                  {/* Image – smaller */}
+                  {/* Image – auto height on desktop, fixed on mobile */}
                   <div className="md:w-2/5 h-32 sm:h-40 md:h-full relative flex-shrink-0">
                     <img
                       src={cat.image_url}
@@ -292,7 +291,7 @@ export default function ImpactCategories() {
                     </div>
                   </div>
 
-                  {/* Content – compact */}
+                  {/* Content – fills remaining space */}
                   <div className="flex-1 p-2.5 sm:p-4 md:p-5 flex flex-col justify-between overflow-y-auto">
                     <div>
                       <div className="flex items-center gap-1.5 mb-0.5">
