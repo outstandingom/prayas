@@ -6,6 +6,7 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 import SmoothLoader from './SmoothLoader'
 import FloatingDonateButton from './FloatingDonateButton'
+import FloatingVolunteerButton from './FloatingVolunteerButton'
 
 export default function Layout() {
   const { pathname } = useLocation()
@@ -28,9 +29,6 @@ export default function Layout() {
     return () => clearTimeout(timer)
   }, [])
 
-  const initialY = isMobile ? 8 : 20
-  const exitY = isMobile ? -8 : -20
-
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#263238] font-sans flex flex-col relative overflow-x-hidden">
       {loaderVisible && <SmoothLoader />}
@@ -38,12 +36,12 @@ export default function Layout() {
       <Navbar />
       <motion.main
         key={pathname}
-        initial={{ opacity: 0, y: initialY }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: exitY }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{
-          duration: isMobile ? 0.3 : 0.4,
-          ease: [0.19, 1, 0.22, 1]
+          duration: isMobile ? 0.25 : 0.35,
+          ease: 'easeInOut'
         }}
         className="flex-1 w-full pointer-events-auto relative z-10"
       >
@@ -52,6 +50,7 @@ export default function Layout() {
       <Footer />
       
       <FloatingDonateButton />
+      <FloatingVolunteerButton />
     </div>
   )
 }

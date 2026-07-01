@@ -1,5 +1,5 @@
 // src/pages/Gallery.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -19,6 +19,10 @@ export default function Gallery() {
   const [error, setError] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // Drag state
+  const dragStartX = useRef(0);
+  const isDragging = useRef(false);
+
   useEffect(() => {
     fetchImages();
   }, []);
@@ -36,7 +40,7 @@ export default function Gallery() {
       if (error) throw error;
       if (data && data.length > 0) {
         setImages(data);
-        setActiveIndex(Math.floor(data.length / 2)); // start in the middle
+        setActiveIndex(Math.floor(data.length / 2));
       } else {
         setImages([]);
       }
@@ -47,16 +51,23 @@ export default function Gallery() {
     }
   };
 
-  const toPrev = () => {
-    setActiveIndex((prev) => Math.max(0, prev - 1));
+  const toPrev = () => setActiveIndex((prev) => Math.max(0, prev - 1));
+  const toNext = () => setActiveIndex((prev) => Math.min(images.length - 1, prev + 1));
+  const toSlide = (index: number) => setActiveIndex(index);
+
+  // ── Drag / Swipe handlers ──
+  const handleDragStart = (clientX: number) => {
+    dragStartX.current = clientX;
+    isDragging.current = true;
   };
 
-  const toNext = () => {
-    setActiveIndex((prev) => Math.min(images.length - 1, prev + 1));
-  };
-
-  const toSlide = (index: number) => {
-    setActiveIndex(index);
+  const handleDragEnd = (clientX: number) => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const diff = dragStartX.current - clientX;
+    if (Math.abs(diff) > 50) {
+      diff > 0 ? toNext() : toPrev();
+    }
   };
 
   if (loading) {
@@ -85,7 +96,7 @@ export default function Gallery() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F1F8F5] flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-[#F1F8F5] flex flex-col items-center justify-center relative overflow-hidden pb-28">
       {/* Background decoration */}
       <div className="absolute top-10 right-10 w-72 h-72 bg-[#FFF314]/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-10 left-10 w-72 h-72 bg-[#FFF314]/10 rounded-full blur-[100px] pointer-events-none" />
@@ -96,13 +107,19 @@ export default function Gallery() {
           Our <span className="text-[#FFF314]">Gallery</span>
         </h1>
         <p className="text-[#263238]/60 text-sm mt-2">
-          {images.length} images • Drag to explore
+          {images.length} images · Swipe or drag to explore
         </p>
       </div>
 
-      {/* Carousel Wrapper */}
-      <div className="w-[clamp(120px,80vmin,300px)] mt-4 z-10">
-        {/* Slides Container */}
+      {/* Carousel Wrapper — draggable */}
+      <div
+        className="w-[clamp(120px,80vmin,300px)] mt-4 z-10 cursor-grab active:cursor-grabbing select-none"
+        onMouseDown={(e) => handleDragStart(e.clientX)}
+        onMouseUp={(e) => handleDragEnd(e.clientX)}
+        onMouseLeave={(e) => handleDragEnd(e.clientX)}
+        onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
+        onTouchEnd={(e) => handleDragEnd(e.changedTouches[0].clientX)}
+      >
         <motion.div
           className="flex w-fit"
           animate={{ x: `${(-activeIndex * 100) / images.length}%` }}
@@ -122,8 +139,8 @@ export default function Gallery() {
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.8 }}
               >
                 <div
-                  className={`text-xs md:text-sm whitespace-nowrap will-change-[opacity,filter] transition-all duration-300 ${
-                    isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-70'
+                  className={`text-xs md:text-sm whitespace-nowrap transition-all duration-300 ${
+                    isActive ? 'opacity-100' : 'opacity-0'
                   } text-[#263238] font-medium`}
                 >
                   {item.title || item.category || 'Untitled'}
@@ -132,7 +149,8 @@ export default function Gallery() {
                 <img
                   src={item.image_url}
                   alt={item.title || 'Gallery image'}
-                  className="w-full h-full object-cover rounded-2xl shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
+                  draggable={false}
+                  className="w-full h-full object-cover rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
                   onClick={() => toSlide(i)}
                 />
               </motion.div>
@@ -141,42 +159,44 @@ export default function Gallery() {
         </motion.div>
       </div>
 
-      {/* Controls */}
-      <div className="fixed bottom-6 left-0 right-0 w-fit px-2 mx-auto flex items-center gap-4 justify-center text-[#263238] rounded-full bg-white/80 backdrop-blur-sm px-4 py-2 border border-[#FFF314]/20 shadow-lg z-20">
-        {/* Previous Button */}
-        <button
-          onClick={toPrev}
-          disabled={activeIndex === 0}
-          className="p-2 cursor-pointer hover:bg-[#FFF314]/10 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          aria-label="Previous"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
+      {/* Controls — always visible, including mobile */}
+      <div className="fixed bottom-6 left-0 right-0 flex justify-center z-20 px-4">
+        <div className="flex items-center gap-4 bg-white/90 backdrop-blur-sm px-5 py-3 rounded-full border border-[#FFF314]/20 shadow-xl">
+          {/* Previous */}
+          <button
+            onClick={toPrev}
+            disabled={activeIndex === 0}
+            className="p-2 hover:bg-[#FFF314]/10 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            aria-label="Previous"
+          >
+            <ChevronLeft className="w-5 h-5 text-[#263238]" />
+          </button>
 
-        {/* Dots */}
-        <div className="w-[180px] flex justify-center items-center gap-2">
-          {images.map((_, i) => (
-            <div
-              key={i}
-              onClick={() => toSlide(i)}
-              className={`rounded-full cursor-pointer h-2 transition-[width,background-color] duration-300 ${
-                activeIndex === i
-                  ? 'w-7 bg-[#FFF314]'
-                  : 'w-2 bg-[#263238]/30 hover:bg-[#263238]/50'
-              }`}
-            />
-          ))}
+          {/* Dots */}
+          <div className="flex justify-center items-center gap-1.5 max-w-[160px] overflow-hidden">
+            {images.map((_, i) => (
+              <div
+                key={i}
+                onClick={() => toSlide(i)}
+                className={`rounded-full cursor-pointer h-2 transition-all duration-300 ${
+                  activeIndex === i
+                    ? 'w-6 bg-[#FFF314]'
+                    : 'w-2 bg-[#263238]/30 hover:bg-[#263238]/50'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Next */}
+          <button
+            onClick={toNext}
+            disabled={activeIndex === images.length - 1}
+            className="p-2 hover:bg-[#FFF314]/10 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            aria-label="Next"
+          >
+            <ChevronRight className="w-5 h-5 text-[#263238]" />
+          </button>
         </div>
-
-        {/* Next Button */}
-        <button
-          onClick={toNext}
-          disabled={activeIndex === images.length - 1}
-          className="p-2 cursor-pointer hover:bg-[#FFF314]/10 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          aria-label="Next"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
       </div>
     </div>
   );

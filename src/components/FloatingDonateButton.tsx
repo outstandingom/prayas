@@ -58,7 +58,7 @@ export default function FloatingDonateButton() {
   return (
     <Link
       to={`/donate?cause=${currentMessage.id}`}
-      className="fixed bottom-8 right-8 z-50 flex flex-col items-center gap-2 hover:scale-110 transition-transform duration-200"
+      className="fixed bottom-24 right-4 sm:bottom-8 sm:right-8 z-50 flex flex-col items-center gap-2 hover:scale-110 transition-transform duration-200"
     >
       {/* Circular Image */}
       <div className="w-20 h-20 rounded-full overflow-hidden shadow-2xl border-4 border-white/30">
