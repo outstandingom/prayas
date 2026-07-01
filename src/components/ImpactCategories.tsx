@@ -177,154 +177,146 @@ export default function ImpactCategories() {
         </div>
       </div>
 
-      {/* Navigation Arrows */}
-      <div className="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 flex items-center justify-between px-2 md:px-4" style={{ top: '120px' }}>
+      {/* Main Carousel Container */}
+      <div className="relative flex items-center justify-center w-full px-4 sm:px-8 md:px-12 lg:px-16 py-6" style={{ minHeight: 'calc(100vh - 200px)' }}>
+        {/* Left Arrow */}
         <button
           onClick={() => goTo(-1)}
           disabled={currentIndex === 0}
-          className="pointer-events-auto p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
-          aria-label="Previous category"
+          className="absolute left-2 sm:left-4 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
+          aria-label="Previous"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
         </button>
+
+        {/* Right Arrow */}
         <button
           onClick={() => goTo(1)}
           disabled={currentIndex === total - 1}
-          className="pointer-events-auto p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
-          aria-label="Next category"
+          className="absolute right-2 sm:right-4 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238]"
+          aria-label="Next"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
         </button>
-      </div>
 
-      {/* Right Side Dots */}
-      <div className="fixed right-3 sm:right-5 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1.5 z-30 items-center">
-        {translatedCategories.map((cat, i) => (
-          <div key={cat.id} className="flex items-center gap-2">
-            <div
-              className="transition-all duration-300 rounded-full cursor-pointer"
-              style={{
-                width: i === currentIndex ? '10px' : '5px',
-                height: i === currentIndex ? '10px' : '5px',
-                backgroundColor: i === currentIndex ? '#FFF314' : '#26323820',
-                boxShadow: i === currentIndex ? '0 0 8px rgba(255,243,20,0.5)' : 'none',
-              }}
-              onClick={() => setCurrentIndex(i)}
-            />
-            {i === currentIndex && (
-              <motion.span
-                initial={{ opacity: 0, x: 5 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="text-xs font-sans font-bold text-[#263238]"
-              >
-                {String(i + 1).padStart(2, '0')}
-              </motion.span>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* Horizontal Slider */}
-      <div
-        ref={containerRef}
-        className="relative w-full overflow-hidden"
-        style={{ height: 'calc(100vh - 180px)' }}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
+        {/* Carousel Track */}
         <div
-          ref={trackRef}
-          className="flex transition-transform duration-500 ease-in-out h-full items-center"
-          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          ref={containerRef}
+          className="relative w-full overflow-hidden rounded-2xl"
+          style={{ maxWidth: '1200px' }}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
-          {translatedCategories.map((cat) => (
-            <div
-              key={cat.id}
-              className="w-full flex-shrink-0 px-4 sm:px-8 md:px-12 lg:px-16 py-4"
-            >
-              <div className="max-w-6xl mx-auto bg-[#263238] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row h-full min-h-[400px] md:min-h-[450px]">
-                {/* Image - left side on desktop, top on mobile */}
-                <div className="md:w-1/2 h-64 md:h-auto relative flex-shrink-0">
-                  <img
-                    src={cat.image_url}
-                    alt={cat.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        'https://via.placeholder.com/800x600/263238/FFF314?text=No+Image'
-                    }}
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 md:hidden">
-                    <span className="text-white/80 text-xs font-bold tracking-widest">
-                      {cat.title}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Content - right side on desktop, below on mobile */}
-                <div className="flex-1 p-6 sm:p-8 md:p-10 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-[#FFF314] text-xs font-bold tracking-widest">
+          <div
+            ref={trackRef}
+            className="flex transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          >
+            {translatedCategories.map((cat) => (
+              <div
+                key={cat.id}
+                className="w-full flex-shrink-0 px-0 py-2"
+              >
+                <div className="bg-[#263238] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
+                  {/* Image - left side on desktop, top on mobile */}
+                  <div className="md:w-2/5 h-64 md:h-auto relative flex-shrink-0">
+                    <img
+                      src={cat.image_url}
+                      alt={cat.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://via.placeholder.com/800x600/263238/FFF314?text=No+Image'
+                      }}
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 md:hidden">
+                      <span className="text-white/80 text-xs font-bold tracking-widest">
                         {cat.title}
                       </span>
-                      <span className="w-1 h-1 rounded-full bg-[#FFF314]" />
-                      <span className="text-white/40 text-xs">
-                        {cat.initiatives?.length || 0} initiatives
-                      </span>
                     </div>
-
-                    <h3 className="text-white text-2xl sm:text-3xl font-bold mb-3">
-                      {cat.title}
-                    </h3>
-
-                    <p className="text-white/70 text-sm sm:text-base leading-relaxed mb-4">
-                      {cat.description}
-                    </p>
-
-                    {cat.goal_funds > 0 && (
-                      <div className="mb-4">
-                        <div className="flex justify-between text-xs text-white/60 mb-1">
-                          <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
-                          <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
-                        </div>
-                        <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-[#FFF314] rounded-full transition-all duration-500"
-                            style={{
-                              width: `${Math.min((cat.funds_collected || 0) / (cat.goal_funds || 1) * 100, 100)}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {cat.initiatives && cat.initiatives.length > 0 && (
-                      <div className="space-y-1 mb-4">
-                        {cat.initiatives.slice(0, 3).map((init, idx) => (
-                          <div key={idx} className="flex items-center gap-2 text-white/60 text-sm">
-                            <span className="text-base">{init.icon || '📌'}</span>
-                            <span>{init.title}</span>
-                          </div>
-                        ))}
-                        {cat.initiatives.length > 3 && (
-                          <div className="text-white/40 text-xs">
-                            +{cat.initiatives.length - 3} more
-                          </div>
-                        )}
-                      </div>
-                    )}
                   </div>
 
-                  <button
-                    onClick={() => navigate(`/impact/${cat.slug}`)}
-                    className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-sm uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white w-fit"
-                  >
-                    {t('categories.learnMore', 'Learn More')} <span className="text-lg leading-none">→</span>
-                  </button>
+                  {/* Content */}
+                  <div className="flex-1 p-6 sm:p-8 md:p-10 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-[#FFF314] text-xs font-bold tracking-widest">
+                          {cat.title}
+                        </span>
+                        <span className="w-1 h-1 rounded-full bg-[#FFF314]" />
+                        <span className="text-white/40 text-xs">
+                          {cat.initiatives?.length || 0} initiatives
+                        </span>
+                      </div>
+
+                      <h3 className="text-white text-2xl sm:text-3xl font-bold mb-3">
+                        {cat.title}
+                      </h3>
+
+                      <p className="text-white/70 text-sm sm:text-base leading-relaxed mb-4">
+                        {cat.description}
+                      </p>
+
+                      {cat.goal_funds > 0 && (
+                        <div className="mb-4">
+                          <div className="flex justify-between text-xs text-white/60 mb-1">
+                            <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
+                            <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
+                          </div>
+                          <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-[#FFF314] rounded-full transition-all duration-500"
+                              style={{
+                                width: `${Math.min((cat.funds_collected || 0) / (cat.goal_funds || 1) * 100, 100)}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {cat.initiatives && cat.initiatives.length > 0 && (
+                        <div className="space-y-1 mb-4">
+                          {cat.initiatives.slice(0, 3).map((init, idx) => (
+                            <div key={idx} className="flex items-center gap-2 text-white/60 text-sm">
+                              <span className="text-base">{init.icon || '📌'}</span>
+                              <span>{init.title}</span>
+                            </div>
+                          ))}
+                          {cat.initiatives.length > 3 && (
+                            <div className="text-white/40 text-xs">
+                              +{cat.initiatives.length - 3} more
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => navigate(`/impact/${cat.slug}`)}
+                      className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-sm uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white w-fit"
+                    >
+                      {t('categories.learnMore', 'Learn More')} <span className="text-lg leading-none">→</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Dots indicator */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+          {translatedCategories.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentIndex(i)}
+              className={`transition-all duration-300 rounded-full ${
+                i === currentIndex
+                  ? 'w-3 h-3 bg-[#FFF314] shadow-[0_0_8px_rgba(255,243,20,0.5)]'
+                  : 'w-2 h-2 bg-[#263238]/30 hover:bg-[#263238]/50'
+              }`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
           ))}
         </div>
       </div>
