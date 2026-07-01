@@ -111,13 +111,13 @@ export default function ImpactCategories() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goTo])
 
-  // Mouse wheel navigation – throttled and prevents page scroll
+  // Mouse wheel navigation – throttled
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault() // prevent page scroll
+      e.preventDefault()
       const now = Date.now()
       if (now - lastWheelTime.current < 500) return
       lastWheelTime.current = now
@@ -127,15 +127,14 @@ export default function ImpactCategories() {
       let delta = deltaX > deltaY ? e.deltaX : e.deltaY
       if (delta === 0) return
 
-      const direction = delta > 0 ? 1 : -1
-      goTo(direction)
+      goTo(delta > 0 ? 1 : -1)
     }
 
     container.addEventListener('wheel', handleWheel, { passive: false })
     return () => container.removeEventListener('wheel', handleWheel)
   }, [goTo])
 
-  // Drag handlers – prevent default to stop page scroll
+  // Drag handlers
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
     setIsDragging(true)
@@ -144,7 +143,7 @@ export default function ImpactCategories() {
     if (trackRef.current) {
       trackRef.current.style.cursor = 'grabbing'
     }
-    if ('touches' in e) e.preventDefault() // prevent page scroll on touch
+    if ('touches' in e) e.preventDefault()
   }
 
   const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
@@ -152,7 +151,7 @@ export default function ImpactCategories() {
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
     const diff = clientX - startX
     setDragOffset(diff)
-    if ('touches' in e) e.preventDefault() // prevent page scroll
+    if ('touches' in e) e.preventDefault()
   }
 
   const handleDragEnd = () => {
@@ -204,43 +203,43 @@ export default function ImpactCategories() {
 
   return (
     <div className="relative w-full h-screen bg-white overflow-hidden">
-      {/* Sticky Header – fixed height */}
-      <div className="absolute top-0 left-0 right-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-[#263238]/10">
+      {/* Sticky Header – reduced size */}
+      <div className="absolute top-0 left-0 right-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-4 sm:pt-6 pb-3 sm:pb-4 border-b border-[#263238]/10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="font-sans text-[#263238] text-xs sm:text-sm tracking-[0.2em] uppercase font-bold">
+            <span className="font-sans text-[#263238] text-[10px] sm:text-xs tracking-[0.2em] uppercase font-bold">
               {t('categories.header.label', 'Our Work')}
             </span>
-            <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#263238] mt-1 sm:mt-2">
+            <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#263238] mt-0.5 sm:mt-1">
               {t('categories.header.title', 'Impact')}{' '}
               <span className="text-[#263238]">
                 {t('categories.header.titleHighlight', 'Initiatives')}
               </span>
             </h1>
-            <p className="text-[#263238]/60 text-sm sm:text-base max-w-2xl mt-2 sm:mt-3 font-sans">
+            <p className="text-[#263238]/60 text-xs sm:text-sm max-w-2xl mt-1 sm:mt-2 font-sans">
               {t('categories.header.desc', 'Explore our key focus areas driving meaningful change in communities across the globe.')}
             </p>
 
-            {/* Progress Indicator */}
-            <div className="flex items-center gap-3 mt-3 sm:mt-4">
+            {/* Progress Indicator – smaller */}
+            <div className="flex items-center gap-3 mt-2 sm:mt-3">
               <div className="flex items-center gap-2">
-                <span className="text-[#263238] font-sans text-lg sm:text-xl font-bold">
+                <span className="text-[#263238] font-sans text-base sm:text-lg font-bold">
                   {String(currentIndex + 1).padStart(2, '0')}
                 </span>
-                <span className="text-[#263238]/30 font-sans text-sm">/ {String(total).padStart(2, '0')}</span>
+                <span className="text-[#263238]/30 font-sans text-xs">/ {String(total).padStart(2, '0')}</span>
               </div>
-              <div className="h-px flex-1 max-w-[200px] bg-[#263238]/10 relative overflow-hidden">
+              <div className="h-px flex-1 max-w-[150px] bg-[#263238]/10 relative overflow-hidden">
                 <motion.div
                   className="h-full bg-[#263238] absolute left-0 top-0"
                   style={{ width: `${((currentIndex + 1) / total) * 100}%` }}
                   transition={{ duration: 0.3 }}
                 />
               </div>
-              <span className="text-[#263238]/40 font-sans text-xs truncate max-w-[120px] sm:max-w-[200px]">
+              <span className="text-[#263238]/40 font-sans text-[10px] truncate max-w-[100px] sm:max-w-[180px]">
                 {translatedCategories[currentIndex]?.title}
               </span>
             </div>
@@ -248,13 +247,13 @@ export default function ImpactCategories() {
         </div>
       </div>
 
-      {/* Carousel Section – fills remaining height */}
+      {/* Carousel Section – fills remaining height, reduced top offset */}
       <div
-        className="absolute top-[170px] left-0 right-0 bottom-0 flex items-center justify-center px-4 sm:px-8"
+        className="absolute top-[110px] left-0 right-0 bottom-0 flex items-center justify-center px-3 sm:px-6"
       >
         <div
           ref={containerRef}
-          className="relative w-full max-w-6xl h-full overflow-hidden rounded-2xl select-none"
+          className="relative w-full max-w-6xl h-full overflow-hidden rounded-xl select-none"
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
           onMouseUp={handleDragEnd}
@@ -276,11 +275,11 @@ export default function ImpactCategories() {
             {translatedCategories.map((cat) => (
               <div
                 key={cat.id}
-                className="w-full flex-shrink-0 h-full px-0 py-2"
+                className="w-full flex-shrink-0 h-full px-0 py-1"
               >
-                <div className="bg-[#263238] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row h-full">
-                  {/* Image */}
-                  <div className="md:w-2/5 h-64 md:h-full relative flex-shrink-0">
+                <div className="bg-[#263238] rounded-xl overflow-hidden shadow-2xl flex flex-col md:flex-row h-full">
+                  {/* Image – smaller on mobile */}
+                  <div className="md:w-2/5 h-48 md:h-full relative flex-shrink-0">
                     <img
                       src={cat.image_url}
                       alt={cat.title}
@@ -290,41 +289,41 @@ export default function ImpactCategories() {
                           'https://via.placeholder.com/800x600/263238/FFF314?text=No+Image'
                       }}
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 md:hidden">
-                      <span className="text-white/80 text-xs font-bold tracking-widest">
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3 md:hidden">
+                      <span className="text-white/80 text-[10px] font-bold tracking-widest">
                         {cat.title}
                       </span>
                     </div>
                   </div>
 
-                  {/* Content */}
-                  <div className="flex-1 p-6 sm:p-8 md:p-10 flex flex-col justify-between overflow-y-auto">
+                  {/* Content – reduced padding */}
+                  <div className="flex-1 p-4 sm:p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
                     <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-[#FFF314] text-xs font-bold tracking-widest">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-[#FFF314] text-[10px] font-bold tracking-widest">
                           {cat.title}
                         </span>
                         <span className="w-1 h-1 rounded-full bg-[#FFF314]" />
-                        <span className="text-white/40 text-xs">
+                        <span className="text-white/40 text-[10px]">
                           {cat.initiatives?.length || 0} initiatives
                         </span>
                       </div>
 
-                      <h3 className="text-white text-2xl sm:text-3xl font-bold mb-3">
+                      <h3 className="text-white text-xl sm:text-2xl font-bold mb-2">
                         {cat.title}
                       </h3>
 
-                      <p className="text-white/70 text-sm sm:text-base leading-relaxed mb-4">
+                      <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-3 line-clamp-3">
                         {cat.description}
                       </p>
 
                       {cat.goal_funds > 0 && (
-                        <div className="mb-4">
-                          <div className="flex justify-between text-xs text-white/60 mb-1">
+                        <div className="mb-3">
+                          <div className="flex justify-between text-[10px] text-white/60 mb-1">
                             <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
                             <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
                           </div>
-                          <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                          <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
                             <div
                               className="h-full bg-[#FFF314] rounded-full transition-all duration-500"
                               style={{
@@ -336,15 +335,15 @@ export default function ImpactCategories() {
                       )}
 
                       {cat.initiatives && cat.initiatives.length > 0 && (
-                        <div className="space-y-1 mb-4">
+                        <div className="space-y-0.5 mb-3">
                           {cat.initiatives.slice(0, 3).map((init, idx) => (
-                            <div key={idx} className="flex items-center gap-2 text-white/60 text-sm">
-                              <span className="text-base">{init.icon || '📌'}</span>
-                              <span>{init.title}</span>
+                            <div key={idx} className="flex items-center gap-2 text-white/60 text-xs">
+                              <span className="text-sm">{init.icon || '📌'}</span>
+                              <span className="truncate">{init.title}</span>
                             </div>
                           ))}
                           {cat.initiatives.length > 3 && (
-                            <div className="text-white/40 text-xs">
+                            <div className="text-white/40 text-[10px]">
                               +{cat.initiatives.length - 3} more
                             </div>
                           )}
@@ -354,9 +353,9 @@ export default function ImpactCategories() {
 
                     <button
                       onClick={() => navigate(`/impact/${cat.slug}`)}
-                      className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-sm uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white w-fit"
+                      className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white w-fit"
                     >
-                      {t('categories.learnMore', 'Learn More')} <span className="text-lg leading-none">→</span>
+                      {t('categories.learnMore', 'Learn More')} <span className="text-base leading-none">→</span>
                     </button>
                   </div>
                 </div>
@@ -368,31 +367,31 @@ export default function ImpactCategories() {
           <button
             onClick={() => goTo(-1)}
             disabled={currentIndex === 0}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:block"
+            className="absolute left-1 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:block"
             aria-label="Previous"
           >
-            <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
           <button
             onClick={() => goTo(1)}
             disabled={currentIndex === total - 1}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:block"
+            className="absolute right-1 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:block"
             aria-label="Next"
           >
-            <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
 
         {/* Dots indicator */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
           {translatedCategories.map((_, i) => (
             <button
               key={i}
               onClick={() => goToIndex(i)}
               className={`transition-all duration-300 rounded-full ${
                 i === currentIndex
-                  ? 'w-3 h-3 bg-[#FFF314] shadow-[0_0_8px_rgba(255,243,20,0.5)]'
-                  : 'w-2 h-2 bg-[#263238]/30 hover:bg-[#263238]/50'
+                  ? 'w-2.5 h-2.5 bg-[#FFF314] shadow-[0_0_8px_rgba(255,243,20,0.5)]'
+                  : 'w-1.5 h-1.5 bg-[#263238]/30 hover:bg-[#263238]/50'
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />
