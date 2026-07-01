@@ -29,7 +29,8 @@ const LANGUAGES = [
   { code: 'en', label: 'English' },
   { code: 'mr', label: 'मराठी' },
   { code: 'gu', label: 'ગુજરાતી' },
-  { code: 'bn', label: 'বাংলা' },
+  { code: 'te', label: 'తెలుగు' },
+  { code: 'ta', label: 'தமிழ்' },
 ];
 
 export default function Navbar() {
