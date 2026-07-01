@@ -35,6 +35,9 @@ export default function ImpactCategories() {
   const [startX, setStartX] = useState(0)
   const [dragOffset, setDragOffset] = useState(0)
 
+  // Wheel throttle
+  const lastWheelTime = useRef(0)
+
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
@@ -87,7 +90,7 @@ export default function ImpactCategories() {
     const newIndex = currentIndex + dir
     if (newIndex >= 0 && newIndex < total) {
       setCurrentIndex(newIndex)
-      setDragOffset(0) // reset drag offset
+      setDragOffset(0)
     }
   }, [currentIndex, total])
 
@@ -108,20 +111,23 @@ export default function ImpactCategories() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goTo])
 
-  // Mouse wheel navigation
+  // Mouse wheel navigation (throttled to once per 500ms)
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault()
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-        // horizontal scroll
-        goTo(e.deltaX > 0 ? 1 : -1)
-      } else {
-        // vertical scroll (optional)
-        // goTo(e.deltaY > 0 ? 1 : -1)
-      }
+
+      const now = Date.now()
+      if (now - lastWheelTime.current < 500) return // throttle
+      lastWheelTime.current = now
+
+      // Only trigger on horizontal scroll or large vertical scroll
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY
+      if (Math.abs(delta) < 30) return // ignore small scrolls
+
+      goTo(delta > 0 ? 1 : -1)
     }
 
     container.addEventListener('wheel', handleWheel, { passive: false })
@@ -152,17 +158,15 @@ export default function ImpactCategories() {
     if (trackRef.current) {
       trackRef.current.style.cursor = 'grab'
     }
-    // Snap to nearest slide if drag distance > 50px
-    const threshold = 50
+    // Snap to nearest slide if drag distance > 80px
+    const threshold = 80 // increased for less sensitivity
     if (Math.abs(dragOffset) > threshold) {
       goTo(dragOffset < 0 ? 1 : -1)
     } else {
-      // Reset to current slide
-      setDragOffset(0)
+      setDragOffset(0) // reset without changing index
     }
   }
 
-  // Cleanup for mouse leave
   const handleDragLeave = () => {
     if (isDragging) {
       handleDragEnd()
@@ -191,9 +195,10 @@ export default function ImpactCategories() {
     )
   }
 
-  // Calculate transform: offset based on currentIndex + dragOffset fraction
-  const slideWidth = 100 // percentage
-  const transformValue = -(currentIndex * slideWidth) + (dragOffset / (containerRef.current?.offsetWidth || 1)) * 100
+  // Calculate transform
+  const slideWidth = 100
+  const containerWidth = containerRef.current?.offsetWidth || 1
+  const transformValue = -(currentIndex * slideWidth) + (dragOffset / containerWidth) * 100
 
   return (
     <div className="relative w-full min-h-screen bg-white overflow-hidden">
@@ -243,7 +248,6 @@ export default function ImpactCategories() {
 
       {/* Carousel Section */}
       <div className="relative flex items-center justify-center w-full px-4 sm:px-8 py-6" style={{ minHeight: 'calc(100vh - 200px)' }}>
-        {/* Carousel Container */}
         <div
           ref={containerRef}
           className="relative w-full max-w-6xl overflow-hidden rounded-2xl select-none"
