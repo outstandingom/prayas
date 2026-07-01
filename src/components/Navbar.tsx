@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Menu, X, Heart, User, ChevronDown, Globe, UserPlus,
-  Facebook, Twitter, Instagram, Youtube
+  Menu, X, Heart, User, ChevronDown, Globe, UserPlus
 } from 'lucide-react';
+// Social icons from react-icons/fa
+import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 import { supabase } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
 
@@ -161,16 +162,16 @@ export default function Navbar() {
             </Link>
             <div className="flex items-center gap-1 text-white/70">
               <a href="#" aria-label="Facebook" className="hover:text-[#FFF314] transition">
-                <Facebook size={14} />
+                <FaFacebook size={14} />
               </a>
               <a href="#" aria-label="Twitter" className="hover:text-[#FFF314] transition">
-                <Twitter size={14} />
+                <FaTwitter size={14} />
               </a>
               <a href="#" aria-label="Instagram" className="hover:text-[#FFF314] transition">
-                <Instagram size={14} />
+                <FaInstagram size={14} />
               </a>
               <a href="#" aria-label="YouTube" className="hover:text-[#FFF314] transition">
-                <Youtube size={14} />
+                <FaYoutube size={14} />
               </a>
             </div>
             <button
