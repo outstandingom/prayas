@@ -111,7 +111,7 @@ export default function ImpactCategories() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goTo])
 
-  // Mouse wheel navigation (throttled to once per 500ms)
+  // Mouse wheel navigation (throttled, no small‑scroll filter)
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -123,11 +123,15 @@ export default function ImpactCategories() {
       if (now - lastWheelTime.current < 500) return // throttle
       lastWheelTime.current = now
 
-      // Only trigger on horizontal scroll or large vertical scroll
-      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY
-      if (Math.abs(delta) < 30) return // ignore small scrolls
+      // Determine primary direction: use deltaX if it's larger, else deltaY
+      const deltaX = Math.abs(e.deltaX)
+      const deltaY = Math.abs(e.deltaY)
+      let delta = deltaX > deltaY ? e.deltaX : e.deltaY
 
-      goTo(delta > 0 ? 1 : -1)
+      if (delta === 0) return
+
+      const direction = delta > 0 ? 1 : -1
+      goTo(direction)
     }
 
     container.addEventListener('wheel', handleWheel, { passive: false })
@@ -158,12 +162,11 @@ export default function ImpactCategories() {
     if (trackRef.current) {
       trackRef.current.style.cursor = 'grab'
     }
-    // Snap to nearest slide if drag distance > 80px
-    const threshold = 80 // increased for less sensitivity
+    const threshold = 80
     if (Math.abs(dragOffset) > threshold) {
       goTo(dragOffset < 0 ? 1 : -1)
     } else {
-      setDragOffset(0) // reset without changing index
+      setDragOffset(0)
     }
   }
 
