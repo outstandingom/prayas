@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu, X, Heart, User, ChevronDown, Globe, UserPlus
 } from 'lucide-react';
-// Social icons from react-icons/fa
 import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 import { supabase } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
@@ -146,17 +145,17 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[9999] flex flex-col">
-      {/* ---------- TOP STRIP (mobile only) ---------- */}
+      {/* ---------- TOP STRIP (visible on ALL screen sizes) ---------- */}
       {isStripVisible && (
-        <div className="block md:hidden bg-[#263238] text-white py-2 px-4 flex items-center justify-between w-full shadow-md">
-          <div className="flex flex-col gap-0.5">
-            <span className="font-bold text-sm tracking-wide">CHILD RIGHTS AND YOU</span>
-            <span className="text-[10px] opacity-80">Let's ensure happy childhoods for India's children</span>
+        <div className="block bg-[#263238] text-white py-2 px-4 flex flex-col sm:flex-row items-center justify-between w-full shadow-md gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-center sm:text-left">
+            <span className="font-bold text-sm sm:text-base tracking-wide">CHILD RIGHTS AND YOU</span>
+            <span className="text-[10px] sm:text-xs opacity-80">Let's ensure happy childhoods for India's children</span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <Link
               to="/donate"
-              className="bg-[#FFF314] text-[#263238] px-3 py-1 rounded-full text-[10px] font-semibold hover:bg-[#FFF314]/90 transition shadow-md whitespace-nowrap"
+              className="bg-[#FFF314] text-[#263238] px-3 sm:px-4 py-1 rounded-full text-[10px] sm:text-xs font-semibold hover:bg-[#FFF314]/90 transition shadow-md whitespace-nowrap"
             >
               Yes! I Want To Help!
             </Link>
@@ -185,7 +184,7 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* ---------- MAIN NAVBAR ---------- */}
+      {/* ---------- MAIN NAVBAR (unchanged) ---------- */}
       <div
         className={`transition-all duration-500 ${bgHeader} 
           min-h-[70px] sm:min-h-[80px] flex items-center py-2 sm:py-3`}
@@ -373,7 +372,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Menu (unchanged) */}
+      {/* Mobile Navigation Menu */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
