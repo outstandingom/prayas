@@ -1,5 +1,6 @@
 // src/components/VolunteerPopup.tsx
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Heart, ArrowRight, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -11,6 +12,7 @@ interface VolunteerPopupProps {
 
 export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps) {
   const { t } = useTranslation();
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -22,6 +24,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
       document.body.style.width = 'unset'
     }
     return () => {
+      // Cleanup when component unmounts or isOpen changes
       document.body.style.overflow = 'unset'
       document.body.style.position = 'unset'
       document.body.style.width = 'unset'
@@ -34,10 +37,16 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
 
   const handleVolunteerClick = () => {
     onClose()
-    window.location.href = 'https://prayassamajsevisanstha.org/volunteer'
+    // Redirect to external volunteer page after a small delay to allow close
+    setTimeout(() => {
+      window.location.href = 'https://prayassamajsevisanstha.org/volunteer'
+    }, 100)
   }
 
-  return (
+  // Only render if open, but portal allows us to render conditionally inside portal
+  if (!isOpen) return null
+
+  return createPortal(
     <AnimatePresence mode="wait">
       {isOpen && (
         <motion.div
@@ -46,7 +55,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+          onClick={handleClose} // Click backdrop to close
         >
           <motion.div
             key="volunteer-popup-modal"
@@ -55,10 +64,10 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
             className="relative w-full max-w-sm overflow-y-auto bg-white rounded-2xl shadow-2xl max-h-[80vh]"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
             style={{ zIndex: 100000 }}
           >
-            {/* Close Button - increased z-index */}
+            {/* Close Button – highest z-index */}
             <button
               type="button"
               onClick={handleClose}
@@ -68,7 +77,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
               <X className="w-4 h-4 text-gray-700" />
             </button>
 
-            {/* Header with Volunteer Image - smaller height */}
+            {/* Header with Volunteer Image */}
             <div className="relative h-48 sm:h-56 rounded-t-2xl overflow-hidden flex-shrink-0 bg-[#263238]">
               <img
                 src="/IMG-21.jpg"
@@ -81,7 +90,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
 
-            {/* Content - smaller padding and text */}
+            {/* Content */}
             <div className="p-4 pb-5 text-center">
               <div className="flex justify-center mb-2">
                 <div className="w-12 h-12 rounded-full bg-[#FFF314]/10 flex items-center justify-center">
@@ -113,6 +122,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
