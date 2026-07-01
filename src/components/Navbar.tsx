@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Heart, User, Shield, ChevronDown, Globe } from 'lucide-react';
+import { Menu, X, Heart, User, Shield, ChevronDown, Globe, UserPlus } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
 
@@ -332,6 +332,16 @@ export default function Navbar() {
               <Heart className="w-4 h-4" />
             </Link>
 
+            {/* Volunteer button – same style as Donate, placed where Admin button used to be */}
+            <Link
+              to="/volunteer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+            >
+              {safeT('nav.volunteer')}
+              <UserPlus className="w-4 h-4" />
+            </Link>
+
+            {/* Admin button – only for admins, placed between Volunteer and Profile */}
             {!loading && isAdmin && (
               <Link
                 to="/admin"
@@ -342,6 +352,7 @@ export default function Navbar() {
               </Link>
             )}
 
+            {/* Profile / Sign In button – always visible on desktop */}
             {showAuthLink && !loading && (
               <Link
                 to={isAuthenticated ? "/profile" : "/auth"}
@@ -462,6 +473,7 @@ export default function Navbar() {
                 </div>
               </div>
 
+              {/* Donate button (mobile) */}
               <Link
                 to="/donate"
                 className="mt-3 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
@@ -469,10 +481,18 @@ export default function Navbar() {
                 {safeT('nav.donate')} <Heart className="w-5 h-5" />
               </Link>
 
+              {/* Volunteer button (mobile) – same style */}
+              <Link
+                to="/volunteer"
+                className="mt-2 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
+              >
+                {safeT('nav.volunteer')} <UserPlus className="w-5 h-5" />
+              </Link>
+
               {!loading && isAdmin && (
                 <Link
                   to="/admin"
-                  className="w-full text-center rounded-full border border-[#FFF314]/40 px-6 py-3.5 font-semibold text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+                  className="mt-2 w-full text-center rounded-full border border-[#FFF314]/40 px-6 py-3.5 font-semibold text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
                 >
                   <Shield className="w-5 h-5" />
                   {safeT('nav.admin')}
