@@ -18,14 +18,11 @@ import AdminDashboard from './pages/AdminDashboard';
 import ImpactPage from './pages/ImpactPage';
 import Members from './pages/Members';
 import Certifications from './pages/Certifications';
-// Import VolunteerPopup
 import VolunteerPopup from './components/VolunteerPopup';
 
 export default function App() {
-  // State for the volunteer popup
   const [isVolunteerPopupOpen, setIsVolunteerPopupOpen] = useState(false);
 
-  // Automatically show the popup after 2 seconds (change delay as needed)
   useEffect(() => {
     const timer = setTimeout(() => setIsVolunteerPopupOpen(true), 2000);
     return () => clearTimeout(timer);
@@ -33,11 +30,9 @@ export default function App() {
 
   return (
     <>
-      {/* Routes are inside AnimatePresence */}
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/auth" element={<Auth />} />
-
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -57,7 +52,6 @@ export default function App() {
         </Routes>
       </AnimatePresence>
 
-      {/* Volunteer Popup – rendered outside the Routes but still inside the Router context */}
       <VolunteerPopup
         isOpen={isVolunteerPopupOpen}
         onClose={() => setIsVolunteerPopupOpen(false)}
