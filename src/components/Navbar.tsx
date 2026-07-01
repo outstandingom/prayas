@@ -1,5 +1,5 @@
 // src/components/Navbar.tsx
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Heart, User, Shield, ChevronDown, Globe } from 'lucide-react';
@@ -139,9 +139,9 @@ export default function Navbar() {
   const borderColor = isLightText ? 'border-white/30' : 'border-[#263238]/30';
   const bgButton = isLightText ? 'bg-white/10 hover:bg-white/20' : 'bg-[#263238]/5 hover:bg-[#263238]/10';
 
-  // ---------- Modified background: always semi‑transparent black on home ----------
+  // ---------- Background overlay now uses #263238 instead of black ----------
   const bgHeader = isHome
-    ? (isScrolled ? 'bg-black/40 backdrop-blur-md' : 'bg-black/30 backdrop-blur-sm')
+    ? (isScrolled ? 'bg-[#263238]/40 backdrop-blur-md' : 'bg-[#263238]/30 backdrop-blur-sm')
     : (isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white border-b border-[#263238]/5');
 
   const handleMouseEnter = (name: string) => setOpenDropdown(name);
@@ -176,9 +176,10 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
         <div className="flex items-center justify-between gap-3">
-          {/* ---------- Logo with auto‑toggling brand name ---------- */}
+          {/* ---------- Logo with increased size ---------- */}
           <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+            {/* Increased logo container: w-12 h-12 on mobile, w-14 h-14 on desktop */}
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <img
                 src="https://i.ibb.co/7JR7zD39/IMG-20260624-104333.png"
                 alt="Prayas Logo"
@@ -186,7 +187,7 @@ export default function Navbar() {
               />
             </div>
             <div className="flex flex-col leading-tight">
-              {/* Animated brand text that toggles every 3 seconds */}
+              {/* Animated brand text */}
               <motion.span
                 key={brandLangIndex}
                 initial={{ opacity: 0, y: 5 }}
@@ -322,7 +323,7 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
-            {/* Donate button (already like a volunteer/donate CTA) */}
+            {/* Donate button (prominent CTA) */}
             <Link
               to="/donate"
               className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
