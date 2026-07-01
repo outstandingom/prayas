@@ -111,7 +111,7 @@ export default function ImpactCategories() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goTo])
 
-  // Mouse wheel navigation – throttled
+  // Mouse wheel navigation
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -121,12 +121,10 @@ export default function ImpactCategories() {
       const now = Date.now()
       if (now - lastWheelTime.current < 500) return
       lastWheelTime.current = now
-
       const deltaX = Math.abs(e.deltaX)
       const deltaY = Math.abs(e.deltaY)
       let delta = deltaX > deltaY ? e.deltaX : e.deltaY
       if (delta === 0) return
-
       goTo(delta > 0 ? 1 : -1)
     }
 
@@ -196,15 +194,14 @@ export default function ImpactCategories() {
     )
   }
 
-  // Calculate transform
   const slideWidth = 100
   const containerWidth = containerRef.current?.offsetWidth || 1
   const transformValue = -(currentIndex * slideWidth) + (dragOffset / containerWidth) * 100
 
   return (
     <div className="relative w-full h-screen bg-white overflow-hidden">
-      {/* Sticky Header – reduced size */}
-      <div className="absolute top-0 left-0 right-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-4 sm:pt-6 pb-3 sm:pb-4 border-b border-[#263238]/10">
+      {/* Smaller Header */}
+      <div className="absolute top-0 left-0 right-0 z-30 bg-white px-4 sm:px-6 md:px-12 pt-3 sm:pt-4 pb-2 sm:pb-3 border-b border-[#263238]/10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -214,32 +211,31 @@ export default function ImpactCategories() {
             <span className="font-sans text-[#263238] text-[10px] sm:text-xs tracking-[0.2em] uppercase font-bold">
               {t('categories.header.label', 'Our Work')}
             </span>
-            <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#263238] mt-0.5 sm:mt-1">
+            <h1 className="font-sans text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#263238] mt-0.5 sm:mt-1">
               {t('categories.header.title', 'Impact')}{' '}
               <span className="text-[#263238]">
                 {t('categories.header.titleHighlight', 'Initiatives')}
               </span>
             </h1>
-            <p className="text-[#263238]/60 text-xs sm:text-sm max-w-2xl mt-1 sm:mt-2 font-sans">
+            <p className="text-[#263238]/60 text-xs sm:text-sm max-w-2xl mt-0.5 sm:mt-1 font-sans hidden sm:block">
               {t('categories.header.desc', 'Explore our key focus areas driving meaningful change in communities across the globe.')}
             </p>
-
-            {/* Progress Indicator – smaller */}
-            <div className="flex items-center gap-3 mt-2 sm:mt-3">
-              <div className="flex items-center gap-2">
-                <span className="text-[#263238] font-sans text-base sm:text-lg font-bold">
+            {/* Progress Indicator */}
+            <div className="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-2">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[#263238] font-sans text-sm sm:text-base font-bold">
                   {String(currentIndex + 1).padStart(2, '0')}
                 </span>
                 <span className="text-[#263238]/30 font-sans text-xs">/ {String(total).padStart(2, '0')}</span>
               </div>
-              <div className="h-px flex-1 max-w-[150px] bg-[#263238]/10 relative overflow-hidden">
+              <div className="h-px flex-1 max-w-[120px] sm:max-w-[180px] bg-[#263238]/10 relative overflow-hidden">
                 <motion.div
                   className="h-full bg-[#263238] absolute left-0 top-0"
                   style={{ width: `${((currentIndex + 1) / total) * 100}%` }}
                   transition={{ duration: 0.3 }}
                 />
               </div>
-              <span className="text-[#263238]/40 font-sans text-[10px] truncate max-w-[100px] sm:max-w-[180px]">
+              <span className="text-[#263238]/40 font-sans text-[10px] truncate max-w-[80px] sm:max-w-[150px]">
                 {translatedCategories[currentIndex]?.title}
               </span>
             </div>
@@ -247,13 +243,13 @@ export default function ImpactCategories() {
         </div>
       </div>
 
-      {/* Carousel Section – fills remaining height, reduced top offset */}
+      {/* Carousel Section – reduced top offset */}
       <div
-        className="absolute top-[110px] left-0 right-0 bottom-0 flex items-center justify-center px-3 sm:px-6"
+        className="absolute top-[70px] sm:top-[80px] left-0 right-0 bottom-0 flex items-center justify-center px-2 sm:px-4"
       >
         <div
           ref={containerRef}
-          className="relative w-full max-w-6xl h-full overflow-hidden rounded-xl select-none"
+          className="relative w-full max-w-5xl h-[80vh] max-h-[600px] overflow-hidden rounded-xl select-none"
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
           onMouseUp={handleDragEnd}
@@ -278,8 +274,8 @@ export default function ImpactCategories() {
                 className="w-full flex-shrink-0 h-full px-0 py-1"
               >
                 <div className="bg-[#263238] rounded-xl overflow-hidden shadow-2xl flex flex-col md:flex-row h-full">
-                  {/* Image – smaller on mobile */}
-                  <div className="md:w-2/5 h-48 md:h-full relative flex-shrink-0">
+                  {/* Image – smaller */}
+                  <div className="md:w-2/5 h-40 sm:h-48 md:h-full relative flex-shrink-0">
                     <img
                       src={cat.image_url}
                       alt={cat.title}
@@ -289,17 +285,17 @@ export default function ImpactCategories() {
                           'https://via.placeholder.com/800x600/263238/FFF314?text=No+Image'
                       }}
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3 md:hidden">
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 md:hidden">
                       <span className="text-white/80 text-[10px] font-bold tracking-widest">
                         {cat.title}
                       </span>
                     </div>
                   </div>
 
-                  {/* Content – reduced padding */}
-                  <div className="flex-1 p-4 sm:p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
+                  {/* Content – all visible with scroll if needed */}
+                  <div className="flex-1 p-3 sm:p-4 md:p-6 flex flex-col justify-between overflow-y-auto">
                     <div>
-                      <div className="flex items-center gap-2 mb-1.5">
+                      <div className="flex items-center gap-1.5 mb-1">
                         <span className="text-[#FFF314] text-[10px] font-bold tracking-widest">
                           {cat.title}
                         </span>
@@ -309,17 +305,17 @@ export default function ImpactCategories() {
                         </span>
                       </div>
 
-                      <h3 className="text-white text-xl sm:text-2xl font-bold mb-2">
+                      <h3 className="text-white text-lg sm:text-xl md:text-2xl font-bold mb-1 leading-tight">
                         {cat.title}
                       </h3>
 
-                      <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-3 line-clamp-3">
+                      <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-2 line-clamp-2 sm:line-clamp-3">
                         {cat.description}
                       </p>
 
                       {cat.goal_funds > 0 && (
-                        <div className="mb-3">
-                          <div className="flex justify-between text-[10px] text-white/60 mb-1">
+                        <div className="mb-2">
+                          <div className="flex justify-between text-[10px] text-white/60 mb-0.5">
                             <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
                             <span>Goal: ₹{cat.goal_funds?.toLocaleString() || 0}</span>
                           </div>
@@ -335,16 +331,16 @@ export default function ImpactCategories() {
                       )}
 
                       {cat.initiatives && cat.initiatives.length > 0 && (
-                        <div className="space-y-0.5 mb-3">
-                          {cat.initiatives.slice(0, 3).map((init, idx) => (
-                            <div key={idx} className="flex items-center gap-2 text-white/60 text-xs">
+                        <div className="space-y-0.5 mb-2">
+                          {cat.initiatives.slice(0, 2).map((init, idx) => (
+                            <div key={idx} className="flex items-center gap-1.5 text-white/60 text-xs">
                               <span className="text-sm">{init.icon || '📌'}</span>
                               <span className="truncate">{init.title}</span>
                             </div>
                           ))}
-                          {cat.initiatives.length > 3 && (
+                          {cat.initiatives.length > 2 && (
                             <div className="text-white/40 text-[10px]">
-                              +{cat.initiatives.length - 3} more
+                              +{cat.initiatives.length - 2} more
                             </div>
                           )}
                         </div>
@@ -353,7 +349,7 @@ export default function ImpactCategories() {
 
                     <button
                       onClick={() => navigate(`/impact/${cat.slug}`)}
-                      className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white w-fit"
+                      className="inline-flex items-center gap-2 text-[#FFF314] font-sans text-[11px] sm:text-xs uppercase tracking-wider font-bold hover:gap-3 transition-all hover:text-white w-fit"
                     >
                       {t('categories.learnMore', 'Learn More')} <span className="text-base leading-none">→</span>
                     </button>
@@ -367,18 +363,18 @@ export default function ImpactCategories() {
           <button
             onClick={() => goTo(-1)}
             disabled={currentIndex === 0}
-            className="absolute left-1 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:block"
+            className="absolute left-1 top-1/2 -translate-y-1/2 z-20 p-1 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:block"
             aria-label="Previous"
           >
-            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={() => goTo(1)}
             disabled={currentIndex === total - 1}
-            className="absolute right-1 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:block"
+            className="absolute right-1 top-1/2 -translate-y-1/2 z-20 p-1 rounded-full bg-white/90 shadow-lg hover:bg-white transition-opacity disabled:opacity-30 disabled:cursor-not-allowed text-[#263238] hidden sm:block"
             aria-label="Next"
           >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ChevronRight className="w-5 h-5" />
           </button>
         </div>
 
@@ -390,7 +386,7 @@ export default function ImpactCategories() {
               onClick={() => goToIndex(i)}
               className={`transition-all duration-300 rounded-full ${
                 i === currentIndex
-                  ? 'w-2.5 h-2.5 bg-[#FFF314] shadow-[0_0_8px_rgba(255,243,20,0.5)]'
+                  ? 'w-2 h-2 bg-[#FFF314] shadow-[0_0_8px_rgba(255,243,20,0.5)]'
                   : 'w-1.5 h-1.5 bg-[#263238]/30 hover:bg-[#263238]/50'
               }`}
               aria-label={`Go to slide ${i + 1}`}
