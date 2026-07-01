@@ -34,7 +34,6 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
 
   const handleVolunteerClick = () => {
     onClose()
-    // Redirect to external volunteer page
     window.location.href = 'https://prayassamajsevisanstha.org/volunteer'
   }
 
@@ -46,7 +45,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[99999] flex items-start justify-center p-4 bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
         >
           <motion.div
@@ -55,7 +54,7 @@ export default function VolunteerPopup({ isOpen, onClose }: VolunteerPopupProps)
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
-            className="relative w-full max-w-md max-h-[85vh] sm:max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl mt-16 sm:mt-20 md:mt-24 lg:mt-28"
+            className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
             style={{ zIndex: 100000 }}
           >
