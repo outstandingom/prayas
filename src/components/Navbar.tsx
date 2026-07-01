@@ -47,6 +47,17 @@ export default function Navbar() {
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const location = useLocation();
 
+  // ---------- Animated brand name toggle ----------
+  const [brandLangIndex, setBrandLangIndex] = useState(0);
+  const brandTexts = ['Prayas Samaj Sevi Sanstha', 'प्रयास समाज सेवी संस्था'];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBrandLangIndex(prev => (prev === 0 ? 1 : 0));
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   // ---------- Top strip visibility (persisted) ----------
   const [isStripVisible, setIsStripVisible] = useState(() => {
     const stored = localStorage.getItem('topStripVisible');
@@ -145,7 +156,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[9999] relative">
-      {/* ---------- OVERLAPPING LOGO (absolute) ---------- */}
+      {/* ---------- OVERLAPPING LOGO (absolute) with animated brand name ---------- */}
       <Link
         to="/"
         className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group"
@@ -157,14 +168,16 @@ export default function Navbar() {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="flex flex-col leading-tight">
-          <span className={`font-display font-bold text-xl sm:text-3xl tracking-tight ${textColor} group-hover:text-[#FFF314] transition drop-shadow-md`}>
-            Prayas
-          </span>
-          <span className={`font-display text-[10px] sm:text-sm font-medium opacity-90 ${textColor} group-hover:text-[#FFF314] transition`}>
-            Samaj Sevi Sanstha
-          </span>
-        </div>
+        <motion.span
+          key={brandLangIndex}
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -5 }}
+          transition={{ duration: 0.4 }}
+          className={`font-display font-bold text-xl sm:text-3xl tracking-tight ${textColor} group-hover:text-[#FFF314] transition drop-shadow-md`}
+        >
+          {brandTexts[brandLangIndex]}
+        </motion.span>
       </Link>
 
       {/* ---------- TOP STRIP (visible on ALL sizes) ---------- */}
@@ -213,7 +226,7 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
           <div className="flex items-center justify-end gap-3">
-            {/* Desktop Navigation - we align to the right */}
+            {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-2 lg:gap-4 ml-auto">
               {navLinks.map((link) => {
                 const hasSubmenu = link.submenu && link.submenu.length > 0;
