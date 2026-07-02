@@ -30,15 +30,11 @@ export default function ImpactCategories() {
   const trackRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Drag state
   const [isDragging, setIsDragging] = useState(false)
   const [startX, setStartX] = useState(0)
   const [dragOffset, setDragOffset] = useState(0)
-
-  // Wheel throttle
   const lastWheelTime = useRef(0)
 
-  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true)
@@ -97,7 +93,6 @@ export default function ImpactCategories() {
     }
   }, [total])
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') goTo(-1)
@@ -107,7 +102,6 @@ export default function ImpactCategories() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goTo])
 
-  // Mouse wheel navigation
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -126,7 +120,6 @@ export default function ImpactCategories() {
     return () => container.removeEventListener('wheel', handleWheel)
   }, [goTo])
 
-  // Drag handlers
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
     setIsDragging(true)
@@ -152,7 +145,6 @@ export default function ImpactCategories() {
     }
   }
 
-  // Loading / empty states
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] bg-white">
@@ -176,52 +168,49 @@ export default function ImpactCategories() {
   const transformValue = -(currentIndex * 100) + (dragOffset / containerWidth) * 100
 
   return (
-    <div className="w-full bg-white" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="w-full bg-white min-h-screen flex flex-col">
 
-      {/* ── HEADER ── */}
-      <div style={{ flexShrink: 0 }} className="bg-white border-b border-[#263238]/10 px-4 sm:px-8 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 flex-wrap">
-          {/* Left: label + title */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-[#263238] text-xs sm:text-sm tracking-[0.2em] uppercase font-bold">
+      {/* HEADER */}
+      <div className="flex-shrink-0 bg-white border-b border-[#263238]/10 px-4 sm:px-8 py-3 sm:py-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <span className="text-[#263238] text-[10px] sm:text-xs tracking-[0.2em] uppercase font-bold">
               {t('categories.header.label', 'Our Work')}
             </span>
-            <span className="text-[#263238]/20">|</span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#263238]">
+            <span className="text-[#263238]/20 hidden sm:inline">|</span>
+            <h2 className="text-xl sm:text-3xl font-bold text-[#263238] leading-tight">
               {t('categories.header.title', 'Impact')}{' '}
               <span className="text-[#FFF314] drop-shadow-sm">
                 {t('categories.header.titleHighlight', 'Initiatives')}
               </span>
             </h2>
           </div>
-          {/* Right: counter + progress */}
-          <div className="flex items-center gap-3">
-            <span className="text-[#263238] text-base font-bold tabular-nums">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="text-[#263238] text-sm sm:text-base font-bold tabular-nums">
               {String(currentIndex + 1).padStart(2, '0')}
             </span>
-            <div className="w-16 sm:w-24 h-1 bg-[#263238]/10 rounded-full overflow-hidden">
+            <div className="w-12 sm:w-24 h-1 bg-[#263238]/10 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-[#263238] rounded-full"
                 animate={{ width: `${((currentIndex + 1) / total) * 100}%` }}
                 transition={{ duration: 0.3 }}
               />
             </div>
-            <span className="text-[#263238]/40 text-sm tabular-nums">
+            <span className="text-[#263238]/40 text-xs sm:text-sm tabular-nums">
               {String(total).padStart(2, '0')}
             </span>
           </div>
         </div>
-        <p className="text-[#263238]/50 text-sm mt-1 max-w-2xl hidden sm:block">
+        <p className="text-[#263238]/50 text-xs sm:text-sm mt-1 max-w-2xl hidden sm:block">
           {t('categories.header.desc', 'Explore our key focus areas driving meaningful change in communities across India.')}
         </p>
       </div>
 
-      {/* ── CAROUSEL AREA ── */}
-      <div style={{ flex: 1, minHeight: 0, position: 'relative' }} className="px-3 sm:px-6 py-4">
-        {/* Draggable container */}
+      {/* CAROUSEL AREA */}
+      <div className="flex-1 min-h-0 relative px-2 sm:px-6 py-3 sm:py-4">
         <div
           ref={containerRef}
-          className="w-full h-full overflow-hidden rounded-2xl select-none"
+          className="w-full h-full overflow-hidden rounded-xl sm:rounded-2xl select-none"
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
           onMouseUp={handleDragEnd}
@@ -231,7 +220,6 @@ export default function ImpactCategories() {
           onTouchEnd={handleDragEnd}
           style={{ touchAction: 'none', cursor: isDragging ? 'grabbing' : 'grab' }}
         >
-          {/* Sliding track */}
           <div
             ref={trackRef}
             className="flex h-full transition-transform duration-300 ease-out will-change-transform"
@@ -239,11 +227,9 @@ export default function ImpactCategories() {
           >
             {translatedCategories.map((cat) => (
               <div key={cat.id} className="w-full flex-shrink-0 h-full">
-                {/* Card */}
-                <div className="bg-[#263238] rounded-2xl overflow-hidden shadow-2xl h-full flex flex-col md:flex-row">
+                <div className="bg-[#263238] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl h-full flex flex-col md:flex-row">
 
-                  {/* Image panel */}
-                  <div className="md:w-[42%] h-52 sm:h-64 md:h-full relative flex-shrink-0">
+                  <div className="md:w-[42%] h-48 sm:h-56 md:h-full relative flex-shrink-0">
                     <img
                       src={cat.image_url}
                       alt={cat.title}
@@ -253,53 +239,47 @@ export default function ImpactCategories() {
                           'https://placehold.co/800x600/263238/FFF314?text=Prayas'
                       }}
                     />
-                    {/* Gradient overlay on mobile */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#263238] via-transparent to-transparent md:hidden" />
-                    <div className="absolute bottom-3 left-4 md:hidden">
-                      <span className="text-[#FFF314] text-xs font-bold tracking-widest uppercase">
+                    <div className="absolute bottom-2 left-3 md:hidden">
+                      <span className="text-[#FFF314] text-[10px] font-bold tracking-widest uppercase">
                         {cat.title}
                       </span>
                     </div>
                   </div>
 
-                  {/* Content panel */}
-                  <div className="flex-1 flex flex-col justify-between p-5 sm:p-7 md:p-10 overflow-y-auto">
-                    <div className="space-y-4">
+                  <div className="flex-1 flex flex-col justify-between p-4 sm:p-6 md:p-10 overflow-y-auto">
+                    <div className="space-y-3 sm:space-y-4">
 
-                      {/* Category label row */}
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="inline-block w-2 h-2 rounded-full bg-[#FFF314]" />
-                        <span className="text-[#FFF314] text-sm font-bold tracking-widest uppercase">
+                        <span className="text-[#FFF314] text-[11px] sm:text-sm font-bold tracking-widest uppercase">
                           {cat.title}
                         </span>
                         {(cat.initiatives?.length ?? 0) > 0 && (
                           <>
                             <span className="text-white/20">·</span>
-                            <span className="text-white/40 text-sm">
+                            <span className="text-white/40 text-[11px] sm:text-sm">
                               {cat.initiatives.length} initiative{cat.initiatives.length !== 1 ? 's' : ''}
                             </span>
                           </>
                         )}
                       </div>
 
-                      {/* Main title */}
-                      <h3 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
+                      <h3 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
                         {cat.title}
                       </h3>
 
-                      {/* Description */}
-                      <p className="text-white/70 text-base sm:text-lg leading-relaxed">
+                      <p className="text-white/70 text-sm sm:text-base md:text-lg leading-relaxed">
                         {cat.description}
                       </p>
 
-                      {/* Funds progress bar */}
                       {cat.goal_funds > 0 && (
-                        <div className="space-y-2 pt-1">
-                          <div className="flex justify-between text-sm text-white/50">
+                        <div className="space-y-1 pt-1">
+                          <div className="flex justify-between text-[11px] sm:text-sm text-white/50">
                             <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
                             <span>Goal: ₹{cat.goal_funds?.toLocaleString()}</span>
                           </div>
-                          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                          <div className="w-full h-1.5 sm:h-2 bg-white/10 rounded-full overflow-hidden">
                             <div
                               className="h-full bg-[#FFF314] rounded-full transition-all duration-700"
                               style={{
@@ -310,20 +290,19 @@ export default function ImpactCategories() {
                         </div>
                       )}
 
-                      {/* Initiative tags */}
                       {cat.initiatives && cat.initiatives.length > 0 && (
-                        <div className="flex flex-wrap gap-2 pt-1">
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-1">
                           {cat.initiatives.slice(0, 4).map((init, idx) => (
                             <span
                               key={idx}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/8 border border-white/10 rounded-full text-white/70 text-sm"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 bg-white/8 border border-white/10 rounded-full text-white/70 text-[11px] sm:text-sm"
                             >
                               <span>{init.icon || '📌'}</span>
                               {init.title}
                             </span>
                           ))}
                           {cat.initiatives.length > 4 && (
-                            <span className="text-white/40 text-sm px-2 py-1.5">
+                            <span className="text-white/40 text-[11px] sm:text-sm px-2 py-1">
                               +{cat.initiatives.length - 4} more
                             </span>
                           )}
@@ -331,13 +310,12 @@ export default function ImpactCategories() {
                       )}
                     </div>
 
-                    {/* CTA button */}
                     <button
                       onClick={() => navigate(`/impact/${cat.slug}`)}
-                      className="mt-6 self-start inline-flex items-center gap-2 px-6 py-3 bg-[#FFF314] text-[#263238] font-bold text-sm uppercase tracking-wider rounded-full hover:bg-white hover:scale-105 transition-all duration-200 shadow-lg"
+                      className="mt-4 sm:mt-6 w-full sm:w-auto self-start inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#FFF314] text-[#263238] font-bold text-xs sm:text-sm uppercase tracking-wider rounded-full hover:bg-white hover:scale-105 transition-all duration-200 shadow-lg"
                     >
                       {t('categories.learnMore', 'Learn More')}
-                      <span className="text-base">→</span>
+                      <span className="text-sm sm:text-base">→</span>
                     </button>
                   </div>
 
@@ -347,36 +325,33 @@ export default function ImpactCategories() {
           </div>
         </div>
 
-        {/* Prev arrow */}
         <button
           onClick={() => goTo(-1)}
           disabled={currentIndex === 0}
-          className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-all disabled:opacity-25 disabled:cursor-not-allowed text-[#263238]"
+          className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-all disabled:opacity-25 disabled:cursor-not-allowed text-[#263238]"
           aria-label="Previous"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
 
-        {/* Next arrow */}
         <button
           onClick={() => goTo(1)}
           disabled={currentIndex === total - 1}
-          className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-all disabled:opacity-25 disabled:cursor-not-allowed text-[#263238]"
+          className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-all disabled:opacity-25 disabled:cursor-not-allowed text-[#263238]"
           aria-label="Next"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
 
-        {/* Dot indicators */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+        <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-20">
           {translatedCategories.map((_, i) => (
             <button
               key={i}
               onClick={() => goToIndex(i)}
               className={`transition-all duration-300 rounded-full ${
                 i === currentIndex
-                  ? 'w-6 h-2.5 bg-[#FFF314] shadow-[0_0_8px_rgba(255,243,20,0.6)]'
-                  : 'w-2.5 h-2.5 bg-white/30 hover:bg-white/60'
+                  ? 'w-5 sm:w-6 h-2 sm:h-2.5 bg-[#FFF314] shadow-[0_0_8px_rgba(255,243,20,0.6)]'
+                  : 'w-2 sm:w-2.5 h-2 sm:h-2.5 bg-white/30 hover:bg-white/60'
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />
