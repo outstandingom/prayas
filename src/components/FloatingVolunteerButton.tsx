@@ -16,9 +16,9 @@ export default function FloatingVolunteerButton() {
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-        className="fixed bottom-24 right-4 sm:bottom-8 sm:right-8 z-50 flex flex-col items-center gap-1.5"
+        // Changed bottom values to move it higher (above donate button)
+        className="fixed bottom-32 right-4 sm:bottom-20 sm:right-8 z-50 flex flex-col items-center gap-1.5"
       >
-        {/* Main volunteer button (as a Link) */}
         <Link
           to="/volunteer"
           className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#263238] shadow-2xl border-4 border-white/30 transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#FFF314] focus:ring-offset-2"
@@ -31,7 +31,6 @@ export default function FloatingVolunteerButton() {
           </motion.div>
         </Link>
 
-        {/* Label – smaller and repositioned */}
         <motion.span
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
@@ -41,7 +40,6 @@ export default function FloatingVolunteerButton() {
           Volunteer
         </motion.span>
 
-        {/* Close (×) button – positioned at top-right of the circular button */}
         <button
           onClick={(e) => {
             e.preventDefault()
