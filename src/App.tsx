@@ -24,7 +24,7 @@ export default function App() {
   const [isVolunteerPopupOpen, setIsVolunteerPopupOpen] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsVolunteerPopupOpen(true), 2000);
+    const timer = setTimeout(() => setIsVolunteerPopupOpen(true), 15000);
     return () => clearTimeout(timer);
   }, []);
 
