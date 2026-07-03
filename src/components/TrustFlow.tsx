@@ -5,16 +5,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// Trust‑related images (replace with your own if needed)
 const TRUST_IMAGES = [
-  'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=400&q=80',  // children
-  'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=400&q=80', // community
-  'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80', // teamwork
-  'https://images.unsplash.com/photo-1523050854058-8df90110c7f1?auto=format&fit=crop&w=400&q=80', // education
-  'https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=400&q=80', // help
+  'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1523050854058-8df90110c7f1?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=400&q=80',
 ]
 
-// Card content
 const cards = [
   { title: 'Trust in Action', badge: '+30%', description: 'Building trust with communities' },
   { title: 'Community First', badge: '+12%', description: 'Empowering local leaders' },
@@ -25,13 +23,12 @@ const cards = [
 
 export default function TrustFlow() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const cardsRef = useRef<HTMLDivElement[]>([])
 
   useEffect(() => {
     if (!containerRef.current) return
 
     const ctx = gsap.context(() => {
-      // Animate each card with a staggered fade‑in
+      // Staggered fade‑in for cards
       gsap.fromTo(
         '.trust-card',
         { opacity: 0, y: 40, scale: 0.95 },
@@ -50,7 +47,7 @@ export default function TrustFlow() {
         }
       )
 
-      // Animate the connecting lines (dot + line)
+      // Timeline line grows from top to bottom
       gsap.fromTo(
         '.timeline-line',
         { scaleY: 0 },
@@ -72,7 +69,7 @@ export default function TrustFlow() {
 
   return (
     <div ref={containerRef} className="trust-flow w-full max-w-5xl mx-auto px-4 py-12 md:py-16">
-      {/* Header with description */}
+      {/* Header */}
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-4xl font-bold text-[#263238] mb-4">
           Our approach is modeled around bringing change at all levels
@@ -88,24 +85,19 @@ export default function TrustFlow() {
 
       {/* Timeline */}
       <div className="relative">
-        {/* Vertical line (centered) */}
         <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-1 bg-[#263238] origin-top timeline-line" />
 
         {cards.map((card, index) => (
           <div
             key={index}
-            ref={(el) => (cardsRef.current[index] = el!)}
             className={`trust-card flex items-center mb-12 md:mb-16 ${
               index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
             }`}
           >
-            {/* Left/Right content based on parity */}
             <div className="w-5/12 hidden md:block" />
 
-            {/* Dot on the timeline */}
             <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#FFF314] border-4 border-[#263238] shadow-lg z-10 mx-4 md:mx-8" />
 
-            {/* Card */}
             <div className="flex-1 md:w-5/12">
               <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#FFF314]/30 transition-transform hover:scale-[1.02] duration-300">
                 <div className="relative h-48 md:h-56">
