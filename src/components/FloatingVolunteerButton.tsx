@@ -17,7 +17,7 @@ export default function FloatingVolunteerButton() {
         exit={{ scale: 0, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 350, damping: 25 }}
         // Increased bottom values to move it much higher above the donate button
-        className="fixed bottom-64 right-6 sm:bottom-48 sm:right-10 z-50 flex flex-col items-center gap-1.5"
+        className="fixed bottom-64 right-8 sm:bottom-48 sm:right-16 z-50 flex flex-col items-center gap-1.5"
       >
         <Link
           to="/volunteer"
