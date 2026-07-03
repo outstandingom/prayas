@@ -1,33 +1,59 @@
 // src/components/FloatingVolunteerButton.tsx
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Heart } from 'lucide-react'
 
 export default function FloatingVolunteerButton() {
-  return (
-    <Link
-      to="/volunteer"
-      className="fixed bottom-24 left-4 sm:bottom-8 sm:left-8 z-50 flex flex-col items-center gap-2 hover:scale-110 transition-transform duration-200 group"
-    >
-      {/* Circular icon */}
-      <div className="w-20 h-20 rounded-full overflow-hidden shadow-2xl border-4 border-white/30 bg-[#263238] flex items-center justify-center">
-        <motion.div
-          animate={{ scale: [1, 1.15, 1] }}
-          transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
-        >
-          <Heart className="w-9 h-9 text-[#FFF314] fill-[#FFF314]" />
-        </motion.div>
-      </div>
+  const [visible, setVisible] = useState(true)
 
-      {/* Label */}
+  if (!visible) return null
+
+  return (
+    <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: 5 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="text-sm font-semibold text-[#263238] bg-[#FFF314] px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0, opacity: 0 }}
+        transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+        className="fixed bottom-24 right-4 sm:bottom-8 sm:right-8 z-50 flex flex-col items-center gap-1.5"
       >
-        Become a Volunteer
+        {/* Main volunteer button (as a Link) */}
+        <Link
+          to="/volunteer"
+          className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#263238] shadow-2xl border-4 border-white/30 transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#FFF314] focus:ring-offset-2"
+        >
+          <motion.div
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+          >
+            <Heart className="h-6 w-6 text-[#FFF314] fill-[#FFF314]" />
+          </motion.div>
+        </Link>
+
+        {/* Label – smaller and repositioned */}
+        <motion.span
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="text-xs font-semibold text-[#263238] bg-[#FFF314] px-3 py-1 rounded-full shadow-md whitespace-nowrap"
+        >
+          Volunteer
+        </motion.span>
+
+        {/* Close (×) button – positioned at top-right of the circular button */}
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setVisible(false)
+          }}
+          className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-xs text-gray-700 shadow-md transition-colors hover:bg-gray-300 hover:text-gray-900 focus:outline-none"
+          aria-label="Remove volunteer button"
+        >
+          ×
+        </button>
       </motion.div>
-    </Link>
+    </AnimatePresence>
   )
 }
