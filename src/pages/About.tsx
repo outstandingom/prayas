@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import { Heart, Users, GraduationCap, Leaf, Stethoscope, Home, Lightbulb, Target, Globe, HandHeart } from 'lucide-react';
 import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6'; // ✅ X (Twitter) icon
 import { useTranslation } from 'react-i18next';
 
 export default function About() {
@@ -134,6 +135,10 @@ export default function About() {
             <a href="https://www.instagram.com/prayas_samajik_sanstha" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg hover:shadow-xl" aria-label="Instagram"><FaInstagram className="w-7 h-7" /></a>
             <a href="https://www.youtube.com/channel/UC16ZbLnP1qJxrKQoKsss12w" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-[#FF0000] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg hover:shadow-xl" aria-label="YouTube"><FaYoutube className="w-7 h-7" /></a>
             <a href="https://www.linkedin.com/company/prayas-samajik-sanstha" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-[#0A66C2] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg hover:shadow-xl" aria-label="LinkedIn"><FaLinkedin className="w-7 h-7" /></a>
+            {/* ✅ X (Twitter) link added */}
+            <a href="https://x.com/pryasaa?s=11" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-[#000000] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg hover:shadow-xl" aria-label="X (Twitter)">
+              <FaXTwitter className="w-7 h-7" />
+            </a>
           </div>
         </motion.div>
       </div>
