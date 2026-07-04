@@ -52,7 +52,7 @@ const DOCUMENTS = [
     name: 'Samiti Panjiyan',
     description: 'Society registration certificate (Samiti Panjiyan)',
     type: 'image',
-    logo: '/SAMATI.jpeg',
+    logo: '/documents/samatipanjayan.jpeg',
     fallbackIcon: '📜',
     color: 'from-amber-50 to-amber-100',
     borderColor: 'border-amber-200',
@@ -93,32 +93,41 @@ export default function Certifications() {
               transition={{ delay: index * 0.08 }}
               className={`bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border ${doc.borderColor} overflow-hidden flex flex-col`}
             >
-              {/* Logo / preview area */}
-              <div className={`bg-gradient-to-br ${doc.color} flex items-center justify-center p-6 min-h-[140px] relative`}>
-                {doc.id === 5 ? (
-                  /* For the image document, show a thumbnail preview */
-                  <img
-                    src={doc.logo}
-                    alt={doc.name}
-                    className="max-h-28 max-w-full object-contain rounded-lg shadow"
-                    onError={(e) => {
-                      const el = e.currentTarget;
-                      el.style.display = 'none';
-                      el.nextElementSibling?.classList.remove('hidden');
-                    }}
-                  />
-                ) : (
-                  /* For PDF docs, show a styled certificate-style logo badge */
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="text-5xl">{doc.fallbackIcon}</div>
-                    <span className={`text-xs font-bold tracking-widest uppercase ${doc.labelColor} bg-white/60 px-3 py-1 rounded-full`}>
-                      {doc.type === 'pdf' ? 'PDF Document' : 'Image'}
-                    </span>
-                  </div>
-                )}
+              {/* Logo area – now with a circular container */}
+              <div className={`bg-gradient-to-br ${doc.color} flex items-center justify-center p-4 min-h-[140px] relative`}>
+                {/* Circular logo wrapper */}
+                <div className="w-24 h-24 rounded-full bg-white shadow-md flex items-center justify-center overflow-hidden border-2 border-white/80">
+                  {doc.id === 5 ? (
+                    // For image documents: show a round thumbnail
+                    <>
+                      <img
+                        src={doc.logo}
+                        alt={doc.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // On error: hide image and show fallback icon
+                          const img = e.currentTarget;
+                          img.style.display = 'none';
+                          const parent = img.parentElement!;
+                          const fallbackSpan = parent.querySelector('.fallback-icon');
+                          if (fallbackSpan) fallbackSpan.classList.remove('hidden');
+                        }}
+                      />
+                      <span className="fallback-icon hidden text-4xl">{doc.fallbackIcon}</span>
+                    </>
+                  ) : (
+                    // For PDF documents: show the fallback icon inside the circle
+                    <span className="text-5xl">{doc.fallbackIcon}</span>
+                  )}
+                </div>
+
+                {/* Small label (PDF / Image) – placed at bottom of the gradient area */}
+                <span className={`absolute bottom-2 text-[10px] font-medium ${doc.labelColor} bg-white/80 px-2 py-0.5 rounded-full`}>
+                  {doc.type === 'pdf' ? 'PDF' : 'Image'}
+                </span>
               </div>
 
-              {/* Card content */}
+              {/* Card content – unchanged */}
               <div className="p-5 flex-1 flex flex-col gap-2">
                 <h3 className="text-base font-bold text-[#263238] leading-snug">
                   {t(`documents.list.${doc.id}.name`, doc.name)}
