@@ -8,7 +8,7 @@ const DOCUMENTS = [
     name: 'Form 10AB Approval',
     description: 'Income Tax exemption approval under Section 10AB',
     type: 'pdf',
-    logo: '/10ab.png',
+    logo: '/10ab.jpeg',           // ✅ corrected
     fallbackIcon: '📄',
     color: 'from-red-50 to-red-100',
     borderColor: 'border-red-200',
@@ -19,7 +19,7 @@ const DOCUMENTS = [
     name: 'CSR-1 Registration',
     description: 'Corporate Social Responsibility registration letter AB5600296',
     type: 'pdf',
-    logo: '/CSR.png',
+    logo: '/CSR.jpeg',            // ✅ corrected
     fallbackIcon: '🏛️',
     color: 'from-blue-50 to-blue-100',
     borderColor: 'border-blue-200',
@@ -30,7 +30,7 @@ const DOCUMENTS = [
     name: 'List of Members',
     description: 'Official registered list of executive committee members',
     type: 'pdf',
-    logo: '/documents/logos/members.png',
+    logo: '/documents/logos/members.png', // keep as-is (or change if needed)
     fallbackIcon: '👥',
     color: 'from-green-50 to-green-100',
     borderColor: 'border-green-200',
@@ -41,7 +41,7 @@ const DOCUMENTS = [
     name: 'Prayas Bylaws',
     description: 'Constitutional bylaws and governing rules of the organisation',
     type: 'pdf',
-    logo: '/documents/logos/bylaws.png',
+    logo: '/documents/logos/bylaws.png',  // keep as-is (or change if needed)
     fallbackIcon: '📋',
     color: 'from-purple-50 to-purple-100',
     borderColor: 'border-purple-200',
@@ -52,7 +52,7 @@ const DOCUMENTS = [
     name: 'Samiti Panjiyan',
     description: 'Society registration certificate (Samiti Panjiyan)',
     type: 'image',
-    logo: '/documents/samatipanjayan.jpeg',
+    logo: '/SAMATI.jpeg',         // ✅ corrected
     fallbackIcon: '📜',
     color: 'from-amber-50 to-amber-100',
     borderColor: 'border-amber-200',
@@ -93,41 +93,34 @@ export default function Certifications() {
               transition={{ delay: index * 0.08 }}
               className={`bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border ${doc.borderColor} overflow-hidden flex flex-col`}
             >
-              {/* Logo area – now with a circular container */}
+              {/* Logo area – round circle with image (or fallback) */}
               <div className={`bg-gradient-to-br ${doc.color} flex items-center justify-center p-4 min-h-[140px] relative`}>
-                {/* Circular logo wrapper */}
                 <div className="w-24 h-24 rounded-full bg-white shadow-md flex items-center justify-center overflow-hidden border-2 border-white/80">
-                  {doc.id === 5 ? (
-                    // For image documents: show a round thumbnail
-                    <>
-                      <img
-                        src={doc.logo}
-                        alt={doc.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          // On error: hide image and show fallback icon
-                          const img = e.currentTarget;
-                          img.style.display = 'none';
-                          const parent = img.parentElement!;
-                          const fallbackSpan = parent.querySelector('.fallback-icon');
-                          if (fallbackSpan) fallbackSpan.classList.remove('hidden');
-                        }}
-                      />
-                      <span className="fallback-icon hidden text-4xl">{doc.fallbackIcon}</span>
-                    </>
-                  ) : (
-                    // For PDF documents: show the fallback icon inside the circle
-                    <span className="text-5xl">{doc.fallbackIcon}</span>
-                  )}
+                  {/* Try to load the logo image */}
+                  <img
+                    src={doc.logo}
+                    alt={doc.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // On error: hide the broken image and show the fallback emoji
+                      const img = e.currentTarget;
+                      img.style.display = 'none';
+                      const parent = img.parentElement!;
+                      const fallback = parent.querySelector('.fallback-icon');
+                      if (fallback) fallback.classList.remove('hidden');
+                    }}
+                  />
+                  {/* Fallback icon (hidden by default) */}
+                  <span className="fallback-icon hidden text-5xl">{doc.fallbackIcon}</span>
                 </div>
 
-                {/* Small label (PDF / Image) – placed at bottom of the gradient area */}
+                {/* Small label (PDF / Image) – optional */}
                 <span className={`absolute bottom-2 text-[10px] font-medium ${doc.labelColor} bg-white/80 px-2 py-0.5 rounded-full`}>
                   {doc.type === 'pdf' ? 'PDF' : 'Image'}
                 </span>
               </div>
 
-              {/* Card content – unchanged */}
+              {/* Card content */}
               <div className="p-5 flex-1 flex flex-col gap-2">
                 <h3 className="text-base font-bold text-[#263238] leading-snug">
                   {t(`documents.list.${doc.id}.name`, doc.name)}
