@@ -52,7 +52,7 @@ const DOCUMENTS = [
     name: 'Samiti Panjiyan',
     description: 'Society registration certificate (Samiti Panjiyan)',
     type: 'image',
-    logo: '/documents/samatipanjayan.jpeg',
+    logo: '/SAMATI.jpeg',
     fallbackIcon: '📜',
     color: 'from-amber-50 to-amber-100',
     borderColor: 'border-amber-200',
