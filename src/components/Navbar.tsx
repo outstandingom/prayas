@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu, X, Heart, User, ChevronDown, Globe, UserPlus
 } from 'lucide-react';
-import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa'; // ✅ added FaLinkedin
 import { supabase } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
 
@@ -207,17 +207,52 @@ export default function Navbar() {
               Yes! I Want To Help!
             </Link>
             <div className="flex items-center gap-1 text-white/70">
-              <a href="#" aria-label="Facebook" className="hover:text-[#FFF314] transition">
+              {/* ✅ Social links updated with correct URLs + LinkedIn added */}
+              <a
+                href="https://www.facebook.com/prayassamajiksanstha"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="hover:text-[#FFF314] transition"
+              >
                 <FaFacebook size={14} />
               </a>
-              <a href="#" aria-label="Twitter" className="hover:text-[#FFF314] transition">
+              <a
+                href="https://x.com/pryasaa?s=11"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="X (Twitter)"
+                className="hover:text-[#FFF314] transition"
+              >
                 <FaTwitter size={14} />
               </a>
-              <a href="#" aria-label="Instagram" className="hover:text-[#FFF314] transition">
+              <a
+                href="https://www.instagram.com/prayas_samajik_sanstha"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="hover:text-[#FFF314] transition"
+              >
                 <FaInstagram size={14} />
               </a>
-              <a href="#" aria-label="YouTube" className="hover:text-[#FFF314] transition">
+              <a
+                href="https://www.youtube.com/channel/UC16ZbLnP1qJxrKQoKsss12w"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="hover:text-[#FFF314] transition"
+              >
                 <FaYoutube size={14} />
+              </a>
+              {/* ✅ LinkedIn added */}
+              <a
+                href="https://www.linkedin.com/in/prayas-samaj-sevi-sastha-undefined-0a468b418/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="hover:text-[#FFF314] transition"
+              >
+                <FaLinkedin size={14} />
               </a>
             </div>
             <button
