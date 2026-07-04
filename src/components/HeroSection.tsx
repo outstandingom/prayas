@@ -40,7 +40,7 @@ export default function HeroBanner() {
           'hero.slides.healthcare.desc',
           'Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.'
         ),
-        image: '/HEALTH.jpg',
+        image: '/PRAYASHEALTHCAMP.jpeg',
         imagePosition: 'center',
       },
       {
