@@ -20,10 +20,16 @@ const navLinks = [
       { name: 'nav.about.certifications', path: '/about/certifications' },
     ]
   },
-  { name: 'nav.programs', path: '/programs' },
-  { name: 'nav.gallery', path: '/gallery' },
-  { name: 'nav.stories', path: '/stories' },
-  { name: 'nav.volunteer', path: '/volunteer' },
+  { name: 'nav.ourWork', path: '/our-work' },
+  { name: 'nav.impact', path: '/programs' },
+  { 
+    name: 'nav.media', 
+    path: '/media',
+    submenu: [
+      { name: 'nav.stories', path: '/stories' },
+      { name: 'nav.gallery', path: '/gallery' },
+    ]
+  },
   { name: 'nav.contact', path: '/contact' },
 ];
 
@@ -156,7 +162,6 @@ export default function Navbar() {
         to="/"
         className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group"
       >
-        {/* REMOVED yellow gradient ring from logo container */}
         <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
           <img
             src="/Logo.svg"
