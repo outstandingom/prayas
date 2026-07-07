@@ -62,17 +62,6 @@ export default function Navbar() {
   // ---------- Top strip visibility - ALWAYS visible by default ----------
   const [isStripVisible, setIsStripVisible] = useState(true);
 
-  // No localStorage - strip will always show on refresh
-  // If you want to remember the preference, uncomment below but it will persist across refreshes
-  // const [isStripVisible, setIsStripVisible] = useState(() => {
-  //   const stored = localStorage.getItem('topStripVisible');
-  //   return stored !== 'false';
-  // });
-
-  // useEffect(() => {
-  //   localStorage.setItem('topStripVisible', String(isStripVisible));
-  // }, [isStripVisible]);
-
   const isHome = location.pathname === '/';
 
   // Auth logic
@@ -167,7 +156,8 @@ export default function Navbar() {
         to="/"
         className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group"
       >
-        <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
+        {/* REMOVED yellow gradient ring from logo container */}
+        <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
           <img
             src="/Logo.svg"
             alt="Prayas Logo"
