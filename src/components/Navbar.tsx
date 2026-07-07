@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu, X, Heart, User, ChevronDown, Globe, UserPlus
 } from 'lucide-react';
-import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa'; // ✅ added FaLinkedin
+import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
 import { supabase } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
 
@@ -59,15 +59,19 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
-  // ---------- Top strip visibility (persisted) ----------
-  const [isStripVisible, setIsStripVisible] = useState(() => {
-    const stored = localStorage.getItem('topStripVisible');
-    return stored !== 'false';
-  });
+  // ---------- Top strip visibility - ALWAYS visible by default ----------
+  const [isStripVisible, setIsStripVisible] = useState(true);
 
-  useEffect(() => {
-    localStorage.setItem('topStripVisible', String(isStripVisible));
-  }, [isStripVisible]);
+  // No localStorage - strip will always show on refresh
+  // If you want to remember the preference, uncomment below but it will persist across refreshes
+  // const [isStripVisible, setIsStripVisible] = useState(() => {
+  //   const stored = localStorage.getItem('topStripVisible');
+  //   return stored !== 'false';
+  // });
+
+  // useEffect(() => {
+  //   localStorage.setItem('topStripVisible', String(isStripVisible));
+  // }, [isStripVisible]);
 
   const isHome = location.pathname === '/';
 
@@ -119,15 +123,16 @@ export default function Navbar() {
   const isAuthPage = location.pathname === '/auth';
   const showAuthLink = !isAuthPage;
 
-  const isLightText = isHome;
-  const textColor = isLightText ? 'text-white' : 'text-[#263238]';
-  const textColorHover = isLightText ? 'hover:text-[#FFF314]' : 'hover:text-[#FFF314]';
-  const borderColor = isLightText ? 'border-white/30' : 'border-[#263238]/30';
-  const bgButton = isLightText ? 'bg-white/10 hover:bg-white/20' : 'bg-[#263238]/5 hover:bg-[#263238]/10';
+  // ALWAYS use dark text on white background
+  const textColor = 'text-[#263238]';
+  const textColorHover = 'hover:text-[#FFF314]';
+  const borderColor = 'border-[#263238]/30';
+  const bgButton = 'bg-[#263238]/5 hover:bg-[#263238]/10';
 
-  const bgHeader = isHome
-    ? (isScrolled ? 'bg-[#263238]/40 backdrop-blur-md' : 'bg-[#263238]/30 backdrop-blur-sm')
-    : (isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white border-b border-[#263238]/5');
+  // ALWAYS white background (not grey)
+  const bgHeader = isScrolled 
+    ? 'bg-white/95 backdrop-blur-md shadow-sm' 
+    : 'bg-white border-b border-[#263238]/5';
 
   const handleMouseEnter = (name: string) => setOpenDropdown(name);
   const handleMouseLeave = () => setOpenDropdown(null);
@@ -170,7 +175,7 @@ export default function Navbar() {
           />
         </div>
 
-        {/* Animated two‑line brand name */}
+        {/* Animated two‑line brand name - ALWAYS dark text */}
         <motion.div
           key={brandLangIndex}
           initial={{ opacity: 0, y: 5 }}
@@ -180,19 +185,19 @@ export default function Navbar() {
           className="flex flex-col leading-tight"
         >
           <span
-            className={`font-display font-bold text-xl sm:text-3xl tracking-tight group-hover:text-[#FFF314] transition drop-shadow-md ${isHome ? 'text-white' : 'text-[#263238]'}`}
+            className={`font-display font-bold text-xl sm:text-3xl tracking-tight group-hover:text-[#FFF314] transition drop-shadow-md text-[#263238]`}
           >
             {brandFirstLine[brandLangIndex]}
           </span>
           <span
-            className={`font-display text-[10px] sm:text-sm font-medium opacity-90 group-hover:text-[#FFF314] transition ${isHome ? 'text-white' : 'text-[#263238]'}`}
+            className={`font-display text-[10px] sm:text-sm font-medium opacity-90 group-hover:text-[#FFF314] transition text-[#263238]`}
           >
             {brandSecondLine[brandLangIndex]}
           </span>
         </motion.div>
       </Link>
 
-      {/* ---------- TOP STRIP – gradient from SmoothLoader ---------- */}
+      {/* ---------- TOP STRIP – gradient from SmoothLoader - ALWAYS VISIBLE ---------- */}
       {isStripVisible && (
         <div className="hidden sm:flex bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white py-2 px-4 pl-20 sm:pl-36 flex-col sm:flex-row items-center justify-between w-full shadow-md gap-2">
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-center sm:text-left">
@@ -207,7 +212,6 @@ export default function Navbar() {
               Yes! I Want To Help!
             </Link>
             <div className="flex items-center gap-1 text-white/70">
-              {/* ✅ Social links updated with correct URLs + LinkedIn added */}
               <a
                 href="https://www.facebook.com/prayassamajiksanstha"
                 target="_blank"
@@ -244,7 +248,6 @@ export default function Navbar() {
               >
                 <FaYoutube size={14} />
               </a>
-              {/* ✅ LinkedIn added */}
               <a
                 href="https://www.linkedin.com/in/prayas-samaj-sevi-sastha-undefined-0a468b418/"
                 target="_blank"
@@ -266,7 +269,7 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* ---------- MAIN NAVBAR ---------- */}
+      {/* ---------- MAIN NAVBAR - ALWAYS WHITE BACKGROUND ---------- */}
       <div
         className={`transition-all duration-500 ${bgHeader} 
           min-h-[70px] sm:min-h-[80px] flex items-center py-2 sm:py-3 pl-20 sm:pl-36`}
@@ -359,7 +362,7 @@ export default function Navbar() {
                     e.stopPropagation();
                     setLangDropdownOpen(!langDropdownOpen);
                   }}
-                  className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-xs font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
+                  className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-xs font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
                 >
                   <Globe className="w-4 h-4" />
                   <span className="hidden sm:inline">{currentLangLabel}</span>
@@ -413,7 +416,7 @@ export default function Navbar() {
               {showAuthLink && !loading && (
                 <Link
                   to={isAuthenticated ? "/profile" : "/auth"}
-                  className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} ${isLightText ? 'hover:bg-white/10' : 'hover:bg-[#263238]/5'} hover:border-[#FFF314] hover:text-[#FFF314]`}
+                  className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
                 >
                   <User className="w-4 h-4" />
                   <span className="hidden sm:inline">
@@ -435,7 +438,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Menu */}
+      {/* Mobile Navigation Menu - ALWAYS dark text on white background */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
@@ -443,7 +446,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-black/80 backdrop-blur-lg border-t border-white/10 mt-2 overflow-hidden shadow-xl"
+            className="md:hidden bg-white shadow-xl border-t border-[#263238]/10 mt-2 overflow-hidden"
           >
             <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
               {navLinks.map((link) => {
@@ -453,13 +456,13 @@ export default function Navbar() {
                 if (hasSubmenu) {
                   const isOpen = mobileSubmenuOpen === link.name;
                   return (
-                    <div key={link.name} className="border-b border-white/5 last:border-0">
+                    <div key={link.name} className="border-b border-[#263238]/5 last:border-0">
                       <button
                         onClick={() => toggleMobileSubmenu(link.name)}
                         className={`w-full text-left text-lg font-medium py-3 px-2 rounded-lg transition-colors flex items-center justify-between ${
                           isActive
                             ? 'text-[#FFF314] bg-[#FFF314]/10'
-                            : 'text-white hover:text-[#FFF314] hover:bg-white/5'
+                            : 'text-[#263238] hover:text-[#FFF314] hover:bg-[#263238]/5'
                         }`}
                       >
                         {safeT(link.name)}
@@ -482,7 +485,7 @@ export default function Navbar() {
                                   className={`py-2 px-2 rounded-lg text-sm transition-colors ${
                                     location.pathname === sub.path
                                       ? 'text-[#FFF314] bg-[#FFF314]/10'
-                                      : 'text-white/70 hover:text-[#FFF314] hover:bg-white/5'
+                                      : 'text-[#263238]/70 hover:text-[#FFF314] hover:bg-[#263238]/5'
                                   }`}
                                 >
                                   {safeT(sub.name)}
@@ -503,7 +506,7 @@ export default function Navbar() {
                     className={`text-lg font-medium py-3 px-2 rounded-lg transition-colors ${
                       location.pathname === link.path
                         ? 'text-[#FFF314] bg-[#FFF314]/10'
-                        : 'text-white hover:text-[#FFF314] hover:bg-white/5'
+                        : 'text-[#263238] hover:text-[#FFF314] hover:bg-[#263238]/5'
                     }`}
                   >
                     {safeT(link.name)}
@@ -512,8 +515,8 @@ export default function Navbar() {
               })}
 
               {/* Language Switcher – Mobile */}
-              <div className="border-t border-white/10 pt-3 mt-2">
-                <p className="text-xs text-white/50 uppercase tracking-wider mb-2 px-2">Language</p>
+              <div className="border-t border-[#263238]/10 pt-3 mt-2">
+                <p className="text-xs text-[#263238]/50 uppercase tracking-wider mb-2 px-2">Language</p>
                 <div className="grid grid-cols-2 gap-1">
                   {LANGUAGES.map((lang) => (
                     <button
@@ -525,7 +528,7 @@ export default function Navbar() {
                       className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                         i18n.language === lang.code
                           ? 'bg-[#FFF314] text-[#263238]'
-                          : 'bg-white/10 text-white hover:bg-white/20'
+                          : 'bg-[#263238]/5 text-[#263238] hover:bg-[#263238]/10'
                       }`}
                     >
                       {lang.label}
@@ -554,7 +557,7 @@ export default function Navbar() {
               {showAuthLink && !loading && (
                 <Link
                   to={isAuthenticated ? "/profile" : "/auth"}
-                  className="mt-2 w-full text-center rounded-full border border-white/40 px-6 py-3.5 font-semibold text-white hover:text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+                  className="mt-2 w-full text-center rounded-full border border-[#263238]/30 px-6 py-3.5 font-semibold text-[#263238] hover:text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
                 >
                   <User className="w-5 h-5" />
                   {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
