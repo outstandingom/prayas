@@ -17,7 +17,7 @@ import {
   HeartPulse,
   Stethoscope,
   Heart,
-  Wheelchair as WheelchairIcon, // ← Renamed to avoid conflict
+  Accessibility, // ← REPLACED Wheelchair with Accessibility
   Baby,
   UsersRound,
   Leaf,
@@ -171,7 +171,7 @@ export default function OurWork() {
             'Special care and support programs for senior citizens including health check-ups, companionship, and assistance.',
         },
         {
-          icon: WheelchairIcon, // ← Fixed: Using renamed import
+          icon: Accessibility, // ← REPLACED Wheelchair with Accessibility
           title: 'Support for Persons with Disabilities',
           description:
             'Inclusive programs providing support, accessibility, and opportunities for persons with disabilities.',
