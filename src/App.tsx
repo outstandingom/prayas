@@ -5,6 +5,7 @@ import { AnimatePresence } from 'framer-motion';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
+
 import OurWork from './pages/OurWork'; // ← ADD THIS IMPORT
 import Programs from './pages/Programs';
 import Gallery from './pages/Gallery';
