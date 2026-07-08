@@ -5,8 +5,7 @@ import { AnimatePresence } from 'framer-motion';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
-
-import OurWork from './pages/OurWork'; // ← ADD THIS IMPORT
+import OurWork from './pages/OurWork';
 import Programs from './pages/Programs';
 import Gallery from './pages/Gallery';
 import Stories from './pages/Stories';
@@ -40,7 +39,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/about/members" element={<Members />} />
             <Route path="/about/certifications" element={<Certifications />} />
-            <Route path="/our-work" element={<OurWork />} /> {/* ← ADD THIS ROUTE */}
+            <Route path="/our-work" element={<OurWork />} />
             <Route path="/programs" element={<Programs />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/stories" element={<Stories />} />
