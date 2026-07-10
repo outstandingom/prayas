@@ -9,30 +9,39 @@ export default function HeroBanner() {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  // Force autoplay when video is ready
+  // Function to attempt playing the video
+  const attemptPlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.play().catch((err) => {
+      console.warn('Autoplay blocked, will retry on user interaction:', err);
+    });
+  };
+
+  // On mount, try to play as soon as the video can play
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     const handleCanPlay = () => {
       setIsVideoLoaded(true);
-      video.play().catch((err) => {
-        // Autoplay prevented – we can ignore; user interaction will start it
-        console.warn('Autoplay blocked:', err);
-      });
+      attemptPlay();
     };
 
     const handleError = () => {
       setHasError(true);
-      setIsVideoLoaded(true); // to hide loading state
+      setIsVideoLoaded(true);
     };
 
     video.addEventListener('canplaythrough', handleCanPlay);
     video.addEventListener('error', handleError);
 
-    // If video already loaded enough, try playing immediately
+    // If video already loaded enough, play immediately
     if (video.readyState >= 3) {
       handleCanPlay();
+    } else {
+      // Force a load if it's stalling
+      video.load();
     }
 
     return () => {
@@ -41,25 +50,41 @@ export default function HeroBanner() {
     };
   }, []);
 
-  // Resume playback when tab becomes visible
+  // Retry playing when tab becomes visible
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (!document.hidden && videoRef.current && videoRef.current.paused) {
-        videoRef.current.play().catch(() => {});
+      if (!document.hidden && videoRef.current) {
+        attemptPlay();
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
+  // Global click handler to start video if paused (invisible to user)
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      const video = videoRef.current;
+      if (video && video.paused) {
+        attemptPlay();
+      }
+    };
+    // Attach to the whole document – this will catch any tap/click anywhere
+    document.addEventListener('click', handleGlobalClick);
+    document.addEventListener('touchstart', handleGlobalClick); // for mobile
+
+    return () => {
+      document.removeEventListener('click', handleGlobalClick);
+      document.removeEventListener('touchstart', handleGlobalClick);
+    };
+  }, []);
+
   return (
     <section className="relative w-full overflow-hidden bg-gray-900" style={{ height: '100vh', maxHeight: '800px' }}>
-      {/* --- RESPONSIVE SPLIT LAYOUT --- */}
       <div className="flex flex-col-reverse md:flex-row w-full h-full">
 
-        {/* --- LEFT (or bottom on mobile): Content & Graphics --- */}
+        {/* Left Side: Content (unchanged) */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center items-center md:items-start p-8 md:p-12 lg:p-16 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
-          {/* Decorative graphic elements */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF314] opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500 opacity-10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
           <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-white/10 rounded-full"></div>
@@ -71,7 +96,6 @@ export default function HeroBanner() {
             transition={{ duration: 0.6 }}
             className="relative z-20 text-center md:text-left max-w-xl"
           >
-            {/* Small tagline */}
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-white/80 text-xs font-semibold tracking-wider uppercase mb-4 border border-white/10">
               <Play size={12} className="fill-[#FFF314] text-[#FFF314]" />
               {t('hero.tagline', 'Watch Our Story Unfold')}
@@ -89,7 +113,6 @@ export default function HeroBanner() {
               )}
             </p>
 
-            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -110,7 +133,6 @@ export default function HeroBanner() {
             </div>
           </motion.div>
 
-          {/* Stats / Trust badges at bottom */}
           <div className="relative z-20 mt-auto pt-8 w-full flex flex-wrap justify-center md:justify-start gap-6 md:gap-10 border-t border-white/10">
             <div className="text-center md:text-left">
               <div className="text-2xl font-bold text-white">10+</div>
@@ -127,24 +149,23 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* --- RIGHT (or top on mobile): Video --- */}
+        {/* Right Side: Video (now with poster and invisible play-on-click) */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black">
-          {/* Video element */}
           <video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover"
             muted
             loop
             playsInline
-            autoPlay // included as a hint
             preload="auto"
-            poster="/video-poster.jpg" // Optional: add a placeholder image
+            poster="/video-poster.jpg" // <-- Add a poster image to avoid black screen
+            style={{ backgroundColor: '#1a1a1a' }} // fallback background
           >
             <source src="/IMG_09.MP4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
 
-          {/* Fallback / loading state */}
+          {/* Loading spinner */}
           {!isVideoLoaded && !hasError && (
             <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
               <div className="w-12 h-12 border-4 border-[#FFF314] border-t-transparent rounded-full animate-spin"></div>
@@ -158,7 +179,7 @@ export default function HeroBanner() {
             </div>
           )}
 
-          {/* Subtle gradient overlay for better blending (optional) */}
+          {/* Subtle overlay for blending */}
           <div className="absolute inset-0 bg-gradient-to-l from-black/10 via-transparent to-transparent pointer-events-none"></div>
         </div>
       </div>
