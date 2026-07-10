@@ -159,15 +159,18 @@ export default function HeroBanner() {
           <video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover"
-            muted
+            autoPlay        // <-- Added to prompt the browser to execute native autoplay
+            muted           // (Required for autoplay)
             loop
-            playsInline
+            playsInline     // (Required for mobile Safari autoplay)
             preload="auto"
-            poster="/video-poster.jpg" // <-- Add a poster image in public/
+            poster="/video-poster.jpg" 
             style={{ backgroundColor: '#111' }}
           >
-            <source src="/IMG_09.MP4" type="video/mp4" />
-            <source src="/IMG_09.webm" type="video/webm" /> {/* fallback */}
+            {/* Standardized filenames to lowercase to prevent 404 pathing discrepancies */}
+            {/* Make sure your files inside the public/ directory match this exact casing */}
+            <source src="/img_09.mp4" type="video/mp4" />
+            <source src="/img_09.webm" type="video/webm" /> 
             Your browser does not support the video tag.
           </video>
 
@@ -180,8 +183,8 @@ export default function HeroBanner() {
 
           {/* Error fallback */}
           {hasError && (
-            <div className="absolute inset-0 bg-gray-800 flex items-center justify-center text-white/60 text-sm">
-              <span>⚠️ Video unavailable – please check the file path.</span>
+            <div className="absolute inset-0 bg-gray-800 flex items-center justify-center text-white/60 text-sm p-4 text-center">
+              <span>⚠️ Video unavailable – please check that the file path and codec are correct.</span>
             </div>
           )}
 
