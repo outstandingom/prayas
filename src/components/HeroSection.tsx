@@ -9,73 +9,78 @@ export default function HeroBanner() {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  // Function to attempt playing the video
+  // Attempt to play the video, with console logging
   const attemptPlay = () => {
     const video = videoRef.current;
-    if (!video) return;
-    video.play().catch((err) => {
-      console.warn('Autoplay blocked, will retry on user interaction:', err);
-    });
+    if (!video) {
+      console.warn('Video element not found');
+      return;
+    }
+    video.play()
+      .then(() => console.log('✅ Video is playing'))
+      .catch((err) => {
+        console.warn('Autoplay blocked:', err.message);
+        // We'll retry on user interaction (global click)
+      });
   };
 
-  // On mount, try to play as soon as the video can play
+  // On mount: load and try to play
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     const handleCanPlay = () => {
+      console.log('Video can play now');
       setIsVideoLoaded(true);
       attemptPlay();
     };
 
-    const handleError = () => {
+    const handleError = (e: Event) => {
+      console.error('❌ Video error:', e);
       setHasError(true);
       setIsVideoLoaded(true);
     };
 
-    video.addEventListener('canplaythrough', handleCanPlay);
+    video.addEventListener('canplay', handleCanPlay); // Use 'canplay' for faster start
     video.addEventListener('error', handleError);
 
-    // If video already loaded enough, play immediately
-    if (video.readyState >= 3) {
+    // If already loaded, try immediately
+    if (video.readyState >= 2) {
       handleCanPlay();
     } else {
-      // Force a load if it's stalling
-      video.load();
+      video.load(); // Force loading
     }
 
     return () => {
-      video.removeEventListener('canplaythrough', handleCanPlay);
+      video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('error', handleError);
     };
   }, []);
 
-  // Retry playing when tab becomes visible
+  // Retry when tab becomes visible
   useEffect(() => {
-    const handleVisibilityChange = () => {
+    const handleVisibility = () => {
       if (!document.hidden && videoRef.current) {
         attemptPlay();
       }
     };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, []);
 
-  // Global click handler to start video if paused (invisible to user)
+  // Global click/touch = invisible play trigger (no button shown)
   useEffect(() => {
-    const handleGlobalClick = () => {
+    const handleInteraction = () => {
       const video = videoRef.current;
       if (video && video.paused) {
         attemptPlay();
       }
     };
-    // Attach to the whole document – this will catch any tap/click anywhere
-    document.addEventListener('click', handleGlobalClick);
-    document.addEventListener('touchstart', handleGlobalClick); // for mobile
-
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('touchstart', handleInteraction);
     return () => {
-      document.removeEventListener('click', handleGlobalClick);
-      document.removeEventListener('touchstart', handleGlobalClick);
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
     };
   }, []);
 
@@ -83,7 +88,7 @@ export default function HeroBanner() {
     <section className="relative w-full overflow-hidden bg-gray-900" style={{ height: '100vh', maxHeight: '800px' }}>
       <div className="flex flex-col-reverse md:flex-row w-full h-full">
 
-        {/* Left Side: Content (unchanged) */}
+        {/* --- Content Side (unchanged) --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center items-center md:items-start p-8 md:p-12 lg:p-16 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF314] opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500 opacity-10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
@@ -149,7 +154,7 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* Right Side: Video (now with poster and invisible play-on-click) */}
+        {/* --- Video Side with multiple sources & poster --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black">
           <video
             ref={videoRef}
@@ -158,10 +163,11 @@ export default function HeroBanner() {
             loop
             playsInline
             preload="auto"
-            poster="/video-poster.jpg" // <-- Add a poster image to avoid black screen
-            style={{ backgroundColor: '#1a1a1a' }} // fallback background
+            poster="/video-poster.jpg" // <-- Add a poster image in public/
+            style={{ backgroundColor: '#111' }}
           >
             <source src="/IMG_09.MP4" type="video/mp4" />
+            <source src="/IMG_09.webm" type="video/webm" /> {/* fallback */}
             Your browser does not support the video tag.
           </video>
 
@@ -175,11 +181,11 @@ export default function HeroBanner() {
           {/* Error fallback */}
           {hasError && (
             <div className="absolute inset-0 bg-gray-800 flex items-center justify-center text-white/60 text-sm">
-              <span>Video unavailable</span>
+              <span>⚠️ Video unavailable – please check the file path.</span>
             </div>
           )}
 
-          {/* Subtle overlay for blending */}
+          {/* Subtle gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-l from-black/10 via-transparent to-transparent pointer-events-none"></div>
         </div>
       </div>
