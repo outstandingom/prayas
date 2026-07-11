@@ -7,11 +7,11 @@ export default function HeroBanner() {
   const { t } = useTranslation();
   const [showOverlay, setShowOverlay] = useState(true);
 
-  // Hide the yellow overlay after 3 seconds
+  // Hide the yellow overlay after 5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowOverlay(false);
-    }, 3000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -23,7 +23,6 @@ export default function HeroBanner() {
 
         {/* --- Content Side (left) --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center items-center md:items-start p-8 md:p-12 lg:p-16 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden z-10">
-          {/* Decorative blobs */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF314] opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500 opacity-10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
           <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-white/10 rounded-full"></div>
@@ -100,7 +99,7 @@ export default function HeroBanner() {
             style={{ border: 'none' }}
           ></iframe>
 
-          {/* ─── YELLOW OVERLAY with graphic (visible for 3 seconds) ─── */}
+          {/* ─── YELLOW OVERLAY (fully covers the video for 5 seconds) ─── */}
           <motion.div
             initial={{ opacity: 1 }}
             animate={{ opacity: showOverlay ? 1 : 0 }}
@@ -108,11 +107,9 @@ export default function HeroBanner() {
             className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#FFF314] p-8 text-center"
           >
             <div className="max-w-md space-y-6">
-              {/* Bigger play icon */}
               <div className="w-24 h-24 mx-auto rounded-full bg-black/10 flex items-center justify-center">
                 <Play size={48} className="text-black/60 fill-black/60" />
               </div>
-              {/* Larger text with more spacing */}
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black leading-tight">
                 India's Hidden Buddhist City
               </h2>
@@ -129,19 +126,12 @@ export default function HeroBanner() {
           <div className="absolute inset-0 bg-black/40 md:bg-black/20"></div>
 
           {/* ─── GRADIENT PATCHES (transparent borders) ─── */}
-          {/* Left edge – fades from black to transparent */}
           <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-black/70 via-black/30 to-transparent pointer-events-none"></div>
-
-          {/* Bottom edge – fades from black to transparent */}
           <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
-
-          {/* Right edge – subtle vignette */}
           <div className="absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-black/30 to-transparent pointer-events-none"></div>
-
-          {/* Top edge – subtle vignette */}
           <div className="absolute inset-x-0 top-0 h-1/6 bg-gradient-to-b from-black/30 to-transparent pointer-events-none"></div>
 
-          {/* ─── EXTRA OVERLAY to mask any remaining YouTube logo (bottom-right) ─── */}
+          {/* ─── EXTRA MASK for YouTube watermark (bottom-right) ─── */}
           <div className="absolute bottom-0 right-0 w-32 h-16 bg-gradient-to-tl from-black/80 to-transparent pointer-events-none"></div>
         </div>
       </div>
