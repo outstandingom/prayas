@@ -1,9 +1,19 @@
 import { motion } from 'framer-motion';
 import { HeartHandshake, Play, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
 
 export default function HeroBanner() {
   const { t } = useTranslation();
+  const [showOverlay, setShowOverlay] = useState(true);
+
+  // Hide the yellow overlay after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowOverlay(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <section
@@ -78,29 +88,53 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* --- Video Side with blended edges --- */}
+        {/* --- Video Side with yellow overlay & graphic --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black overflow-hidden">
-          {/* YouTube iframe – no controls, no info, no border */}
+          {/* YouTube iframe – completely hidden branding */}
           <iframe
             className="absolute inset-0 w-full h-full pointer-events-none"
-            src="https://www.youtube.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3"
+            src="https://www.youtube.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white"
             title="Background"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             style={{ border: 'none' }}
           ></iframe>
 
+          {/* ─── YELLOW OVERLAY with graphic (visible for 3 seconds) ─── */}
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={{ opacity: showOverlay ? 1 : 0 }}
+            transition={{ duration: 0.8 }}
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#FFF314] p-8 text-center"
+          >
+            {/* Graphic overlay content – like "India's Hidden Buddhist City" */}
+            <div className="max-w-md">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-black/10 flex items-center justify-center">
+                <Play size={40} className="text-black/60 fill-black/60" />
+              </div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-3">
+                India's Hidden Buddhist City
+              </h2>
+              <p className="text-sm sm:text-base text-black/70">
+                How Life Feels Here | Tawan Nishant Parmar
+              </p>
+              <div className="mt-4 inline-block bg-black/10 px-4 py-1.5 rounded-full text-black/60 text-xs font-semibold">
+                🎬 WATCH NOW
+              </div>
+            </div>
+          </motion.div>
+
           {/* ─── Dark overlay to dim video ─── */}
           <div className="absolute inset-0 bg-black/40 md:bg-black/20"></div>
 
           {/* ─── GRADIENT PATCHES (transparent borders) ─── */}
-          {/* Left edge – fades from transparent to black (or dark) */}
+          {/* Left edge – fades from transparent to black */}
           <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-black/70 via-black/30 to-transparent pointer-events-none"></div>
 
           {/* Bottom edge – fades from transparent to black */}
           <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
 
-          {/* Optional: right edge subtle vignette */}
+          {/* Right edge subtle vignette */}
           <div className="absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-black/30 to-transparent pointer-events-none"></div>
 
           {/* Top edge subtle vignette */}
