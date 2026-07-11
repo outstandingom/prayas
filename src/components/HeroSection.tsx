@@ -1,87 +1,9 @@
 import { motion } from 'framer-motion';
 import { HeartHandshake, Play, ArrowRight } from 'lucide-react';
-import { useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export default function HeroBanner() {
   const { t } = useTranslation();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-
-  // Attempt to play the video, with console logging
-  const attemptPlay = () => {
-    const video = videoRef.current;
-    if (!video) {
-      console.warn('Video element not found');
-      return;
-    }
-    video.play()
-      .then(() => console.log('✅ Video is playing'))
-      .catch((err) => {
-        console.warn('Autoplay blocked:', err.message);
-        // We'll retry on user interaction (global click)
-      });
-  };
-
-  // On mount: load and try to play
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const handleCanPlay = () => {
-      console.log('Video can play now');
-      setIsVideoLoaded(true);
-      attemptPlay();
-    };
-
-    const handleError = (e: Event) => {
-      console.error('❌ Video error:', e);
-      setHasError(true);
-      setIsVideoLoaded(true);
-    };
-
-    video.addEventListener('canplay', handleCanPlay);
-    video.addEventListener('error', handleError);
-
-    if (video.readyState >= 2) {
-      handleCanPlay();
-    } else {
-      video.load();
-    }
-
-    return () => {
-      video.removeEventListener('canplay', handleCanPlay);
-      video.removeEventListener('error', handleError);
-    };
-  }, []);
-
-  // Retry when tab becomes visible
-  useEffect(() => {
-    const handleVisibility = () => {
-      if (!document.hidden && videoRef.current) {
-        attemptPlay();
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () => document.removeEventListener('visibilitychange', handleVisibility);
-  }, []);
-
-  // Global click/touch = invisible play trigger
-  useEffect(() => {
-    const handleInteraction = () => {
-      const video = videoRef.current;
-      if (video && video.paused) {
-        attemptPlay();
-      }
-    };
-    document.addEventListener('click', handleInteraction);
-    document.addEventListener('touchstart', handleInteraction);
-    return () => {
-      document.removeEventListener('click', handleInteraction);
-      document.removeEventListener('touchstart', handleInteraction);
-    };
-  }, []);
 
   return (
     <section
@@ -155,37 +77,16 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* --- Video Side --- */}
+        {/* --- YouTube Video Side --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black">
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            poster="/video-poster.jpg"
-            style={{ backgroundColor: '#111' }}
-          >
-            <source src="/img_09.mp4" type="video/mp4" />
-            <source src="/img_09.webm" type="video/webm" />
-            Your browser does not support the video tag.
-          </video>
-
-          {/* Loading spinner */}
-          {!isVideoLoaded && !hasError && (
-            <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
-              <div className="w-12 h-12 border-4 border-[#FFF314] border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          )}
-
-          {/* Error fallback */}
-          {hasError && (
-            <div className="absolute inset-0 bg-gray-800 flex items-center justify-center text-white/60 text-sm p-4 text-center">
-              <span>⚠️ Video unavailable – please check that the file path and codec are correct.</span>
-            </div>
-          )}
+          <iframe
+            className="absolute inset-0 w-full h-full"
+            src="https://www.youtube.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=1&modestbranding=1&rel=0"
+            title="Prayas - Building a Better Tomorrow"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
 
           {/* Subtle gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-l from-black/10 via-transparent to-transparent pointer-events-none"></div>
