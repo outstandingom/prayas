@@ -97,12 +97,13 @@ export default function HeroBanner() {
       style={{
         marginTop: 'var(--navbar-height, 0px)',
       }}
-      // Responsive height: 60vh on mobile, full remaining on larger screens
-      // Using min-height ensures content doesn't overflow if text is long
-      // You can replace '60vh' with '400px' if you prefer a fixed height
       onTouchStart={handleTouchStart}
     >
-      <div className="min-h-[60vh] md:min-h-[calc(100vh-var(--navbar-height,0px))] relative">
+      {/* 
+        Mobile: 16:9 aspect ratio, capped at 300px height
+        Desktop: fills remaining viewport height
+      */}
+      <div className="aspect-video md:aspect-auto md:min-h-[calc(100vh-var(--navbar-height,0px))] max-h-[300px] md:max-h-none relative">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
@@ -121,22 +122,22 @@ export default function HeroBanner() {
               }}
             />
 
-            {/* Gradient overlay for better text readability */}
+            {/* Overlay for better contrast */}
             <div className="absolute inset-0 bg-black/30 md:bg-black/20" />
 
-            {/* Content - centered on mobile, left-aligned on larger screens */}
+            {/* Content */}
             <div className="absolute inset-0 flex items-center justify-center md:justify-start px-4 md:px-8">
               <div className="max-w-2xl w-full md:ml-0 text-center md:text-left">
                 <motion.div
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
                 >
-                  <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-2 md:mb-4 leading-tight">
+                  <h1 className="text-xl sm:text-3xl md:text-6xl lg:text-7xl font-bold text-white mb-1 md:mb-4 leading-tight">
                     {SLIDES[currentSlide].title}
                   </h1>
 
-                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 leading-relaxed mb-6 md:mb-8 max-w-xl mx-auto md:mx-0">
+                  <p className="text-xs sm:text-sm md:text-lg lg:text-xl text-white/90 leading-relaxed mb-3 md:mb-8 max-w-xl mx-auto md:mx-0 hidden sm:block">
                     {SLIDES[currentSlide].description}
                   </p>
 
@@ -144,10 +145,10 @@ export default function HeroBanner() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-6 md:px-8 py-3 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
+                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
                     >
                       {t('hero.donateNow', 'Donate Now')}
-                      <HeartHandshake size={20} />
+                      <HeartHandshake size={16} className="md:w-5 md:h-5" />
                     </motion.button>
                   </div>
                 </motion.div>
