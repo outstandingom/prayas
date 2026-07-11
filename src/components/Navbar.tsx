@@ -158,10 +158,10 @@ export default function Navbar() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-[9999]">
-        {/* ---------- OVERLAPPING LOGO (absolute) with animated two‑line brand ---------- */}
+        {/* ---------- OVERLAPPING LOGO (absolute) – PERFECTLY CENTERED ---------- */}
         <Link
           to="/"
-          className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group mt-3 sm:mt-0"
+          className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group"
         >
           {/* Logo image – increased size */}
           <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
@@ -172,7 +172,7 @@ export default function Navbar() {
             />
           </div>
 
-          {/* Animated two‑line brand name – larger font & slightly lowered */}
+          {/* Animated two‑line brand name – larger font */}
           <motion.div
             key={brandLangIndex}
             initial={{ opacity: 0, y: 5 }}
@@ -269,7 +269,7 @@ export default function Navbar() {
         {/* ---------- MAIN NAVBAR - ALWAYS WHITE BACKGROUND ---------- */}
         <div
           className={`transition-all duration-500 ${bgHeader} 
-            min-h-[80px] sm:min-h-[100px] flex items-center py-2 sm:py-3 pl-20 sm:pl-36`}
+            min-h-[96px] sm:min-h-[110px] flex items-center py-2 sm:py-3 pl-20 sm:pl-36`}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
             <div className="flex items-center justify-end gap-3">
@@ -444,7 +444,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed left-0 right-0 top-[80px] bottom-0 z-[9998] bg-white shadow-xl border-t border-[#263238]/10 overflow-y-auto"
+            className="fixed left-0 right-0 top-[96px] bottom-0 z-[9998] bg-white shadow-xl border-t border-[#263238]/10 overflow-y-auto"
           >
             <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
               {navLinks.map((link) => {
