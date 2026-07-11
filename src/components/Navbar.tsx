@@ -156,285 +156,287 @@ export default function Navbar() {
   const volunteerText = safeT('nav.volunteer');
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[9999] relative">
-      {/* ---------- OVERLAPPING LOGO (absolute) with animated two‑line brand ---------- */}
-      <Link
-        to="/"
-        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group mt-3 sm:mt-0"
-      >
-        {/* Logo image – increased size */}
-        <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
-          <img
-            src="/Logo.svg"
-            alt="Prayas Logo"
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        {/* Animated two‑line brand name – larger font & slightly lowered */}
-        <motion.div
-          key={brandLangIndex}
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -5 }}
-          transition={{ duration: 0.4 }}
-          className="flex flex-col leading-tight"
+    <>
+      <header className="fixed top-0 left-0 right-0 z-[9999]">
+        {/* ---------- OVERLAPPING LOGO (absolute) with animated two‑line brand ---------- */}
+        <Link
+          to="/"
+          className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group mt-3 sm:mt-0"
         >
-          <span
-            className="font-display font-bold text-2xl sm:text-4xl tracking-tight group-hover:text-[#FFF314] transition drop-shadow-md text-[#263238]"
-          >
-            {brandFirstLine[brandLangIndex]}
-          </span>
-          <span
-            className="font-display text-xs sm:text-base font-medium opacity-90 group-hover:text-[#FFF314] transition text-[#263238]"
-          >
-            {brandSecondLine[brandLangIndex]}
-          </span>
-        </motion.div>
-      </Link>
-
-      {/* ---------- TOP STRIP – gradient from SmoothLoader - ALWAYS VISIBLE ---------- */}
-      {isStripVisible && (
-        <div className="hidden sm:flex bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white py-2 px-4 pl-20 sm:pl-36 flex-col sm:flex-row items-center justify-between w-full shadow-md gap-2">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-center sm:text-left">
-            <span className="font-bold text-sm sm:text-base tracking-wide">CHILD RIGHTS AND YOU</span>
-            <span className="text-[10px] sm:text-xs opacity-80">Let's ensure happy childhoods for India's children</span>
+          {/* Logo image – increased size */}
+          <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
+            <img
+              src="/Logo.svg"
+              alt="Prayas Logo"
+              className="w-full h-full object-cover"
+            />
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <Link
-              to="/donate"
-              className="bg-[#FFF314] text-[#263238] px-3 sm:px-4 py-1 rounded-full text-[10px] sm:text-xs font-semibold hover:bg-[#FFF314]/90 transition shadow-md whitespace-nowrap"
+
+          {/* Animated two‑line brand name – larger font & slightly lowered */}
+          <motion.div
+            key={brandLangIndex}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.4 }}
+            className="flex flex-col leading-tight"
+          >
+            <span
+              className="font-display font-bold text-2xl sm:text-4xl tracking-tight group-hover:text-[#FFF314] transition drop-shadow-md text-[#263238]"
             >
-              Yes! I Want To Help!
-            </Link>
-            <div className="flex items-center gap-1 text-white/70">
-              <a
-                href="https://www.facebook.com/prayassamajiksanstha"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="hover:text-[#FFF314] transition"
-              >
-                <FaFacebook size={14} />
-              </a>
-              <a
-                href="https://x.com/pryasaa?s=11"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="X (Twitter)"
-                className="hover:text-[#FFF314] transition"
-              >
-                <FaTwitter size={14} />
-              </a>
-              <a
-                href="https://www.instagram.com/prayas_samajik_sanstha"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="hover:text-[#FFF314] transition"
-              >
-                <FaInstagram size={14} />
-              </a>
-              <a
-                href="https://www.youtube.com/channel/UC16ZbLnP1qJxrKQoKsss12w"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="YouTube"
-                className="hover:text-[#FFF314] transition"
-              >
-                <FaYoutube size={14} />
-              </a>
-              <a
-                href="https://www.linkedin.com/in/prayas-samaj-sevi-sastha-undefined-0a468b418/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="hover:text-[#FFF314] transition"
-              >
-                <FaLinkedin size={14} />
-              </a>
+              {brandFirstLine[brandLangIndex]}
+            </span>
+            <span
+              className="font-display text-xs sm:text-base font-medium opacity-90 group-hover:text-[#FFF314] transition text-[#263238]"
+            >
+              {brandSecondLine[brandLangIndex]}
+            </span>
+          </motion.div>
+        </Link>
+
+        {/* ---------- TOP STRIP – gradient from SmoothLoader - ALWAYS VISIBLE ---------- */}
+        {isStripVisible && (
+          <div className="hidden sm:flex bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white py-2 px-4 pl-20 sm:pl-36 flex-col sm:flex-row items-center justify-between w-full shadow-md gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-center sm:text-left">
+              <span className="font-bold text-sm sm:text-base tracking-wide">CHILD RIGHTS AND YOU</span>
+              <span className="text-[10px] sm:text-xs opacity-80">Let's ensure happy childhoods for India's children</span>
             </div>
-            <button
-              onClick={() => setIsStripVisible(false)}
-              className="text-white/50 hover:text-white transition p-0.5"
-              aria-label="Close announcement"
-            >
-              <X size={16} />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ---------- MAIN NAVBAR - ALWAYS WHITE BACKGROUND ---------- */}
-      <div
-        className={`transition-all duration-500 ${bgHeader} 
-          min-h-[80px] sm:min-h-[100px] flex items-center py-2 sm:py-3 pl-20 sm:pl-36`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
-          <div className="flex items-center justify-end gap-3">
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2 lg:gap-4 ml-auto">
-              {navLinks.map((link) => {
-                const hasSubmenu = link.submenu && link.submenu.length > 0;
-                const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
-                
-                if (hasSubmenu) {
-                  return (
-                    <div
-                      key={link.name}
-                      className="relative group"
-                      onMouseEnter={() => handleMouseEnter(link.name)}
-                      onMouseLeave={handleMouseLeave}
-                    >
-                      <button
-                        className={`text-xs font-medium transition-colors relative py-2 group flex items-center gap-1 whitespace-nowrap ${
-                          isActive ? 'text-[#FFF314]' : `${textColor} ${textColorHover}`
-                        }`}
-                      >
-                        {safeT(link.name)}
-                        <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
-                        <span
-                          className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
-                            isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                          }`}
-                        />
-                      </button>
-                      <AnimatePresence>
-                        {openDropdown === link.name && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            transition={{ duration: 0.15 }}
-                            className="absolute left-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[200px] py-2 z-50"
-                          >
-                            {link.submenu!.map((sub) => (
-                              <Link
-                                key={sub.path}
-                                to={sub.path}
-                                className={`block px-5 py-2.5 text-xs transition-colors ${
-                                  location.pathname === sub.path
-                                    ? 'text-[#FFF314] bg-[#FFF314]/10'
-                                    : `text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]`
-                                }`}
-                              >
-                                {safeT(sub.name)}
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  );
-                }
-
-                return (
-                  <Link
-                    key={link.name}
-                    to={link.path}
-                    className={`text-xs font-medium transition-colors relative py-2 group whitespace-nowrap ${
-                      location.pathname === link.path
-                        ? 'text-[#FFF314]'
-                        : `${textColor} ${textColorHover}`
-                    }`}
-                  >
-                    {safeT(link.name)}
-                    <span
-                      className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
-                        location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
-                      }`}
-                    />
-                  </Link>
-                );
-              })}
-            </nav>
-
-            {/* Right side actions */}
-            <div className="flex items-center gap-1 sm:gap-2">
-              {/* Language Switcher */}
-              <div className="relative z-20">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLangDropdownOpen(!langDropdownOpen);
-                  }}
-                  className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-xs font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
-                >
-                  <Globe className="w-4 h-4" />
-                  <span className="hidden sm:inline">{currentLangLabel}</span>
-                </button>
-                <AnimatePresence>
-                  {langDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[150px] py-2 z-50 pointer-events-auto"
-                    >
-                      {LANGUAGES.map((lang) => (
-                        <button
-                          key={lang.code}
-                          onClick={() => changeLanguage(lang.code)}
-                          className={`block w-full text-left px-5 py-2.5 text-sm transition-colors cursor-pointer ${
-                            i18n.language === lang.code
-                              ? 'text-[#FFF314] bg-[#FFF314]/10'
-                              : 'text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]'
-                          }`}
-                        >
-                          {lang.label}
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Donate Now button */}
+            <div className="flex items-center gap-2 shrink-0">
               <Link
                 to="/donate"
-                className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+                className="bg-[#FFF314] text-[#263238] px-3 sm:px-4 py-1 rounded-full text-[10px] sm:text-xs font-semibold hover:bg-[#FFF314]/90 transition shadow-md whitespace-nowrap"
               >
-                <Heart className="w-4 h-4" />
-                <span className="hidden sm:inline">{donateText}</span>
+                Yes! I Want To Help!
               </Link>
-
-              {/* Volunteer button */}
-              <Link
-                to="/volunteer"
-                className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
-              >
-                <UserPlus className="w-4 h-4" />
-                <span className="hidden sm:inline">{volunteerText}</span>
-              </Link>
-
-              {/* Profile / Sign In */}
-              {showAuthLink && !loading && (
-                <Link
-                  to={isAuthenticated ? "/profile" : "/auth"}
-                  className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
+              <div className="flex items-center gap-1 text-white/70">
+                <a
+                  href="https://www.facebook.com/prayassamajiksanstha"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="hover:text-[#FFF314] transition"
                 >
-                  <User className="w-4 h-4" />
-                  <span className="hidden sm:inline">
-                    {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
-                  </span>
-                </Link>
-              )}
-
-              {/* Hamburger menu */}
+                  <FaFacebook size={14} />
+                </a>
+                <a
+                  href="https://x.com/pryasaa?s=11"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="X (Twitter)"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaTwitter size={14} />
+                </a>
+                <a
+                  href="https://www.instagram.com/prayas_samajik_sanstha"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaInstagram size={14} />
+                </a>
+                <a
+                  href="https://www.youtube.com/channel/UC16ZbLnP1qJxrKQoKsss12w"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaYoutube size={14} />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/prayas-samaj-sevi-sastha-undefined-0a468b418/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaLinkedin size={14} />
+                </a>
+              </div>
               <button
-                className={`md:hidden p-2.5 -m-1 rounded-full transition-colors ${textColor} ${textColorHover} ${bgButton}`}
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
-                aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
+                onClick={() => setIsStripVisible(false)}
+                className="text-white/50 hover:text-white transition p-0.5"
+                aria-label="Close announcement"
               >
-                {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
+                <X size={16} />
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        )}
 
-      {/* Mobile Navigation Menu - ALWAYS dark text on white background */}
+        {/* ---------- MAIN NAVBAR - ALWAYS WHITE BACKGROUND ---------- */}
+        <div
+          className={`transition-all duration-500 ${bgHeader} 
+            min-h-[80px] sm:min-h-[100px] flex items-center py-2 sm:py-3 pl-20 sm:pl-36`}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
+            <div className="flex items-center justify-end gap-3">
+              {/* Desktop Navigation */}
+              <nav className="hidden md:flex items-center gap-2 lg:gap-4 ml-auto">
+                {navLinks.map((link) => {
+                  const hasSubmenu = link.submenu && link.submenu.length > 0;
+                  const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
+                  
+                  if (hasSubmenu) {
+                    return (
+                      <div
+                        key={link.name}
+                        className="relative group"
+                        onMouseEnter={() => handleMouseEnter(link.name)}
+                        onMouseLeave={handleMouseLeave}
+                      >
+                        <button
+                          className={`text-xs font-medium transition-colors relative py-2 group flex items-center gap-1 whitespace-nowrap ${
+                            isActive ? 'text-[#FFF314]' : `${textColor} ${textColorHover}`
+                          }`}
+                        >
+                          {safeT(link.name)}
+                          <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
+                          <span
+                            className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                              isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                            }`}
+                          />
+                        </button>
+                        <AnimatePresence>
+                          {openDropdown === link.name && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 10 }}
+                              transition={{ duration: 0.15 }}
+                              className="absolute left-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[200px] py-2 z-50"
+                            >
+                              {link.submenu!.map((sub) => (
+                                <Link
+                                  key={sub.path}
+                                  to={sub.path}
+                                  className={`block px-5 py-2.5 text-xs transition-colors ${
+                                    location.pathname === sub.path
+                                      ? 'text-[#FFF314] bg-[#FFF314]/10'
+                                      : `text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]`
+                                  }`}
+                                >
+                                  {safeT(sub.name)}
+                                </Link>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      className={`text-xs font-medium transition-colors relative py-2 group whitespace-nowrap ${
+                        location.pathname === link.path
+                          ? 'text-[#FFF314]'
+                          : `${textColor} ${textColorHover}`
+                      }`}
+                    >
+                      {safeT(link.name)}
+                      <span
+                        className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                          location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
+                        }`}
+                      />
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* Right side actions */}
+              <div className="flex items-center gap-1 sm:gap-2">
+                {/* Language Switcher */}
+                <div className="relative z-20">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLangDropdownOpen(!langDropdownOpen);
+                    }}
+                    className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-xs font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
+                  >
+                    <Globe className="w-4 h-4" />
+                    <span className="hidden sm:inline">{currentLangLabel}</span>
+                  </button>
+                  <AnimatePresence>
+                    {langDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[150px] py-2 z-50 pointer-events-auto"
+                      >
+                        {LANGUAGES.map((lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => changeLanguage(lang.code)}
+                            className={`block w-full text-left px-5 py-2.5 text-sm transition-colors cursor-pointer ${
+                              i18n.language === lang.code
+                                ? 'text-[#FFF314] bg-[#FFF314]/10'
+                                : 'text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]'
+                            }`}
+                          >
+                            {lang.label}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Donate Now button */}
+                <Link
+                  to="/donate"
+                  className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+                >
+                  <Heart className="w-4 h-4" />
+                  <span className="hidden sm:inline">{donateText}</span>
+                </Link>
+
+                {/* Volunteer button */}
+                <Link
+                  to="/volunteer"
+                  className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span className="hidden sm:inline">{volunteerText}</span>
+                </Link>
+
+                {/* Profile / Sign In */}
+                {showAuthLink && !loading && (
+                  <Link
+                    to={isAuthenticated ? "/profile" : "/auth"}
+                    className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
+                  >
+                    <User className="w-4 h-4" />
+                    <span className="hidden sm:inline">
+                      {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
+                    </span>
+                  </Link>
+                )}
+
+                {/* Hamburger menu */}
+                <button
+                  className={`md:hidden p-2.5 -m-1 rounded-full transition-colors ${textColor} ${textColorHover} ${bgButton}`}
+                  onClick={() => setIsMobileOpen(!isMobileOpen)}
+                  aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
+                >
+                  {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* ---------- MOBILE MENU (outside header, fixed position) ---------- */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
@@ -442,7 +444,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-white shadow-xl border-t border-[#263238]/10 mt-2 overflow-hidden"
+            className="fixed left-0 right-0 top-[80px] bottom-0 z-[9998] bg-white shadow-xl border-t border-[#263238]/10 overflow-y-auto"
           >
             <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
               {navLinks.map((link) => {
@@ -563,6 +565,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }
