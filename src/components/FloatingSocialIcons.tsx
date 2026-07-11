@@ -10,7 +10,6 @@ const socialLinks = [
 
 export default function FloatingSocialIcons() {
   return (
-    {/* Visible only on mobile (< 640px), hidden on tablet/desktop */}
     <div className="fixed right-4 top-1/2 -translate-y-1/2 z-40 flex sm:hidden flex-col gap-3">
       {socialLinks.map(({ icon: Icon, href, label }) => (
         <a
