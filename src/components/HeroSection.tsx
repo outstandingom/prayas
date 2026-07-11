@@ -1,9 +1,69 @@
 import { motion } from 'framer-motion';
 import { HeartHandshake, Play, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useEffect, useRef } from 'react';
+
+declare global {
+  interface Window {
+    onYouTubeIframeAPIReady: () => void;
+    YT: any;
+  }
+}
 
 export default function HeroBanner() {
   const { t } = useTranslation();
+  const playerRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Load YouTube Player API and create player
+  useEffect(() => {
+    if (window.YT && window.YT.Player) {
+      createPlayer();
+      return;
+    }
+
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode!.insertBefore(tag, firstScriptTag);
+
+    window.onYouTubeIframeAPIReady = () => {
+      createPlayer();
+    };
+
+    return () => {
+      if (playerRef.current && playerRef.current.destroy) {
+        playerRef.current.destroy();
+      }
+    };
+  }, []);
+
+  const createPlayer = () => {
+    if (!containerRef.current) return;
+
+    playerRef.current = new window.YT.Player(containerRef.current, {
+      videoId: 'VJC2jqXUgAY',
+      playerVars: {
+        autoplay: 1,
+        mute: 1,
+        loop: 1,
+        playlist: 'VJC2jqXUgAY',
+        controls: 0,
+        modestbranding: 1,
+        rel: 0,
+        showinfo: 0,
+        iv_load_policy: 3,
+        disablekb: 1,
+        fs: 0,
+        playsinline: 1,
+      },
+      events: {
+        onReady: (event: any) => {
+          event.target.playVideo();
+        },
+      },
+    });
+  };
 
   return (
     <section
@@ -79,26 +139,19 @@ export default function HeroBanner() {
 
         {/* --- Video Side (pure background, no overlay) --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black overflow-hidden">
-          {/* YouTube iframe – completely hidden branding, auto-plays muted */}
-          <iframe
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            src="https://www.youtube-nocookie.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&disablekb=1&fs=0&playsinline=1"
-            title="Background"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            style={{ border: 'none' }}
-          ></iframe>
+          {/* YouTube Player API container */}
+          <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none"></div>
 
           {/* ─── Dark overlay to dim video ─── */}
           <div className="absolute inset-0 bg-black/40 md:bg-black/20 pointer-events-none"></div>
 
-          {/* ─── GRADIENT PATCHES (transparent borders for blending) ─── */}
+          {/* ─── GRADIENT PATCHES (transparent borders) ─── */}
           <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-black/70 via-black/30 to-transparent pointer-events-none"></div>
           <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
           <div className="absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-black/30 to-transparent pointer-events-none"></div>
           <div className="absolute inset-x-0 top-0 h-1/6 bg-gradient-to-b from-black/30 to-transparent pointer-events-none"></div>
 
-          {/* ─── Extra mask to hide any residual YouTube logo (bottom-right) ─── */}
+          {/* ─── Extra mask to hide any residual YouTube logo ─── */}
           <div className="absolute bottom-0 right-0 w-32 h-16 bg-gradient-to-tl from-black/80 to-transparent pointer-events-none"></div>
         </div>
       </div>
