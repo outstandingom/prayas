@@ -1,144 +1,570 @@
-import { motion } from 'framer-motion';
-import { HeartHandshake, Play, ArrowRight } from 'lucide-react';
+// src/components/Navbar.tsx
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Menu, X, Heart, User, ChevronDown, Globe, UserPlus
+} from 'lucide-react';
+import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
+import { supabase } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useRef } from 'react';
 
-declare global {
-  interface Window {
-    onYouTubeIframeAPIReady: () => void;
-    YT: any;
-  }
-}
+const navLinks = [
+  { name: 'nav.home', path: '/' },
+  {
+    name: 'nav.aboutUs',
+    path: '/about',
+    submenu: [
+      { name: 'nav.about.story', path: '/about' },
+      { name: 'nav.about.members', path: '/about/members' },
+      { name: 'nav.about.certifications', path: '/about/certifications' },
+    ]
+  },
+  { name: 'nav.ourWork', path: '/our-work' },
+  { name: 'nav.impact', path: '/programs' },
+  { 
+    name: 'nav.media', 
+    path: '/media',
+    submenu: [
+      { name: 'nav.stories', path: '/stories' },
+      { name: 'nav.gallery', path: '/gallery' },
+    ]
+  },
+  { name: 'nav.contact', path: '/contact' },
+];
 
-export default function HeroBanner() {
-  const { t } = useTranslation();
-  const playerRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+const LANGUAGES = [
+  { code: 'hi', label: 'हिंदी' },
+  { code: 'en', label: 'English' },
+  { code: 'mr', label: 'मराठी' },
+  { code: 'gu', label: 'ગુજરાતી' },
+  { code: 'te', label: 'తెలుగు' },
+  { code: 'ta', label: 'தமிழ்' },
+];
+
+export default function Navbar() {
+  const { t, i18n } = useTranslation();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState<string | null>(null);
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const location = useLocation();
+
+  // ---------- Animated brand name – two lines ----------
+  const [brandLangIndex, setBrandLangIndex] = useState(0);
+  const brandFirstLine = ['Prayas', 'प्रयास'];
+  const brandSecondLine = ['Samaj Sevi Sanstha', 'समाज सेवी संस्था'];
 
   useEffect(() => {
-    if (window.YT && window.YT.Player) {
-      createPlayer();
-      return;
-    }
-
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode!.insertBefore(tag, firstScriptTag);
-
-    window.onYouTubeIframeAPIReady = () => {
-      createPlayer();
-    };
-
-    return () => {
-      if (playerRef.current && playerRef.current.destroy) {
-        playerRef.current.destroy();
-      }
-    };
+    const interval = setInterval(() => {
+      setBrandLangIndex(prev => (prev === 0 ? 1 : 0));
+    }, 3000);
+    return () => clearInterval(interval);
   }, []);
 
-  const createPlayer = () => {
-    if (!containerRef.current) return;
+  // ---------- Top strip visibility - ALWAYS visible by default ----------
+  const [isStripVisible, setIsStripVisible] = useState(true);
 
-    playerRef.current = new window.YT.Player(containerRef.current, {
-      videoId: 'VJC2jqXUgAY',
-      playerVars: {
-        autoplay: 1,
-        mute: 1,
-        loop: 1,
-        playlist: 'VJC2jqXUgAY',
-        controls: 0,
-        modestbranding: 1,
-        rel: 0,
-        showinfo: 0,
-        iv_load_policy: 3,
-        disablekb: 1,
-        fs: 0,
-        playsinline: 1,
-      },
-      events: {
-        onReady: (event: any) => {
-          event.target.playVideo();
-        },
-      },
+  const isHome = location.pathname === '/';
+
+  // Auth logic
+  useEffect(() => {
+    checkAuth();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setIsAuthenticated(!!session);
+      setLoading(false);
     });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  async function checkAuth() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    } catch (err) {
+      console.error('Auth check error:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setIsMobileOpen(false);
+    setOpenDropdown(null);
+    setMobileSubmenuOpen(null);
+    setLangDropdownOpen(false);
+  }, [location]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMobileOpen(false);
+        setMobileSubmenuOpen(null);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isAuthPage = location.pathname === '/auth';
+  const showAuthLink = !isAuthPage;
+
+  // ALWAYS use dark text on white background
+  const textColor = 'text-[#263238]';
+  const textColorHover = 'hover:text-[#FFF314]';
+  const borderColor = 'border-[#263238]/30';
+  const bgButton = 'bg-[#263238]/5 hover:bg-[#263238]/10';
+
+  // ALWAYS white background (not grey)
+  const bgHeader = isScrolled 
+    ? 'bg-white/95 backdrop-blur-md shadow-sm' 
+    : 'bg-white border-b border-[#263238]/5';
+
+  const handleMouseEnter = (name: string) => setOpenDropdown(name);
+  const handleMouseLeave = () => setOpenDropdown(null);
+
+  const toggleMobileSubmenu = (name: string) => {
+    setMobileSubmenuOpen(mobileSubmenuOpen === name ? null : name);
   };
 
+  const isSubmenuActive = (submenu: { path: string }[]) => {
+    return submenu.some(item => location.pathname === item.path);
+  };
+
+  const changeLanguage = (code: string) => {
+    i18n.changeLanguage(code);
+    setLangDropdownOpen(false);
+  };
+
+  const currentLangLabel = LANGUAGES.find(l => l.code === i18n.language)?.label || 'English';
+
+  const safeT = (key: string) => {
+    const translated = t(key);
+    return translated === key ? key.replace(/^nav\./, '') : translated;
+  };
+
+  const donateText = t('nav.donateNow', 'Donate Now');
+  const volunteerText = safeT('nav.volunteer');
+
   return (
-    <section
-      className="relative w-full overflow-hidden bg-gray-900 flex items-center justify-center pt-[80px] sm:pt-[100px] -mt-[80px] sm:-mt-[100px] min-h-[calc(100vh-80px)] sm:min-h-[calc(100vh-100px)]"
-    >
-      {/* --- Video Background --- */}
-      <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none"></div>
-
-      {/* --- Dark overlay --- */}
-      <div className="absolute inset-0 bg-black/50 md:bg-black/40 pointer-events-none"></div>
-
-      {/* --- Edge gradients --- */}
-      <div className="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-black/60 to-transparent pointer-events-none"></div>
-      <div className="absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-black/60 to-transparent pointer-events-none"></div>
-      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent pointer-events-none"></div>
-      <div className="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-black/30 to-transparent pointer-events-none"></div>
-
-      {/* --- Content --- */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+    <>
+      <header className="fixed top-0 left-0 right-0 z-[9999]">
+        {/* ---------- OVERLAPPING LOGO (absolute) – PERFECTLY CENTERED ---------- */}
+        <Link
+          to="/"
+          className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group"
         >
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-white/90 text-xs font-semibold tracking-wider uppercase mb-6 border border-white/20">
-            <Play size={12} className="fill-[#FFF314] text-[#FFF314]" />
-            {t('hero.tagline', 'Watch Our Story Unfold')}
+          {/* Logo image – increased size */}
+          <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
+            <img
+              src="/Logo.svg"
+              alt="Prayas Logo"
+              className="w-full h-full object-cover"
+            />
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight mb-4">
-            {t('hero.title', 'Building a Better')}{' '}
-            <span className="text-[#FFF314]">{t('hero.titleHighlight', 'Tomorrow')}</span>
-          </h1>
-
-          <p className="text-base md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mb-8">
-            {t(
-              'hero.description',
-              'Empowering communities through education, health, and sustainable development. Join us in making a difference.'
-            )}
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-8 py-3.5 rounded-full font-bold text-sm hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
+          {/* Animated two‑line brand name – larger font */}
+          <motion.div
+            key={brandLangIndex}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.4 }}
+            className="flex flex-col leading-tight"
+          >
+            <span
+              className="font-display font-bold text-2xl sm:text-4xl tracking-tight group-hover:text-[#FFF314] transition drop-shadow-md text-[#263238]"
             >
-              {t('hero.donateNow', 'Donate Now')}
-              <HeartHandshake size={18} />
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm text-white px-8 py-3.5 rounded-full font-semibold text-sm hover:bg-white/20 transition-all duration-300 border border-white/20"
+              {brandFirstLine[brandLangIndex]}
+            </span>
+            <span
+              className="font-display text-xs sm:text-base font-medium opacity-90 group-hover:text-[#FFF314] transition text-[#263238]"
             >
-              {t('hero.learnMore', 'Learn More')}
-              <ArrowRight size={18} />
-            </motion.button>
-          </div>
+              {brandSecondLine[brandLangIndex]}
+            </span>
+          </motion.div>
+        </Link>
 
-          <div className="mt-12 pt-8 border-t border-white/20 flex flex-wrap justify-center gap-8 md:gap-12">
-            <div>
-              <div className="text-2xl md:text-3xl font-bold text-white">10+</div>
-              <div className="text-xs text-white/60 uppercase tracking-wider">Years of Impact</div>
+        {/* ---------- TOP STRIP – gradient from SmoothLoader - ALWAYS VISIBLE ---------- */}
+        {isStripVisible && (
+          <div className="hidden sm:flex bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white py-2 px-4 pl-20 sm:pl-36 flex-col sm:flex-row items-center justify-between w-full shadow-md gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-center sm:text-left">
+              <span className="font-bold text-sm sm:text-base tracking-wide">CHILD RIGHTS AND YOU</span>
+              <span className="text-[10px] sm:text-xs opacity-80">Let's ensure happy childhoods for India's children</span>
             </div>
-            <div>
-              <div className="text-2xl md:text-3xl font-bold text-white">50K</div>
-              <div className="text-xs text-white/60 uppercase tracking-wider">Lives Transformed</div>
-            </div>
-            <div>
-              <div className="text-2xl md:text-3xl font-bold text-white">20+</div>
-              <div className="text-xs text-white/60 uppercase tracking-wider">Projects</div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Link
+                to="/donate"
+                className="bg-[#FFF314] text-[#263238] px-3 sm:px-4 py-1 rounded-full text-[10px] sm:text-xs font-semibold hover:bg-[#FFF314]/90 transition shadow-md whitespace-nowrap"
+              >
+                Yes! I Want To Help!
+              </Link>
+              <div className="flex items-center gap-1 text-white/70">
+                <a
+                  href="https://www.facebook.com/prayassamajiksanstha"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaFacebook size={14} />
+                </a>
+                <a
+                  href="https://x.com/pryasaa?s=11"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="X (Twitter)"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaTwitter size={14} />
+                </a>
+                <a
+                  href="https://www.instagram.com/prayas_samajik_sanstha"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaInstagram size={14} />
+                </a>
+                <a
+                  href="https://www.youtube.com/channel/UC16ZbLnP1qJxrKQoKsss12w"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaYoutube size={14} />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/prayas-samaj-sevi-sastha-undefined-0a468b418/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaLinkedin size={14} />
+                </a>
+              </div>
+              <button
+                onClick={() => setIsStripVisible(false)}
+                className="text-white/50 hover:text-white transition p-0.5"
+                aria-label="Close announcement"
+              >
+                <X size={16} />
+              </button>
             </div>
           </div>
-        </motion.div>
-      </div>
-    </section>
+        )}
+
+        {/* ---------- MAIN NAVBAR - ALWAYS WHITE BACKGROUND ---------- */}
+        <div
+          className={`transition-all duration-500 ${bgHeader} 
+            min-h-[80px] sm:min-h-[100px] flex items-center py-2 sm:py-1.5 pl-20 sm:pl-36`}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
+            <div className="flex items-center justify-end gap-3">
+              {/* Desktop Navigation */}
+              <nav className="hidden md:flex items-center gap-2 lg:gap-4 ml-auto">
+                {navLinks.map((link) => {
+                  const hasSubmenu = link.submenu && link.submenu.length > 0;
+                  const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
+                  
+                  if (hasSubmenu) {
+                    return (
+                      <div
+                        key={link.name}
+                        className="relative group"
+                        onMouseEnter={() => handleMouseEnter(link.name)}
+                        onMouseLeave={handleMouseLeave}
+                      >
+                        <button
+                          className={`text-xs font-medium transition-colors relative py-2 group flex items-center gap-1 whitespace-nowrap ${
+                            isActive ? 'text-[#FFF314]' : `${textColor} ${textColorHover}`
+                          }`}
+                        >
+                          {safeT(link.name)}
+                          <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
+                          <span
+                            className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                              isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                            }`}
+                          />
+                        </button>
+                        <AnimatePresence>
+                          {openDropdown === link.name && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 10 }}
+                              transition={{ duration: 0.15 }}
+                              className="absolute left-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[200px] py-2 z-50"
+                            >
+                              {link.submenu!.map((sub) => (
+                                <Link
+                                  key={sub.path}
+                                  to={sub.path}
+                                  className={`block px-5 py-2.5 text-xs transition-colors ${
+                                    location.pathname === sub.path
+                                      ? 'text-[#FFF314] bg-[#FFF314]/10'
+                                      : `text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]`
+                                  }`}
+                                >
+                                  {safeT(sub.name)}
+                                </Link>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      className={`text-xs font-medium transition-colors relative py-2 group whitespace-nowrap ${
+                        location.pathname === link.path
+                          ? 'text-[#FFF314]'
+                          : `${textColor} ${textColorHover}`
+                      }`}
+                    >
+                      {safeT(link.name)}
+                      <span
+                        className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                          location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
+                        }`}
+                      />
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* Right side actions */}
+              <div className="flex items-center gap-1 sm:gap-2">
+                {/* Language Switcher */}
+                <div className="relative z-20">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLangDropdownOpen(!langDropdownOpen);
+                    }}
+                    className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-xs font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
+                  >
+                    <Globe className="w-4 h-4" />
+                    <span className="hidden sm:inline">{currentLangLabel}</span>
+                  </button>
+                  <AnimatePresence>
+                    {langDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[150px] py-2 z-50 pointer-events-auto"
+                      >
+                        {LANGUAGES.map((lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => changeLanguage(lang.code)}
+                            className={`block w-full text-left px-5 py-2.5 text-sm transition-colors cursor-pointer ${
+                              i18n.language === lang.code
+                                ? 'text-[#FFF314] bg-[#FFF314]/10'
+                                : 'text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]'
+                            }`}
+                          >
+                            {lang.label}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Donate Now button */}
+                <Link
+                  to="/donate"
+                  className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+                >
+                  <Heart className="w-4 h-4" />
+                  <span className="hidden sm:inline">{donateText}</span>
+                </Link>
+
+                {/* Volunteer button */}
+                <Link
+                  to="/volunteer"
+                  className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span className="hidden sm:inline">{volunteerText}</span>
+                </Link>
+
+                {/* Profile / Sign In */}
+                {showAuthLink && !loading && (
+                  <Link
+                    to={isAuthenticated ? "/profile" : "/auth"}
+                    className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
+                  >
+                    <User className="w-4 h-4" />
+                    <span className="hidden sm:inline">
+                      {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
+                    </span>
+                  </Link>
+                )}
+
+                {/* Hamburger menu */}
+                <button
+                  className={`md:hidden p-2.5 -m-1 rounded-full transition-colors ${textColor} ${textColorHover} ${bgButton}`}
+                  onClick={() => setIsMobileOpen(!isMobileOpen)}
+                  aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
+                >
+                  {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* ---------- MOBILE MENU (outside header, fixed position) ---------- */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed left-0 right-0 top-[80px] bottom-0 z-[9998] bg-white shadow-xl border-t border-[#263238]/10 overflow-y-auto"
+          >
+            <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
+              {navLinks.map((link) => {
+                const hasSubmenu = link.submenu && link.submenu.length > 0;
+                const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
+
+                if (hasSubmenu) {
+                  const isOpen = mobileSubmenuOpen === link.name;
+                  return (
+                    <div key={link.name} className="border-b border-[#263238]/5 last:border-0">
+                      <button
+                        onClick={() => toggleMobileSubmenu(link.name)}
+                        className={`w-full text-left text-lg font-medium py-3 px-2 rounded-lg transition-colors flex items-center justify-between ${
+                          isActive
+                            ? 'text-[#FFF314] bg-[#FFF314]/10'
+                            : 'text-[#263238] hover:text-[#FFF314] hover:bg-[#263238]/5'
+                        }`}
+                      >
+                        {safeT(link.name)}
+                        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="pl-4 pb-2 flex flex-col gap-0.5">
+                              {link.submenu!.map((sub) => (
+                                <Link
+                                  key={sub.path}
+                                  to={sub.path}
+                                  className={`py-2 px-2 rounded-lg text-sm transition-colors ${
+                                    location.pathname === sub.path
+                                      ? 'text-[#FFF314] bg-[#FFF314]/10'
+                                      : 'text-[#263238]/70 hover:text-[#FFF314] hover:bg-[#263238]/5'
+                                  }`}
+                                >
+                                  {safeT(sub.name)}
+                                </Link>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`text-lg font-medium py-3 px-2 rounded-lg transition-colors ${
+                      location.pathname === link.path
+                        ? 'text-[#FFF314] bg-[#FFF314]/10'
+                        : 'text-[#263238] hover:text-[#FFF314] hover:bg-[#263238]/5'
+                    }`}
+                  >
+                    {safeT(link.name)}
+                  </Link>
+                );
+              })}
+
+              {/* Language Switcher – Mobile */}
+              <div className="border-t border-[#263238]/10 pt-3 mt-2">
+                <p className="text-xs text-[#263238]/50 uppercase tracking-wider mb-2 px-2">Language</p>
+                <div className="grid grid-cols-2 gap-1">
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        changeLanguage(lang.code);
+                        setIsMobileOpen(false);
+                      }}
+                      className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                        i18n.language === lang.code
+                          ? 'bg-[#FFF314] text-[#263238]'
+                          : 'bg-[#263238]/5 text-[#263238] hover:bg-[#263238]/10'
+                      }`}
+                    >
+                      {lang.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Donate Now – Mobile */}
+              <Link
+                to="/donate"
+                className="mt-3 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
+              >
+                {donateText} <Heart className="w-5 h-5" />
+              </Link>
+
+              {/* Volunteer – Mobile */}
+              <Link
+                to="/volunteer"
+                className="mt-2 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
+              >
+                {volunteerText} <UserPlus className="w-5 h-5" />
+              </Link>
+
+              {/* Profile / Sign In – Mobile */}
+              {showAuthLink && !loading && (
+                <Link
+                  to={isAuthenticated ? "/profile" : "/auth"}
+                  className="mt-2 w-full text-center rounded-full border border-[#263238]/30 px-6 py-3.5 font-semibold text-[#263238] hover:text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+                >
+                  <User className="w-5 h-5" />
+                  {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
+                </Link>
+              )}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
