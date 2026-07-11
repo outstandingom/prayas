@@ -41,14 +41,13 @@ export default function HeroBanner() {
       setIsVideoLoaded(true);
     };
 
-    video.addEventListener('canplay', handleCanPlay); // Use 'canplay' for faster start
+    video.addEventListener('canplay', handleCanPlay);
     video.addEventListener('error', handleError);
 
-    // If already loaded, try immediately
     if (video.readyState >= 2) {
       handleCanPlay();
     } else {
-      video.load(); // Force loading
+      video.load();
     }
 
     return () => {
@@ -68,7 +67,7 @@ export default function HeroBanner() {
     return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, []);
 
-  // Global click/touch = invisible play trigger (no button shown)
+  // Global click/touch = invisible play trigger
   useEffect(() => {
     const handleInteraction = () => {
       const video = videoRef.current;
@@ -85,10 +84,12 @@ export default function HeroBanner() {
   }, []);
 
   return (
-    <section className="relative w-full overflow-hidden bg-gray-900" style={{ height: '100vh', maxHeight: '800px' }}>
+    <section
+      className="relative w-full overflow-hidden bg-gray-900 pt-[80px] sm:pt-[144px] h-[calc(100vh-80px)] sm:h-[calc(100vh-144px)]"
+    >
       <div className="flex flex-col-reverse md:flex-row w-full h-full">
 
-        {/* --- Content Side (unchanged) --- */}
+        {/* --- Content Side --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center items-center md:items-start p-8 md:p-12 lg:p-16 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF314] opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500 opacity-10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
@@ -154,23 +155,21 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* --- Video Side with multiple sources & poster --- */}
+        {/* --- Video Side --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black">
           <video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover"
-            autoPlay        // <-- Added to prompt the browser to execute native autoplay
-            muted           // (Required for autoplay)
+            autoPlay
+            muted
             loop
-            playsInline     // (Required for mobile Safari autoplay)
+            playsInline
             preload="auto"
-            poster="/video-poster.jpg" 
+            poster="/video-poster.jpg"
             style={{ backgroundColor: '#111' }}
           >
-            {/* Standardized filenames to lowercase to prevent 404 pathing discrepancies */}
-            {/* Make sure your files inside the public/ directory match this exact casing */}
             <source src="/img_09.mp4" type="video/mp4" />
-            <source src="/img_09.webm" type="video/webm" /> 
+            <source src="/img_09.webm" type="video/webm" />
             Your browser does not support the video tag.
           </video>
 
