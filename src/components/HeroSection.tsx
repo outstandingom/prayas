@@ -77,15 +77,15 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* --- YouTube Video Side --- */}
+        {/* --- YouTube Video Side (Borderless, Autoplay, No Controls) --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black">
           <iframe
             className="absolute inset-0 w-full h-full"
-            src="https://www.youtube.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=1&modestbranding=1&rel=0"
+            src="https://www.youtube.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=0&modestbranding=1&rel=0&showinfo=0"
             title="Prayas - Building a Better Tomorrow"
-            frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
+            style={{ border: 'none' }}
           ></iframe>
 
           {/* Subtle gradient overlay */}
