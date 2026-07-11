@@ -97,8 +97,8 @@ export default function HeroBanner() {
       <div className="absolute inset-0 bg-black/50 pointer-events-none"></div>
       <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
 
-      {/* Content – responsive */}
-      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 text-center">
+      {/* Content – responsive. Changed max-w-4xl to max-w-2xl here! */}
+      <div className="relative z-10 w-full max-w-2xl mx-auto px-4 sm:px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -118,7 +118,7 @@ export default function HeroBanner() {
           </h1>
 
           {/* Description */}
-          <p className="text-xs sm:text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed mb-4 sm:mb-8 px-2">
+          <p className="text-xs sm:text-base md:text-lg text-white/70 mx-auto leading-relaxed mb-4 sm:mb-8 px-2">
             {t(
               'hero.description',
               'Empowering communities through education, health, and sustainable development. Join us in making a difference.'
