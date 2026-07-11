@@ -53,6 +53,8 @@ export default function HeroBanner() {
     if (!containerRef.current) return;
     playerRef.current = new window.YT.Player(containerRef.current, {
       videoId: 'VJC2jqXUgAY',
+      width: '100%',
+      height: '100%',
       playerVars: {
         autoplay: 1,
         mute: 1,
@@ -70,12 +72,6 @@ export default function HeroBanner() {
       events: {
         onReady: (event: any) => {
           event.target.playVideo();
-          // Zoom enough to cover ANY screen – no black bars
-          const iframe = event.target.getIframe();
-          if (iframe) {
-            iframe.style.transform = 'scale(2.5)';
-            iframe.style.transformOrigin = 'center center';
-          }
         },
       },
     });
@@ -89,9 +85,12 @@ export default function HeroBanner() {
         minHeight: `calc(100vh - ${navbarHeight}px)`,
       }}
     >
-      {/* Video container – crops the zoomed video */}
+      {/* Video container – acts like object-fit: cover */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div ref={containerRef} className="absolute inset-0 w-full h-full"></div>
+        {/* Aspect Ratio Wrapper */}
+        <div className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2">
+          <div ref={containerRef} className="w-full h-full pointer-events-none"></div>
+        </div>
       </div>
 
       {/* Overlay for readability */}
