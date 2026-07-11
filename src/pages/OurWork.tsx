@@ -17,7 +17,7 @@ import {
   HeartPulse,
   Stethoscope,
   Heart,
-  Accessibility, // ← REPLACED Wheelchair with Accessibility
+  Accessibility,
   Baby,
   UsersRound,
   Leaf,
@@ -171,7 +171,7 @@ export default function OurWork() {
             'Special care and support programs for senior citizens including health check-ups, companionship, and assistance.',
         },
         {
-          icon: Accessibility, // ← REPLACED Wheelchair with Accessibility
+          icon: Accessibility,
           title: 'Support for Persons with Disabilities',
           description:
             'Inclusive programs providing support, accessibility, and opportunities for persons with disabilities.',
@@ -253,7 +253,6 @@ export default function OurWork() {
         transition={{ duration: 0.6 }}
         className="relative bg-gradient-to-br from-[#263238] via-[#1a2a2e] to-[#0d1a1e] py-16 md:py-24 overflow-hidden"
       >
-        {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF314] opacity-5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#FFF314] opacity-5 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
 
@@ -264,8 +263,7 @@ export default function OurWork() {
             transition={{ delay: 0.2, duration: 0.6 }}
           >
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
-              Our{' '}
-              <span className="text-[#FFF314] drop-shadow-lg">Work</span>
+              Our <span className="text-[#FFF314] drop-shadow-lg">Work</span>
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               We work across multiple sectors to create lasting impact in the
@@ -274,7 +272,6 @@ export default function OurWork() {
             </p>
           </motion.div>
 
-          {/* Category Quick Links */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -302,7 +299,7 @@ export default function OurWork() {
         animate="visible"
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
       >
-        {categories.map((category, index) => (
+        {categories.map((category) => (
           <motion.div
             key={category.id}
             id={`category-${category.id}`}
@@ -348,29 +345,32 @@ export default function OurWork() {
                     y: -8,
                     transition: { duration: 0.2 },
                   }}
-                  className={`group relative bg-white rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 border border-[#263238]/10 hover:border-[#FFF314]/50 overflow-hidden`}
+                  className="group relative bg-white rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 border border-[#263238]/10 hover:border-[#FFF314]/50 overflow-hidden"
                 >
-                  {/* Hover Gradient */}
+                  {/* Hover Gradient Overlay */}
                   <div
                     className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${category.bgColor} opacity-10`}
                   />
 
-                  {/* Icon */}
-                  <div
-                    className={`inline-flex p-3 rounded-xl ${category.bgColor} ${category.color} mb-4 group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <item.icon className="w-6 h-6" />
+                  {/* Content – now with relative z-10 to stay above overlay */}
+                  <div className="relative z-10">
+                    {/* Icon */}
+                    <div
+                      className={`inline-flex p-3 rounded-xl ${category.bgColor} ${category.color} mb-4 group-hover:scale-110 transition-transform duration-300`}
+                    >
+                      <item.icon className="w-6 h-6" />
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-lg font-bold text-[#263238] mb-2 group-hover:text-[#263238] transition-colors">
+                      {item.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-[#263238]/60 text-sm leading-relaxed">
+                      {item.description}
+                    </p>
                   </div>
-
-                  {/* Title */}
-                  <h3 className="text-lg font-bold text-[#263238] mb-2 group-hover:text-[#263238] transition-colors">
-                    {item.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-[#263238]/60 text-sm leading-relaxed">
-                    {item.description}
-                  </p>
 
                   {/* Decorative Line */}
                   <div
