@@ -160,9 +160,10 @@ export default function Navbar() {
       {/* ---------- OVERLAPPING LOGO (absolute) with animated two‑line brand ---------- */}
       <Link
         to="/"
-        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group mt-0.5 sm:mt-0"
+        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group mt-1 sm:mt-0"
       >
-        <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
+        {/* Logo image – increased size */}
+        <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
           <img
             src="/Logo.svg"
             alt="Prayas Logo"
@@ -170,7 +171,7 @@ export default function Navbar() {
           />
         </div>
 
-        {/* Animated two‑line brand name - ALWAYS dark text */}
+        {/* Animated two‑line brand name – larger font & slightly lowered */}
         <motion.div
           key={brandLangIndex}
           initial={{ opacity: 0, y: 5 }}
@@ -180,12 +181,12 @@ export default function Navbar() {
           className="flex flex-col leading-tight"
         >
           <span
-            className={`font-display font-bold text-xl sm:text-3xl tracking-tight group-hover:text-[#FFF314] transition drop-shadow-md text-[#263238]`}
+            className="font-display font-bold text-2xl sm:text-4xl tracking-tight group-hover:text-[#FFF314] transition drop-shadow-md text-[#263238]"
           >
             {brandFirstLine[brandLangIndex]}
           </span>
           <span
-            className={`font-display text-[10px] sm:text-sm font-medium opacity-90 group-hover:text-[#FFF314] transition text-[#263238]`}
+            className="font-display text-xs sm:text-base font-medium opacity-90 group-hover:text-[#FFF314] transition text-[#263238]"
           >
             {brandSecondLine[brandLangIndex]}
           </span>
@@ -267,7 +268,7 @@ export default function Navbar() {
       {/* ---------- MAIN NAVBAR - ALWAYS WHITE BACKGROUND ---------- */}
       <div
         className={`transition-all duration-500 ${bgHeader} 
-          min-h-[70px] sm:min-h-[80px] flex items-center py-2 sm:py-3 pl-20 sm:pl-36`}
+          min-h-[80px] sm:min-h-[95px] flex items-center py-2 sm:py-3 pl-20 sm:pl-36`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
           <div className="flex items-center justify-end gap-3">
