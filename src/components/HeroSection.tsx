@@ -8,7 +8,6 @@ export default function HeroBanner() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Updated slides for the 5 categories
   const SLIDES = useMemo(
     () => [
       {
@@ -66,7 +65,6 @@ export default function HeroBanner() {
     [t]
   );
 
-  // Auto-play
   useEffect(() => {
     if (!isAutoPlaying) return;
     const interval = setInterval(() => {
@@ -97,46 +95,48 @@ export default function HeroBanner() {
     <section
       className="relative w-full overflow-hidden bg-gray-900"
       style={{
-        // Push the hero down by the navbar's actual height (set dynamically by Navbar)
         marginTop: 'var(--navbar-height, 0px)',
-        // Make it fill the remaining viewport height
-        height: 'calc(100vh - var(--navbar-height, 0px))',
       }}
+      // Responsive height: 60vh on mobile, full remaining on larger screens
+      // Using min-height ensures content doesn't overflow if text is long
+      // You can replace '60vh' with '400px' if you prefer a fixed height
       onTouchStart={handleTouchStart}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentSlide}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: 'easeInOut' }}
-          className="absolute inset-0"
-        >
-          {/* Background Image */}
-          <div
-            className="w-full h-full bg-cover bg-no-repeat"
-            style={{
-              backgroundImage: `url(${SLIDES[currentSlide].image})`,
-              backgroundPosition: getBackgroundPosition(SLIDES[currentSlide]),
-            }}
-          />
+      <div className="min-h-[60vh] md:min-h-[calc(100vh-var(--navbar-height,0px))] relative">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: 'easeInOut' }}
+            className="absolute inset-0"
+          >
+            {/* Background Image */}
+            <div
+              className="w-full h-full bg-cover bg-no-repeat"
+              style={{
+                backgroundImage: `url(${SLIDES[currentSlide].image})`,
+                backgroundPosition: getBackgroundPosition(SLIDES[currentSlide]),
+              }}
+            />
 
-          {/* Content */}
-          <div className="absolute inset-0 flex items-end md:items-center pb-24 md:pb-0">
-            <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
-              <div className="max-w-2xl">
+            {/* Gradient overlay for better text readability */}
+            <div className="absolute inset-0 bg-black/30 md:bg-black/20" />
+
+            {/* Content - centered on mobile, left-aligned on larger screens */}
+            <div className="absolute inset-0 flex items-center justify-center md:justify-start px-4 md:px-8">
+              <div className="max-w-2xl w-full md:ml-0 text-center md:text-left">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
-                  className="text-center md:text-left"
                 >
-                  <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-2 md:mb-4 leading-tight font-sans">
+                  <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-2 md:mb-4 leading-tight">
                     {SLIDES[currentSlide].title}
                   </h1>
 
-                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 leading-relaxed mb-6 md:mb-8 max-w-xl mx-auto md:mx-0 px-2 md:px-0 font-sans">
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 leading-relaxed mb-6 md:mb-8 max-w-xl mx-auto md:mx-0">
                     {SLIDES[currentSlide].description}
                   </p>
 
@@ -153,21 +153,21 @@ export default function HeroBanner() {
                 </motion.div>
               </div>
             </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+          </motion.div>
+        </AnimatePresence>
 
-      {/* Touch / Click areas for navigation */}
-      <button
-        onClick={() => handleSlide('prev')}
-        className="absolute left-0 top-0 w-1/2 h-full z-10"
-        aria-label="Previous slide"
-      />
-      <button
-        onClick={() => handleSlide('next')}
-        className="absolute right-0 top-0 w-1/2 h-full z-10"
-        aria-label="Next slide"
-      />
+        {/* Navigation buttons */}
+        <button
+          onClick={() => handleSlide('prev')}
+          className="absolute left-0 top-0 w-1/2 h-full z-10"
+          aria-label="Previous slide"
+        />
+        <button
+          onClick={() => handleSlide('next')}
+          className="absolute right-0 top-0 w-1/2 h-full z-10"
+          aria-label="Next slide"
+        />
+      </div>
     </section>
   );
 }
