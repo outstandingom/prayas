@@ -92,10 +92,7 @@ export default function HeroBanner() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-white/90 text-xs font-semibold tracking-wider uppercase mb-6 border border-white/20">
-            <Play size={12} className="fill-[#FFF314] text-[#FFF314]" />
-            {t('hero.tagline', 'Watch Our Story Unfold')}
-          </div>
+         
 
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight mb-4">
             {t('hero.title', 'Building a Better')}{' '}
