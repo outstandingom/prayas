@@ -18,7 +18,7 @@ export default function HeroBanner() {
           'hero.slides.rural.desc',
           'Village Adoption · Water & Sanitation · Infrastructure · Community Development'
         ),
-        image: '/EDUCATION.JPG', // Replace with relevant image
+        image: '/EDUCATION.JPG',
         imagePosition: 'right',
         backgroundPosition: '85% center',
       },
@@ -88,7 +88,6 @@ export default function HeroBanner() {
     }
   };
 
-  // Determine background position: use custom if provided, else fallback to imagePosition logic
   const getBackgroundPosition = (slide: (typeof SLIDES)[0]) => {
     if (slide.backgroundPosition) return slide.backgroundPosition;
     return slide.imagePosition === 'right' ? '70% center' : 'center center';
@@ -97,7 +96,12 @@ export default function HeroBanner() {
   return (
     <section
       className="relative w-full overflow-hidden bg-gray-900"
-      style={{ height: '100vh', maxHeight: '800px' }}
+      style={{
+        // Push the hero down by the navbar's actual height (set dynamically by Navbar)
+        marginTop: 'var(--navbar-height, 0px)',
+        // Make it fill the remaining viewport height
+        height: 'calc(100vh - var(--navbar-height, 0px))',
+      }}
       onTouchStart={handleTouchStart}
     >
       <AnimatePresence mode="wait">
