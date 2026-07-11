@@ -60,51 +60,57 @@ export default function HeroBanner() {
       events: {
         onReady: (event: any) => {
           event.target.playVideo();
+          // Zoom the iframe to cover the container (no black bars)
+          const iframe = event.target.getIframe();
+          if (iframe) {
+            iframe.style.transform = 'scale(1.5)';
+            iframe.style.transformOrigin = 'center center';
+          }
         },
       },
     });
   };
 
+  // Dynamic height from navbar
+  const navbarHeight = 'var(--navbar-height, 80px)';
+
   return (
     <section
       className="relative w-full overflow-hidden bg-gray-900 flex items-center justify-center"
       style={{
-        paddingTop: 'var(--navbar-height, 80px)',
-        minHeight: 'calc(100vh - var(--navbar-height, 80px))',
+        paddingTop: navbarHeight,
+        minHeight: `calc(100vh - ${navbarHeight})`,
       }}
     >
-      {/* Video Background */}
-      <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none"></div>
+      {/* Video container – overflow hidden so zoomed video doesn't leak */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div ref={containerRef} className="absolute inset-0 w-full h-full"></div>
+      </div>
 
-      {/* Dark overlay – lighter on mobile for better readability */}
-      <div className="absolute inset-0 bg-black/60 sm:bg-black/40 pointer-events-none"></div>
-
-      {/* Edge gradients – softer on mobile */}
+      {/* Overlays – darken video for readability */}
+      <div className="absolute inset-0 bg-black/50 sm:bg-black/40 pointer-events-none"></div>
       <div className="absolute inset-y-0 left-0 w-1/3 sm:w-1/4 bg-gradient-to-r from-black/70 via-black/30 to-transparent pointer-events-none"></div>
       <div className="absolute inset-y-0 right-0 w-1/3 sm:w-1/4 bg-gradient-to-l from-black/70 via-black/30 to-transparent pointer-events-none"></div>
       <div className="absolute inset-x-0 bottom-0 h-1/2 sm:h-1/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none"></div>
       <div className="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-black/30 to-transparent pointer-events-none"></div>
 
-      {/* Content – optimized for all screens */}
+      {/* Content – perfectly centered and responsive */}
       <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 text-center py-4 sm:py-0">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Tagline – smaller on mobile */}
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 rounded-full text-white/90 text-[10px] sm:text-xs font-semibold tracking-wider uppercase mb-4 sm:mb-6 border border-white/20">
             <Play size={12} className="fill-[#FFF314] text-[#FFF314]" />
             {t('hero.tagline', 'Watch Our Story Unfold')}
           </div>
 
-          {/* Heading – responsive sizes */}
           <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-tight mb-3 sm:mb-4">
             {t('hero.title', 'Building a Better')}{' '}
             <span className="text-[#FFF314]">{t('hero.titleHighlight', 'Tomorrow')}</span>
           </h1>
 
-          {/* Description – smaller, better line-height on mobile */}
           <p className="text-sm sm:text-base md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mb-6 sm:mb-8 px-2">
             {t(
               'hero.description',
@@ -112,7 +118,6 @@ export default function HeroBanner() {
             )}
           </p>
 
-          {/* Buttons – full width on mobile, inline on larger */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -132,7 +137,6 @@ export default function HeroBanner() {
             </motion.button>
           </div>
 
-          {/* Stats – smaller numbers on mobile, centered */}
           <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-white/20 flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-12">
             <div>
               <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">10+</div>
