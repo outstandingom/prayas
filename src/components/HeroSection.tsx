@@ -66,7 +66,12 @@ export default function HeroBanner() {
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-gray-900 flex items-center justify-center pt-[80px] sm:pt-[100px] -mt-[80px] sm:-mt-[100px] min-h-[calc(100vh-80px)] sm:min-h-[calc(100vh-100px)]"
+      className="relative w-full overflow-hidden bg-gray-900 flex items-center justify-center"
+      style={{
+        paddingTop: 'var(--navbar-height, 80px)',
+        marginTop: 'calc(var(--navbar-height, 80px) * -1)',
+        minHeight: 'calc(100vh - var(--navbar-height, 80px))',
+      }}
     >
       {/* --- Video Background --- */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none"></div>
