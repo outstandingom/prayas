@@ -8,79 +8,58 @@ export default function HeroBanner() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Slides Data – now with optional custom backgroundPosition
+  // Updated slides for the 5 categories
   const SLIDES = useMemo(
     () => [
       {
         id: 1,
-        title: t('hero.slides.education.title', 'Education'),
+        title: t('hero.slides.rural.title', 'Rural Development'),
         description: t(
-          'hero.slides.education.desc',
-          'Opening doors to a better future through the power of education.'
+          'hero.slides.rural.desc',
+          'Village Adoption · Water & Sanitation · Infrastructure · Community Development'
         ),
-        image: '/EDUCATION.JPG',
+        image: '/EDUCATION.JPG', // Replace with relevant image
         imagePosition: 'right',
-        // Custom background position – shift even further right (crops left side)
         backgroundPosition: '85% center',
       },
       {
         id: 2,
-        title: t('hero.slides.women.title', 'Women Empowerment'),
+        title: t('hero.slides.women.title', 'Women Empowerment & Livelihood'),
         description: t(
           'hero.slides.women.desc',
-          'Empowering women to break away from the vicious cycle of poverty.'
+          'Sabji Wali Didi · Sewing Centres · SHGs · Entrepreneurship · Grah Udyog'
         ),
         image: '/P1039322.JPG',
         imagePosition: 'right',
       },
       {
         id: 3,
-        title: t('hero.slides.healthcare.title', 'Healthcare'),
+        title: t('hero.slides.education.title', 'Education & Skill Development'),
         description: t(
-          'hero.slides.healthcare.desc',
-          'Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.'
+          'hero.slides.education.desc',
+          'Sanskarshala · Digital Literacy · Career Guidance · Self‑Defence · Youth Leadership'
+        ),
+        image: '/P1039409.JPG',
+        imagePosition: 'center',
+      },
+      {
+        id: 4,
+        title: t('hero.slides.health.title', 'Health & Social Welfare'),
+        description: t(
+          'hero.slides.health.desc',
+          'Organ Donation · Health Camps · Elderly Care · Support for Persons with Disabilities · Child Welfare · Community Welfare'
         ),
         image: '/PRAYASHEALTHCAMP.jpeg',
         imagePosition: 'center',
       },
       {
-        id: 4,
-        title: t('hero.slides.environment.title', 'Environment'),
+        id: 5,
+        title: t('hero.slides.environment.title', 'Environment & Sustainability'),
         description: t(
           'hero.slides.environment.desc',
-          'Nurturing the environment through awareness, action, and responsibility.'
+          'Plantation · Kargil Vatika · Water Conservation'
         ),
         image: '/TREEGROW.jpg',
-        imagePosition: 'center',
-      },
-      {
-        id: 5,
-        title: t('hero.slides.nutrition.title', 'Nutrition'),
-        description: t(
-          'hero.slides.nutrition.desc',
-          'Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.'
-        ),
-        image: '/IMG-26.jpeg',
-        imagePosition: 'center',
-      },
-      {
-        id: 6,
-        title: t('hero.slides.shelter.title', 'Shelter'),
-        description: t(
-          'hero.slides.shelter.desc',
-          'Transforming rural lives through sustainable development and hope.'
-        ),
-        image: '/IMG-25.jpeg',
-        imagePosition: 'right',
-      },
-      {
-        id: 7,
-        title: t('hero.slides.skill.title', 'Skill Development'),
-        description: t(
-          'hero.slides.skill.desc',
-          'Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth.'
-        ),
-        image: '/P1039409.JPG',
         imagePosition: 'center',
       },
     ],
