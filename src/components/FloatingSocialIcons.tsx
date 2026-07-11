@@ -10,7 +10,7 @@ const socialLinks = [
 
 export default function FloatingSocialIcons() {
   return (
-    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3">
+    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-40 hidden sm:flex flex-col gap-3">
       {socialLinks.map(({ icon: Icon, href, label }) => (
         <a
           key={label}
