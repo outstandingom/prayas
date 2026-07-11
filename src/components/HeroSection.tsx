@@ -1,164 +1,190 @@
-import { motion } from 'framer-motion';
-import { HeartHandshake, Play, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { HeartHandshake } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useRef, useState } from 'react';
-
-declare global {
-  interface Window {
-    onYouTubeIframeAPIReady: () => void;
-    YT: any;
-  }
-}
 
 export default function HeroBanner() {
   const { t } = useTranslation();
-  const playerRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [navbarHeight, setNavbarHeight] = useState(80);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Measure navbar height
-  useEffect(() => {
-    const updateHeight = () => {
-      const header = document.querySelector('header');
-      if (header) {
-        setNavbarHeight(header.offsetHeight);
-      }
-    };
-    updateHeight();
-    window.addEventListener('resize', updateHeight);
-    return () => window.removeEventListener('resize', updateHeight);
-  }, []);
+  // Slides Data – now with optional custom backgroundPosition
+  const SLIDES = useMemo(
+    () => [
+      {
+        id: 1,
+        title: t('hero.slides.education.title', 'Education'),
+        description: t(
+          'hero.slides.education.desc',
+          'Opening doors to a better future through the power of education.'
+        ),
+        image: '/EDUCATION.JPG',
+        imagePosition: 'right',
+        // Custom background position – shift even further right (crops left side)
+        backgroundPosition: '85% center',
+      },
+      {
+        id: 2,
+        title: t('hero.slides.women.title', 'Women Empowerment'),
+        description: t(
+          'hero.slides.women.desc',
+          'Empowering women to break away from the vicious cycle of poverty.'
+        ),
+        image: '/P1039322.JPG',
+        imagePosition: 'right',
+      },
+      {
+        id: 3,
+        title: t('hero.slides.healthcare.title', 'Healthcare'),
+        description: t(
+          'hero.slides.healthcare.desc',
+          'Our medical camps and health awareness programs bring essential healthcare services to remote and underserved communities.'
+        ),
+        image: '/PRAYASHEALTHCAMP.jpeg',
+        imagePosition: 'center',
+      },
+      {
+        id: 4,
+        title: t('hero.slides.environment.title', 'Environment'),
+        description: t(
+          'hero.slides.environment.desc',
+          'Nurturing the environment through awareness, action, and responsibility.'
+        ),
+        image: '/TREEGROW.jpg',
+        imagePosition: 'center',
+      },
+      {
+        id: 5,
+        title: t('hero.slides.nutrition.title', 'Nutrition'),
+        description: t(
+          'hero.slides.nutrition.desc',
+          'Our nutrition programs ensure that children and families receive proper meals, supplements, and education about healthy eating habits.'
+        ),
+        image: '/IMG-26.jpeg',
+        imagePosition: 'center',
+      },
+      {
+        id: 6,
+        title: t('hero.slides.shelter.title', 'Shelter'),
+        description: t(
+          'hero.slides.shelter.desc',
+          'Transforming rural lives through sustainable development and hope.'
+        ),
+        image: '/IMG-25.jpeg',
+        imagePosition: 'right',
+      },
+      {
+        id: 7,
+        title: t('hero.slides.skill.title', 'Skill Development'),
+        description: t(
+          'hero.slides.skill.desc',
+          'Our vocational training programs equip youth and adults with practical skills for employment, fostering economic independence and growth.'
+        ),
+        image: '/P1039409.JPG',
+        imagePosition: 'center',
+      },
+    ],
+    [t]
+  );
 
-  // Load YouTube Player
+  // Auto-play
   useEffect(() => {
-    if (window.YT && window.YT.Player) {
-      createPlayer();
-      return;
+    if (!isAutoPlaying) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, SLIDES.length]);
+
+  const handleTouchStart = () => {
+    setIsAutoPlaying(false);
+  };
+
+  const handleSlide = (direction: 'next' | 'prev') => {
+    setIsAutoPlaying(false);
+    if (direction === 'next') {
+      setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+    } else {
+      setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
     }
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode!.insertBefore(tag, firstScriptTag);
-    window.onYouTubeIframeAPIReady = () => {
-      createPlayer();
-    };
-    return () => {
-      if (playerRef.current && playerRef.current.destroy) {
-        playerRef.current.destroy();
-      }
-    };
-  }, []);
+  };
 
-  const createPlayer = () => {
-    if (!containerRef.current) return;
-    playerRef.current = new window.YT.Player(containerRef.current, {
-      videoId: 'VJC2jqXUgAY',
-      width: '100%',
-      height: '100%',
-      playerVars: {
-        autoplay: 1,
-        mute: 1,
-        loop: 1,
-        playlist: 'VJC2jqXUgAY',
-        controls: 0,
-        modestbranding: 1,
-        rel: 0,
-        showinfo: 0,
-        iv_load_policy: 3,
-        disablekb: 1,
-        fs: 0,
-        playsinline: 1,
-      },
-      events: {
-        onReady: (event: any) => {
-          event.target.playVideo();
-        },
-      },
-    });
+  // Determine background position: use custom if provided, else fallback to imagePosition logic
+  const getBackgroundPosition = (slide: (typeof SLIDES)[0]) => {
+    if (slide.backgroundPosition) return slide.backgroundPosition;
+    return slide.imagePosition === 'right' ? '70% center' : 'center center';
   };
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-black flex items-center justify-center"
-      style={{
-        paddingTop: `${navbarHeight}px`,
-        minHeight: `calc(100vh - ${navbarHeight}px)`,
-      }}
+      className="relative w-full overflow-hidden bg-gray-900"
+      style={{ height: '100vh', maxHeight: '800px' }}
+      onTouchStart={handleTouchStart}
     >
-      {/* Video container – acts like object-fit: cover */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Aspect Ratio Wrapper */}
-        <div className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2">
-          <div ref={containerRef} className="w-full h-full pointer-events-none"></div>
-        </div>
-      </div>
-
-      {/* Overlay for readability */}
-      <div className="absolute inset-0 bg-black/50 pointer-events-none"></div>
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
-
-      {/* Content – responsive. Changed max-w-4xl to max-w-2xl here! */}
-      <div className="relative z-10 w-full max-w-2xl mx-auto px-4 sm:px-6 text-center">
+      <AnimatePresence mode="wait">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          key={currentSlide}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.6, ease: 'easeInOut' }}
+          className="absolute inset-0"
         >
-         
+          {/* Background Image */}
+          <div
+            className="w-full h-full bg-cover bg-no-repeat"
+            style={{
+              backgroundImage: `url(${SLIDES[currentSlide].image})`,
+              backgroundPosition: getBackgroundPosition(SLIDES[currentSlide]),
+            }}
+          />
 
+          {/* Content */}
+          <div className="absolute inset-0 flex items-end md:items-center pb-24 md:pb-0">
+            <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
+              <div className="max-w-2xl">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                  className="text-center md:text-left"
+                >
+                  <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-2 md:mb-4 leading-tight font-sans">
+                    {SLIDES[currentSlide].title}
+                  </h1>
 
-          {/* Heading */}
-          <h1 className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-2 sm:mb-4">
-            {t('hero.title', 'Every child deserves')}
-            <br />
-            <span className="text-[#FFF314]">{t('hero.titleHighlight', 'a chance to learn')}</span>
-          </h1>
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 leading-relaxed mb-6 md:mb-8 max-w-xl mx-auto md:mx-0 px-2 md:px-0 font-sans">
+                    {SLIDES[currentSlide].description}
+                  </p>
 
-          {/* Description */}
-          <p className="text-xs sm:text-base md:text-lg text-white/70 mx-auto leading-relaxed mb-4 sm:mb-8 px-2">
-            {t(
-              'hero.description',
-              'Empowering communities through education, health, and sustainable development. Join us in making a difference.'
-            )}
-          </p>
-
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/25"
-            >
-              {t('hero.donateNow', 'Donate Now')}
-              <HeartHandshake size={14} className="sm:w-[18px] sm:h-[18px]" />
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm text-white px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm hover:bg-white/20 transition-all duration-300 border border-white/20"
-            >
-              {t('hero.learnMore', 'Learn More')}
-              <ArrowRight size={14} className="sm:w-[18px] sm:h-[18px]" />
-            </motion.button>
-          </div>
-
-          {/* Stats */}
-          <div className="mt-6 sm:mt-12 pt-4 sm:pt-8 border-t border-white/10 flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-12">
-            <div>
-              <div className="text-base sm:text-2xl md:text-3xl font-bold text-white">10+</div>
-              <div className="text-[8px] sm:text-xs text-white/50 uppercase tracking-wider">Years of Impact</div>
-            </div>
-            <div>
-              <div className="text-base sm:text-2xl md:text-3xl font-bold text-white">50K</div>
-              <div className="text-[8px] sm:text-xs text-white/50 uppercase tracking-wider">Lives Transformed</div>
-            </div>
-            <div>
-              <div className="text-base sm:text-2xl md:text-3xl font-bold text-white">20+</div>
-              <div className="text-[8px] sm:text-xs text-white/50 uppercase tracking-wider">Projects</div>
+                  <div className="flex justify-center md:justify-start">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-6 md:px-8 py-3 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
+                    >
+                      {t('hero.donateNow', 'Donate Now')}
+                      <HeartHandshake size={20} />
+                    </motion.button>
+                  </div>
+                </motion.div>
+              </div>
             </div>
           </div>
         </motion.div>
-      </div>
+      </AnimatePresence>
+
+      {/* Touch / Click areas for navigation */}
+      <button
+        onClick={() => handleSlide('prev')}
+        className="absolute left-0 top-0 w-1/2 h-full z-10"
+        aria-label="Previous slide"
+      />
+      <button
+        onClick={() => handleSlide('next')}
+        className="absolute right-0 top-0 w-1/2 h-full z-10"
+        aria-label="Next slide"
+      />
     </section>
   );
 }
