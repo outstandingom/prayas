@@ -15,7 +15,6 @@ export default function HeroBanner() {
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Load YouTube Player API and create player
   useEffect(() => {
     if (window.YT && window.YT.Player) {
       createPlayer();
@@ -67,22 +66,26 @@ export default function HeroBanner() {
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-gray-900 min-h-[calc(100vh-80px)] sm:min-h-[calc(100vh-144px)] flex items-center justify-center"
-      style={{ paddingTop: '80px', marginTop: '-80px' }}
+      className="relative w-full overflow-hidden bg-gray-900 flex items-center justify-center"
+      style={{
+        paddingTop: '100px',
+        marginTop: '-100px',
+        minHeight: 'calc(100vh - 100px)',
+      }}
     >
-      {/* --- Video Background (full width/height) --- */}
+      {/* --- Video Background --- */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none"></div>
 
-      {/* --- Dark overlay (improves text readability) --- */}
+      {/* --- Dark overlay --- */}
       <div className="absolute inset-0 bg-black/50 md:bg-black/40 pointer-events-none"></div>
 
-      {/* --- Gradient patches to blend edges --- */}
+      {/* --- Edge gradients --- */}
       <div className="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-black/60 to-transparent pointer-events-none"></div>
       <div className="absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-black/60 to-transparent pointer-events-none"></div>
       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent pointer-events-none"></div>
       <div className="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-black/30 to-transparent pointer-events-none"></div>
 
-      {/* --- Content (centered over the video) --- */}
+      {/* --- Content --- */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -125,7 +128,6 @@ export default function HeroBanner() {
             </motion.button>
           </div>
 
-          {/* Stats */}
           <div className="mt-12 pt-8 border-t border-white/20 flex flex-wrap justify-center gap-8 md:gap-12">
             <div>
               <div className="text-2xl md:text-3xl font-bold text-white">10+</div>
