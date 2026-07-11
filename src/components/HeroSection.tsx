@@ -73,44 +73,51 @@ export default function HeroBanner() {
         minHeight: 'calc(100vh - var(--navbar-height, 80px))',
       }}
     >
-      {/* --- Video Background --- */}
+      {/* Video Background */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none"></div>
 
-      {/* --- Dark overlay --- */}
-      <div className="absolute inset-0 bg-black/50 md:bg-black/40 pointer-events-none"></div>
+      {/* Dark overlay – lighter on mobile for better readability */}
+      <div className="absolute inset-0 bg-black/60 sm:bg-black/40 pointer-events-none"></div>
 
-      {/* --- Edge gradients --- */}
-      <div className="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-black/60 to-transparent pointer-events-none"></div>
-      <div className="absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-black/60 to-transparent pointer-events-none"></div>
-      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent pointer-events-none"></div>
+      {/* Edge gradients – softer on mobile */}
+      <div className="absolute inset-y-0 left-0 w-1/3 sm:w-1/4 bg-gradient-to-r from-black/70 via-black/30 to-transparent pointer-events-none"></div>
+      <div className="absolute inset-y-0 right-0 w-1/3 sm:w-1/4 bg-gradient-to-l from-black/70 via-black/30 to-transparent pointer-events-none"></div>
+      <div className="absolute inset-x-0 bottom-0 h-1/2 sm:h-1/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none"></div>
       <div className="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-black/30 to-transparent pointer-events-none"></div>
 
-      {/* --- Content (centered) --- */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+      {/* Content – optimized for all screens */}
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 text-center py-4 sm:py-0">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-         
+          {/* Tagline – smaller on mobile */}
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 rounded-full text-white/90 text-[10px] sm:text-xs font-semibold tracking-wider uppercase mb-4 sm:mb-6 border border-white/20">
+            <Play size={12} className="fill-[#FFF314] text-[#FFF314]" />
+            {t('hero.tagline', 'Watch Our Story Unfold')}
+          </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight mb-4">
+          {/* Heading – responsive sizes */}
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-tight mb-3 sm:mb-4">
             {t('hero.title', 'Building a Better')}{' '}
             <span className="text-[#FFF314]">{t('hero.titleHighlight', 'Tomorrow')}</span>
           </h1>
 
-          <p className="text-base md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mb-8">
+          {/* Description – smaller, better line-height on mobile */}
+          <p className="text-sm sm:text-base md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mb-6 sm:mb-8 px-2">
             {t(
               'hero.description',
               'Empowering communities through education, health, and sustainable development. Join us in making a difference.'
             )}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          {/* Buttons – full width on mobile, inline on larger */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-8 py-3.5 rounded-full font-bold text-sm hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full font-bold text-sm hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
             >
               {t('hero.donateNow', 'Donate Now')}
               <HeartHandshake size={18} />
@@ -118,25 +125,26 @@ export default function HeroBanner() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm text-white px-8 py-3.5 rounded-full font-semibold text-sm hover:bg-white/20 transition-all duration-300 border border-white/20"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-full font-semibold text-sm hover:bg-white/20 transition-all duration-300 border border-white/20"
             >
               {t('hero.learnMore', 'Learn More')}
               <ArrowRight size={18} />
             </motion.button>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-white/20 flex flex-wrap justify-center gap-8 md:gap-12">
+          {/* Stats – smaller numbers on mobile, centered */}
+          <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-white/20 flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-12">
             <div>
-              <div className="text-2xl md:text-3xl font-bold text-white">10+</div>
-              <div className="text-xs text-white/60 uppercase tracking-wider">Years of Impact</div>
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">10+</div>
+              <div className="text-[10px] sm:text-xs text-white/60 uppercase tracking-wider">Years of Impact</div>
             </div>
             <div>
-              <div className="text-2xl md:text-3xl font-bold text-white">50K</div>
-              <div className="text-xs text-white/60 uppercase tracking-wider">Lives Transformed</div>
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">50K</div>
+              <div className="text-[10px] sm:text-xs text-white/60 uppercase tracking-wider">Lives Transformed</div>
             </div>
             <div>
-              <div className="text-2xl md:text-3xl font-bold text-white">20+</div>
-              <div className="text-xs text-white/60 uppercase tracking-wider">Projects</div>
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">20+</div>
+              <div className="text-[10px] sm:text-xs text-white/60 uppercase tracking-wider">Projects</div>
             </div>
           </div>
         </motion.div>
