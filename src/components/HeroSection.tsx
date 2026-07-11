@@ -90,10 +90,10 @@ export default function HeroBanner() {
 
         {/* --- Video Side with yellow overlay & graphic --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black overflow-hidden">
-          {/* YouTube iframe – completely hidden branding */}
+          {/* YouTube iframe – completely hides branding */}
           <iframe
             className="absolute inset-0 w-full h-full pointer-events-none"
-            src="https://www.youtube.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white"
+            src="https://www.youtube-nocookie.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&disablekb=1&fs=0&hl=en"
             title="Background"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -107,18 +107,19 @@ export default function HeroBanner() {
             transition={{ duration: 0.8 }}
             className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#FFF314] p-8 text-center"
           >
-            {/* Graphic overlay content – like "India's Hidden Buddhist City" */}
-            <div className="max-w-md">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-black/10 flex items-center justify-center">
-                <Play size={40} className="text-black/60 fill-black/60" />
+            <div className="max-w-md space-y-6">
+              {/* Bigger play icon */}
+              <div className="w-24 h-24 mx-auto rounded-full bg-black/10 flex items-center justify-center">
+                <Play size={48} className="text-black/60 fill-black/60" />
               </div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-3">
+              {/* Larger text with more spacing */}
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black leading-tight">
                 India's Hidden Buddhist City
               </h2>
-              <p className="text-sm sm:text-base text-black/70">
+              <p className="text-base sm:text-lg text-black/70">
                 How Life Feels Here | Tawan Nishant Parmar
               </p>
-              <div className="mt-4 inline-block bg-black/10 px-4 py-1.5 rounded-full text-black/60 text-xs font-semibold">
+              <div className="inline-block bg-black/10 px-6 py-2.5 rounded-full text-black/60 text-sm font-semibold tracking-wide">
                 🎬 WATCH NOW
               </div>
             </div>
@@ -128,17 +129,20 @@ export default function HeroBanner() {
           <div className="absolute inset-0 bg-black/40 md:bg-black/20"></div>
 
           {/* ─── GRADIENT PATCHES (transparent borders) ─── */}
-          {/* Left edge – fades from transparent to black */}
+          {/* Left edge – fades from black to transparent */}
           <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-black/70 via-black/30 to-transparent pointer-events-none"></div>
 
-          {/* Bottom edge – fades from transparent to black */}
+          {/* Bottom edge – fades from black to transparent */}
           <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
 
-          {/* Right edge subtle vignette */}
+          {/* Right edge – subtle vignette */}
           <div className="absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-black/30 to-transparent pointer-events-none"></div>
 
-          {/* Top edge subtle vignette */}
+          {/* Top edge – subtle vignette */}
           <div className="absolute inset-x-0 top-0 h-1/6 bg-gradient-to-b from-black/30 to-transparent pointer-events-none"></div>
+
+          {/* ─── EXTRA OVERLAY to mask any remaining YouTube logo (bottom-right) ─── */}
+          <div className="absolute bottom-0 right-0 w-32 h-16 bg-gradient-to-tl from-black/80 to-transparent pointer-events-none"></div>
         </div>
       </div>
     </section>
