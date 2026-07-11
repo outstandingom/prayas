@@ -269,7 +269,7 @@ export default function Navbar() {
         {/* ---------- MAIN NAVBAR - ALWAYS WHITE BACKGROUND ---------- */}
         <div
           className={`transition-all duration-500 ${bgHeader} 
-            min-h-[96px] sm:min-h-[110px] flex items-center py-2 sm:py-3 pl-20 sm:pl-36`}
+            min-h-[80px] sm:min-h-[100px] flex items-center py-2 sm:py-1.5 pl-20 sm:pl-36`}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
             <div className="flex items-center justify-end gap-3">
@@ -444,7 +444,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed left-0 right-0 top-[96px] bottom-0 z-[9998] bg-white shadow-xl border-t border-[#263238]/10 overflow-y-auto"
+            className="fixed left-0 right-0 top-[80px] bottom-0 z-[9998] bg-white shadow-xl border-t border-[#263238]/10 overflow-y-auto"
           >
             <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
               {navLinks.map((link) => {
