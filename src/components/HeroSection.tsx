@@ -1,11 +1,20 @@
 import { motion } from 'framer-motion';
 import { HeartHandshake, Play, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+
+declare global {
+  interface Window {
+    onYouTubeIframeAPIReady: () => void;
+    YT: any;
+  }
+}
 
 export default function HeroBanner() {
   const { t } = useTranslation();
   const [showOverlay, setShowOverlay] = useState(true);
+  const playerRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Hide the yellow overlay after 5 seconds
   useEffect(() => {
@@ -14,6 +23,61 @@ export default function HeroBanner() {
     }, 5000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Load YouTube Player API and create player
+  useEffect(() => {
+    // If the API is already loaded, create player immediately
+    if (window.YT && window.YT.Player) {
+      createPlayer();
+      return;
+    }
+
+    // Otherwise load the API script
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode!.insertBefore(tag, firstScriptTag);
+
+    // Callback when API is ready
+    window.onYouTubeIframeAPIReady = () => {
+      createPlayer();
+    };
+
+    return () => {
+      // Clean up player on unmount
+      if (playerRef.current && playerRef.current.destroy) {
+        playerRef.current.destroy();
+      }
+    };
+  }, []);
+
+  const createPlayer = () => {
+    if (!containerRef.current) return;
+
+    playerRef.current = new window.YT.Player(containerRef.current, {
+      videoId: 'VJC2jqXUgAY',
+      playerVars: {
+        autoplay: 1,
+        mute: 1,
+        loop: 1,
+        playlist: 'VJC2jqXUgAY',
+        controls: 0,
+        modestbranding: 1,
+        rel: 0,
+        showinfo: 0,
+        iv_load_policy: 3,
+        disablekb: 1,
+        fs: 0,
+        playsinline: 1,
+      },
+      events: {
+        onReady: (event: any) => {
+          // Start playing as soon as ready
+          event.target.playVideo();
+        },
+      },
+    });
+  };
 
   return (
     <section
@@ -87,19 +151,12 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* --- Video Side with yellow overlay & graphic --- */}
+        {/* --- Video Side --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black overflow-hidden">
-          {/* YouTube iframe – completely hides branding */}
-          <iframe
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            src="https://www.youtube-nocookie.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&disablekb=1&fs=0&hl=en"
-            title="Background"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            style={{ border: 'none' }}
-          ></iframe>
+          {/* Video container – the YouTube Player API will be placed here */}
+          <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none"></div>
 
-          {/* ─── YELLOW OVERLAY (fully covers the video for 5 seconds) ─── */}
+          {/* ─── YELLOW OVERLAY (covers the video for 5 seconds) ─── */}
           <motion.div
             initial={{ opacity: 1 }}
             animate={{ opacity: showOverlay ? 1 : 0 }}
@@ -123,7 +180,7 @@ export default function HeroBanner() {
           </motion.div>
 
           {/* ─── Dark overlay to dim video ─── */}
-          <div className="absolute inset-0 bg-black/40 md:bg-black/20"></div>
+          <div className="absolute inset-0 bg-black/40 md:bg-black/20 pointer-events-none"></div>
 
           {/* ─── GRADIENT PATCHES (transparent borders) ─── */}
           <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-black/70 via-black/30 to-transparent pointer-events-none"></div>
@@ -131,7 +188,7 @@ export default function HeroBanner() {
           <div className="absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-black/30 to-transparent pointer-events-none"></div>
           <div className="absolute inset-x-0 top-0 h-1/6 bg-gradient-to-b from-black/30 to-transparent pointer-events-none"></div>
 
-          {/* ─── EXTRA MASK for YouTube watermark (bottom-right) ─── */}
+          {/* ─── EXTRA MASK for any residual YouTube logo ─── */}
           <div className="absolute bottom-0 right-0 w-32 h-16 bg-gradient-to-tl from-black/80 to-transparent pointer-events-none"></div>
         </div>
       </div>
