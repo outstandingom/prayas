@@ -16,35 +16,31 @@ export default function HeroBanner() {
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Hide the yellow overlay after 5 seconds
+  // Hide the yellow overlay after 6.5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowOverlay(false);
-    }, 5000);
+    }, 6500); // 6.5 seconds
     return () => clearTimeout(timer);
   }, []);
 
   // Load YouTube Player API and create player
   useEffect(() => {
-    // If the API is already loaded, create player immediately
     if (window.YT && window.YT.Player) {
       createPlayer();
       return;
     }
 
-    // Otherwise load the API script
     const tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode!.insertBefore(tag, firstScriptTag);
 
-    // Callback when API is ready
     window.onYouTubeIframeAPIReady = () => {
       createPlayer();
     };
 
     return () => {
-      // Clean up player on unmount
       if (playerRef.current && playerRef.current.destroy) {
         playerRef.current.destroy();
       }
@@ -72,7 +68,6 @@ export default function HeroBanner() {
       },
       events: {
         onReady: (event: any) => {
-          // Start playing as soon as ready
           event.target.playVideo();
         },
       },
@@ -156,7 +151,7 @@ export default function HeroBanner() {
           {/* Video container – the YouTube Player API will be placed here */}
           <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none"></div>
 
-          {/* ─── YELLOW OVERLAY (covers the video for 5 seconds) ─── */}
+          {/* ─── YELLOW OVERLAY (covers the video for 6.5 seconds) ─── */}
           <motion.div
             initial={{ opacity: 1 }}
             animate={{ opacity: showOverlay ? 1 : 0 }}
