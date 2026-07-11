@@ -65,12 +65,31 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
-  // ---------- Top strip visibility - ALWAYS visible by default ----------
+  // ---------- Top strip visibility ----------
   const [isStripVisible, setIsStripVisible] = useState(true);
 
   const isHome = location.pathname === '/';
 
-  // Auth logic
+  // ---------- DYNAMIC NAVBAR HEIGHT (NEW) ----------
+  // Measures the actual header height and sets it as a CSS variable
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      const header = document.querySelector('header');
+      if (header) {
+        const height = header.offsetHeight;
+        document.documentElement.style.setProperty('--navbar-height', `${height}px`);
+      }
+    };
+
+    updateNavbarHeight();
+    window.addEventListener('resize', updateNavbarHeight);
+
+    return () => {
+      window.removeEventListener('resize', updateNavbarHeight);
+    };
+  }, [isStripVisible]); // Re-run when strip visibility toggles
+
+  // ---------- Auth logic ----------
   useEffect(() => {
     checkAuth();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -194,7 +213,7 @@ export default function Navbar() {
           </motion.div>
         </Link>
 
-        {/* ---------- TOP STRIP – gradient from SmoothLoader - ALWAYS VISIBLE ---------- */}
+        {/* ---------- TOP STRIP – gradient from SmoothLoader ---------- */}
         {isStripVisible && (
           <div className="hidden sm:flex bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white py-2 px-4 pl-20 sm:pl-36 flex-col sm:flex-row items-center justify-between w-full shadow-md gap-2">
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-center sm:text-left">
