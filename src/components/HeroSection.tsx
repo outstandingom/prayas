@@ -67,7 +67,8 @@ export default function HeroBanner() {
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-gray-900 pt-[80px] sm:pt-[144px] h-[calc(100vh-80px)] sm:h-[calc(100vh-144px)] flex items-center justify-center"
+      className="relative w-full overflow-hidden bg-gray-900 min-h-[calc(100vh-80px)] sm:min-h-[calc(100vh-144px)] flex items-center justify-center"
+      style={{ paddingTop: '80px', marginTop: '-80px' }}
     >
       {/* --- Video Background (full width/height) --- */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none"></div>
@@ -124,7 +125,7 @@ export default function HeroBanner() {
             </motion.button>
           </div>
 
-          {/* Stats – centered below the buttons */}
+          {/* Stats */}
           <div className="mt-12 pt-8 border-t border-white/20 flex flex-wrap justify-center gap-8 md:gap-12">
             <div>
               <div className="text-2xl md:text-3xl font-bold text-white">10+</div>
