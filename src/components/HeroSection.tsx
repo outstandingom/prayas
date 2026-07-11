@@ -14,9 +14,9 @@ export default function HeroBanner() {
   const { t } = useTranslation();
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [navbarHeight, setNavbarHeight] = useState(80); // fallback
+  const [navbarHeight, setNavbarHeight] = useState(80);
 
-  // Measure navbar height on mount & resize
+  // Measure navbar height
   useEffect(() => {
     const updateHeight = () => {
       const header = document.querySelector('header');
@@ -29,7 +29,7 @@ export default function HeroBanner() {
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
 
-  // Load YouTube Player API
+  // Load YouTube Player
   useEffect(() => {
     if (window.YT && window.YT.Player) {
       createPlayer();
@@ -70,10 +70,10 @@ export default function HeroBanner() {
       events: {
         onReady: (event: any) => {
           event.target.playVideo();
-          // Zoom to fill the container without black bars
+          // Zoom enough to cover ANY screen – no black bars
           const iframe = event.target.getIframe();
           if (iframe) {
-            iframe.style.transform = 'scale(1.5)';
+            iframe.style.transform = 'scale(2.5)';
             iframe.style.transformOrigin = 'center center';
           }
         },
@@ -89,7 +89,7 @@ export default function HeroBanner() {
         minHeight: `calc(100vh - ${navbarHeight}px)`,
       }}
     >
-      {/* Video container – fills entire area */}
+      {/* Video container – crops the zoomed video */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div ref={containerRef} className="absolute inset-0 w-full h-full"></div>
       </div>
@@ -98,27 +98,27 @@ export default function HeroBanner() {
       <div className="absolute inset-0 bg-black/50 pointer-events-none"></div>
       <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
 
-      {/* Content – responsive sizes */}
+      {/* Content – responsive */}
       <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Tagline – smaller on mobile */}
+          {/* Tagline */}
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-white/80 text-[8px] sm:text-xs font-medium tracking-wider uppercase mb-3 sm:mb-6 border border-white/10">
             <Play size={10} className="sm:w-3 sm:h-3 fill-[#FFF314] text-[#FFF314]" />
             {t('hero.tagline', 'Watch Our Story Unfold')}
           </div>
 
-          {/* Heading – much smaller on mobile */}
+          {/* Heading */}
           <h1 className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-2 sm:mb-4">
             {t('hero.title', 'Every child deserves')}
             <br />
             <span className="text-[#FFF314]">{t('hero.titleHighlight', 'a chance to learn')}</span>
           </h1>
 
-          {/* Description – smaller on mobile */}
+          {/* Description */}
           <p className="text-xs sm:text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed mb-4 sm:mb-8 px-2">
             {t(
               'hero.description',
@@ -126,7 +126,7 @@ export default function HeroBanner() {
             )}
           </p>
 
-          {/* Buttons – smaller on mobile */}
+          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -146,7 +146,7 @@ export default function HeroBanner() {
             </motion.button>
           </div>
 
-          {/* Stats – smaller on mobile */}
+          {/* Stats */}
           <div className="mt-6 sm:mt-12 pt-4 sm:pt-8 border-t border-white/10 flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-12">
             <div>
               <div className="text-base sm:text-2xl md:text-3xl font-bold text-white">10+</div>
