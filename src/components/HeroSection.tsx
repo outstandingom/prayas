@@ -78,22 +78,33 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* --- Video Side (right) – pure background, no controls, no info --- */}
+        {/* --- Video Side with blended edges --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black overflow-hidden">
+          {/* YouTube iframe – no controls, no info, no border */}
           <iframe
             className="absolute inset-0 w-full h-full pointer-events-none"
             src="https://www.youtube.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3"
-            title="Background video"
+            title="Background"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             style={{ border: 'none' }}
           ></iframe>
 
-          {/* Dark overlay to reduce video brightness and make text pop */}
+          {/* ─── Dark overlay to dim video ─── */}
           <div className="absolute inset-0 bg-black/40 md:bg-black/20"></div>
 
-          {/* Gradient overlay for smooth blending */}
-          <div className="absolute inset-0 bg-gradient-to-l from-black/30 via-transparent to-transparent pointer-events-none"></div>
+          {/* ─── GRADIENT PATCHES (transparent borders) ─── */}
+          {/* Left edge – fades from transparent to black (or dark) */}
+          <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-black/70 via-black/30 to-transparent pointer-events-none"></div>
+
+          {/* Bottom edge – fades from transparent to black */}
+          <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
+
+          {/* Optional: right edge subtle vignette */}
+          <div className="absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-black/30 to-transparent pointer-events-none"></div>
+
+          {/* Top edge subtle vignette */}
+          <div className="absolute inset-x-0 top-0 h-1/6 bg-gradient-to-b from-black/30 to-transparent pointer-events-none"></div>
         </div>
       </div>
     </section>
