@@ -158,40 +158,43 @@ export default function Navbar() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-[9999]">
-        {/* ---------- OVERLAPPING LOGO (absolute) – PERFECTLY CENTERED ---------- */}
+        {/* ---------- OVERLAPPING LOGO with its own background strip ---------- */}
         <Link
           to="/"
           className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group"
         >
-          {/* Logo image – increased size */}
-          <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
-            <img
-              src="/Logo.svg"
-              alt="Prayas Logo"
-              className="w-full h-full object-cover"
-            />
-          </div>
+          {/* Background strip for logo – adds visual separation */}
+          <div className="flex items-center gap-2 sm:gap-3 bg-white/90 backdrop-blur-sm shadow-lg rounded-xl px-2 py-1 sm:px-3 sm:py-2 transition-all group-hover:shadow-xl">
+            {/* Logo image – large */}
+            <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden flex items-center justify-center shadow-md group-hover:scale-105 transition-transform border-2 border-white/20">
+              <img
+                src="/Logo.svg"
+                alt="Prayas Logo"
+                className="w-full h-full object-cover"
+              />
+            </div>
 
-          {/* Animated two‑line brand name – larger font */}
-          <motion.div
-            key={brandLangIndex}
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
-            transition={{ duration: 0.4 }}
-            className="flex flex-col leading-tight"
-          >
-            <span
-              className="font-display font-bold text-2xl sm:text-4xl tracking-tight group-hover:text-[#FFF314] transition drop-shadow-md text-[#263238]"
+            {/* Animated two‑line brand name – large */}
+            <motion.div
+              key={brandLangIndex}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col leading-tight"
             >
-              {brandFirstLine[brandLangIndex]}
-            </span>
-            <span
-              className="font-display text-xs sm:text-base font-medium opacity-90 group-hover:text-[#FFF314] transition text-[#263238]"
-            >
-              {brandSecondLine[brandLangIndex]}
-            </span>
-          </motion.div>
+              <span
+                className="font-display font-bold text-2xl sm:text-4xl tracking-tight group-hover:text-[#FFF314] transition text-[#263238]"
+              >
+                {brandFirstLine[brandLangIndex]}
+              </span>
+              <span
+                className="font-display text-xs sm:text-base font-medium opacity-90 group-hover:text-[#FFF314] transition text-[#263238]"
+              >
+                {brandSecondLine[brandLangIndex]}
+              </span>
+            </motion.div>
+          </div>
         </Link>
 
         {/* ---------- TOP STRIP – gradient from SmoothLoader - ALWAYS VISIBLE ---------- */}
@@ -266,10 +269,10 @@ export default function Navbar() {
           </div>
         )}
 
-        {/* ---------- MAIN NAVBAR - ALWAYS WHITE BACKGROUND ---------- */}
+        {/* ---------- MAIN NAVBAR - SLIM HEIGHT ---------- */}
         <div
           className={`transition-all duration-500 ${bgHeader} 
-            min-h-[96px] sm:min-h-[110px] flex items-center py-2 sm:py-3 pl-20 sm:pl-36`}
+            min-h-[70px] sm:min-h-[80px] flex items-center py-2 sm:py-3 pl-20 sm:pl-36`}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
             <div className="flex items-center justify-end gap-3">
@@ -444,7 +447,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed left-0 right-0 top-[96px] bottom-0 z-[9998] bg-white shadow-xl border-t border-[#263238]/10 overflow-y-auto"
+            className="fixed left-0 right-0 top-[70px] bottom-0 z-[9998] bg-white shadow-xl border-t border-[#263238]/10 overflow-y-auto"
           >
             <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
               {navLinks.map((link) => {
