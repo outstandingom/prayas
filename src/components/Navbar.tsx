@@ -160,7 +160,7 @@ export default function Navbar() {
       {/* ---------- OVERLAPPING LOGO (absolute) with animated two‑line brand ---------- */}
       <Link
         to="/"
-        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group"
+        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group mt-0.5 sm:mt-0"
       >
         <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
           <img
