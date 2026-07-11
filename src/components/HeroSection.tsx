@@ -15,6 +15,7 @@ export default function HeroBanner() {
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Load YouTube Player API and create player
   useEffect(() => {
     if (window.YT && window.YT.Player) {
       createPlayer();
@@ -69,7 +70,6 @@ export default function HeroBanner() {
       className="relative w-full overflow-hidden bg-gray-900 flex items-center justify-center"
       style={{
         paddingTop: 'var(--navbar-height, 80px)',
-        marginTop: 'calc(var(--navbar-height, 80px) * -1)',
         minHeight: 'calc(100vh - var(--navbar-height, 80px))',
       }}
     >
@@ -85,7 +85,7 @@ export default function HeroBanner() {
       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent pointer-events-none"></div>
       <div className="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-black/30 to-transparent pointer-events-none"></div>
 
-      {/* --- Content --- */}
+      {/* --- Content (centered) --- */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
