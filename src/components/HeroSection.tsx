@@ -11,8 +11,9 @@ export default function HeroBanner() {
     >
       <div className="flex flex-col-reverse md:flex-row w-full h-full">
 
-        {/* --- Content Side --- */}
-        <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center items-center md:items-start p-8 md:p-12 lg:p-16 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
+        {/* --- Content Side (left) --- */}
+        <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center items-center md:items-start p-8 md:p-12 lg:p-16 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden z-10">
+          {/* Decorative blobs */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF314] opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500 opacity-10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
           <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-white/10 rounded-full"></div>
@@ -77,19 +78,22 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* --- YouTube Video Side (Borderless, Autoplay, No Controls) --- */}
-        <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black">
+        {/* --- Video Side (right) – pure background, no controls, no info --- */}
+        <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black overflow-hidden">
           <iframe
-            className="absolute inset-0 w-full h-full"
-            src="https://www.youtube.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=0&modestbranding=1&rel=0&showinfo=0"
-            title="Prayas - Building a Better Tomorrow"
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            src="https://www.youtube.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3"
+            title="Background video"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             style={{ border: 'none' }}
           ></iframe>
 
-          {/* Subtle gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-l from-black/10 via-transparent to-transparent pointer-events-none"></div>
+          {/* Dark overlay to reduce video brightness and make text pop */}
+          <div className="absolute inset-0 bg-black/40 md:bg-black/20"></div>
+
+          {/* Gradient overlay for smooth blending */}
+          <div className="absolute inset-0 bg-gradient-to-l from-black/30 via-transparent to-transparent pointer-events-none"></div>
         </div>
       </div>
     </section>
