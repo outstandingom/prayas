@@ -1,78 +1,9 @@
 import { motion } from 'framer-motion';
 import { HeartHandshake, Play, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect, useRef } from 'react';
-
-declare global {
-  interface Window {
-    onYouTubeIframeAPIReady: () => void;
-    YT: any;
-  }
-}
 
 export default function HeroBanner() {
   const { t } = useTranslation();
-  const [showOverlay, setShowOverlay] = useState(true);
-  const playerRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Hide the yellow overlay after 6.5 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowOverlay(false);
-    }, 6500); // 6.5 seconds
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Load YouTube Player API and create player
-  useEffect(() => {
-    if (window.YT && window.YT.Player) {
-      createPlayer();
-      return;
-    }
-
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode!.insertBefore(tag, firstScriptTag);
-
-    window.onYouTubeIframeAPIReady = () => {
-      createPlayer();
-    };
-
-    return () => {
-      if (playerRef.current && playerRef.current.destroy) {
-        playerRef.current.destroy();
-      }
-    };
-  }, []);
-
-  const createPlayer = () => {
-    if (!containerRef.current) return;
-
-    playerRef.current = new window.YT.Player(containerRef.current, {
-      videoId: 'VJC2jqXUgAY',
-      playerVars: {
-        autoplay: 1,
-        mute: 1,
-        loop: 1,
-        playlist: 'VJC2jqXUgAY',
-        controls: 0,
-        modestbranding: 1,
-        rel: 0,
-        showinfo: 0,
-        iv_load_policy: 3,
-        disablekb: 1,
-        fs: 0,
-        playsinline: 1,
-      },
-      events: {
-        onReady: (event: any) => {
-          event.target.playVideo();
-        },
-      },
-    });
-  };
 
   return (
     <section
@@ -146,44 +77,28 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* --- Video Side --- */}
+        {/* --- Video Side (pure background, no overlay) --- */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full bg-black overflow-hidden">
-          {/* Video container – the YouTube Player API will be placed here */}
-          <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none"></div>
-
-          {/* ─── YELLOW OVERLAY (covers the video for 6.5 seconds) ─── */}
-          <motion.div
-            initial={{ opacity: 1 }}
-            animate={{ opacity: showOverlay ? 1 : 0 }}
-            transition={{ duration: 0.8 }}
-            className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#FFF314] p-8 text-center"
-          >
-            <div className="max-w-md space-y-6">
-              <div className="w-24 h-24 mx-auto rounded-full bg-black/10 flex items-center justify-center">
-                <Play size={48} className="text-black/60 fill-black/60" />
-              </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black leading-tight">
-                India's Hidden Buddhist City
-              </h2>
-              <p className="text-base sm:text-lg text-black/70">
-                How Life Feels Here | Tawan Nishant Parmar
-              </p>
-              <div className="inline-block bg-black/10 px-6 py-2.5 rounded-full text-black/60 text-sm font-semibold tracking-wide">
-                🎬 WATCH NOW
-              </div>
-            </div>
-          </motion.div>
+          {/* YouTube iframe – completely hidden branding, auto-plays muted */}
+          <iframe
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            src="https://www.youtube-nocookie.com/embed/VJC2jqXUgAY?autoplay=1&mute=1&loop=1&playlist=VJC2jqXUgAY&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&disablekb=1&fs=0&playsinline=1"
+            title="Background"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{ border: 'none' }}
+          ></iframe>
 
           {/* ─── Dark overlay to dim video ─── */}
           <div className="absolute inset-0 bg-black/40 md:bg-black/20 pointer-events-none"></div>
 
-          {/* ─── GRADIENT PATCHES (transparent borders) ─── */}
+          {/* ─── GRADIENT PATCHES (transparent borders for blending) ─── */}
           <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-black/70 via-black/30 to-transparent pointer-events-none"></div>
           <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
           <div className="absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-black/30 to-transparent pointer-events-none"></div>
           <div className="absolute inset-x-0 top-0 h-1/6 bg-gradient-to-b from-black/30 to-transparent pointer-events-none"></div>
 
-          {/* ─── EXTRA MASK for any residual YouTube logo ─── */}
+          {/* ─── Extra mask to hide any residual YouTube logo (bottom-right) ─── */}
           <div className="absolute bottom-0 right-0 w-32 h-16 bg-gradient-to-tl from-black/80 to-transparent pointer-events-none"></div>
         </div>
       </div>
