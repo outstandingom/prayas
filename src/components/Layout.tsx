@@ -1,4 +1,3 @@
-// src/components/Layout.tsx
 import { Outlet, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
@@ -7,6 +6,7 @@ import Footer from './Footer'
 import SmoothLoader from './SmoothLoader'
 import FloatingDonateButton from './FloatingDonateButton'
 import FloatingVolunteerButton from './FloatingVolunteerButton'
+import FloatingSocialIcons from './FloatingSocialIcons'   // <-- Import
 
 export default function Layout() {
   const { pathname } = useLocation()
@@ -49,6 +49,8 @@ export default function Layout() {
       </motion.main>
       <Footer />
       
+      {/* Floating elements */}
+      <FloatingSocialIcons />            {/* <-- Added */}
       <FloatingDonateButton />
       <FloatingVolunteerButton />
     </div>
