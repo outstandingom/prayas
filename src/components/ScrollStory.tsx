@@ -19,9 +19,9 @@ export default function ScrollStory() {
         <div className="max-w-4xl mx-auto px-4 py-16 md:py-24">
           {/* Heading with Walter Turncoat font */}
           <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-[#263238] mb-10 text-center walter-turncoat">
-            {t('story.header.part1', 'Our ')}
-            <span className="text-[#FFF314] drop-shadow-md">{t('story.header.part2', 'Journey')}</span>
-            {t('story.header.part3', ' & Mission')}
+            {t('story.header.part1', ' ')}
+            <span className="text-[#FFF314] drop-shadow-md">{t('story.header.part2', 'About')}</span>
+            {t('story.header.part3', ' US')}
           </h2>
 
           {/* --- YouTube Video Embed --- */}
