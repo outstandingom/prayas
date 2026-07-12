@@ -5,7 +5,7 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 import SmoothLoader from './SmoothLoader'
 import FloatingDonateButton from './FloatingDonateButton'
-//import FloatingVolunteerButton from './FloatingVolunteerButton'
+import FloatingVolunteerButton from './FloatingVolunteerButton'
 import FloatingSocialIcons from './FloatingSocialIcons'   // <-- Import
 
 export default function Layout() {
