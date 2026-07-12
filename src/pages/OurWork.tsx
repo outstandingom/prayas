@@ -66,11 +66,11 @@ export default function OurWork() {
     }
   }
 
-  // ========== EXTERNAL LINK CONFIG ==========
+  // ========== INTERNAL ROUTE FOR EDUCATION ==========
   const EDUCATION_CATEGORY_ID = 3
-  const EXTERNAL_URL = 'https://www.teachforindia.org/fellowship'
+  const EDUCATION_ROUTE = '/education'   // points to your Education page
 
-  // ========== CATEGORIES (full list) ==========
+  // ========== CATEGORIES ==========
   const categories: WorkCategory[] = [
     {
       id: 1,
@@ -282,7 +282,7 @@ export default function OurWork() {
     },
   ]
 
-  // Animation variants (unchanged)
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -430,10 +430,8 @@ export default function OurWork() {
                     {/* === CONDITIONAL READ MORE BUTTON === */}
                     {category.id === EDUCATION_CATEGORY_ID ? (
                       <a
-                        href={EXTERNAL_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-4 w-full py-2.5 px-4 bg-[#263238] text-white font-semibold rounded-full hover:bg-[#1a2a2e] transition-colors shadow-md text-center"
+                        href={EDUCATION_ROUTE}
+                        className="mt-4 w-full py-2.5 px-4 bg-[#263238] text-white font-semibold rounded-full hover:bg-[#1a2a2e] transition-colors shadow-md text-center inline-block"
                         onClick={(e) => e.stopPropagation()}
                       >
                         Read More →
@@ -575,10 +573,8 @@ export default function OurWork() {
                       {/* === CONDITIONAL LEARN MORE BUTTON === */}
                       {category.id === EDUCATION_CATEGORY_ID ? (
                         <a
-                          href={EXTERNAL_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20 text-center`}
+                          href={EDUCATION_ROUTE}
+                          className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20 text-center inline-block`}
                           style={{
                             backgroundColor: category.color.replace('text', '').trim(),
                             backdropFilter: 'blur(4px)',
