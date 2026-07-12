@@ -20,7 +20,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import ImpactPage from './pages/ImpactPage';
 import Members from './pages/Members';
 import Certifications from './pages/Certifications';
-import VolunteerPopup from './components/VolunteerPopup';
+// import VolunteerPopup from './components/VolunteerPopup';
 
 export default function App() {
   const [isVolunteerPopupOpen, setIsVolunteerPopupOpen] = useState(false);
@@ -55,9 +55,9 @@ export default function App() {
         </Routes>
       </AnimatePresence>
 
-      <VolunteerPopup
-        isOpen={isVolunteerPopupOpen}
-        onClose={() => setIsVolunteerPopupOpen(false)}
+        <VolunteerPopup
+       isOpen={isVolunteerPopupOpen}
+       onClose={() => setIsVolunteerPopupOpen(false)}
       />
     </>
   );
