@@ -1,4 +1,4 @@
-// src/pages/OurWork.tsx
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import {
@@ -38,10 +38,23 @@ interface WorkCategory {
   items: WorkItem[]
   color: string
   bgColor: string
+  image: string // new image property
 }
 
 export default function OurWork() {
   const { t } = useTranslation()
+  const [flipped, setFlipped] = useState<Record<number, boolean>>({})
+
+  const toggleFlip = (id: number) => {
+    setFlipped((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  const scrollToCategory = (id: number) => {
+    const el = document.getElementById(`category-${id}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   const categories: WorkCategory[] = [
     {
@@ -52,6 +65,7 @@ export default function OurWork() {
         'Transforming rural communities through sustainable development initiatives that improve quality of life and create self-reliant villages.',
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-50',
+      image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop',
       items: [
         {
           icon: Handshake,
@@ -87,6 +101,7 @@ export default function OurWork() {
         'Empowering women through skill development, financial independence, and sustainable livelihood opportunities.',
       color: 'text-pink-600',
       bgColor: 'bg-pink-50',
+      image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe2b8b?w=600&h=400&fit=crop',
       items: [
         {
           icon: Scissors,
@@ -116,6 +131,7 @@ export default function OurWork() {
         'Providing quality education and skill development opportunities to build a brighter future for children and youth.',
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
+      image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&h=400&fit=crop',
       items: [
         {
           icon: GraduationCap,
@@ -151,6 +167,7 @@ export default function OurWork() {
         'Comprehensive healthcare and social welfare programs ensuring the well-being of all community members.',
       color: 'text-red-600',
       bgColor: 'bg-red-50',
+      image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
       items: [
         {
           icon: HeartPulse,
@@ -198,6 +215,7 @@ export default function OurWork() {
         'Protecting the environment and promoting sustainable practices for a greener and healthier planet.',
       color: 'text-green-600',
       bgColor: 'bg-green-50',
+      image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&h=400&fit=crop',
       items: [
         {
           icon: Trees,
@@ -215,7 +233,7 @@ export default function OurWork() {
     },
   ]
 
-  // Animation variants
+  // Animation variants (same as before)
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -246,7 +264,7 @@ export default function OurWork() {
 
   return (
     <div className="min-h-screen bg-white pt-8 pb-16">
-      {/* Hero Header */}
+      {/* Hero Header (unchanged) */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -292,7 +310,91 @@ export default function OurWork() {
         </div>
       </motion.div>
 
-      {/* Categories */}
+      {/* NEW: Flip Cards Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="text-3xl sm:text-4xl font-bold text-[#263238] text-center mb-12"
+        >
+          Our Focus Areas
+        </motion.h2>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
+        >
+          {categories.map((category) => {
+            const isFlipped = flipped[category.id] || false
+            return (
+              <motion.div
+                key={category.id}
+                variants={cardVariants}
+                className="relative h-80 w-full cursor-pointer [perspective:1000px]"
+                onClick={() => toggleFlip(category.id)}
+              >
+                <div
+                  className={`relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] ${
+                    isFlipped ? '[transform:rotateY(180deg)]' : ''
+                  }`}
+                >
+                  {/* Front */}
+                  <div className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg">
+                    <img
+                      src={category.image}
+                      alt={category.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="text-white text-xl font-bold drop-shadow-md">
+                        {category.title}
+                      </h3>
+                      <p className="text-white/80 text-sm line-clamp-2">
+                        {category.description}
+                      </p>
+                    </div>
+                    <div className="absolute top-3 right-3 bg-[#FFF314] text-[#263238] text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                      Click to flip
+                    </div>
+                  </div>
+
+                  {/* Back */}
+                  <div
+                    className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl overflow-hidden shadow-lg bg-white p-6 flex flex-col justify-between"
+                    style={{ background: category.bgColor }}
+                  >
+                    <div>
+                      <h3 className="text-xl font-bold text-[#263238] mb-2">
+                        {category.title}
+                      </h3>
+                      <p className="text-[#263238]/70 text-sm leading-relaxed">
+                        {category.description}
+                      </p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        scrollToCategory(category.id)
+                      }}
+                      className="mt-4 w-full py-2.5 px-4 bg-[#263238] text-white font-semibold rounded-full hover:bg-[#1a2a2e] transition-colors shadow-md"
+                    >
+                      Read More →
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )
+          })}
+        </motion.div>
+      </section>
+
+      {/* Categories Details (existing, unchanged) */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -352,27 +454,19 @@ export default function OurWork() {
                     className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${category.bgColor} opacity-10`}
                   />
 
-                  {/* Content – now with relative z-10 to stay above overlay */}
                   <div className="relative z-10">
-                    {/* Icon */}
                     <div
                       className={`inline-flex p-3 rounded-xl ${category.bgColor} ${category.color} mb-4 group-hover:scale-110 transition-transform duration-300`}
                     >
                       <item.icon className="w-6 h-6" />
                     </div>
-
-                    {/* Title */}
                     <h3 className="text-lg font-bold text-[#263238] mb-2 group-hover:text-[#263238] transition-colors">
                       {item.title}
                     </h3>
-
-                    {/* Description */}
                     <p className="text-[#263238]/60 text-sm leading-relaxed">
                       {item.description}
                     </p>
                   </div>
-
-                  {/* Decorative Line */}
                   <div
                     className={`absolute bottom-0 left-0 h-1 ${category.color.replace('text', 'bg')} w-0 group-hover:w-full transition-all duration-300`}
                   />
@@ -383,7 +477,7 @@ export default function OurWork() {
         ))}
       </motion.div>
 
-      {/* CTA Section */}
+      {/* CTA Section (unchanged) */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
