@@ -1,4 +1,3 @@
-// src/components/FloatingVolunteerButton.tsx
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -9,15 +8,14 @@ export default function FloatingVolunteerButton() {
 
   if (!visible) return null
 
- return (
+  return (
     <AnimatePresence>
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-        // Increased bottom values to move it much higher above the donate button
-        className="fixed bottom-64 right-8 sm:bottom-48 sm:right-16 z-50 flex flex-col items-center gap-1.5"
+        className="fixed bottom-64 right-[15%] sm:right-16 z-50 flex flex-col items-center gap-1.5"
       >
         <Link
           to="/volunteer"
