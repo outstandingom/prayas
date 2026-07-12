@@ -125,39 +125,54 @@ export default function HeroBanner() {
             {/* Overlay for better contrast */}
             <div className="absolute inset-0 bg-black/30 md:bg-black/20" />
 
-            {/* Content */}
-            <div className="absolute inset-0 flex items-center justify-center md:justify-start px-4 md:px-8">
-              <div className="max-w-2xl w-full md:ml-0 text-center md:text-left">
+            {/* 
+              Content container: 
+              - flex column, justify-between pushes bottom block down
+              - two flex-1 spacers keep heading vertically centred
+            */}
+            <div className="absolute inset-0 flex flex-col justify-between px-4 md:px-8 py-6 md:py-10">
+              {/* Top spacer (optional) */}
+              <div className="flex-1" />
+
+              {/* Heading – centred vertically */}
+              <div className="flex-1 flex items-center justify-center">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
+                  className="w-full max-w-4xl text-center"
                 >
                   <h1 className="text-xl sm:text-3xl md:text-6xl lg:text-7xl font-bold text-white mb-1 md:mb-4 leading-tight">
                     {SLIDES[currentSlide].title}
                   </h1>
+                </motion.div>
+              </div>
 
-                  <p className="text-xs sm:text-sm md:text-lg lg:text-xl text-white/90 leading-relaxed mb-3 md:mb-8 max-w-xl mx-auto md:mx-0 hidden sm:block">
+              {/* Bottom block: description + button */}
+              <div className="w-full max-w-4xl mx-auto text-center pb-2 md:pb-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                >
+                  <p className="text-xs sm:text-sm md:text-lg lg:text-xl text-white/90 leading-relaxed mb-3 md:mb-6">
                     {SLIDES[currentSlide].description}
                   </p>
-
-                  <div className="flex justify-center md:justify-start">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
-                    >
-                      {t('hero.donateNow', 'Donate Now')}
-                      <HeartHandshake size={16} className="md:w-5 md:h-5" />
-                    </motion.button>
-                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
+                  >
+                    {t('hero.donateNow', 'Donate Now')}
+                    <HeartHandshake size={16} className="md:w-5 md:h-5" />
+                  </motion.button>
                 </motion.div>
               </div>
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation buttons */}
+        {/* Navigation buttons (invisible but clickable) */}
         <button
           onClick={() => handleSlide('prev')}
           className="absolute left-0 top-0 w-1/2 h-full z-10"
