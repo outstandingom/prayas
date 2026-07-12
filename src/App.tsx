@@ -1,8 +1,8 @@
 // src/App.tsx
 import { useState, useEffect } from 'react';
-
 import { Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -20,6 +20,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import ImpactPage from './pages/ImpactPage';
 import Members from './pages/Members';
 import Certifications from './pages/Certifications';
+import Education from './pages/impact/Education';     // <-- NEW import
 import VolunteerPopup from './components/VolunteerPopup';
 
 export default function App() {
@@ -34,7 +35,10 @@ export default function App() {
     <>
       <AnimatePresence mode="wait">
         <Routes>
+          {/* Auth is outside Layout */}
           <Route path="/auth" element={<Auth />} />
+          
+          {/* All pages with Layout (header + footer) */}
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -51,13 +55,16 @@ export default function App() {
             <Route path="/admin/*" element={<AdminDashboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/impact/:slug" element={<ImpactPage />} />
+            
+            {/* 👇 NEW ROUTE for Education page */}
+            <Route path="/education" element={<Education />} />
           </Route>
         </Routes>
       </AnimatePresence>
 
-        <VolunteerPopup
-       isOpen={isVolunteerPopupOpen}
-       onClose={() => setIsVolunteerPopupOpen(false)}
+      <VolunteerPopup
+        isOpen={isVolunteerPopupOpen}
+        onClose={() => setIsVolunteerPopupOpen(false)}
       />
     </>
   );
