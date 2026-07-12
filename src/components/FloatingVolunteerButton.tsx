@@ -44,7 +44,7 @@ export default function FloatingVolunteerButton() {
           onClick={(e) => {
             e.preventDefault()
             e.stopPropagation()
-            setVisible(false)
+            setVisible(true)
           }}
           className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-xs text-gray-700 shadow-md transition-colors hover:bg-gray-300 hover:text-gray-900 focus:outline-none"
           aria-label="Remove volunteer button"
