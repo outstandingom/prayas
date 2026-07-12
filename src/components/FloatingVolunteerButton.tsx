@@ -9,7 +9,7 @@ export default function FloatingVolunteerButton() {
 
   if (!visible) return null
 
- // return (
+ return (
     <AnimatePresence>
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
