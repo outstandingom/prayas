@@ -14,6 +14,7 @@ export default function ScrollStory() {
           }
         `}
       </style>
+      
 
       <section className="bg-[#263238]/5 border-y border-[#263238]/10 w-full">
         <div className="max-w-4xl mx-auto px-4 py-16 md:py-24">
