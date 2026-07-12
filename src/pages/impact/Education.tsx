@@ -1,80 +1,54 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, Users, Target, Award, ChevronRight, MapPin, GraduationCap, BookOpen, Sparkles } from 'lucide-react';
+import { Play, ChevronRight, Sparkles } from 'lucide-react';
 
 export default function Education() {
   return (
     <div className="min-h-screen bg-white">
-      {/* ===== HERO SECTION ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#0f2147] to-[#1a3a6b] py-20 md:py-32">
-        {/* Only background decoration (no image) */}
-        <div className="absolute inset-0 opacity-5">
-          {/* This is the ONLY image on the page – the hero background */}
+      {/* ===== HERO SECTION – SINGLE BACKGROUND IMAGE ===== */}
+      <section className="relative overflow-hidden bg-[#0a1628] min-h-[90vh] flex items-center">
+        {/* Only one image – the hero background */}
+        <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1920&q=80"
-            alt=""
-            className="w-full h-full object-cover"
+            alt="Education background"
+            className="w-full h-full object-cover opacity-30"
           />
         </div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#FFF314] opacity-[0.08] rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#FFF314] opacity-[0.08] rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left Column */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <div className="inline-flex items-center gap-3 mb-6">
-                <span className="w-10 h-0.5 bg-[#FFF314]" />
-                <span className="text-[#FFF314] font-mono text-xs tracking-[0.2em] uppercase font-bold">
-                  Education & Skill Development
-                </span>
-              </div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-[1.1]">
-                Building leaders
-                <br />
-                <span className="text-[#FFF314]">in our classrooms</span>
-              </h1>
-              <p className="text-white/70 text-lg md:text-xl max-w-lg mb-10 leading-relaxed">
-                Every child deserves a chance to learn, grow, and dream. We provide access to quality education and holistic development.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <button className="bg-[#FFF314] text-[#0a1628] font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2 text-sm sm:text-base">
-                  Get Involved
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-                <button className="bg-white/10 backdrop-blur-sm text-white font-bold px-8 py-4 rounded-full border border-white/20 hover:bg-white/20 transition-all flex items-center gap-2 text-sm sm:text-base">
-                  <Play className="w-5 h-5 fill-white" />
-                  Watch the Video
-                </button>
-              </div>
-            </motion.div>
-
-            {/* Right Column – Hero Image (kept as the only image) */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                <img
-                  src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=600&fit=crop&q=80"
-                  alt="Students learning"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628]/60 via-transparent to-transparent" />
-              </div>
-              {/* Floating badge REMOVED – no alumni stats */}
-            </motion.div>
-          </div>
+        {/* No extra decorative elements – just the image behind */}
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="inline-block text-[#FFF314] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-6">
+              Education & Skill Development
+            </span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1]">
+              Building leaders
+              <br />
+              <span className="text-[#FFF314]">in our classrooms</span>
+            </h1>
+            <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+              Every child deserves a chance to learn, grow, and dream. We provide access to quality education and holistic development.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <button className="bg-[#FFF314] text-[#0a1628] font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2 text-sm sm:text-base">
+                Get Involved
+                <ChevronRight className="w-5 h-5" />
+              </button>
+              <button className="bg-white/10 backdrop-blur-sm text-white font-bold px-8 py-4 rounded-full border border-white/20 hover:bg-white/20 transition-all flex items-center gap-2 text-sm sm:text-base">
+                <Play className="w-5 h-5 fill-white" />
+                Watch the Video
+              </button>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* ===== WHY BE A VOLUNTEER ===== */}
+      {/* ===== WHY JOIN US ===== */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -104,24 +78,21 @@ export default function Education() {
           >
             {[
               {
-                icon: Target,
                 title: 'Find your purpose',
                 desc: 'Develop a deep understanding of social challenges and discover how you can contribute meaningfully.'
               },
               {
-                icon: Award,
                 title: 'Become a leader',
                 desc: 'Build concrete leadership skills – planning, execution, reflection, and stakeholder management.'
               },
               {
-                icon: Users,
                 title: 'Join a community',
                 desc: 'Connect with like-minded individuals and work together towards a shared mission.'
               }
             ].map((item, i) => (
               <div key={i} className="group bg-[#F8FAFC] p-8 rounded-2xl border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1">
                 <div className="bg-[#0056B3]/10 rounded-full w-14 h-14 flex items-center justify-center mb-6 group-hover:bg-[#0056B3]/20 transition-colors">
-                  <item.icon className="w-7 h-7 text-[#0056B3]" />
+                  <span className="text-2xl font-bold text-[#0056B3]">{String(i + 1).padStart(2, '0')}</span>
                 </div>
                 <h3 className="text-xl font-bold text-[#0a1628] mb-3">{item.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{item.desc}</p>
@@ -171,35 +142,30 @@ export default function Education() {
           >
             {[
               {
-                icon: <GraduationCap className="w-8 h-8" />,
                 title: 'Full-time Teaching',
                 desc: 'Placed in government or affordable private schools.'
               },
               {
-                icon: <MapPin className="w-8 h-8" />,
                 title: 'Multiple Locations',
                 desc: 'Work in urban and rural communities across the region.'
               },
               {
-                icon: <Users className="w-8 h-8" />,
                 title: 'Grades 1-10',
                 desc: 'Teach between 40 and 80 students in your classroom.'
               },
               {
-                icon: <BookOpen className="w-8 h-8" />,
                 title: 'Subject or Class Teacher',
                 desc: 'Teach all subjects or specialize in key areas.'
               }
             ].map((item, i) => (
               <div key={i} className="bg-white p-6 rounded-2xl border border-gray-200 hover:shadow-lg transition-all hover:-translate-y-1 text-center">
-                <div className="text-[#0056B3] mb-4 flex justify-center">{item.icon}</div>
+                <div className="text-4xl mb-4">🏫</div>
                 <h3 className="text-lg font-bold text-[#0a1628] mb-2">{item.title}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </motion.div>
 
-          {/* Simplified location bar – no background image */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -224,7 +190,7 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== JOURNEY OF A VOLUNTEER ===== */}
+      {/* ===== YOUR JOURNEY ===== */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -244,7 +210,7 @@ export default function Education() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Video – now with solid background, no image */}
+            {/* Video placeholder – no image, just gradient */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -309,7 +275,7 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== JOIN A MOVEMENT ===== */}
+      {/* ===== JOIN THE MOVEMENT ===== */}
       <section className="py-20 md:py-28 bg-[#F8FAFC]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -340,7 +306,7 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== CTA SECTION ===== */}
+      {/* ===== FINAL CTA ===== */}
       <section className="py-20 md:py-28 bg-[#0a1628]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
