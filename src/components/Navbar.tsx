@@ -1,640 +1,584 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Trees,
-  Users,
-  Droplets,
-  Building,
-  Handshake,
-  Scissors,
-  Users2,
-  Factory,
-  GraduationCap,
-  Laptop,
-  Compass,
-  Shield,
-  HeartPulse,
-  Stethoscope,
-  Heart,
-  Accessibility,
-  Baby,
-  UsersRound,
-  Leaf,
-  Sprout,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react'
+  Menu, X, Heart, User, ChevronDown, Globe, UserPlus
+} from 'lucide-react';
+import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
+import { supabase } from '@/lib/supabase';
+import { useTranslation } from 'react-i18next';
 
-interface WorkItem {
-  icon: React.ElementType
-  title: string
-  description: string
-  longDescription: string
-}
+const navLinks = [
+  { name: 'nav.home', path: '/' },
+  {
+    name: 'nav.aboutUs',
+    path: '/about',
+    submenu: [
+      { name: 'nav.about.story', path: '/about' },
+      { name: 'nav.about.members', path: '/about/members' },
+      { name: 'nav.about.certifications', path: '/about/certifications' },
+    ]
+  },
+  { name: 'nav.ourWork', path: '/our-work' },
+  { name: 'nav.impact', path: '/programs' },
+  { 
+    name: 'nav.media', 
+    path: '/media',
+    submenu: [
+      { name: 'nav.stories', path: '/stories' },
+      { name: 'nav.gallery', path: '/gallery' },
+    ]
+  },
+  { name: 'nav.contact', path: '/contact' },
+];
 
-interface WorkCategory {
-  id: number
-  title: string
-  icon: React.ElementType
-  description: string
-  longDescription: string
-  items: WorkItem[]
-  color: string
-  bgColor: string
-  borderColor: string
-  image: string
-}
+const LANGUAGES = [
+  { code: 'hi', label: 'हिंदी' },
+  { code: 'en', label: 'English' },
+  { code: 'mr', label: 'मराठी' },
+  { code: 'gu', label: 'ગુજરાતી' },
+  { code: 'te', label: 'తెలుగు' },
+  { code: 'ta', label: 'தமிழ்' },
+];
 
-export default function OurWork() {
-  const { t } = useTranslation()
-  const [flipped, setFlipped] = useState<Record<number, boolean>>({})
-  const [expandedCategories, setExpandedCategories] = useState<Record<number, boolean>>({})
+export default function Navbar() {
+  const { t, i18n } = useTranslation();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState<string | null>(null);
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const location = useLocation();
 
-  const toggleFlip = (id: number) => {
-    setFlipped((prev) => ({ ...prev, [id]: !prev[id] }))
-  }
+  // ---------- Animated brand name – two lines ----------
+  const [brandLangIndex, setBrandLangIndex] = useState(0);
+  const brandFirstLine = ['Prayas', 'प्रयास'];
+  const brandSecondLine = ['Samaj Sevi Sanstha', 'समाज सेवी संस्था'];
 
-  const toggleCategoryExpand = (id: number) => {
-    setExpandedCategories((prev) => ({ ...prev, [id]: !prev[id] }))
-  }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBrandLangIndex(prev => (prev === 0 ? 1 : 0));
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const scrollToCategory = (id: number) => {
-    const el = document.getElementById(`category-${id}`)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  // ---------- Top strip visibility ----------
+  const [isStripVisible, setIsStripVisible] = useState(true);
+
+  const isHome = location.pathname === '/';
+
+  // ---------- DYNAMIC NAVBAR HEIGHT ----------
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      const header = document.querySelector('header');
+      if (header) {
+        const height = header.offsetHeight;
+        document.documentElement.style.setProperty('--navbar-height', `${height}px`);
+      }
+    };
+
+    updateNavbarHeight();
+    window.addEventListener('resize', updateNavbarHeight);
+
+    return () => {
+      window.removeEventListener('resize', updateNavbarHeight);
+    };
+  }, [isStripVisible]);
+
+  // ---------- Auth logic ----------
+  useEffect(() => {
+    checkAuth();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setIsAuthenticated(!!session);
+      setLoading(false);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  async function checkAuth() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    } catch (err) {
+      console.error('Auth check error:', err);
+    } finally {
+      setLoading(false);
     }
   }
 
-  // ========== ROUTE CONFIGURATION ==========
-  const RURAL_CATEGORY_ID = 1
-  const RURAL_ROUTE = '/rural-development'
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  const WOMEN_CATEGORY_ID = 2
-  const WOMEN_ROUTE = '/women-empowerment'
+  useEffect(() => {
+    setIsMobileOpen(false);
+    setOpenDropdown(null);
+    setMobileSubmenuOpen(null);
+    setLangDropdownOpen(false);
+  }, [location]);
 
-  const EDUCATION_CATEGORY_ID = 3
-  const EDUCATION_ROUTE = '/education'
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMobileOpen(false);
+        setMobileSubmenuOpen(null);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  const HEALTH_CATEGORY_ID = 4
-  const HEALTH_ROUTE = '/healthcare'
+  const isAuthPage = location.pathname === '/auth';
+  const showAuthLink = !isAuthPage;
 
-  const ENVIRONMENT_CATEGORY_ID = 5
-  const ENVIRONMENT_ROUTE = '/environment'
+  // ALWAYS use dark text on white background
+  const textColor = 'text-[#263238]';
+  const textColorHover = 'hover:text-[#FFF314]';
+  const borderColor = 'border-[#263238]/30';
+  const bgButton = 'bg-[#263238]/5 hover:bg-[#263238]/10';
 
-  const getCategoryRoute = (id: number) => {
-    if (id === RURAL_CATEGORY_ID) return RURAL_ROUTE
-    if (id === WOMEN_CATEGORY_ID) return WOMEN_ROUTE
-    if (id === EDUCATION_CATEGORY_ID) return EDUCATION_ROUTE
-    if (id === HEALTH_CATEGORY_ID) return HEALTH_ROUTE
-    if (id === ENVIRONMENT_CATEGORY_ID) return ENVIRONMENT_ROUTE
-    return null
-  }
+  // ALWAYS white background (not grey)
+  const bgHeader = isScrolled 
+    ? 'bg-white/95 backdrop-blur-md shadow-sm' 
+    : 'bg-white border-b border-[#263238]/5';
 
-  // ========== CATEGORIES ==========
-  const categories: WorkCategory[] = [
-    // 1. Rural Development – #849989
-    {
-      id: 1,
-      title: 'Rural Development',
-      icon: Trees,
-      description:
-        'Transforming rural communities through sustainable development initiatives that improve quality of life and create self-reliant villages.',
-      longDescription:
-        'Our Rural Development programme is designed to uplift rural communities by addressing critical gaps in infrastructure, education, healthcare, and livelihood opportunities. We work closely with village panchayats, local leaders, and community members to co‑create solutions that are both sustainable and culturally appropriate. Over the years, we have adopted multiple villages, provided clean drinking water, built sanitation facilities, and empowered local youth with skills for employment. Our holistic approach ensures that every intervention is community‑led and continues to thrive long after we have moved on.',
-      image: 'https://i.ibb.co/fWWWk9S/Whats-App-Image-2026-07-12-at-2-50-03-PM-1.jpg',
-      color: '#849989',
-      bgColor: 'bg-[#849989]/20',
-      borderColor: 'border-[#849989]',
-      items: [
-        {
-          icon: Handshake,
-          title: 'Village Adoption',
-          description: 'Adopting villages to provide holistic development support.',
-          longDescription:
-            'Under the Village Adoption programme, we select underserved villages and commit to a multi‑year transformation plan. We work with the community to assess needs and priorities – from building roads and schools to setting up health camps and digital literacy centres. Our goal is to make each adopted village self‑sufficient by the end of our engagement, with active community participation and local ownership of all assets created.',
-        },
-        {
-          icon: Droplets,
-          title: 'Water & Sanitation',
-          description: 'Ensuring access to clean drinking water and proper sanitation.',
-          longDescription:
-            'Access to clean water and proper sanitation is a fundamental right. Our Water & Sanitation projects include installing deep‑bore hand pumps, constructing rainwater harvesting structures, and building individual household toilets. We also conduct hygiene awareness sessions, especially focusing on women and children, to reduce water‑borne diseases and improve overall health outcomes in the villages.',
-        },
-        {
-          icon: Building,
-          title: 'Infrastructure',
-          description: 'Building and improving rural infrastructure.',
-          longDescription:
-            'We believe that strong infrastructure is the backbone of rural progress. Our infrastructure initiatives range from constructing village community halls and anganwadi centres to laying internal roads and providing solar lighting. These projects not only improve daily life but also create employment opportunities for local labourers and masons, boosting the local economy.',
-        },
-        {
-          icon: Users,
-          title: 'Community Development',
-          description: 'Empowering communities through capacity building.',
-          longDescription:
-            'True development happens when communities lead it. Our Community Development efforts focus on capacity building – training community members in participatory planning, financial literacy, and local governance. We facilitate the formation of village development committees and help them access government schemes and funds. This ensures that the village itself becomes the driver of its own progress.',
-        },
-      ],
-    },
-    // 2. Women Empowerment – #777e91
-    {
-      id: 2,
-      title: 'Women Empowerment & Livelihood',
-      icon: Users2,
-      description:
-        'Empowering women through skill development, financial independence, and sustainable livelihood opportunities.',
-      longDescription:
-        'Women are at the heart of every community, and empowering them is key to breaking the cycle of poverty. Our Women Empowerment & Livelihood programmes provide women with vocational skills, financial literacy, and access to micro‑credit through Self‑Help Groups (SHGs). We have established tailoring centres, food processing units, and small‑scale manufacturing hubs that enable women to earn a dignified income. We also work closely with women to build their confidence and leadership abilities, ensuring they have a voice in family and community decisions.',
-      image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe2b8b?w=800&h=500&fit=crop',
-      color: '#777e91',
-      bgColor: 'bg-[#777e91]/20',
-      borderColor: 'border-[#777e91]',
-      items: [
-        {
-          icon: Scissors,
-          title: 'Sewing Centres',
-          description: 'Vocational training in tailoring and garment‑making.',
-          longDescription:
-            'Our Sewing Centres are equipped with modern sewing machines and staffed by experienced instructors. We offer a comprehensive 6‑month course that covers stitching, cutting, embroidery, and garment finishing. Graduates are able to start their own tailoring businesses or find employment in local garment factories. Many of our trainees have gone on to become master trainers themselves, creating a multiplier effect.',
-        },
-        {
-          icon: Users2,
-          title: 'SHGs (Self Help Groups)',
-          description: 'Forming and strengthening women self‑help groups.',
-          longDescription:
-            'Self‑Help Groups are the cornerstone of our women empowerment strategy. We facilitate the formation of SHGs, train them in bookkeeping, micro‑savings, and inter‑lending. We also link SHGs to formal banking institutions and government schemes. Beyond finances, SHGs become platforms for women to discuss social issues, health, and legal rights, fostering a strong sense of solidarity and collective action.',
-        },
-        {
-          icon: Factory,
-          title: 'Graha Industries',
-          description: 'Promoting home‑based industries for sustainable livelihoods.',
-          longDescription:
-            'Graha Industries supports women to start home‑based enterprises – from pickle making and papad rolling to agarbatti (incense stick) production and handloom weaving. We provide initial raw materials, design training, and market linkages. Our aim is to create sustainable, flexible income opportunities that allow women to work from home while managing their household responsibilities.',
-        },
-      ],
-    },
-    // 3. Education – #9eada0
-    {
-      id: 3,
-      title: 'Education & Skill Development',
-      icon: GraduationCap,
-      description:
-        'Providing quality education and skill development opportunities to build a brighter future for children and youth.',
-      longDescription:
-        'Education is the most powerful tool to break the cycle of poverty and create lasting change. Our Education & Skill Development initiatives go beyond the classroom – we run after‑school tutoring centres, digital literacy labs, and career guidance programmes. We also focus on value‑based education through our Sanskarshala programme, which instils ethics, empathy, and cultural pride in children. For youth, we offer vocational training in computer skills, spoken English, and soft skills to enhance employability.',
-      image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=500&fit=crop',
-      color: '#9eada0',
-      bgColor: 'bg-[#9eada0]/20',
-      borderColor: 'border-[#9eada0]',
-      items: [
-        {
-          icon: GraduationCap,
-          title: 'Sanskarshala',
-          description: 'Value‑based education for holistic development.',
-          longDescription:
-            'Sanskarshala is our flagship programme that integrates moral education with academic learning. We conduct interactive sessions on ethics, environmental stewardship, and civic responsibility, using storytelling, role‑play, and community projects. The programme also includes yoga and meditation to promote mental well‑being. Parents and teachers often report that children become more disciplined, compassionate, and confident after participating in Sanskarshala.',
-        },
-        {
-          icon: Laptop,
-          title: 'Digital Literacy',
-          description: 'Bridging the digital divide with computer education.',
-          longDescription:
-            'In today’s world, digital literacy is as essential as reading and writing. Our Digital Literacy programme sets up computer centres in rural areas, equipped with computers and internet connectivity. We train both children and adults in basic computer operations, internet usage, email, and online safety. We also offer advanced courses in programming, graphic design, and data entry for those who wish to pursue careers in IT.',
-        },
-        {
-          icon: Compass,
-          title: 'Career Guidance',
-          description: 'Helping youth make informed career choices.',
-          longDescription:
-            'Many young people in rural areas are unaware of the diverse career options available to them. Our Career Guidance programme conducts workshops, aptitude tests, and one‑on‑one counselling sessions. We invite professionals from various fields to speak about their journeys. We also provide information about scholarships, entrance exams, and vocational training institutes, helping youth to make confident decisions about their futures.',
-        },
-        {
-          icon: Shield,
-          title: 'Self‑Defence',
-          description: 'Training for women and children to ensure safety.',
-          longDescription:
-            'We believe that every woman and child has the right to feel safe. Our Self‑Defence programme offers practical martial arts training, situational awareness drills, and legal awareness about rights and protections. The programme has been highly popular among school‑going girls and has significantly boosted their confidence. We also train teachers and parents so that they can reinforce these skills at home and in school.',
-        },
-      ],
-    },
-    // 4. Health – #8d9159
-    {
-      id: 4,
-      title: 'Health & Social Welfare',
-      icon: HeartPulse,
-      description:
-        'Comprehensive healthcare and social welfare programmes ensuring the well‑being of all community members.',
-      longDescription:
-        'Health is the foundation of a prosperous society. Our Health & Social Welfare initiatives cover preventive, curative, and promotive healthcare. We organise free health camps, conduct awareness drives on hygiene and nutrition, and facilitate access to government health schemes. We also have specialised programmes for organ donation awareness, elderly care, and support for persons with disabilities. Our community health workers regularly visit households to monitor health parameters and provide basic first aid.',
-      image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=500&fit=crop',
-      color: '#8d9159',
-      bgColor: 'bg-[#8d9159]/20',
-      borderColor: 'border-[#8d9159]',
-      items: [
-        {
-          icon: HeartPulse,
-          title: 'Organ Donation',
-          description: 'Creating awareness and facilitating organ donation.',
-          longDescription:
-            'Organ donation is a life‑saving gift, yet awareness remains low. Our Organ Donation campaign educates communities about the importance of donating organs, dispels myths, and simplifies the registration process. We partner with hospitals and transplant coordinators to provide end‑to‑end support for donors and recipients. Through our efforts, we have registered thousands of potential donors and facilitated several successful transplants.',
-        },
-        {
-          icon: Stethoscope,
-          title: 'Health Camps',
-          description: 'Free medical camps for underserved communities.',
-          longDescription:
-            'We organise regular health camps in remote villages, bringing doctors and specialists to people who otherwise have little access to healthcare. Services include general check‑ups, dental, eye, and gynaecological screenings, as well as distribution of free medicines. We also link patients to government hospitals for follow‑up care. Our camps often see hundreds of patients, providing critical early diagnosis and treatment.',
-        },
-        {
-          icon: Heart,
-          title: 'Elderly Care',
-          description: 'Support and companionship for senior citizens.',
-          longDescription:
-            'Our elderly population deserves dignity and care. Our Elderly Care programme conducts home visits to provide health check‑ups, medication support, and emotional companionship. We also organise social gatherings and recreational activities to combat loneliness and isolation. Additionally, we help elderly people access government pensions and other entitlements, ensuring they live their golden years with security and respect.',
-        },
-        {
-          icon: Accessibility,
-          title: 'Support for Persons with Disabilities',
-          description: 'Inclusive support and opportunities for persons with disabilities.',
-          longDescription:
-            'Persons with disabilities often face multiple barriers. Our inclusive programme focuses on providing assistive devices, such as wheelchairs and hearing aids, and making public spaces and schools accessible. We also offer skill‑training tailored to different abilities and work with employers to create inclusive job opportunities. We advocate for the rights of people with disabilities and ensure their voices are heard in community decisions.',
-        },
-        {
-          icon: Baby,
-          title: 'Child Welfare',
-          description: "Protecting children's rights and well‑being.",
-          longDescription:
-            'Children are the future, and we are committed to protecting their rights. Our Child Welfare programme includes nutrition supplementation, immunisation drives, and early childhood education. We also work to prevent child labour and child marriage through awareness and legal support. We collaborate with schools and anganwadi centres to ensure every child has access to quality education and healthcare from an early age.',
-        },
-        {
-          icon: UsersRound,
-          title: 'Community Welfare',
-          description: 'Addressing diverse social needs holistically.',
-          longDescription:
-            'Community Welfare is the umbrella under which we address diverse social issues – from food security and legal aid to mental health and disaster relief. We run community kitchens during crises, provide counselling services, and facilitate access to government schemes. Our community‑based approach ensures that we are responsive to emerging needs and that no one is left behind.',
-        },
-      ],
-    },
-    // 5. Environment – #9e8b70
-    {
-      id: 5,
-      title: 'Environment & Sustainability',
-      icon: Leaf,
-      description:
-        'Protecting the environment and promoting sustainable practices for a greener and healthier planet.',
-      longDescription:
-        'Environmental degradation is one of the biggest challenges of our time. Our Environment & Sustainability programmes focus on conservation, reforestation, and sustainable resource management. We organise massive tree plantation drives, promote water harvesting, and educate communities about waste management and renewable energy. We also work with schools to instil environmental values in children, ensuring that the next generation inherits a healthier planet.',
-      image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=500&fit=crop',
-      color: '#9e8b70',
-      bgColor: 'bg-[#9e8b70]/20',
-      borderColor: 'border-[#9e8b70]',
-      items: [
-        {
-          icon: Trees,
-          title: 'Plantation',
-          description: 'Massive tree plantation drives for ecological balance.',
-          longDescription:
-            'Our Plantation programme is not just about planting trees – it is about creating forests. We select native species, involve local communities in nurturing saplings, and monitor survival rates. We have planted over 50,000 trees across various regions, creating green corridors and improving biodiversity. We also educate farmers about agro‑forestry to enhance soil fertility and provide additional income from timber and fruits.',
-        },
-        {
-          icon: Sprout,
-          title: 'Water Conservation',
-          description: 'Water harvesting and sustainable water management.',
-          longDescription:
-            'Water scarcity affects millions. Our Water Conservation initiatives include constructing check dams, ponds, and rooftop rainwater harvesting systems. We also promote drip irrigation and water‑efficient farming practices. We work with village communities to map water sources and develop sustainable usage plans. Our efforts have significantly raised groundwater levels and reduced water‑borne diseases in many villages.',
-        },
-      ],
-    },
-  ]
+  const handleMouseEnter = (name: string) => setOpenDropdown(name);
+  const handleMouseLeave = () => setOpenDropdown(null);
 
-  // ========== ANIMATION VARIANTS ==========
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  }
+  const toggleMobileSubmenu = (name: string) => {
+    setMobileSubmenuOpen(mobileSubmenuOpen === name ? null : name);
+  };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  }
+  const isSubmenuActive = (submenu: { path: string }[]) => {
+    return submenu.some(item => location.pathname === item.path);
+  };
 
-  const cardVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.4 },
-    },
-  }
+  const changeLanguage = (code: string) => {
+    i18n.changeLanguage(code);
+    setLangDropdownOpen(false);
+  };
 
-  // ========== JSX ==========
+  const currentLangLabel = LANGUAGES.find(l => l.code === i18n.language)?.label || 'English';
+
+  const safeT = (key: string) => {
+    const translated = t(key);
+    return translated === key ? key.replace(/^nav\./, '') : translated;
+  };
+
+  const donateText = t('nav.donateNow', 'Donate Now');
+  const volunteerText = safeT('nav.volunteer');
+
   return (
-    <div className="min-h-screen bg-white pt-8 pb-16">
-      {/* ===== WHAT WE DO SECTION ===== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+    <>
+      <header className="fixed top-0 left-0 right-0 z-[9999]">
+        {/* ---------- OVERLAPPING LOGO (absolute) – PERFECTLY CENTERED ---------- */}
+        <Link
+          to="/"
+          className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 sm:gap-3 group"
         >
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#263238] mb-4">
-            What <span className="text-[#FFF314] drop-shadow-md">We Do</span>
-          </h2>
-          <p className="text-lg text-[#263238]/60 max-w-2xl mx-auto">
-            Explore our five key focus areas where we create lasting impact in communities across India.
-          </p>
-        </motion.div>
+          {/* Logo image – increased size */}
+          <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20">
+            <img
+              src="/Logo.svg"
+              alt="Prayas Logo"
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-        {/* ===== FLIP CARDS GRID ===== */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
-        >
-          {categories.map((category) => {
-            const isFlipped = flipped[category.id] || false
-            const route = getCategoryRoute(category.id)
-            return (
-              <motion.div
-                key={category.id}
-                variants={cardVariants}
-                className="relative h-96 w-full cursor-pointer [perspective:1000px]"
-                onClick={() => toggleFlip(category.id)}
-              >
-                <div
-                  className={`relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] ${
-                    isFlipped ? '[transform:rotateY(180deg)]' : ''
-                  }`}
-                >
-                  {/* ===== FRONT ===== */}
-                  <div
-                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-4 bg-white"
-                    style={{ borderColor: `${category.color}4D` }} // 30% opacity
-                  >
-                    {/* Image */}
-                    <div className="w-full h-[70%] overflow-hidden">
-                      <img
-                        src={category.image}
-                        alt={category.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </div>
-                    {/* Title below image */}
-                    <div className="h-[30%] flex flex-col items-center justify-center px-4 text-center bg-white">
-                      <h3 className="text-lg sm:text-xl font-bold text-[#263238] leading-tight">
-                        {category.title}
-                      </h3>
-                      <div
-                        className="mt-1 px-3 py-0.5 text-[#263238] text-[10px] font-bold rounded-full"
-                        style={{ backgroundColor: category.color }}
-                      >
-                        Click to flip
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ===== BACK ===== */}
-                  <div
-                    className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl overflow-hidden shadow-lg p-6 flex flex-col justify-between border-4"
-                    style={{
-                      backgroundColor: category.color,
-                      borderColor: category.color,
-                    }}
-                  >
-                    <div>
-                      <h3 className="text-xl font-bold text-white mb-3">
-                        {category.title}
-                      </h3>
-                      <p className="text-white/90 text-sm leading-relaxed line-clamp-5">
-                        {category.longDescription}
-                      </p>
-                    </div>
-
-                    {route ? (
-                      <Link
-                        to={route}
-                        className="mt-4 w-full py-2.5 px-4 bg-white text-[#263238] font-semibold rounded-full hover:bg-gray-100 transition-colors shadow-md text-center inline-block"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        Read More →
-                      </Link>
-                    ) : (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          scrollToCategory(category.id)
-                        }}
-                        className="mt-4 w-full py-2.5 px-4 bg-white text-[#263238] font-semibold rounded-full hover:bg-gray-100 transition-colors shadow-md"
-                      >
-                        Read More →
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            )
-          })}
-        </motion.div>
-      </section>
-
-      {/* ===== DETAILED CATEGORIES ===== */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
-      >
-        {categories.map((category) => {
-          const isExpanded = expandedCategories[category.id] || false
-          const route = getCategoryRoute(category.id)
-          return (
-            <motion.div
-              key={category.id}
-              id={`category-${category.id}`}
-              variants={itemVariants}
-              className={`relative rounded-2xl p-6 md:p-8 mb-20 last:mb-0 scroll-mt-24 border-l-8 ${category.borderColor} shadow-sm`}
-              style={{ background: category.bgColor }}
+          {/* Animated two‑line brand name – larger font */}
+          <motion.div
+            key={brandLangIndex}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.4 }}
+            className="flex flex-col leading-tight"
+          >
+            <span
+              className="font-display font-bold text-2xl sm:text-4xl tracking-tight group-hover:text-[#FFF314] transition drop-shadow-md text-[#263238]"
             >
-              {/* Category Banner Image */}
-              <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg mb-6">
-                <img
-                  src={category.image}
-                  alt={category.title}
-                  className="w-full h-full object-cover"
-                />
-                <div
-                  className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"
-                  style={{
-                    backgroundImage: `linear-gradient(to top, ${category.color}80, transparent)`,
-                  }}
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
-                    {category.title}
-                  </h2>
-                  <p className="text-white/90 text-base md:text-lg max-w-2xl drop-shadow">
-                    {category.description}
-                  </p>
-                </div>
-              </div>
+              {brandFirstLine[brandLangIndex]}
+            </span>
+            <span
+              className="font-display text-xs sm:text-base font-medium opacity-90 group-hover:text-[#FFF314] transition text-[#263238]"
+            >
+              {brandSecondLine[brandLangIndex]}
+            </span>
+          </motion.div>
+        </Link>
 
-              {/* Expanded Category Description */}
-              <div className="mb-8">
-                <p className="text-[#263238]/80 text-base md:text-lg leading-relaxed">
-                  {category.longDescription}
-                </p>
-                <button
-                  onClick={() => toggleCategoryExpand(category.id)}
-                  className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[#263238] hover:text-[#FFF314] transition-colors"
-                >
-                  {isExpanded ? (
-                    <>Show less <ChevronUp className="w-4 h-4" /></>
-                  ) : (
-                    <>Read more about this area <ChevronDown className="w-4 h-4" /></>
-                  )}
-                </button>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-4 p-6 bg-[#263238]/5 rounded-xl border border-[#263238]/10"
-                  >
-                    <p className="text-[#263238]/70 text-base leading-relaxed">
-                      {category.longDescription} <br /><br />
-                      <span className="font-semibold text-[#263238]">
-                        Our impact in this area:
-                      </span>{' '}
-                      We have reached over 10,000 people through our {category.title.toLowerCase()} programmes,
-                      with measurable improvements in quality of life, income, and community cohesion.
-                      We continue to scale our efforts with the support of our donors and volunteers.
-                    </p>
-                  </motion.div>
-                )}
-              </div>
-
-              {/* Category Items */}
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        {/* ---------- TOP STRIP – gradient from SmoothLoader ---------- */}
+        {isStripVisible && (
+          <div className="hidden sm:flex bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white py-2 px-4 pl-20 sm:pl-36 items-center justify-end w-full shadow-md gap-2">
+            {/* Removed left text – now only right-side items remain */}
+            <div className="flex items-center gap-2 shrink-0">
+              <Link
+                to="/donate"
+                className="bg-[#FFF314] text-[#263238] px-3 sm:px-4 py-1 rounded-full text-[10px] sm:text-xs font-semibold hover:bg-[#FFF314]/90 transition shadow-md whitespace-nowrap"
               >
-                {category.items.map((item, idx) => (
-                  <motion.div
-                    key={idx}
-                    variants={cardVariants}
-                    whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
-                    className="group relative h-72 rounded-2xl overflow-hidden shadow-lg cursor-pointer border-2 border-[#263238]/10"
-                    style={{
-                      backgroundImage: `url(https://picsum.photos/seed/${encodeURIComponent(
-                        item.title
-                      )}/600/400)`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-300" />
-                    <div className="relative z-10 h-full flex flex-col justify-end p-6 text-white">
-                      <div
-                        className={`inline-flex p-2.5 rounded-xl ${category.bgColor} mb-3 w-fit group-hover:scale-110 transition-transform duration-300`}
-                        style={{ color: category.color }}
-                      >
-                        <item.icon className="w-5 h-5" />
-                      </div>
-                      <h3 className="text-xl font-bold mb-1 drop-shadow-md">
-                        {item.title}
-                      </h3>
-                      <p className="text-white/80 text-sm leading-relaxed line-clamp-3">
-                        {item.description}
-                      </p>
+                Yes! I Want To Help!
+              </Link>
+              <div className="flex items-center gap-3 text-white/70">
+                <a
+                  href="https://www.facebook.com/prayassamajiksanstha"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaFacebook size={14} />
+                </a>
+                <a
+                  href="https://x.com/pryasaa?s=11"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="X (Twitter)"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaTwitter size={14} />
+                </a>
+                <a
+                  href="https://www.instagram.com/prayas_samajik_sanstha"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaInstagram size={14} />
+                </a>
+                <a
+                  href="https://www.youtube.com/channel/UC16ZbLnP1qJxrKQoKsss12w"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaYoutube size={14} />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/prayas-samaj-sevi-sastha-undefined-0a468b418/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  className="hover:text-[#FFF314] transition"
+                >
+                  <FaLinkedin size={14} />
+                </a>
+              </div>
+              <button
+                onClick={() => setIsStripVisible(false)}
+                className="text-white/50 hover:text-white transition p-0.5"
+                aria-label="Close announcement"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          </div>
+        )}
 
-                      {route ? (
-                        <Link
-                          to={route}
-                          className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20 text-center inline-block`}
-                          style={{
-                            backgroundColor: category.color,
-                            backdropFilter: 'blur(4px)',
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Learn More →
-                        </Link>
-                      ) : (
+        {/* ---------- MAIN NAVBAR - ALWAYS WHITE BACKGROUND ---------- */}
+        <div
+          className={`transition-all duration-500 ${bgHeader} 
+            min-h-[80px] sm:min-h-[100px] flex items-center py-2 sm:py-1.5 pl-20 sm:pl-36`}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
+            <div className="flex items-center justify-end gap-3">
+              {/* Desktop Navigation */}
+              <nav className="hidden md:flex items-center gap-2 lg:gap-4 ml-auto">
+                {navLinks.map((link) => {
+                  const hasSubmenu = link.submenu && link.submenu.length > 0;
+                  const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
+                  
+                  if (hasSubmenu) {
+                    return (
+                      <div
+                        key={link.name}
+                        className="relative group"
+                        onMouseEnter={() => handleMouseEnter(link.name)}
+                        onMouseLeave={handleMouseLeave}
+                      >
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            alert(`Learn more about ${item.title}:\n\n${item.longDescription}`)
-                          }}
-                          className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20`}
-                          style={{
-                            backgroundColor: category.color,
-                            backdropFilter: 'blur(4px)',
-                          }}
+                          className={`text-xs font-medium transition-colors relative py-2 group flex items-center gap-1 whitespace-nowrap ${
+                            isActive ? 'text-[#FFF314]' : `${textColor} ${textColorHover}`
+                          }`}
                         >
-                          Learn More →
+                          {safeT(link.name)}
+                          <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
+                          <span
+                            className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                              isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                            }`}
+                          />
                         </button>
-                      )}
-                    </div>
-                    <div
-                      className="absolute bottom-0 left-0 h-1 w-0 group-hover:w-full transition-all duration-300"
-                      style={{ backgroundColor: category.color }}
-                    />
-                  </motion.div>
-                ))}
-              </motion.div>
-            </motion.div>
-          )
-        })}
-      </motion.div>
+                        <AnimatePresence>
+                          {openDropdown === link.name && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 10 }}
+                              transition={{ duration: 0.15 }}
+                              className="absolute left-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[200px] py-2 z-50"
+                            >
+                              {link.submenu!.map((sub) => (
+                                <Link
+                                  key={sub.path}
+                                  to={sub.path}
+                                  className={`block px-5 py-2.5 text-xs transition-colors ${
+                                    location.pathname === sub.path
+                                      ? 'text-[#FFF314] bg-[#FFF314]/10'
+                                      : `text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]`
+                                  }`}
+                                >
+                                  {safeT(sub.name)}
+                                </Link>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  }
 
-      {/* ===== CTA SECTION ===== */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-16"
-      >
-        <div className="bg-gradient-to-br from-[#263238] to-[#1a2a2e] rounded-3xl p-8 sm:p-12 text-center shadow-2xl">
-          <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-            Want to Make a Difference?
-          </h3>
-          <p className="text-white/70 text-base sm:text-lg mb-6 max-w-2xl mx-auto">
-            Join us in our mission to create sustainable change. Every
-            contribution, big or small, makes a lasting impact.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/donate"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-[#FFF314] text-[#263238] font-bold rounded-full hover:bg-[#f0e000] transition-all shadow-lg shadow-[#FFF314]/30 hover:shadow-[#FFF314]/50 hover:scale-105"
-            >
-              Donate Now
-            </a>
-            <a
-              href="/volunteer"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white/10 backdrop-blur-sm text-white font-bold rounded-full hover:bg-white/20 transition-all border border-white/30 hover:border-white/50"
-            >
-              Become a Volunteer
-            </a>
+                  return (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      className={`text-xs font-medium transition-colors relative py-2 group whitespace-nowrap ${
+                        location.pathname === link.path
+                          ? 'text-[#FFF314]'
+                          : `${textColor} ${textColorHover}`
+                      }`}
+                    >
+                      {safeT(link.name)}
+                      <span
+                        className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                          location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
+                        }`}
+                      />
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* Right side actions */}
+              <div className="flex items-center gap-1 sm:gap-2">
+                {/* Language Switcher */}
+                <div className="relative z-20">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLangDropdownOpen(!langDropdownOpen);
+                    }}
+                    className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-xs font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
+                  >
+                    <Globe className="w-4 h-4" />
+                    <span className="hidden sm:inline">{currentLangLabel}</span>
+                  </button>
+                  <AnimatePresence>
+                    {langDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-xl shadow-xl border border-[#263238]/10 dark:border-white/10 min-w-[150px] py-2 z-50 pointer-events-auto"
+                      >
+                        {LANGUAGES.map((lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => changeLanguage(lang.code)}
+                            className={`block w-full text-left px-5 py-2.5 text-sm transition-colors cursor-pointer ${
+                              i18n.language === lang.code
+                                ? 'text-[#FFF314] bg-[#FFF314]/10'
+                                : 'text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]'
+                            }`}
+                          >
+                            {lang.label}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Donate Now button */}
+                <Link
+                  to="/donate"
+                  className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+                >
+                  <Heart className="w-4 h-4" />
+                  <span className="hidden sm:inline">{donateText}</span>
+                </Link>
+
+                {/* Volunteer button */}
+                <Link
+                  to="/volunteer"
+                  className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span className="hidden sm:inline">{volunteerText}</span>
+                </Link>
+
+                {/* Profile / Sign In */}
+                {showAuthLink && !loading && (
+                  <Link
+                    to={isAuthenticated ? "/profile" : "/auth"}
+                    className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
+                  >
+                    <User className="w-4 h-4" />
+                    <span className="hidden sm:inline">
+                      {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
+                    </span>
+                  </Link>
+                )}
+
+                {/* Hamburger menu */}
+                <button
+                  className={`md:hidden p-2.5 -m-1 rounded-full transition-colors ${textColor} ${textColorHover} ${bgButton}`}
+                  onClick={() => setIsMobileOpen(!isMobileOpen)}
+                  aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
+                >
+                  {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </motion.div>
-    </div>
-  )
+      </header>
+
+      {/* ---------- MOBILE MENU (outside header, fixed position) ---------- */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed left-0 right-0 top-[80px] bottom-0 z-[9998] bg-white shadow-xl border-t border-[#263238]/10 overflow-y-auto"
+          >
+            <nav className="flex flex-col px-4 py-3 sm:py-4 gap-1">
+              {navLinks.map((link) => {
+                const hasSubmenu = link.submenu && link.submenu.length > 0;
+                const isActive = location.pathname === link.path || (hasSubmenu && isSubmenuActive(link.submenu!));
+
+                if (hasSubmenu) {
+                  const isOpen = mobileSubmenuOpen === link.name;
+                  return (
+                    <div key={link.name} className="border-b border-[#263238]/5 last:border-0">
+                      <button
+                        onClick={() => toggleMobileSubmenu(link.name)}
+                        className={`w-full text-left text-lg font-medium py-3 px-2 rounded-lg transition-colors flex items-center justify-between ${
+                          isActive
+                            ? 'text-[#FFF314] bg-[#FFF314]/10'
+                            : 'text-[#263238] hover:text-[#FFF314] hover:bg-[#263238]/5'
+                        }`}
+                      >
+                        {safeT(link.name)}
+                        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="pl-4 pb-2 flex flex-col gap-0.5">
+                              {link.submenu!.map((sub) => (
+                                <Link
+                                  key={sub.path}
+                                  to={sub.path}
+                                  className={`py-2 px-2 rounded-lg text-sm transition-colors ${
+                                    location.pathname === sub.path
+                                      ? 'text-[#FFF314] bg-[#FFF314]/10'
+                                      : 'text-[#263238]/70 hover:text-[#FFF314] hover:bg-[#263238]/5'
+                                  }`}
+                                >
+                                  {safeT(sub.name)}
+                                </Link>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`text-lg font-medium py-3 px-2 rounded-lg transition-colors ${
+                      location.pathname === link.path
+                        ? 'text-[#FFF314] bg-[#FFF314]/10'
+                        : 'text-[#263238] hover:text-[#FFF314] hover:bg-[#263238]/5'
+                    }`}
+                  >
+                    {safeT(link.name)}
+                  </Link>
+                );
+              })}
+
+              {/* Language Switcher – Mobile */}
+              <div className="border-t border-[#263238]/10 pt-3 mt-2">
+                <p className="text-xs text-[#263238]/50 uppercase tracking-wider mb-2 px-2">Language</p>
+                <div className="grid grid-cols-2 gap-1">
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        changeLanguage(lang.code);
+                        setIsMobileOpen(false);
+                      }}
+                      className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                        i18n.language === lang.code
+                          ? 'bg-[#FFF314] text-[#263238]'
+                          : 'bg-[#263238]/5 text-[#263238] hover:bg-[#263238]/10'
+                      }`}
+                    >
+                      {lang.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Donate Now – Mobile */}
+              <Link
+                to="/donate"
+                className="mt-3 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
+              >
+                {donateText} <Heart className="w-5 h-5" />
+              </Link>
+
+              {/* Volunteer – Mobile */}
+              <Link
+                to="/volunteer"
+                className="mt-2 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
+              >
+                {volunteerText} <UserPlus className="w-5 h-5" />
+              </Link>
+
+              {/* Profile / Sign In – Mobile */}
+              {showAuthLink && !loading && (
+                <Link
+                  to={isAuthenticated ? "/profile" : "/auth"}
+                  className="mt-2 w-full text-center rounded-full border border-[#263238]/30 px-6 py-3.5 font-semibold text-[#263238] hover:text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+                >
+                  <User className="w-5 h-5" />
+                  {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
+                </Link>
+              )}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
 }
