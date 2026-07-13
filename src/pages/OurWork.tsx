@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'   // ✅ client‑side navigation
+import { Link } from 'react-router-dom'
 import {
   Trees,
   Users,
@@ -41,10 +41,11 @@ interface WorkCategory {
   description: string
   longDescription: string
   items: WorkItem[]
-  color: string
-  bgColor: string
-  borderColor: string
+  color: string        // text color for icons
+  bgColor: string      // Tailwind class for icon background
+  borderColor: string  // border class
   image: string
+  backColor: string    // <-- NEW: hex color for flip card back
 }
 
 export default function OurWork() {
@@ -67,9 +68,15 @@ export default function OurWork() {
     }
   }
 
-  // ========== INTERNAL ROUTE FOR EDUCATION ==========
+  // ========== INTERNAL ROUTES ==========
   const EDUCATION_CATEGORY_ID = 3
-  const EDUCATION_ROUTE = '/education'   // points to your Education page
+  const EDUCATION_ROUTE = '/education'
+
+  const WOMEN_CATEGORY_ID = 2
+  const WOMEN_ROUTE = '/women-empowerment'
+
+  const hasDedicatedPage = (id: number) =>
+    id === EDUCATION_CATEGORY_ID || id === WOMEN_CATEGORY_ID
 
   // ========== CATEGORIES ==========
   const categories: WorkCategory[] = [
@@ -85,6 +92,7 @@ export default function OurWork() {
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-50',
       borderColor: 'border-emerald-500',
+      backColor: '#849989', // <-- new color
       items: [
         {
           icon: Handshake,
@@ -128,6 +136,7 @@ export default function OurWork() {
       color: 'text-pink-600',
       bgColor: 'bg-pink-50',
       borderColor: 'border-pink-500',
+      backColor: '#777e91', // <-- new color
       items: [
         {
           icon: Scissors,
@@ -164,6 +173,7 @@ export default function OurWork() {
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
       borderColor: 'border-blue-500',
+      backColor: '#9eada0', // <-- new color
       items: [
         {
           icon: GraduationCap,
@@ -207,6 +217,7 @@ export default function OurWork() {
       color: 'text-red-600',
       bgColor: 'bg-red-50',
       borderColor: 'border-red-500',
+      backColor: '#8d9159', // <-- new color
       items: [
         {
           icon: HeartPulse,
@@ -264,6 +275,7 @@ export default function OurWork() {
       color: 'text-green-600',
       bgColor: 'bg-green-50',
       borderColor: 'border-green-500',
+      backColor: '#9e8b70', // <-- new color
       items: [
         {
           icon: Trees,
@@ -283,7 +295,7 @@ export default function OurWork() {
     },
   ]
 
-  // Animation variants
+  // Animation variants (unchanged)
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -368,10 +380,10 @@ export default function OurWork() {
                     </div>
                   </div>
 
-                  {/* Back */}
+                  {/* Back - now using backColor */}
                   <div
                     className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl overflow-hidden shadow-lg p-6 flex flex-col justify-between"
-                    style={{ background: category.bgColor }}
+                    style={{ background: category.backColor }} // <-- using hex color
                   >
                     <div>
                       <h3 className="text-xl font-bold text-[#263238] mb-2">
@@ -382,10 +394,14 @@ export default function OurWork() {
                       </p>
                     </div>
 
-                    {/* === CONDITIONAL READ MORE BUTTON === */}
-                    {category.id === EDUCATION_CATEGORY_ID ? (
+                    {/* Read More button (unchanged) */}
+                    {hasDedicatedPage(category.id) ? (
                       <Link
-                        to={EDUCATION_ROUTE}
+                        to={
+                          category.id === EDUCATION_CATEGORY_ID
+                            ? EDUCATION_ROUTE
+                            : WOMEN_ROUTE
+                        }
                         className="mt-4 w-full py-2.5 px-4 bg-[#263238] text-white font-semibold rounded-full hover:bg-[#1a2a2e] transition-colors shadow-md text-center inline-block"
                         onClick={(e) => e.stopPropagation()}
                       >
@@ -410,7 +426,7 @@ export default function OurWork() {
         </motion.div>
       </section>
 
-      {/* Detailed Categories */}
+      {/* Detailed Categories - unchanged */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -525,10 +541,14 @@ export default function OurWork() {
                         {item.description}
                       </p>
 
-                      {/* === CONDITIONAL LEARN MORE BUTTON === */}
-                      {category.id === EDUCATION_CATEGORY_ID ? (
+                      {/* Learn More button (unchanged) */}
+                      {hasDedicatedPage(category.id) ? (
                         <Link
-                          to={EDUCATION_ROUTE}
+                          to={
+                            category.id === EDUCATION_CATEGORY_ID
+                              ? EDUCATION_ROUTE
+                              : WOMEN_ROUTE
+                          }
                           className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20 text-center inline-block`}
                           style={{
                             backgroundColor: category.color.replace('text', '').trim(),
@@ -570,7 +590,7 @@ export default function OurWork() {
         })}
       </motion.div>
 
-      {/* CTA Section */}
+      {/* CTA Section - unchanged */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
