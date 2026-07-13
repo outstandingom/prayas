@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'   // ✅ client‑side navigation
 import {
   Trees,
   Users,
@@ -383,13 +384,13 @@ export default function OurWork() {
 
                     {/* === CONDITIONAL READ MORE BUTTON === */}
                     {category.id === EDUCATION_CATEGORY_ID ? (
-                      <a
-                        href={EDUCATION_ROUTE}
+                      <Link
+                        to={EDUCATION_ROUTE}
                         className="mt-4 w-full py-2.5 px-4 bg-[#263238] text-white font-semibold rounded-full hover:bg-[#1a2a2e] transition-colors shadow-md text-center inline-block"
                         onClick={(e) => e.stopPropagation()}
                       >
                         Read More →
-                      </a>
+                      </Link>
                     ) : (
                       <button
                         onClick={(e) => {
@@ -526,8 +527,8 @@ export default function OurWork() {
 
                       {/* === CONDITIONAL LEARN MORE BUTTON === */}
                       {category.id === EDUCATION_CATEGORY_ID ? (
-                        <a
-                          href={EDUCATION_ROUTE}
+                        <Link
+                          to={EDUCATION_ROUTE}
                           className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20 text-center inline-block`}
                           style={{
                             backgroundColor: category.color.replace('text', '').trim(),
@@ -536,7 +537,7 @@ export default function OurWork() {
                           onClick={(e) => e.stopPropagation()}
                         >
                           Learn More →
-                        </a>
+                        </Link>
                       ) : (
                         <button
                           onClick={(e) => {
