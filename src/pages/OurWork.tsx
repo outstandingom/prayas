@@ -41,9 +41,9 @@ interface WorkCategory {
   description: string
   longDescription: string
   items: WorkItem[]
-  color: string
-  bgColor: string
-  borderColor: string
+  color: string      // primary color (hex)
+  bgColor: string    // light background (hex with opacity)
+  borderColor: string // border color (hex)
   image: string
 }
 
@@ -80,9 +80,9 @@ export default function OurWork() {
     return null
   }
 
-  // ========== CATEGORIES ==========
+  // ========== CATEGORIES WITH NEW COLORS ==========
   const categories: WorkCategory[] = [
-    // ===== 1. Rural Development =====
+    // 1. Rural Development – #849989
     {
       id: 1,
       title: 'Rural Development',
@@ -92,9 +92,9 @@ export default function OurWork() {
       longDescription:
         'Our Rural Development programme is designed to uplift rural communities by addressing critical gaps in infrastructure, education, healthcare, and livelihood opportunities. We work closely with village panchayats, local leaders, and community members to co‑create solutions that are both sustainable and culturally appropriate. Over the years, we have adopted multiple villages, provided clean drinking water, built sanitation facilities, and empowered local youth with skills for employment. Our holistic approach ensures that every intervention is community‑led and continues to thrive long after we have moved on.',
       image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=500&fit=crop',
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-50',
-      borderColor: 'border-emerald-500',
+      color: '#849989',
+      bgColor: 'bg-[#849989]/20',
+      borderColor: 'border-[#849989]',
       items: [
         {
           icon: Handshake,
@@ -126,7 +126,7 @@ export default function OurWork() {
         },
       ],
     },
-    // ===== 2. Women Empowerment ===== (Redirects to /women-empowerment)
+    // 2. Women Empowerment – #777e91
     {
       id: 2,
       title: 'Women Empowerment & Livelihood',
@@ -136,9 +136,9 @@ export default function OurWork() {
       longDescription:
         'Women are at the heart of every community, and empowering them is key to breaking the cycle of poverty. Our Women Empowerment & Livelihood programmes provide women with vocational skills, financial literacy, and access to micro‑credit through Self‑Help Groups (SHGs). We have established tailoring centres, food processing units, and small‑scale manufacturing hubs that enable women to earn a dignified income. We also work closely with women to build their confidence and leadership abilities, ensuring they have a voice in family and community decisions.',
       image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe2b8b?w=800&h=500&fit=crop',
-      color: 'text-pink-600',
-      bgColor: 'bg-pink-50',
-      borderColor: 'border-pink-500',
+      color: '#777e91',
+      bgColor: 'bg-[#777e91]/20',
+      borderColor: 'border-[#777e91]',
       items: [
         {
           icon: Scissors,
@@ -163,7 +163,7 @@ export default function OurWork() {
         },
       ],
     },
-    // ===== 3. Education ===== (Redirects to /education)
+    // 3. Education – #9eada0
     {
       id: 3,
       title: 'Education & Skill Development',
@@ -173,9 +173,9 @@ export default function OurWork() {
       longDescription:
         'Education is the most powerful tool to break the cycle of poverty and create lasting change. Our Education & Skill Development initiatives go beyond the classroom – we run after‑school tutoring centres, digital literacy labs, and career guidance programmes. We also focus on value‑based education through our Sanskarshala programme, which instils ethics, empathy, and cultural pride in children. For youth, we offer vocational training in computer skills, spoken English, and soft skills to enhance employability.',
       image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=500&fit=crop',
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-500',
+      color: '#9eada0',
+      bgColor: 'bg-[#9eada0]/20',
+      borderColor: 'border-[#9eada0]',
       items: [
         {
           icon: GraduationCap,
@@ -207,7 +207,7 @@ export default function OurWork() {
         },
       ],
     },
-    // ===== 4. Health =====
+    // 4. Health – #8d9159
     {
       id: 4,
       title: 'Health & Social Welfare',
@@ -217,9 +217,9 @@ export default function OurWork() {
       longDescription:
         'Health is the foundation of a prosperous society. Our Health & Social Welfare initiatives cover preventive, curative, and promotive healthcare. We organise free health camps, conduct awareness drives on hygiene and nutrition, and facilitate access to government health schemes. We also have specialised programmes for organ donation awareness, elderly care, and support for persons with disabilities. Our community health workers regularly visit households to monitor health parameters and provide basic first aid.',
       image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=500&fit=crop',
-      color: 'text-red-600',
-      bgColor: 'bg-red-50',
-      borderColor: 'border-red-500',
+      color: '#8d9159',
+      bgColor: 'bg-[#8d9159]/20',
+      borderColor: 'border-[#8d9159]',
       items: [
         {
           icon: HeartPulse,
@@ -265,7 +265,7 @@ export default function OurWork() {
         },
       ],
     },
-    // ===== 5. Environment =====
+    // 5. Environment – #9e8b70
     {
       id: 5,
       title: 'Environment & Sustainability',
@@ -275,9 +275,9 @@ export default function OurWork() {
       longDescription:
         'Environmental degradation is one of the biggest challenges of our time. Our Environment & Sustainability programmes focus on conservation, reforestation, and sustainable resource management. We organise massive tree plantation drives, promote water harvesting, and educate communities about waste management and renewable energy. We also work with schools to instil environmental values in children, ensuring that the next generation inherits a healthier planet.',
       image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=500&fit=crop',
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-      borderColor: 'border-green-500',
+      color: '#9e8b70',
+      bgColor: 'bg-[#9e8b70]/20',
+      borderColor: 'border-[#9e8b70]',
       items: [
         {
           icon: Trees,
@@ -329,59 +329,12 @@ export default function OurWork() {
   // ========== JSX ==========
   return (
     <div className="min-h-screen bg-white pt-8 pb-16">
-      {/* ===== HERO HEADER ===== */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative bg-gradient-to-br from-[#263238] via-[#1a2a2e] to-[#0d1a1e] py-16 md:py-24 overflow-hidden"
-      >
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF314] opacity-5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#FFF314] opacity-5 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-          >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
-              Our <span className="text-[#FFF314] drop-shadow-lg">Work</span>
-            </h1>
-            <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              We work across multiple sectors to create lasting impact in the
-              lives of communities. Our holistic approach addresses critical
-              needs and builds sustainable futures.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="flex flex-wrap justify-center gap-2 mt-8"
-          >
-            {categories.map((cat) => (
-              <a
-                key={cat.id}
-                href={`#category-${cat.id}`}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-[#FFF314] hover:text-[#263238] text-white text-sm font-medium rounded-full transition-all duration-300 border border-white/20 hover:border-transparent"
-              >
-                <cat.icon className="w-4 h-4" />
-                {cat.title}
-              </a>
-            ))}
-          </motion.div>
-        </div>
-      </motion.div>
-
-      {/* ===== FLIP CARDS SECTION ===== */}
+      {/* ===== FLIP CARDS SECTION – Hero removed ===== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
           className="text-3xl sm:text-4xl font-bold text-[#263238] text-center mb-12"
         >
           Our Focus Areas
@@ -390,8 +343,7 @@ export default function OurWork() {
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+          animate="visible"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
         >
           {categories.map((category) => {
@@ -480,7 +432,6 @@ export default function OurWork() {
       >
         {categories.map((category) => {
           const isExpanded = expandedCategories[category.id] || false
-          const bgClass = category.bgColor.replace('bg-', '')
           const route = getCategoryRoute(category.id)
           return (
             <motion.div
@@ -488,7 +439,7 @@ export default function OurWork() {
               id={`category-${category.id}`}
               variants={itemVariants}
               className={`relative rounded-2xl p-6 md:p-8 mb-20 last:mb-0 scroll-mt-24 border-l-8 ${category.borderColor} shadow-sm`}
-              style={{ backgroundColor: `rgba(var(--${bgClass}-rgb), 0.3)` }}
+              style={{ background: category.bgColor }}
             >
               {/* Category Banner Image */}
               <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg mb-6">
@@ -500,7 +451,7 @@ export default function OurWork() {
                 <div
                   className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"
                   style={{
-                    backgroundImage: `linear-gradient(to top, ${category.color.replace('text', '')}80, transparent)`,
+                    backgroundImage: `linear-gradient(to top, ${category.color}80, transparent)`,
                   }}
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
@@ -573,7 +524,8 @@ export default function OurWork() {
                     <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-300" />
                     <div className="relative z-10 h-full flex flex-col justify-end p-6 text-white">
                       <div
-                        className={`inline-flex p-2.5 rounded-xl ${category.bgColor} ${category.color} mb-3 w-fit group-hover:scale-110 transition-transform duration-300`}
+                        className={`inline-flex p-2.5 rounded-xl ${category.bgColor} mb-3 w-fit group-hover:scale-110 transition-transform duration-300`}
+                        style={{ color: category.color }}
                       >
                         <item.icon className="w-5 h-5" />
                       </div>
@@ -589,7 +541,7 @@ export default function OurWork() {
                           to={route}
                           className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20 text-center inline-block`}
                           style={{
-                            backgroundColor: category.color.replace('text', '').trim(),
+                            backgroundColor: category.color,
                             backdropFilter: 'blur(4px)',
                           }}
                           onClick={(e) => e.stopPropagation()}
@@ -604,7 +556,7 @@ export default function OurWork() {
                           }}
                           className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20`}
                           style={{
-                            backgroundColor: category.color.replace('text', '').trim(),
+                            backgroundColor: category.color,
                             backdropFilter: 'blur(4px)',
                           }}
                         >
@@ -613,10 +565,8 @@ export default function OurWork() {
                       )}
                     </div>
                     <div
-                      className={`absolute bottom-0 left-0 h-1 ${category.color.replace(
-                        'text',
-                        'bg'
-                      )} w-0 group-hover:w-full transition-all duration-300`}
+                      className="absolute bottom-0 left-0 h-1 w-0 group-hover:w-full transition-all duration-300"
+                      style={{ backgroundColor: category.color }}
                     />
                   </motion.div>
                 ))}
