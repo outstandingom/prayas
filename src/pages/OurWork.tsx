@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -330,7 +329,7 @@ export default function OurWork() {
   // ========== JSX ==========
   return (
     <div className="min-h-screen bg-white pt-8 pb-16">
-      {/* ===== FLIP CARDS SECTION – Hero removed ===== */}
+      {/* ===== FLIP CARDS SECTION ===== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -383,16 +382,16 @@ export default function OurWork() {
                     </div>
                   </div>
 
-                  {/* Back */}
+                  {/* Back – with solid category color */}
                   <div
                     className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl overflow-hidden shadow-lg p-6 flex flex-col justify-between"
-                    style={{ background: category.bgColor }}
+                    style={{ backgroundColor: category.color }}
                   >
                     <div>
-                      <h3 className="text-xl font-bold text-[#263238] mb-2">
+                      <h3 className="text-xl font-bold text-white mb-2">
                         {category.title}
                       </h3>
-                      <p className="text-[#263238]/70 text-sm leading-relaxed line-clamp-4">
+                      <p className="text-white/90 text-sm leading-relaxed line-clamp-4">
                         {category.longDescription}
                       </p>
                     </div>
@@ -400,7 +399,7 @@ export default function OurWork() {
                     {route ? (
                       <Link
                         to={route}
-                        className="mt-4 w-full py-2.5 px-4 bg-[#263238] text-white font-semibold rounded-full hover:bg-[#1a2a2e] transition-colors shadow-md text-center inline-block"
+                        className="mt-4 w-full py-2.5 px-4 bg-white text-[#263238] font-semibold rounded-full hover:bg-gray-100 transition-colors shadow-md text-center inline-block"
                         onClick={(e) => e.stopPropagation()}
                       >
                         Read More →
@@ -411,7 +410,7 @@ export default function OurWork() {
                           e.stopPropagation()
                           scrollToCategory(category.id)
                         }}
-                        className="mt-4 w-full py-2.5 px-4 bg-[#263238] text-white font-semibold rounded-full hover:bg-[#1a2a2e] transition-colors shadow-md"
+                        className="mt-4 w-full py-2.5 px-4 bg-white text-[#263238] font-semibold rounded-full hover:bg-gray-100 transition-colors shadow-md"
                       >
                         Read More →
                       </button>
