@@ -133,7 +133,7 @@ export default function HeroBanner() {
 
             <div className="absolute inset-0 bg-black/30 md:bg-black/20" />
 
-            {/* Content – centered on all screens */}
+            {/* Centered content */}
             <div className="absolute inset-0 flex flex-col justify-center items-center px-4 md:px-8 py-6 md:py-10 text-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -156,10 +156,10 @@ export default function HeroBanner() {
                   {SLIDES[currentSlide].description}
                 </p>
 
-                {/* Read More button – centered, bold, forte style */}
+                {/* Read More text – forte style, not bold, with arrow */}
                 <button
                   onClick={handleReadMore}
-                  className="inline-flex items-center gap-2 bg-[#FFF314] text-gray-900 font-bold text-base sm:text-lg md:text-xl px-6 md:px-10 py-3 md:py-4 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                  className="inline-flex items-center gap-2 text-[#FFF314] text-base sm:text-lg md:text-xl font-display transition-all duration-300 hover:underline underline-offset-4"
                 >
                   Read More
                   <ArrowRight className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-1" />
