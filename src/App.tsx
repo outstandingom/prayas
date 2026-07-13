@@ -20,7 +20,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import ImpactPage from './pages/ImpactPage';
 import Members from './pages/Members';
 import Certifications from './pages/Certifications';
-import Education from './pages/impact/Education';     // <-- NEW import
+import Education from './pages/impact/Education';          // Education page
+import WomenEmpowerment from './pages/WomenEmpowerment';  // NEW: Women Empowerment page
 import VolunteerPopup from './components/VolunteerPopup';
 
 export default function App() {
@@ -56,8 +57,9 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/impact/:slug" element={<ImpactPage />} />
             
-            {/* 👇 NEW ROUTE for Education page */}
+            {/* New dedicated category pages */}
             <Route path="/education" element={<Education />} />
+            <Route path="/women-empowerment" element={<WomenEmpowerment />} />
           </Route>
         </Routes>
       </AnimatePresence>
