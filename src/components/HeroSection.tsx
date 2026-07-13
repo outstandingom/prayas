@@ -133,39 +133,41 @@ export default function HeroBanner() {
 
             <div className="absolute inset-0 bg-black/30 md:bg-black/20" />
 
-            {/* Content – left aligned on all screens */}
-            <div className="absolute inset-0 flex flex-col justify-center px-4 md:px-12 py-6 md:py-10">
-              <div className="w-full max-w-4xl text-left">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                >
-                  <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-2 md:mb-4 leading-tight">
-                    {SLIDES[currentSlide].title}
-                  </h1>
-                </motion.div>
+            <div className="absolute inset-0 flex flex-col justify-center items-center px-4 md:px-8 py-6 md:py-10 text-center">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="w-full max-w-4xl"
+              >
+                <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-2 md:mb-4 leading-tight">
+                  {SLIDES[currentSlide].title}
+                </h1>
+              </motion.div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                  className="max-w-2xl"
-                >
-                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/80 leading-relaxed mb-4 md:mb-6">
-                    {SLIDES[currentSlide].description}
-                  </p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="w-full max-w-3xl"
+              >
+                <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/80 leading-relaxed mb-6 md:mb-8">
+                  {SLIDES[currentSlide].description}
+                </p>
 
-                  {/* Read More text link – bold, large, with arrow, left-aligned */}
-                  <button
-                    onClick={handleReadMore}
-                    className="group inline-flex items-center gap-2 text-[#FFF314] font-bold text-base sm:text-lg md:text-xl tracking-wide hover:underline underline-offset-8 transition-all duration-300"
-                  >
-                    Read More
-                    <ArrowRight className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-1" />
-                  </button>
-                </motion.div>
-              </div>
+                {/* Read More button – with Forte‑style font */}
+                <button
+                  onClick={handleReadMore}
+                  className="inline-flex items-center gap-2 bg-[#FFF314] text-gray-900 font-bold text-base sm:text-lg md:text-xl px-6 md:px-10 py-3 md:py-4 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                  style={{
+                    fontFamily: "'Playfair Display', 'Times New Roman', serif",
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  Read More
+                  <ArrowRight className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              </motion.div>
             </div>
           </motion.div>
         </AnimatePresence>
