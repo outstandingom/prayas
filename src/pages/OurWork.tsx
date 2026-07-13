@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import {
@@ -79,8 +80,9 @@ export default function OurWork() {
     return null
   }
 
+  // ========== CATEGORIES ==========
   const categories: WorkCategory[] = [
-    // ===== Rural Development =====
+    // ===== 1. Rural Development =====
     {
       id: 1,
       title: 'Rural Development',
@@ -124,7 +126,7 @@ export default function OurWork() {
         },
       ],
     },
-    // ===== Women Empowerment =====
+    // ===== 2. Women Empowerment ===== (Redirects to /women-empowerment)
     {
       id: 2,
       title: 'Women Empowerment & Livelihood',
@@ -161,7 +163,7 @@ export default function OurWork() {
         },
       ],
     },
-    // ===== Education =====
+    // ===== 3. Education ===== (Redirects to /education)
     {
       id: 3,
       title: 'Education & Skill Development',
@@ -205,7 +207,7 @@ export default function OurWork() {
         },
       ],
     },
-    // ===== Health =====
+    // ===== 4. Health =====
     {
       id: 4,
       title: 'Health & Social Welfare',
@@ -263,7 +265,7 @@ export default function OurWork() {
         },
       ],
     },
-    // ===== Environment =====
+    // ===== 5. Environment =====
     {
       id: 5,
       title: 'Environment & Sustainability',
@@ -295,7 +297,7 @@ export default function OurWork() {
     },
   ]
 
-  // Animation variants
+  // ========== ANIMATION VARIANTS ==========
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -324,9 +326,10 @@ export default function OurWork() {
     },
   }
 
+  // ========== JSX ==========
   return (
     <div className="min-h-screen bg-white pt-8 pb-16">
-      {/* Hero Header */}
+      {/* ===== HERO HEADER ===== */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -372,7 +375,7 @@ export default function OurWork() {
         </div>
       </motion.div>
 
-      {/* Flip Cards Section */}
+      {/* ===== FLIP CARDS SECTION ===== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -442,13 +445,13 @@ export default function OurWork() {
                     </div>
 
                     {route ? (
-                      <a
-                        href={route}
+                      <Link
+                        to={route}
                         className="mt-4 w-full py-2.5 px-4 bg-[#263238] text-white font-semibold rounded-full hover:bg-[#1a2a2e] transition-colors shadow-md text-center inline-block"
                         onClick={(e) => e.stopPropagation()}
                       >
                         Read More →
-                      </a>
+                      </Link>
                     ) : (
                       <button
                         onClick={(e) => {
@@ -468,7 +471,7 @@ export default function OurWork() {
         </motion.div>
       </section>
 
-      {/* Detailed Categories */}
+      {/* ===== DETAILED CATEGORIES ===== */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -582,8 +585,8 @@ export default function OurWork() {
                       </p>
 
                       {route ? (
-                        <a
-                          href={route}
+                        <Link
+                          to={route}
                           className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20 text-center inline-block`}
                           style={{
                             backgroundColor: category.color.replace('text', '').trim(),
@@ -592,7 +595,7 @@ export default function OurWork() {
                           onClick={(e) => e.stopPropagation()}
                         >
                           Learn More →
-                        </a>
+                        </Link>
                       ) : (
                         <button
                           onClick={(e) => {
@@ -623,7 +626,7 @@ export default function OurWork() {
         })}
       </motion.div>
 
-      {/* CTA Section */}
+      {/* ===== CTA SECTION ===== */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
