@@ -41,9 +41,9 @@ interface WorkCategory {
   description: string
   longDescription: string
   items: WorkItem[]
-  color: string      // primary color (hex)
-  bgColor: string    // light background (hex with opacity)
-  borderColor: string // border color (hex)
+  color: string
+  bgColor: string
+  borderColor: string
   image: string
 }
 
@@ -68,15 +68,19 @@ export default function OurWork() {
   }
 
   // ========== ROUTE CONFIGURATION ==========
-  const EDUCATION_CATEGORY_ID = 3
-  const EDUCATION_ROUTE = '/education'
+  const RURAL_CATEGORY_ID = 1
+  const RURAL_ROUTE = '/rural-development'
 
   const WOMEN_CATEGORY_ID = 2
   const WOMEN_ROUTE = '/women-empowerment'
 
+  const EDUCATION_CATEGORY_ID = 3
+  const EDUCATION_ROUTE = '/education'
+
   const getCategoryRoute = (id: number) => {
-    if (id === EDUCATION_CATEGORY_ID) return EDUCATION_ROUTE
+    if (id === RURAL_CATEGORY_ID) return RURAL_ROUTE
     if (id === WOMEN_CATEGORY_ID) return WOMEN_ROUTE
+    if (id === EDUCATION_CATEGORY_ID) return EDUCATION_ROUTE
     return null
   }
 
