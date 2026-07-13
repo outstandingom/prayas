@@ -77,14 +77,18 @@ export default function OurWork() {
   const EDUCATION_CATEGORY_ID = 3
   const EDUCATION_ROUTE = '/education'
 
-  const HEALTH_CATEGORY_ID = 4          // <-- NEW
-  const HEALTH_ROUTE = '/healthcare'    // <-- NEW
+  const HEALTH_CATEGORY_ID = 4
+  const HEALTH_ROUTE = '/healthcare'
+
+  const ENVIRONMENT_CATEGORY_ID = 5
+  const ENVIRONMENT_ROUTE = '/environment'
 
   const getCategoryRoute = (id: number) => {
     if (id === RURAL_CATEGORY_ID) return RURAL_ROUTE
     if (id === WOMEN_CATEGORY_ID) return WOMEN_ROUTE
     if (id === EDUCATION_CATEGORY_ID) return EDUCATION_ROUTE
-    if (id === HEALTH_CATEGORY_ID) return HEALTH_ROUTE   // <-- NEW
+    if (id === HEALTH_CATEGORY_ID) return HEALTH_ROUTE
+    if (id === ENVIRONMENT_CATEGORY_ID) return ENVIRONMENT_ROUTE
     return null
   }
 
