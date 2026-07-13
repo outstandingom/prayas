@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { HeartHandshake, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +22,7 @@ export default function HeroBanner() {
         image: '/EDUCATION.JPG',
         imagePosition: 'right',
         backgroundPosition: '85% center',
-        route: '/rural-development', // <-- added route
+        route: '/rural-development',
       },
       {
         id: 2,
@@ -105,10 +105,6 @@ export default function HeroBanner() {
     }
   };
 
-  const handleDonate = () => {
-    navigate('/donate');
-  };
-
   return (
     <section
       className="relative w-full overflow-hidden bg-gray-900"
@@ -137,54 +133,37 @@ export default function HeroBanner() {
 
             <div className="absolute inset-0 bg-black/30 md:bg-black/20" />
 
-            <div className="absolute inset-0 flex flex-col justify-between px-4 md:px-8 py-6 md:py-10">
-              <div className="flex-1" />
-
-              <div className="flex-1 flex items-center justify-center">
+            {/* Content: left‑aligned on both mobile and desktop */}
+            <div className="absolute inset-0 flex flex-col justify-center px-4 md:px-12 py-6 md:py-10">
+              <div className="w-full max-w-4xl text-left">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
-                  className="w-full max-w-4xl text-center"
                 >
-                  <h1 className="text-xl sm:text-3xl md:text-6xl lg:text-7xl font-bold text-white mb-1 md:mb-4 leading-tight">
+                  <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-2 md:mb-4 leading-tight">
                     {SLIDES[currentSlide].title}
                   </h1>
                 </motion.div>
-              </div>
 
-              <div className="w-full max-w-4xl mx-auto text-center pb-2 md:pb-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
+                  className="max-w-2xl"
                 >
-                  <p className="text-xs sm:text-sm md:text-lg lg:text-xl text-white/90 leading-relaxed mb-3 md:mb-6">
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/80 leading-relaxed mb-4 md:mb-6">
                     {SLIDES[currentSlide].description}
                   </p>
-                  <div className="flex flex-wrap justify-center gap-3 md:gap-4">
-                    {/* Donate Now button */}
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={handleDonate}
-                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
-                    >
-                      {t('hero.donateNow', 'Donate Now')}
-                      <HeartHandshake size={16} className="md:w-5 md:h-5" />
-                    </motion.button>
 
-                    {/* Read More button – goes to the category's dedicated page */}
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={handleReadMore}
-                      className="inline-flex items-center justify-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-white/30 transition-all duration-300 border border-white/30"
-                    >
-                      {t('hero.readMore', 'Read More')}
-                      <BookOpen size={16} className="md:w-5 md:h-5" />
-                    </motion.button>
-                  </div>
+                  {/* Read More text link – left aligned, bold, with arrow */}
+                  <button
+                    onClick={handleReadMore}
+                    className="group inline-flex items-center gap-2 text-[#FFF314] font-bold text-sm sm:text-base md:text-lg hover:underline underline-offset-4 transition-all duration-300"
+                  >
+                    Read More
+                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                  </button>
                 </motion.div>
               </div>
             </div>
