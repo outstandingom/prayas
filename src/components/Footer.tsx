@@ -30,7 +30,6 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <Link to="/" className="inline-flex items-center gap-2.5 group mb-4">
               <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                {/* Use the same SVG logo as the navbar */}
                 <img
                   src="/Logo.svg"
                   alt="Prayas Logo"
@@ -94,7 +93,11 @@ export default function Footer() {
               <li>
                 <div className="flex items-start gap-3 text-white/60 text-sm">
                   <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-                  <span>123, Community Center,<br />New Delhi - 110001</span>
+                  <span>
+                    611 NRK Biz PARK behind C21 Mall,<br />
+                    PU 4, Vijay Nagar, Indore,<br />
+                    Madhya Pradesh 452010
+                  </span>
                 </div>
               </li>
             </ul>
@@ -129,7 +132,7 @@ export default function Footer() {
               </Link>
             </div>
 
-            {/* ✅ Social Media Icons – added here with increased spacing */}
+            {/* Social Media Icons */}
             <div className="mt-6 pt-4 border-t border-white/10">
               <p className="text-white/50 text-xs uppercase tracking-wider mb-3">Follow Us</p>
               <div className="flex items-center gap-4 text-white/60">
