@@ -222,6 +222,7 @@ export default function Navbar() {
               >
                 Yes! I Want To Help!
               </Link>
+              {/* ✅ Social icons with increased gap-3 */}
               <div className="flex items-center gap-3 text-white/70">
                 <a
                   href="https://www.facebook.com/prayassamajiksanstha"
