@@ -20,8 +20,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import ImpactPage from './pages/ImpactPage';
 import Members from './pages/Members';
 import Certifications from './pages/Certifications';
-import Education from './pages/impact/Education';          // Education page
-import WomenEmpowerment from './pages/impact/WomenEmpowerment';  // ✅ CORRECT PATH
+import Education from './pages/impact/Education';
+import WomenEmpowerment from './pages/impact/WomenEmpowerment';
+import RuralDevelopment from './pages/impact/RuralDevelopment';   // ✅ correct path
 import VolunteerPopup from './components/VolunteerPopup';
 
 export default function App() {
@@ -54,6 +55,8 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/impact/:slug" element={<ImpactPage />} />
             
+            {/* Dedicated category pages */}
+            <Route path="/rural-development" element={<RuralDevelopment />} />
             <Route path="/education" element={<Education />} />
             <Route path="/women-empowerment" element={<WomenEmpowerment />} />
           </Route>
