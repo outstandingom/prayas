@@ -381,8 +381,8 @@ export default function OurWork() {
                 >
                   {/* ===== FRONT ===== */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-4 bg-white"
-                    style={{ borderColor: `${category.color}4D` }} // 30% opacity
+                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-8 bg-white"
+                    style={{ borderColor: `${category.color}4D` }} // 30% opacity, full border
                   >
                     {/* Image */}
                     <div className="w-full h-[70%] overflow-hidden">
@@ -411,7 +411,7 @@ export default function OurWork() {
                     className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl overflow-hidden shadow-lg p-6 flex flex-col justify-between border-4"
                     style={{
                       backgroundColor: category.color,
-                      borderColor: category.color,
+                      borderColor: category.color, // full colour border
                     }}
                   >
                     <div>
