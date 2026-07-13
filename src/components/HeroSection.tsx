@@ -133,7 +133,7 @@ export default function HeroBanner() {
 
             <div className="absolute inset-0 bg-black/30 md:bg-black/20" />
 
-            {/* Content: left‑aligned on both mobile and desktop */}
+            {/* Content – left aligned on all screens */}
             <div className="absolute inset-0 flex flex-col justify-center px-4 md:px-12 py-6 md:py-10">
               <div className="w-full max-w-4xl text-left">
                 <motion.div
@@ -156,13 +156,13 @@ export default function HeroBanner() {
                     {SLIDES[currentSlide].description}
                   </p>
 
-                  {/* Read More text link – left aligned, bold, with arrow */}
+                  {/* Read More text link – bold, large, with arrow, left-aligned */}
                   <button
                     onClick={handleReadMore}
-                    className="group inline-flex items-center gap-2 text-[#FFF314] font-bold text-sm sm:text-base md:text-lg hover:underline underline-offset-4 transition-all duration-300"
+                    className="group inline-flex items-center gap-2 text-[#FFF314] font-bold text-base sm:text-lg md:text-xl tracking-wide hover:underline underline-offset-8 transition-all duration-300"
                   >
                     Read More
-                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                    <ArrowRight className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-1" />
                   </button>
                 </motion.div>
               </div>
