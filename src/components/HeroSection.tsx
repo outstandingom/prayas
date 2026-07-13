@@ -1,10 +1,12 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { HeartHandshake, ChevronLeft, ChevronRight } from 'lucide-react';
+import { HeartHandshake, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 export default function HeroBanner() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
@@ -20,6 +22,7 @@ export default function HeroBanner() {
         image: '/EDUCATION.JPG',
         imagePosition: 'right',
         backgroundPosition: '85% center',
+        route: '/rural-development', // <-- added route
       },
       {
         id: 2,
@@ -30,6 +33,7 @@ export default function HeroBanner() {
         ),
         image: '/P1039322.JPG',
         imagePosition: 'right',
+        route: '/women-empowerment',
       },
       {
         id: 3,
@@ -40,6 +44,7 @@ export default function HeroBanner() {
         ),
         image: '/P1039409.JPG',
         imagePosition: 'center',
+        route: '/education',
       },
       {
         id: 4,
@@ -50,6 +55,7 @@ export default function HeroBanner() {
         ),
         image: '/PRAYASHEALTHCAMP.jpeg',
         imagePosition: 'center',
+        route: '/healthcare',
       },
       {
         id: 5,
@@ -60,6 +66,7 @@ export default function HeroBanner() {
         ),
         image: '/TREEGROW.jpg',
         imagePosition: 'center',
+        route: '/environment',
       },
     ],
     [t]
@@ -91,6 +98,17 @@ export default function HeroBanner() {
     return slide.imagePosition === 'right' ? '70% center' : 'center center';
   };
 
+  const handleReadMore = () => {
+    const route = SLIDES[currentSlide].route;
+    if (route) {
+      navigate(route);
+    }
+  };
+
+  const handleDonate = () => {
+    navigate('/donate');
+  };
+
   return (
     <section
       className="relative w-full overflow-hidden bg-gray-900"
@@ -109,7 +127,6 @@ export default function HeroBanner() {
             transition={{ duration: 0.6, ease: 'easeInOut' }}
             className="absolute inset-0"
           >
-            {/* Background Image */}
             <div
               className="w-full h-full bg-cover bg-no-repeat"
               style={{
@@ -118,14 +135,11 @@ export default function HeroBanner() {
               }}
             />
 
-            {/* Overlay */}
             <div className="absolute inset-0 bg-black/30 md:bg-black/20" />
 
-            {/* Content */}
             <div className="absolute inset-0 flex flex-col justify-between px-4 md:px-8 py-6 md:py-10">
               <div className="flex-1" />
 
-              {/* Heading */}
               <div className="flex-1 flex items-center justify-center">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -139,7 +153,6 @@ export default function HeroBanner() {
                 </motion.div>
               </div>
 
-              {/* Bottom block: description + donate button */}
               <div className="w-full max-w-4xl mx-auto text-center pb-2 md:pb-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -149,24 +162,35 @@ export default function HeroBanner() {
                   <p className="text-xs sm:text-sm md:text-lg lg:text-xl text-white/90 leading-relaxed mb-3 md:mb-6">
                     {SLIDES[currentSlide].description}
                   </p>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
-                  >
-                    {t('hero.donateNow', 'Donate Now')}
-                    <HeartHandshake size={16} className="md:w-5 md:h-5" />
-                  </motion.button>
+                  <div className="flex flex-wrap justify-center gap-3 md:gap-4">
+                    {/* Donate Now button */}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleDonate}
+                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
+                    >
+                      {t('hero.donateNow', 'Donate Now')}
+                      <HeartHandshake size={16} className="md:w-5 md:h-5" />
+                    </motion.button>
+
+                    {/* Read More button – goes to the category's dedicated page */}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleReadMore}
+                      className="inline-flex items-center justify-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-white/30 transition-all duration-300 border border-white/30"
+                    >
+                      {t('hero.readMore', 'Read More')}
+                      <BookOpen size={16} className="md:w-5 md:h-5" />
+                    </motion.button>
+                  </div>
                 </motion.div>
               </div>
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* 
-          ✅ NEW: Visible arrow buttons on the far edges.
-          They don't cover the main content, so all buttons are clickable.
-        */}
         <button
           onClick={() => handleSlide('prev')}
           className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 p-1 md:p-2 rounded-full bg-black/30 hover:bg-black/50 text-white transition-all"
