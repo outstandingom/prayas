@@ -21,7 +21,7 @@ import ImpactPage from './pages/ImpactPage';
 import Members from './pages/Members';
 import Certifications from './pages/Certifications';
 import Education from './pages/impact/Education';          // Education page
-import WomenEmpowerment from './pages/WomenEmpowerment';  // NEW: Women Empowerment page
+import WomenEmpowerment from './pages/impact/WomenEmpowerment';  // ✅ CORRECT PATH
 import VolunteerPopup from './components/VolunteerPopup';
 
 export default function App() {
@@ -29,17 +29,14 @@ export default function App() {
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVolunteerPopupOpen(true), 15000);
-    return () => clearTimeout(timer);
+    return () => clearInterval(timer);
   }, []);
 
   return (
     <>
       <AnimatePresence mode="wait">
         <Routes>
-          {/* Auth is outside Layout */}
           <Route path="/auth" element={<Auth />} />
-          
-          {/* All pages with Layout (header + footer) */}
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -57,7 +54,6 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/impact/:slug" element={<ImpactPage />} />
             
-            {/* New dedicated category pages */}
             <Route path="/education" element={<Education />} />
             <Route path="/women-empowerment" element={<WomenEmpowerment />} />
           </Route>
