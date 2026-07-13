@@ -23,7 +23,8 @@ import Certifications from './pages/Certifications';
 import Education from './pages/impact/Education';
 import WomenEmpowerment from './pages/impact/WomenEmpowerment';
 import RuralDevelopment from './pages/impact/RuralDevelopment';
-import Healthcare from './pages/impact/Healthcare';   // <-- NEW import
+import Healthcare from './pages/impact/Healthcare';
+import Environment from './pages/impact/Environment';   // <-- NEW import
 import VolunteerPopup from './components/VolunteerPopup';
 
 export default function App() {
@@ -60,7 +61,8 @@ export default function App() {
             <Route path="/rural-development" element={<RuralDevelopment />} />
             <Route path="/education" element={<Education />} />
             <Route path="/women-empowerment" element={<WomenEmpowerment />} />
-            <Route path="/healthcare" element={<Healthcare />} />   {/* <-- NEW ROUTE */}
+            <Route path="/healthcare" element={<Healthcare />} />
+            <Route path="/environment" element={<Environment />} />   {/* <-- NEW ROUTE */}
           </Route>
         </Routes>
       </AnimatePresence>
