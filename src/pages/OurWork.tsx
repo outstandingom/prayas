@@ -81,7 +81,7 @@ export default function OurWork() {
         'Transforming rural communities through sustainable development initiatives that improve quality of life and create self-reliant villages.',
       longDescription:
         'Our Rural Development programme is designed to uplift rural communities by addressing critical gaps in infrastructure, education, healthcare, and livelihood opportunities. We work closely with village panchayats, local leaders, and community members to co‑create solutions that are both sustainable and culturally appropriate. Over the years, we have adopted multiple villages, provided clean drinking water, built sanitation facilities, and empowered local youth with skills for employment. Our holistic approach ensures that every intervention is community‑led and continues to thrive long after we have moved on.',
-      image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=500&fit=crop',
+      image: 'https://i.ibb.co/fWWWk9S/Whats-App-Image-2026-07-12-at-2-50-03-PM-1.jpg',
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-50',
       borderColor: 'border-emerald-500',
