@@ -46,7 +46,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-white/60 text-sm leading-relaxed mt-4 max-w-xs">
-              {t('footer.brand.desc', 'Empowering communities through education, healthcare, and sustainable development initiatives across India since 2015.')}
+              {t('footer.brand.desc', 'Empowering communities through education, healthcare, and sustainable development initiatives across India .')}
             </p>
           </div>
 
@@ -81,13 +81,13 @@ export default function Footer() {
               <li>
                 <a href="mailto:info@prayasfoundation.org" className="flex items-start gap-3 text-white/60 hover:text-[#FFF314] text-sm transition-colors group">
                   <Mail className="w-4 h-4 mt-0.5 shrink-0" />
-                  <span>info@prayasfoundation.org</span>
+                  <span>prayas1samajiksanstha@gmail.com</span>
                 </a>
               </li>
               <li>
                 <a href="tel:+919876543210" className="flex items-start gap-3 text-white/60 hover:text-[#FFF314] text-sm transition-colors group">
                   <Phone className="w-4 h-4 mt-0.5 shrink-0" />
-                  <span>+91 98765 43210</span>
+                  <span>+91 88277 64170</span>
                 </a>
               </li>
               <li>
