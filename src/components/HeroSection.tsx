@@ -133,7 +133,7 @@ export default function HeroBanner() {
 
             <div className="absolute inset-0 bg-black/30 md:bg-black/20" />
 
-            {/* ——— Text container — bottom‑left ——— */}
+            {/* ——— Text container – bottom‑left ——— */}
             <div className="absolute bottom-0 left-0 p-6 md:p-10 w-full md:w-2/3 lg:w-1/2 text-left">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -157,7 +157,7 @@ export default function HeroBanner() {
                 {/* Read More – Forte font style */}
                 <button
                   onClick={handleReadMore}
-                  className="inline-flex items-center gap-2 text-[#FFF314] text-base sm:text-lg md:text-xl font-['Forte'] transition-all duration-300 hover:underline underline-offset-4"
+                  className="inline-flex items-center gap-2 text-[#FFF314] text-base sm:text-lg md:text-xl font-forte transition-all duration-300 hover:underline underline-offset-4"
                 >
                   Read More
                   <ArrowRight className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-1" />
