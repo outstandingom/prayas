@@ -77,10 +77,14 @@ export default function OurWork() {
   const EDUCATION_CATEGORY_ID = 3
   const EDUCATION_ROUTE = '/education'
 
+  const HEALTH_CATEGORY_ID = 4          // <-- NEW
+  const HEALTH_ROUTE = '/healthcare'    // <-- NEW
+
   const getCategoryRoute = (id: number) => {
     if (id === RURAL_CATEGORY_ID) return RURAL_ROUTE
     if (id === WOMEN_CATEGORY_ID) return WOMEN_ROUTE
     if (id === EDUCATION_CATEGORY_ID) return EDUCATION_ROUTE
+    if (id === HEALTH_CATEGORY_ID) return HEALTH_ROUTE   // <-- NEW
     return null
   }
 
@@ -95,7 +99,7 @@ export default function OurWork() {
         'Transforming rural communities through sustainable development initiatives that improve quality of life and create self-reliant villages.',
       longDescription:
         'Our Rural Development programme is designed to uplift rural communities by addressing critical gaps in infrastructure, education, healthcare, and livelihood opportunities. We work closely with village panchayats, local leaders, and community members to co‑create solutions that are both sustainable and culturally appropriate. Over the years, we have adopted multiple villages, provided clean drinking water, built sanitation facilities, and empowered local youth with skills for employment. Our holistic approach ensures that every intervention is community‑led and continues to thrive long after we have moved on.',
-      image: 'https://i.ibb.co/WN2LLm4L/IMG-20191115-115817.jpg',
+      image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=500&fit=crop',
       color: '#849989',
       bgColor: 'bg-[#849989]/20',
       borderColor: 'border-[#849989]',
