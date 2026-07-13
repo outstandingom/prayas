@@ -133,15 +133,14 @@ export default function HeroBanner() {
 
             <div className="absolute inset-0 bg-black/30 md:bg-black/20" />
 
-            {/* Centered content */}
-            <div className="absolute inset-0 flex flex-col justify-center items-center px-4 md:px-8 py-6 md:py-10 text-center">
+            {/* ——— Text container — bottom‑left ——— */}
+            <div className="absolute bottom-0 left-0 p-6 md:p-10 w-full md:w-2/3 lg:w-1/2 text-left">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="w-full max-w-4xl"
               >
-                <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-2 md:mb-4 leading-tight">
+                <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 leading-tight">
                   {SLIDES[currentSlide].title}
                 </h1>
               </motion.div>
@@ -150,16 +149,15 @@ export default function HeroBanner() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="w-full max-w-3xl"
               >
-                <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/80 leading-relaxed mb-6 md:mb-8">
+                <p className="text-sm sm:text-base md:text-lg text-white/80 leading-relaxed mb-4 md:mb-6 max-w-2xl">
                   {SLIDES[currentSlide].description}
                 </p>
 
-                {/* Read More text – forte style, not bold, with arrow */}
+                {/* Read More – Forte font style */}
                 <button
                   onClick={handleReadMore}
-                  className="inline-flex items-center gap-2 text-[#FFF314] text-base sm:text-lg md:text-xl font-display transition-all duration-300 hover:underline underline-offset-4"
+                  className="inline-flex items-center gap-2 text-[#FFF314] text-base sm:text-lg md:text-xl font-['Forte'] transition-all duration-300 hover:underline underline-offset-4"
                 >
                   Read More
                   <ArrowRight className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-1" />
