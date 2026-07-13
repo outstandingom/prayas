@@ -381,25 +381,28 @@ export default function OurWork() {
                 >
                   {/* ===== FRONT ===== */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-8 bg-white"
-                    style={{ borderColor: `${category.color}4D` }} // 30% opacity, full border
+                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-8"
+                    style={{
+                      backgroundColor: category.color, // full colour background
+                      borderColor: `${category.color}4D`,
+                    }}
                   >
                     {/* Image */}
                     <div className="w-full h-[70%] overflow-hidden">
                       <img
                         src={category.image}
                         alt={category.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover"
                       />
                     </div>
-                    {/* Title below image */}
-                    <div className="h-[30%] flex flex-col items-center justify-center px-4 text-center bg-white">
-                      <h3 className="text-lg sm:text-xl font-bold text-[#263238] leading-tight">
+                    {/* Title area – now uses the same colour as background, with white text */}
+                    <div className="h-[30%] flex flex-col items-center justify-center px-4 text-center text-white">
+                      <h3 className="text-lg sm:text-xl font-bold leading-tight">
                         {category.title}
                       </h3>
                       <div
                         className="mt-1 px-3 py-0.5 text-[#263238] text-[10px] font-bold rounded-full"
-                        style={{ backgroundColor: category.color }}
+                        style={{ backgroundColor: '#ffffff' }}
                       >
                         Click to flip
                       </div>
@@ -411,7 +414,7 @@ export default function OurWork() {
                     className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl overflow-hidden shadow-lg p-6 flex flex-col justify-between border-4"
                     style={{
                       backgroundColor: category.color,
-                      borderColor: category.color, // full colour border
+                      borderColor: category.color,
                     }}
                   >
                     <div>
