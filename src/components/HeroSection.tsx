@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { HeartHandshake } from 'lucide-react';
+import { HeartHandshake, ArrowRight } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom'; // <-- added for client-side navigation
 
 export default function HeroBanner() {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ export default function HeroBanner() {
         image: '/EDUCATION.JPG',
         imagePosition: 'right',
         backgroundPosition: '85% center',
+        link: '/rural-development', // route for this slide (if exists)
       },
       {
         id: 2,
@@ -30,6 +32,7 @@ export default function HeroBanner() {
         ),
         image: '/P1039322.JPG',
         imagePosition: 'right',
+        link: '/women-empowerment', // <-- matches your new page
       },
       {
         id: 3,
@@ -40,6 +43,7 @@ export default function HeroBanner() {
         ),
         image: '/P1039409.JPG',
         imagePosition: 'center',
+        link: '/education', // <-- your existing Education page
       },
       {
         id: 4,
@@ -50,6 +54,7 @@ export default function HeroBanner() {
         ),
         image: '/PRAYASHEALTHCAMP.jpeg',
         imagePosition: 'center',
+        link: '/health', // adjust to your route
       },
       {
         id: 5,
@@ -60,6 +65,7 @@ export default function HeroBanner() {
         ),
         image: '/TREEGROW.jpg',
         imagePosition: 'center',
+        link: '/environment', // adjust to your route
       },
     ],
     [t]
@@ -99,10 +105,6 @@ export default function HeroBanner() {
       }}
       onTouchStart={handleTouchStart}
     >
-      {/* 
-        Mobile: 16:9 aspect ratio, capped at 300px height
-        Desktop: fills remaining viewport height
-      */}
       <div className="aspect-video md:aspect-auto md:min-h-[calc(100vh-var(--navbar-height,0px))] max-h-[300px] md:max-h-none relative">
         <AnimatePresence mode="wait">
           <motion.div
@@ -125,13 +127,9 @@ export default function HeroBanner() {
             {/* Overlay for better contrast */}
             <div className="absolute inset-0 bg-black/30 md:bg-black/20" />
 
-            {/* 
-              Content container: 
-              - flex column, justify-between pushes bottom block down
-              - two flex-1 spacers keep heading vertically centred
-            */}
+            {/* Content */}
             <div className="absolute inset-0 flex flex-col justify-between px-4 md:px-8 py-6 md:py-10">
-              {/* Top spacer (optional) */}
+              {/* Top spacer */}
               <div className="flex-1" />
 
               {/* Heading – centred vertically */}
@@ -148,7 +146,7 @@ export default function HeroBanner() {
                 </motion.div>
               </div>
 
-              {/* Bottom block: description + button */}
+              {/* Bottom block: description + buttons */}
               <div className="w-full max-w-4xl mx-auto text-center pb-2 md:pb-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -158,21 +156,35 @@ export default function HeroBanner() {
                   <p className="text-xs sm:text-sm md:text-lg lg:text-xl text-white/90 leading-relaxed mb-3 md:mb-6">
                     {SLIDES[currentSlide].description}
                   </p>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
-                  >
-                    {t('hero.donateNow', 'Donate Now')}
-                    <HeartHandshake size={16} className="md:w-5 md:h-5" />
-                  </motion.button>
+
+                  {/* Two buttons side by side */}
+                  <div className="flex flex-wrap justify-center items-center gap-3 md:gap-4">
+                    {/* Donate Now button (original) */}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
+                    >
+                      {t('hero.donateNow', 'Donate Now')}
+                      <HeartHandshake size={16} className="md:w-5 md:h-5" />
+                    </motion.button>
+
+                    {/* Read More button (new) - navigates to slide-specific page */}
+                    <Link
+                      to={SLIDES[currentSlide].link}
+                      className="inline-flex items-center justify-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-white/30 transition-all duration-300 border border-white/30"
+                    >
+                      {t('hero.readMore', 'Read More')}
+                      <ArrowRight size={16} className="md:w-5 md:h-5" />
+                    </Link>
+                  </div>
                 </motion.div>
               </div>
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation buttons (invisible but clickable) */}
+        {/* Navigation buttons (invisible) */}
         <button
           onClick={() => handleSlide('prev')}
           className="absolute left-0 top-0 w-1/2 h-full z-10"
