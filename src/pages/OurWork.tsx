@@ -1,8 +1,6 @@
-
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
 import {
   Trees,
   Users,
@@ -42,11 +40,10 @@ interface WorkCategory {
   description: string
   longDescription: string
   items: WorkItem[]
-  color: string        // text color for icons
-  bgColor: string      // Tailwind class for icon background
-  borderColor: string  // border class
+  color: string
+  bgColor: string
+  borderColor: string
   image: string
-  backColor: string    // <-- NEW: hex color for flip card back
 }
 
 export default function OurWork() {
@@ -69,18 +66,21 @@ export default function OurWork() {
     }
   }
 
-  // ========== INTERNAL ROUTES ==========
+  // ========== ROUTE CONFIGURATION ==========
   const EDUCATION_CATEGORY_ID = 3
   const EDUCATION_ROUTE = '/education'
 
   const WOMEN_CATEGORY_ID = 2
   const WOMEN_ROUTE = '/women-empowerment'
 
-  const hasDedicatedPage = (id: number) =>
-    id === EDUCATION_CATEGORY_ID || id === WOMEN_CATEGORY_ID
+  const getCategoryRoute = (id: number) => {
+    if (id === EDUCATION_CATEGORY_ID) return EDUCATION_ROUTE
+    if (id === WOMEN_CATEGORY_ID) return WOMEN_ROUTE
+    return null
+  }
 
-  // ========== CATEGORIES ==========
   const categories: WorkCategory[] = [
+    // ===== Rural Development =====
     {
       id: 1,
       title: 'Rural Development',
@@ -89,11 +89,10 @@ export default function OurWork() {
         'Transforming rural communities through sustainable development initiatives that improve quality of life and create self-reliant villages.',
       longDescription:
         'Our Rural Development programme is designed to uplift rural communities by addressing critical gaps in infrastructure, education, healthcare, and livelihood opportunities. We work closely with village panchayats, local leaders, and community members to co‑create solutions that are both sustainable and culturally appropriate. Over the years, we have adopted multiple villages, provided clean drinking water, built sanitation facilities, and empowered local youth with skills for employment. Our holistic approach ensures that every intervention is community‑led and continues to thrive long after we have moved on.',
-      image: 'https://i.ibb.co/fWWWk9S/Whats-App-Image-2026-07-12-at-2-50-03-PM-1.jpg',
+      image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=500&fit=crop',
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-50',
       borderColor: 'border-emerald-500',
-      backColor: '#849989', // <-- new color
       items: [
         {
           icon: Handshake,
@@ -125,6 +124,7 @@ export default function OurWork() {
         },
       ],
     },
+    // ===== Women Empowerment =====
     {
       id: 2,
       title: 'Women Empowerment & Livelihood',
@@ -137,7 +137,6 @@ export default function OurWork() {
       color: 'text-pink-600',
       bgColor: 'bg-pink-50',
       borderColor: 'border-pink-500',
-      backColor: '#777e91', // <-- new color
       items: [
         {
           icon: Scissors,
@@ -162,6 +161,7 @@ export default function OurWork() {
         },
       ],
     },
+    // ===== Education =====
     {
       id: 3,
       title: 'Education & Skill Development',
@@ -174,7 +174,6 @@ export default function OurWork() {
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
       borderColor: 'border-blue-500',
-      backColor: '#9eada0', // <-- new color
       items: [
         {
           icon: GraduationCap,
@@ -206,6 +205,7 @@ export default function OurWork() {
         },
       ],
     },
+    // ===== Health =====
     {
       id: 4,
       title: 'Health & Social Welfare',
@@ -218,7 +218,6 @@ export default function OurWork() {
       color: 'text-red-600',
       bgColor: 'bg-red-50',
       borderColor: 'border-red-500',
-      backColor: '#8d9159', // <-- new color
       items: [
         {
           icon: HeartPulse,
@@ -264,6 +263,7 @@ export default function OurWork() {
         },
       ],
     },
+    // ===== Environment =====
     {
       id: 5,
       title: 'Environment & Sustainability',
@@ -276,7 +276,6 @@ export default function OurWork() {
       color: 'text-green-600',
       bgColor: 'bg-green-50',
       borderColor: 'border-green-500',
-      backColor: '#9e8b70', // <-- new color
       items: [
         {
           icon: Trees,
@@ -296,7 +295,7 @@ export default function OurWork() {
     },
   ]
 
-  // Animation variants (unchanged)
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -326,7 +325,53 @@ export default function OurWork() {
   }
 
   return (
-    <div className="min-h-screen bg-white pt-24 pb-16">
+    <div className="min-h-screen bg-white pt-8 pb-16">
+      {/* Hero Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="relative bg-gradient-to-br from-[#263238] via-[#1a2a2e] to-[#0d1a1e] py-16 md:py-24 overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF314] opacity-5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#FFF314] opacity-5 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
+              Our <span className="text-[#FFF314] drop-shadow-lg">Work</span>
+            </h1>
+            <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+              We work across multiple sectors to create lasting impact in the
+              lives of communities. Our holistic approach addresses critical
+              needs and builds sustainable futures.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="flex flex-wrap justify-center gap-2 mt-8"
+          >
+            {categories.map((cat) => (
+              <a
+                key={cat.id}
+                href={`#category-${cat.id}`}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-[#FFF314] hover:text-[#263238] text-white text-sm font-medium rounded-full transition-all duration-300 border border-white/20 hover:border-transparent"
+              >
+                <cat.icon className="w-4 h-4" />
+                {cat.title}
+              </a>
+            ))}
+          </motion.div>
+        </div>
+      </motion.div>
+
       {/* Flip Cards Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.h2
@@ -348,6 +393,7 @@ export default function OurWork() {
         >
           {categories.map((category) => {
             const isFlipped = flipped[category.id] || false
+            const route = getCategoryRoute(category.id)
             return (
               <motion.div
                 key={category.id}
@@ -381,10 +427,10 @@ export default function OurWork() {
                     </div>
                   </div>
 
-                  {/* Back - now using backColor */}
+                  {/* Back */}
                   <div
                     className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl overflow-hidden shadow-lg p-6 flex flex-col justify-between"
-                    style={{ background: category.backColor }} // <-- using hex color
+                    style={{ background: category.bgColor }}
                   >
                     <div>
                       <h3 className="text-xl font-bold text-[#263238] mb-2">
@@ -395,19 +441,14 @@ export default function OurWork() {
                       </p>
                     </div>
 
-                    {/* Read More button (unchanged) */}
-                    {hasDedicatedPage(category.id) ? (
-                      <Link
-                        to={
-                          category.id === EDUCATION_CATEGORY_ID
-                            ? EDUCATION_ROUTE
-                            : WOMEN_ROUTE
-                        }
+                    {route ? (
+                      <a
+                        href={route}
                         className="mt-4 w-full py-2.5 px-4 bg-[#263238] text-white font-semibold rounded-full hover:bg-[#1a2a2e] transition-colors shadow-md text-center inline-block"
                         onClick={(e) => e.stopPropagation()}
                       >
                         Read More →
-                      </Link>
+                      </a>
                     ) : (
                       <button
                         onClick={(e) => {
@@ -427,7 +468,7 @@ export default function OurWork() {
         </motion.div>
       </section>
 
-      {/* Detailed Categories - unchanged */}
+      {/* Detailed Categories */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -437,6 +478,7 @@ export default function OurWork() {
         {categories.map((category) => {
           const isExpanded = expandedCategories[category.id] || false
           const bgClass = category.bgColor.replace('bg-', '')
+          const route = getCategoryRoute(category.id)
           return (
             <motion.div
               key={category.id}
@@ -525,10 +567,7 @@ export default function OurWork() {
                       backgroundPosition: 'center',
                     }}
                   >
-                    {/* Dark Overlay */}
                     <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-300" />
-
-                    {/* Content */}
                     <div className="relative z-10 h-full flex flex-col justify-end p-6 text-white">
                       <div
                         className={`inline-flex p-2.5 rounded-xl ${category.bgColor} ${category.color} mb-3 w-fit group-hover:scale-110 transition-transform duration-300`}
@@ -542,14 +581,9 @@ export default function OurWork() {
                         {item.description}
                       </p>
 
-                      {/* Learn More button (unchanged) */}
-                      {hasDedicatedPage(category.id) ? (
-                        <Link
-                          to={
-                            category.id === EDUCATION_CATEGORY_ID
-                              ? EDUCATION_ROUTE
-                              : WOMEN_ROUTE
-                          }
+                      {route ? (
+                        <a
+                          href={route}
                           className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20 text-center inline-block`}
                           style={{
                             backgroundColor: category.color.replace('text', '').trim(),
@@ -558,7 +592,7 @@ export default function OurWork() {
                           onClick={(e) => e.stopPropagation()}
                         >
                           Learn More →
-                        </Link>
+                        </a>
                       ) : (
                         <button
                           onClick={(e) => {
@@ -575,8 +609,6 @@ export default function OurWork() {
                         </button>
                       )}
                     </div>
-
-                    {/* Decorative accent line */}
                     <div
                       className={`absolute bottom-0 left-0 h-1 ${category.color.replace(
                         'text',
@@ -591,7 +623,7 @@ export default function OurWork() {
         })}
       </motion.div>
 
-      {/* CTA Section - unchanged */}
+      {/* CTA Section */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -616,7 +648,7 @@ export default function OurWork() {
             </a>
             <a
               href="/volunteer"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white/10 backdrop-blur-sm text-white font-boland rounded-full hover:bg-white/20 transition-all border border-white/30 hover:border-white/50"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white/10 backdrop-blur-sm text-white font-bold rounded-full hover:bg-white/20 transition-all border border-white/30 hover:border-white/50"
             >
               Become a Volunteer
             </a>
