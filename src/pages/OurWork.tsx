@@ -312,53 +312,7 @@ export default function OurWork() {
   }
 
   return (
-    <div className="min-h-screen bg-white pt-8 pb-16">
-      {/* Hero Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative bg-gradient-to-br from-[#263238] via-[#1a2a2e] to-[#0d1a1e] py-16 md:py-24 overflow-hidden"
-      >
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF314] opacity-5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#FFF314] opacity-5 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-          >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
-              Our <span className="text-[#FFF314] drop-shadow-lg">Work</span>
-            </h1>
-            <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              We work across multiple sectors to create lasting impact in the
-              lives of communities. Our holistic approach addresses critical
-              needs and builds sustainable futures.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="flex flex-wrap justify-center gap-2 mt-8"
-          >
-            {categories.map((cat) => (
-              <a
-                key={cat.id}
-                href={`#category-${cat.id}`}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-[#FFF314] hover:text-[#263238] text-white text-sm font-medium rounded-full transition-all duration-300 border border-white/20 hover:border-transparent"
-              >
-                <cat.icon className="w-4 h-4" />
-                {cat.title}
-              </a>
-            ))}
-          </motion.div>
-        </div>
-      </motion.div>
-
+    <div className="min-h-screen bg-white pt-24 pb-16">
       {/* Flip Cards Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.h2
@@ -640,7 +594,7 @@ export default function OurWork() {
             </a>
             <a
               href="/volunteer"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white/10 backdrop-blur-sm text-white font-bold rounded-full hover:bg-white/20 transition-all border border-white/30 hover:border-white/50"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white/10 backdrop-blur-sm text-white font-boland rounded-full hover:bg-white/20 transition-all border border-white/30 hover:border-white/50"
             >
               Become a Volunteer
             </a>
