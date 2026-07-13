@@ -1,7 +1,7 @@
-// src/components/Footer.tsx
 import { Link } from 'react-router-dom';
 import { Heart, Mail, Phone, MapPin, ArrowUpRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -30,8 +30,9 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <Link to="/" className="inline-flex items-center gap-2.5 group mb-4">
               <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                {/* Use the same SVG logo as the navbar */}
                 <img
-                  src="https://i.ibb.co/N6Cft6S3/IMG-20260614-015637.jpg"
+                  src="/Logo.svg"
                   alt="Prayas Logo"
                   className="w-full h-full object-cover"
                 />
@@ -99,7 +100,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Newsletter / CTA */}
+          {/* Stay Connected – now with social media icons */}
           <div>
             <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">{t('footer.newsletter.title', 'Stay Connected')}</h4>
             <p className="text-white/60 text-sm mb-4">
@@ -126,6 +127,58 @@ export default function Footer() {
                 <Heart className="w-4 h-4 text-[#263238] fill-current" />
                 {t('footer.newsletter.donate', 'Make a Donation')}
               </Link>
+            </div>
+
+            {/* ✅ Social Media Icons – added here with increased spacing */}
+            <div className="mt-6 pt-4 border-t border-white/10">
+              <p className="text-white/50 text-xs uppercase tracking-wider mb-3">Follow Us</p>
+              <div className="flex items-center gap-4 text-white/60">
+                <a
+                  href="https://www.facebook.com/prayassamajiksanstha"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="hover:text-[#FFF314] transition-colors"
+                >
+                  <FaFacebook size={18} />
+                </a>
+                <a
+                  href="https://x.com/pryasaa?s=11"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="X (Twitter)"
+                  className="hover:text-[#FFF314] transition-colors"
+                >
+                  <FaTwitter size={18} />
+                </a>
+                <a
+                  href="https://www.instagram.com/prayas_samajik_sanstha"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="hover:text-[#FFF314] transition-colors"
+                >
+                  <FaInstagram size={18} />
+                </a>
+                <a
+                  href="https://www.youtube.com/channel/UC16ZbLnP1qJxrKQoKsss12w"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="hover:text-[#FFF314] transition-colors"
+                >
+                  <FaYoutube size={18} />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/prayas-samaj-sevi-sastha-undefined-0a468b418/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  className="hover:text-[#FFF314] transition-colors"
+                >
+                  <FaLinkedin size={18} />
+                </a>
+              </div>
             </div>
           </div>
         </div>
