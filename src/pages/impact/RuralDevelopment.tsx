@@ -11,7 +11,7 @@ export default function RuralDevelopment() {
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1584515933487-779824d29309?w=1920&q=80')`,
+            backgroundImage: `url('https://i.ibb.co/WN2LLm4L/IMG-20191115-115817.jpg')`,
           }}
         >
           {/* Dark overlay for text readability */}
