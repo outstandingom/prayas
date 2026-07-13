@@ -5,79 +5,41 @@ import { Play, ChevronRight, Sparkles, Target, Award, Users, MapPin, GraduationC
 export default function RuralDevelopment() {
   return (
     <div className="min-h-screen bg-white">
-      {/* ===== HERO SECTION ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#78350F] via-[#92400E] to-[#B45309] py-20 md:py-32">
-        <div className="absolute inset-0 opacity-10">
-          <img
-            src="https://images.unsplash.com/photo-1584515933487-779824d29309?w=1920&q=80"
-            alt="Rural landscape"
-            className="w-full h-full object-cover"
-          />
+      {/* ===== HERO SECTION – SINGLE FULL-SCREEN IMAGE ===== */}
+      <section className="relative h-screen w-full overflow-hidden">
+        {/* Background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1584515933487-779824d29309?w=1920&q=80')`,
+          }}
+        >
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-black/45" />
         </div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#FEF3C7] opacity-[0.08] rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#FEF3C7] opacity-[0.08] rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left Column */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <div className="inline-flex items-center gap-3 mb-6">
-                <span className="w-10 h-0.5 bg-[#FEF3C7]" />
-                <span className="text-[#FEF3C7] font-mono text-xs tracking-[0.2em] uppercase font-bold">
-                  Rural Development
-                </span>
-              </div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-[1.1]">
-                Building
-                <br />
-                <span className="text-[#FEF3C7]">Stronger Villages</span>
-              </h1>
-              <p className="text-white/70 text-lg md:text-xl max-w-lg mb-10 leading-relaxed">
-                Infrastructure development, clean water access, and livelihood programs for rural communities.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <button className="bg-[#FEF3C7] text-[#78350F] font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2 text-sm sm:text-base">
-                  Get Involved
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-                <button className="bg-white/10 backdrop-blur-sm text-white font-bold px-8 py-4 rounded-full border border-white/20 hover:bg-white/20 transition-all flex items-center gap-2 text-sm sm:text-base">
-                  <Play className="w-5 h-5 fill-white" />
-                  Watch the Video
-                </button>
-              </div>
-            </motion.div>
-
-            {/* Right Column – Hero Image */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                <img
-                  src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop&q=80"
-                  alt="Rural village"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#78350F]/60 via-transparent to-transparent" />
-              </div>
-              {/* Floating badge */}
-              <div className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 bg-white rounded-xl shadow-xl p-4 flex items-center gap-4">
-                <div className="bg-[#B45309] rounded-full p-3">
-                  <Users className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-xl sm:text-2xl font-bold text-[#78350F]">50+</p>
-                  <p className="text-xs sm:text-sm text-gray-500">Villages Impacted</p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+        {/* Centered content */}
+        <div className="relative z-10 flex h-full items-center justify-center px-4 text-center text-white">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-3xl"
+          >
+            <span className="inline-block bg-[#B45309]/80 px-4 py-1.5 rounded-full text-sm font-mono tracking-widest uppercase mb-6">
+              Rural Development
+            </span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+              Building <span className="text-[#FEF3C7]">Stronger Villages</span>
+            </h1>
+            <p className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-8">
+              Infrastructure, clean water, and livelihood programs for rural communities.
+            </p>
+            <button className="inline-flex items-center gap-2 bg-[#FEF3C7] text-[#78350F] font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+              Get Involved
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </motion.div>
         </div>
       </section>
 
@@ -206,7 +168,6 @@ export default function RuralDevelopment() {
             ))}
           </motion.div>
 
-          {/* Simplified location bar */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
