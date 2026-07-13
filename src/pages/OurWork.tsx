@@ -92,7 +92,7 @@ export default function OurWork() {
     return null
   }
 
-  // ========== CATEGORIES WITH NEW COLORS ==========
+  // ========== CATEGORIES ==========
   const categories: WorkCategory[] = [
     // 1. Rural Development – #849989
     {
@@ -341,17 +341,23 @@ export default function OurWork() {
   // ========== JSX ==========
   return (
     <div className="min-h-screen bg-white pt-8 pb-16">
-      {/* ===== FLIP CARDS SECTION ===== */}
+      {/* ===== WHAT WE DO SECTION ===== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <motion.h2
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-3xl sm:text-4xl font-bold text-[#263238] text-center mb-12"
+          className="text-center mb-12"
         >
-          Our Focus Areas
-        </motion.h2>
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#263238] mb-4">
+            What <span className="text-[#FFF314] drop-shadow-md">We Do</span>
+          </h2>
+          <p className="text-lg text-[#263238]/60 max-w-2xl mx-auto">
+            Explore our five key focus areas where we create lasting impact in communities across India.
+          </p>
+        </motion.div>
 
+        {/* ===== FLIP CARDS GRID ===== */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -365,45 +371,45 @@ export default function OurWork() {
               <motion.div
                 key={category.id}
                 variants={cardVariants}
-                className="relative h-80 w-full cursor-pointer [perspective:1000px]"
+                className="relative h-96 w-full cursor-pointer [perspective:1000px]"
                 onClick={() => toggleFlip(category.id)}
               >
                 <div
-                  className={`relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] ${
+                  className={`relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] ${
                     isFlipped ? '[transform:rotateY(180deg)]' : ''
                   }`}
                 >
-                  {/* Front */}
-                  <div className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg">
-                    <img
-                      src={category.image}
-                      alt={category.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <h3 className="text-white text-xl font-bold drop-shadow-md">
+                  {/* ===== FRONT ===== */}
+                  <div className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-4 border-[#263238]/10 bg-white">
+                    {/* Image */}
+                    <div className="w-full h-[70%] overflow-hidden">
+                      <img
+                        src={category.image}
+                        alt={category.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    {/* Title below image */}
+                    <div className="h-[30%] flex flex-col items-center justify-center px-4 text-center bg-white">
+                      <h3 className="text-lg sm:text-xl font-bold text-[#263238] leading-tight">
                         {category.title}
                       </h3>
-                      <p className="text-white/80 text-sm line-clamp-2">
-                        {category.description}
-                      </p>
-                    </div>
-                    <div className="absolute top-3 right-3 bg-[#FFF314] text-[#263238] text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                      Click to flip
+                      <div className="mt-1 px-3 py-0.5 bg-[#FFF314] text-[#263238] text-[10px] font-bold rounded-full">
+                        Click to flip
+                      </div>
                     </div>
                   </div>
 
-                  {/* Back – with solid category color */}
+                  {/* ===== BACK ===== */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl overflow-hidden shadow-lg p-6 flex flex-col justify-between"
+                    className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl overflow-hidden shadow-lg p-6 flex flex-col justify-between border-4 border-white/20"
                     style={{ backgroundColor: category.color }}
                   >
                     <div>
-                      <h3 className="text-xl font-bold text-white mb-2">
+                      <h3 className="text-xl font-bold text-white mb-3">
                         {category.title}
                       </h3>
-                      <p className="text-white/90 text-sm leading-relaxed line-clamp-4">
+                      <p className="text-white/90 text-sm leading-relaxed line-clamp-5">
                         {category.longDescription}
                       </p>
                     </div>
@@ -524,7 +530,7 @@ export default function OurWork() {
                     key={idx}
                     variants={cardVariants}
                     whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
-                    className="group relative h-72 rounded-2xl overflow-hidden shadow-lg cursor-pointer"
+                    className="group relative h-72 rounded-2xl overflow-hidden shadow-lg cursor-pointer border-2 border-[#263238]/10"
                     style={{
                       backgroundImage: `url(https://picsum.photos/seed/${encodeURIComponent(
                         item.title
