@@ -2,9 +2,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HeartHandshake, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';   // <-- added for navigation
 
 export default function HeroBanner() {
   const { t } = useTranslation();
+  const navigate = useNavigate();                 // <-- hook for routing
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
@@ -91,6 +93,10 @@ export default function HeroBanner() {
     return slide.imagePosition === 'right' ? '70% center' : 'center center';
   };
 
+  const handleReadMore = () => {
+    navigate('/our-work');   // navigate to Our Work page
+  };
+
   return (
     <section
       className="relative w-full overflow-hidden bg-gray-900"
@@ -147,9 +153,10 @@ export default function HeroBanner() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={handleReadMore}   // <-- navigate to /our-work
                     className="inline-flex items-center justify-center gap-2 bg-[#FFF314] text-gray-900 px-4 md:px-8 py-1.5 md:py-4 rounded-full font-bold text-xs md:text-base hover:bg-[#FFF314]/90 transition-all duration-300 shadow-lg shadow-[#FFF314]/30"
                   >
-                    {t('hero.donateNow', 'Donate Now')}
+                    {t('hero.readMore', 'Read More')}   {/* translation key changed */}
                     <HeartHandshake size={16} className="md:w-5 md:h-5" />
                   </motion.button>
                 </motion.div>
@@ -158,7 +165,7 @@ export default function HeroBanner() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Visible arrow buttons – they don't block clicks */}
+        {/* Arrow buttons (unchanged) */}
         <button
           onClick={() => handleSlide('prev')}
           className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 p-1 md:p-2 rounded-full bg-black/30 hover:bg-black/50 text-white transition-all"
