@@ -317,7 +317,10 @@ export default function OurWork() {
 
   // ========== JSX ==========
   return (
-    <div className="min-h-screen bg-white pt-8 pb-16">
+    <div 
+      className="min-h-screen bg-white pb-16"
+      style={{ paddingTop: 'var(--navbar-height, 100px)' }}
+    >
       {/* ===== WHAT WE DO SECTION ===== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
@@ -417,7 +420,6 @@ export default function OurWork() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          // No detailed category to scroll to – fallback to alert or remove
                           alert(`Learn more about ${category.title}`)
                         }}
                         className="mt-4 w-full py-2.5 px-4 bg-white text-[#263238] font-semibold rounded-full hover:bg-gray-100 transition-colors shadow-md"
