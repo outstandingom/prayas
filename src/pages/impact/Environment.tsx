@@ -1,10 +1,42 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, ChevronRight, Sparkles, Target, Award, Users, Leaf, Sprout, Trees, Droplets, Recycle } from 'lucide-react';
+import { Play, ChevronRight, Sparkles, Target, Award, Users, Trees, Sprout, Droplets, Leaf } from 'lucide-react';
+
+// Sub‑category data (matches items in OurWork → Environment)
+const subCategories = [
+  {
+    id: 'plantation',
+    title: 'Plantation',
+    icon: Trees,
+    image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=500&fit=crop',
+    description: 'Massive tree plantation drives for ecological balance.',
+    longDescription:
+      'Our Plantation programme is not just about planting trees – it is about creating forests. We select native species, involve local communities in nurturing saplings, and monitor survival rates. We have planted over 50,000 trees across various regions, creating green corridors and improving biodiversity. We also educate farmers about agro‑forestry to enhance soil fertility and provide additional income from timber and fruits.',
+  },
+  {
+    id: 'kargil-vatika',
+    title: 'Kargil Vatika',
+    icon: Leaf,
+    image: 'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=800&h=500&fit=crop',
+    description: 'A tribute forest honouring the brave soldiers of Kargil.',
+    longDescription:
+      'Kargil Vatika is a special memorial garden dedicated to the martyrs of the Kargil War. We have planted thousands of trees in a dedicated area, each tree symbolising the valour and sacrifice of our soldiers. The Vatika serves as a living tribute, a place for reflection, and a reminder of our duty to protect the nation and its environment. We maintain the garden with the help of local communities and schools, teaching children about patriotism and environmental stewardship.',
+  },
+  {
+    id: 'water-conservation',
+    title: 'Water Conservation',
+    icon: Droplets,
+    image: 'https://images.unsplash.com/photo-1548839149-27c2b2178e5b?w=800&h=500&fit=crop',
+    description: 'Water harvesting and sustainable water management.',
+    longDescription:
+      'Water scarcity affects millions. Our Water Conservation initiatives include constructing check dams, ponds, and rooftop rainwater harvesting systems. We also promote drip irrigation and water‑efficient farming practices. We work with village communities to map water sources and develop sustainable usage plans. Our efforts have significantly raised groundwater levels and reduced water‑borne diseases in many villages.',
+  },
+];
 
 export default function Environment() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
+      
       {/* ===== HERO SECTION – FULL SCREEN IMAGE ===== */}
       <section className="relative h-screen w-full overflow-hidden">
         <div
@@ -110,7 +142,58 @@ export default function Environment() {
         </div>
       </section>
 
-      {/* ===== WHAT WE DO ===== */}
+      {/* ===== SUB‑CATEGORIES – each with hero + content ===== */}
+      {subCategories.map((sub, index) => (
+        <section key={sub.id} className="py-20 md:py-28 even:bg-[#F0FDF4] odd:bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 * index }}
+              viewport={{ once: true }}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+            >
+              {/* Hero Image (left) */}
+              <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3] lg:aspect-auto lg:h-[400px] w-full">
+                <img
+                  src={sub.image}
+                  alt={sub.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 text-white">
+                  <div className="bg-[#15803D]/80 inline-block p-2 rounded-full mb-2">
+                    <sub.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-2xl font-bold drop-shadow-lg">{sub.title}</h3>
+                </div>
+              </div>
+
+              {/* Content (right) */}
+              <div>
+                <span className="inline-block text-[#15803D] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-2">
+                  {sub.title}
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-bold text-[#14532D] mb-4">
+                  {sub.title}
+                </h2>
+                <p className="text-gray-600 text-base leading-relaxed mb-4">
+                  {sub.description}
+                </p>
+                <p className="text-gray-700 text-base leading-relaxed">
+                  {sub.longDescription}
+                </p>
+                <button className="mt-6 bg-[#15803D] text-white font-semibold px-8 py-3 rounded-full shadow-md hover:shadow-lg hover:-translate-y-1 transition-all inline-flex items-center gap-2 text-sm">
+                  Learn More
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      ))}
+
+      {/* ===== WHERE WE WORK ===== */}
       <section className="py-20 md:py-28 bg-[#F0FDF4]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -121,10 +204,10 @@ export default function Environment() {
             className="text-center max-w-3xl mx-auto mb-16"
           >
             <span className="inline-block text-[#15803D] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-4">
-              Our Key Initiatives
+              Where We Work
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#14532D] mb-6">
-              Taking action <span className="text-[#15803D]">for the planet</span>
+              Making an impact in <span className="text-[#15803D]">rural and urban communities</span>
             </h2>
           </motion.div>
 
@@ -137,28 +220,24 @@ export default function Environment() {
           >
             {[
               {
-                icon: <Trees className="w-8 h-8" />,
                 title: 'Tree Plantation',
                 desc: 'Massive drives to increase green cover and combat climate change.'
               },
               {
-                icon: <Sprout className="w-8 h-8" />,
                 title: 'Water Conservation',
                 desc: 'Rainwater harvesting, check dams, and sustainable water management.'
               },
               {
-                icon: <Droplets className="w-8 h-8" />,
-                title: 'Waste Management',
-                desc: 'Promoting reduce, reuse, recycle in rural and urban communities.'
+                title: 'Kargil Vatika',
+                desc: 'A tribute forest honouring the brave soldiers of Kargil.'
               },
               {
-                icon: <Recycle className="w-8 h-8" />,
                 title: 'Eco‑Education',
                 desc: 'Workshops and awareness campaigns for sustainable living.'
               }
             ].map((item, i) => (
               <div key={i} className="bg-white p-6 rounded-2xl border border-[#15803D]/20 hover:shadow-lg transition-all hover:-translate-y-1 text-center">
-                <div className="text-[#15803D] mb-4 flex justify-center">{item.icon}</div>
+                <div className="text-4xl mb-4">🌳</div>
                 <h3 className="text-lg font-bold text-[#14532D] mb-2">{item.title}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
               </div>
@@ -186,91 +265,6 @@ export default function Environment() {
               </div>
             </div>
           </motion.div>
-        </div>
-      </section>
-
-      {/* ===== YOUR JOURNEY ===== */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <span className="inline-block text-[#15803D] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-4">
-              Your Journey
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#14532D] mb-4">
-              One Mission. <span className="text-[#15803D]">Infinite impact.</span>
-            </h2>
-            <p className="text-gray-600 text-lg">Start your journey with us</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Video placeholder */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="relative rounded-2xl overflow-hidden shadow-xl aspect-video bg-gradient-to-br from-[#14532D] to-[#15803D] group cursor-pointer flex items-center justify-center"
-            >
-              <div className="absolute inset-0 bg-black/20" />
-              <div className="relative z-10 text-center">
-                <div className="bg-[#86EFAC] rounded-full p-5 shadow-2xl hover:scale-110 transition-transform inline-block">
-                  <Play className="w-8 h-8 text-[#14532D] fill-[#14532D]" />
-                </div>
-                <p className="text-white text-sm font-mono mt-4 opacity-80">Watch our journey</p>
-              </div>
-            </motion.div>
-
-            {/* Steps */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="space-y-4"
-            >
-              {[
-                {
-                  num: '01',
-                  title: 'Community Assessment',
-                  desc: 'Identify environmental challenges and opportunities in the area.'
-                },
-                {
-                  num: '02',
-                  title: 'Tree Plantation Drives',
-                  desc: 'Organise massive planting events with native species.'
-                },
-                {
-                  num: '03',
-                  title: 'Water Harvesting',
-                  desc: 'Construct check dams, ponds, and rooftop systems.'
-                },
-                {
-                  num: '04',
-                  title: 'Awareness Campaigns',
-                  desc: 'Educate communities on waste management and sustainability.'
-                },
-                {
-                  num: '05',
-                  title: 'Long‑term Stewardship',
-                  desc: 'Empower local groups to protect and maintain green spaces.'
-                }
-              ].map((step, i) => (
-                <div key={i} className="group bg-[#F0FDF4] p-5 rounded-xl border border-[#15803D]/20 hover:shadow-md transition-all flex items-start gap-4 hover:border-[#15803D]">
-                  <span className="font-mono text-xl font-bold text-[#15803D] min-w-[44px]">{step.num}</span>
-                  <div>
-                    <h4 className="font-bold text-[#14532D] group-hover:text-[#15803D] transition-colors">{step.title}</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed mt-0.5">{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
         </div>
       </section>
 
