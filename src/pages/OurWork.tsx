@@ -23,8 +23,6 @@ import {
   UsersRound,
   Leaf,
   Sprout,
-  ChevronDown,
-  ChevronUp,
 } from 'lucide-react'
 
 interface WorkItem {
@@ -50,21 +48,9 @@ interface WorkCategory {
 export default function OurWork() {
   const { t } = useTranslation()
   const [flipped, setFlipped] = useState<Record<number, boolean>>({})
-  const [expandedCategories, setExpandedCategories] = useState<Record<number, boolean>>({})
 
   const toggleFlip = (id: number) => {
     setFlipped((prev) => ({ ...prev, [id]: !prev[id] }))
-  }
-
-  const toggleCategoryExpand = (id: number) => {
-    setExpandedCategories((prev) => ({ ...prev, [id]: !prev[id] }))
-  }
-
-  const scrollToCategory = (id: number) => {
-    const el = document.getElementById(`category-${id}`)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
   }
 
   // ========== ROUTE CONFIGURATION ==========
@@ -320,15 +306,6 @@ export default function OurWork() {
     },
   }
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  }
-
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: {
@@ -349,8 +326,12 @@ export default function OurWork() {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#263238] mb-4">
-            What <span className="text-[#FFF314] drop-shadow-md">We Do</span>
+          {/* Heading in Forte font */}
+          <h2
+            className="text-5xl sm:text-6xl md:text-7xl font-normal text-[#263238] mb-4"
+            style={{ fontFamily: 'Forte, cursive' }}
+          >
+            what we do
           </h2>
           <p className="text-lg text-[#263238]/60 max-w-2xl mx-auto">
             Explore our five key focus areas where we create lasting impact in communities across India.
@@ -383,11 +364,10 @@ export default function OurWork() {
                   <div
                     className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-8"
                     style={{
-                      backgroundColor: category.color, // full colour background
+                      backgroundColor: category.color,
                       borderColor: `${category.color}4D`,
                     }}
                   >
-                    {/* Image */}
                     <div className="w-full h-[70%] overflow-hidden">
                       <img
                         src={category.image}
@@ -395,7 +375,6 @@ export default function OurWork() {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    {/* Title area – now uses the same colour as background, with white text */}
                     <div className="h-[30%] flex flex-col items-center justify-center px-4 text-center text-white">
                       <h3 className="text-lg sm:text-xl font-bold leading-tight">
                         {category.title}
@@ -438,7 +417,8 @@ export default function OurWork() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          scrollToCategory(category.id)
+                          // No detailed category to scroll to – fallback to alert or remove
+                          alert(`Learn more about ${category.title}`)
                         }}
                         className="mt-4 w-full py-2.5 px-4 bg-white text-[#263238] font-semibold rounded-full hover:bg-gray-100 transition-colors shadow-md"
                       >
@@ -452,192 +432,6 @@ export default function OurWork() {
           })}
         </motion.div>
       </section>
-
-      {/* ===== DETAILED CATEGORIES ===== */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
-      >
-        {categories.map((category) => {
-          const isExpanded = expandedCategories[category.id] || false
-          const route = getCategoryRoute(category.id)
-          return (
-            <motion.div
-              key={category.id}
-              id={`category-${category.id}`}
-              variants={itemVariants}
-              className={`relative rounded-2xl p-6 md:p-8 mb-20 last:mb-0 scroll-mt-24 border-l-8 ${category.borderColor} shadow-sm`}
-              style={{ background: category.bgColor }}
-            >
-              {/* Category Banner Image */}
-              <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg mb-6">
-                <img
-                  src={category.image}
-                  alt={category.title}
-                  className="w-full h-full object-cover"
-                />
-                <div
-                  className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"
-                  style={{
-                    backgroundImage: `linear-gradient(to top, ${category.color}80, transparent)`,
-                  }}
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
-                    {category.title}
-                  </h2>
-                  <p className="text-white/90 text-base md:text-lg max-w-2xl drop-shadow">
-                    {category.description}
-                  </p>
-                </div>
-              </div>
-
-              {/* Expanded Category Description */}
-              <div className="mb-8">
-                <p className="text-[#263238]/80 text-base md:text-lg leading-relaxed">
-                  {category.longDescription}
-                </p>
-                <button
-                  onClick={() => toggleCategoryExpand(category.id)}
-                  className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[#263238] hover:text-[#FFF314] transition-colors"
-                >
-                  {isExpanded ? (
-                    <>Show less <ChevronUp className="w-4 h-4" /></>
-                  ) : (
-                    <>Read more about this area <ChevronDown className="w-4 h-4" /></>
-                  )}
-                </button>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-4 p-6 bg-[#263238]/5 rounded-xl border border-[#263238]/10"
-                  >
-                    <p className="text-[#263238]/70 text-base leading-relaxed">
-                      {category.longDescription} <br /><br />
-                      <span className="font-semibold text-[#263238]">
-                        Our impact in this area:
-                      </span>{' '}
-                      We have reached over 10,000 people through our {category.title.toLowerCase()} programmes,
-                      with measurable improvements in quality of life, income, and community cohesion.
-                      We continue to scale our efforts with the support of our donors and volunteers.
-                    </p>
-                  </motion.div>
-                )}
-              </div>
-
-              {/* Category Items */}
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              >
-                {category.items.map((item, idx) => (
-                  <motion.div
-                    key={idx}
-                    variants={cardVariants}
-                    whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
-                    className="group relative h-72 rounded-2xl overflow-hidden shadow-lg cursor-pointer border-2 border-[#263238]/10"
-                    style={{
-                      backgroundImage: `url(https://picsum.photos/seed/${encodeURIComponent(
-                        item.title
-                      )}/600/400)`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-300" />
-                    <div className="relative z-10 h-full flex flex-col justify-end p-6 text-white">
-                      <div
-                        className={`inline-flex p-2.5 rounded-xl ${category.bgColor} mb-3 w-fit group-hover:scale-110 transition-transform duration-300`}
-                        style={{ color: category.color }}
-                      >
-                        <item.icon className="w-5 h-5" />
-                      </div>
-                      <h3 className="text-xl font-bold mb-1 drop-shadow-md">
-                        {item.title}
-                      </h3>
-                      <p className="text-white/80 text-sm leading-relaxed line-clamp-3">
-                        {item.description}
-                      </p>
-
-                      {route ? (
-                        <Link
-                          to={route}
-                          className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20 text-center inline-block`}
-                          style={{
-                            backgroundColor: category.color,
-                            backdropFilter: 'blur(4px)',
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Learn More →
-                        </Link>
-                      ) : (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            alert(`Learn more about ${item.title}:\n\n${item.longDescription}`)
-                          }}
-                          className={`mt-3 w-full py-1.5 px-3 text-white text-xs font-semibold rounded-full transition-colors border border-white/20`}
-                          style={{
-                            backgroundColor: category.color,
-                            backdropFilter: 'blur(4px)',
-                          }}
-                        >
-                          Learn More →
-                        </button>
-                      )}
-                    </div>
-                    <div
-                      className="absolute bottom-0 left-0 h-1 w-0 group-hover:w-full transition-all duration-300"
-                      style={{ backgroundColor: category.color }}
-                    />
-                  </motion.div>
-                ))}
-              </motion.div>
-            </motion.div>
-          )
-        })}
-      </motion.div>
-
-      {/* ===== CTA SECTION ===== */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-16"
-      >
-        <div className="bg-gradient-to-br from-[#263238] to-[#1a2a2e] rounded-3xl p-8 sm:p-12 text-center shadow-2xl">
-          <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-            Want to Make a Difference?
-          </h3>
-          <p className="text-white/70 text-base sm:text-lg mb-6 max-w-2xl mx-auto">
-            Join us in our mission to create sustainable change. Every
-            contribution, big or small, makes a lasting impact.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/donate"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-[#FFF314] text-[#263238] font-bold rounded-full hover:bg-[#f0e000] transition-all shadow-lg shadow-[#FFF314]/30 hover:shadow-[#FFF314]/50 hover:scale-105"
-            >
-              Donate Now
-            </a>
-            <a
-              href="/volunteer"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white/10 backdrop-blur-sm text-white font-bold rounded-full hover:bg-white/20 transition-all border border-white/30 hover:border-white/50"
-            >
-              Become a Volunteer
-            </a>
-          </div>
-        </div>
-      </motion.div>
     </div>
   )
 }
