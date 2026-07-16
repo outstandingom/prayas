@@ -1,10 +1,69 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, ChevronRight, Sparkles, Target, Award, Users, HeartPulse, Stethoscope, Heart, Baby, UsersRound } from 'lucide-react';
+import { Play, ChevronRight, Sparkles, Target, Award, Users, HeartPulse, Stethoscope, Heart, Accessibility, Baby, UsersRound } from 'lucide-react';
+
+// Sub‑category data (matches items in OurWork → Health & Social Welfare)
+const subCategories = [
+  {
+    id: 'organ-donation',
+    title: 'Organ Donation',
+    icon: HeartPulse,
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=500&fit=crop',
+    description: 'Creating awareness and facilitating organ donation.',
+    longDescription:
+      'Organ donation is a life‑saving gift, yet awareness remains low. Our Organ Donation campaign educates communities about the importance of donating organs, dispels myths, and simplifies the registration process. We partner with hospitals and transplant coordinators to provide end‑to‑end support for donors and recipients. Through our efforts, we have registered thousands of potential donors and facilitated several successful transplants.',
+  },
+  {
+    id: 'health-camps',
+    title: 'Health Camps',
+    icon: Stethoscope,
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=500&fit=crop',
+    description: 'Free medical camps for underserved communities.',
+    longDescription:
+      'We organise regular health camps in remote villages, bringing doctors and specialists to people who otherwise have little access to healthcare. Services include general check‑ups, dental, eye, and gynaecological screenings, as well as distribution of free medicines. We also link patients to government hospitals for follow‑up care. Our camps often see hundreds of patients, providing critical early diagnosis and treatment.',
+  },
+  {
+    id: 'elderly-care',
+    title: 'Elderly Care',
+    icon: Heart,
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=500&fit=crop',
+    description: 'Support and companionship for senior citizens.',
+    longDescription:
+      'Our elderly population deserves dignity and care. Our Elderly Care programme conducts home visits to provide health check‑ups, medication support, and emotional companionship. We also organise social gatherings and recreational activities to combat loneliness and isolation. Additionally, we help elderly people access government pensions and other entitlements, ensuring they live their golden years with security and respect.',
+  },
+  {
+    id: 'disability-support',
+    title: 'Support for Persons with Disabilities',
+    icon: Accessibility,
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=500&fit=crop',
+    description: 'Inclusive support and opportunities for persons with disabilities.',
+    longDescription:
+      'Persons with disabilities often face multiple barriers. Our inclusive programme focuses on providing assistive devices, such as wheelchairs and hearing aids, and making public spaces and schools accessible. We also offer skill‑training tailored to different abilities and work with employers to create inclusive job opportunities. We advocate for the rights of people with disabilities and ensure their voices are heard in community decisions.',
+  },
+  {
+    id: 'child-welfare',
+    title: 'Child Welfare',
+    icon: Baby,
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=500&fit=crop',
+    description: "Protecting children's rights and well‑being.",
+    longDescription:
+      'Children are the future, and we are committed to protecting their rights. Our Child Welfare programme includes nutrition supplementation, immunisation drives, and early childhood education. We also work to prevent child labour and child marriage through awareness and legal support. We collaborate with schools and anganwadi centres to ensure every child has access to quality education and healthcare from an early age.',
+  },
+  {
+    id: 'community-welfare',
+    title: 'Community Welfare',
+    icon: UsersRound,
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=500&fit=crop',
+    description: 'Addressing diverse social needs holistically.',
+    longDescription:
+      'Community Welfare is the umbrella under which we address diverse social issues – from food security and legal aid to mental health and disaster relief. We run community kitchens during crises, provide counselling services, and facilitate access to government schemes. Our community‑based approach ensures that we are responsive to emerging needs and that no one is left behind.',
+  },
+];
 
 export default function Healthcare() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
+      
       {/* ===== HERO SECTION – FULL SCREEN IMAGE ===== */}
       <section className="relative h-screen w-full overflow-hidden">
         <div
@@ -40,7 +99,7 @@ export default function Healthcare() {
         </div>
       </section>
 
-      {/* ===== WHY HEALTH & SOCIAL WELFARE ===== */}
+      {/* ===== WHY HEALTH & SOCIAL WELFARE (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -110,7 +169,58 @@ export default function Healthcare() {
         </div>
       </section>
 
-      {/* ===== WHERE WE WORK ===== */}
+      {/* ===== SUB‑CATEGORIES – each with hero + content ===== */}
+      {subCategories.map((sub, index) => (
+        <section key={sub.id} className="py-20 md:py-28 even:bg-[#F0FDF4] odd:bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 * index }}
+              viewport={{ once: true }}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+            >
+              {/* Hero Image (left) */}
+              <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3] lg:aspect-auto lg:h-[400px] w-full">
+                <img
+                  src={sub.image}
+                  alt={sub.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 text-white">
+                  <div className="bg-[#0D9488]/80 inline-block p-2 rounded-full mb-2">
+                    <sub.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-2xl font-bold drop-shadow-lg">{sub.title}</h3>
+                </div>
+              </div>
+
+              {/* Content (right) */}
+              <div>
+                <span className="inline-block text-[#0D9488] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-2">
+                  {sub.title}
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-bold text-[#0F766E] mb-4">
+                  {sub.title}
+                </h2>
+                <p className="text-gray-600 text-base leading-relaxed mb-4">
+                  {sub.description}
+                </p>
+                <p className="text-gray-700 text-base leading-relaxed">
+                  {sub.longDescription}
+                </p>
+                <button className="mt-6 bg-[#0D9488] text-white font-semibold px-8 py-3 rounded-full shadow-md hover:shadow-lg hover:-translate-y-1 transition-all inline-flex items-center gap-2 text-sm">
+                  Learn More
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      ))}
+
+      {/* ===== WHERE WE WORK (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#F0FDF4]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -121,10 +231,10 @@ export default function Healthcare() {
             className="text-center max-w-3xl mx-auto mb-16"
           >
             <span className="inline-block text-[#0D9488] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-4">
-              Our Key Initiatives
+              Where We Work
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0F766E] mb-6">
-              Delivering care <span className="text-[#0D9488]">across the spectrum</span>
+              Serving communities <span className="text-[#0D9488]">across India</span>
             </h2>
           </motion.div>
 
@@ -137,28 +247,24 @@ export default function Healthcare() {
           >
             {[
               {
-                icon: <HeartPulse className="w-8 h-8" />,
                 title: 'Organ Donation',
-                desc: 'Raising awareness and facilitating life‑saving transplants.'
+                desc: 'Awareness drives and transplant facilitation.'
               },
               {
-                icon: <Stethoscope className="w-8 h-8" />,
                 title: 'Health Camps',
-                desc: 'Free check‑ups, medicines, and specialist consultations.'
+                desc: 'Free check‑ups and medicines in remote areas.'
               },
               {
-                icon: <Heart className="w-8 h-8" />,
                 title: 'Elderly Care',
-                desc: 'Companionship, health checks, and support for senior citizens.'
+                desc: 'Companionship and health support for seniors.'
               },
               {
-                icon: <Baby className="w-8 h-8" />,
                 title: 'Child Welfare',
-                desc: 'Nutrition, immunisation, and early childhood development.'
+                desc: 'Nutrition, immunisation, and early education.'
               }
             ].map((item, i) => (
               <div key={i} className="bg-white p-6 rounded-2xl border border-[#0D9488]/20 hover:shadow-lg transition-all hover:-translate-y-1 text-center">
-                <div className="text-[#0D9488] mb-4 flex justify-center">{item.icon}</div>
+                <div className="text-4xl mb-4">🏥</div>
                 <h3 className="text-lg font-bold text-[#0F766E] mb-2">{item.title}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
               </div>
@@ -189,92 +295,7 @@ export default function Healthcare() {
         </div>
       </section>
 
-      {/* ===== YOUR JOURNEY ===== */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <span className="inline-block text-[#0D9488] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-4">
-              Your Journey
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0F766E] mb-4">
-              One Mission. <span className="text-[#0D9488]">Infinite impact.</span>
-            </h2>
-            <p className="text-gray-600 text-lg">Start your journey with us</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Video placeholder */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="relative rounded-2xl overflow-hidden shadow-xl aspect-video bg-gradient-to-br from-[#0F766E] to-[#0D9488] group cursor-pointer flex items-center justify-center"
-            >
-              <div className="absolute inset-0 bg-black/20" />
-              <div className="relative z-10 text-center">
-                <div className="bg-[#F0FDF4] rounded-full p-5 shadow-2xl hover:scale-110 transition-transform inline-block">
-                  <Play className="w-8 h-8 text-[#0F766E] fill-[#0F766E]" />
-                </div>
-                <p className="text-white text-sm font-mono mt-4 opacity-80">Watch our journey</p>
-              </div>
-            </motion.div>
-
-            {/* Steps */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="space-y-4"
-            >
-              {[
-                {
-                  num: '01',
-                  title: 'Community Outreach',
-                  desc: 'Identify health needs through local partnerships and surveys.'
-                },
-                {
-                  num: '02',
-                  title: 'Health Camps',
-                  desc: 'Organise free medical camps with specialists and medicines.'
-                },
-                {
-                  num: '03',
-                  title: 'Awareness Drives',
-                  desc: 'Educate communities on hygiene, nutrition, and disease prevention.'
-                },
-                {
-                  num: '04',
-                  title: 'Follow-up & Referral',
-                  desc: 'Link patients to hospitals and track their recovery.'
-                },
-                {
-                  num: '05',
-                  title: 'Community Empowerment',
-                  desc: 'Train local health volunteers to sustain long‑term well‑being.'
-                }
-              ].map((step, i) => (
-                <div key={i} className="group bg-[#F0FDF4] p-5 rounded-xl border border-[#0D9488]/20 hover:shadow-md transition-all flex items-start gap-4 hover:border-[#0D9488]">
-                  <span className="font-mono text-xl font-bold text-[#0D9488] min-w-[44px]">{step.num}</span>
-                  <div>
-                    <h4 className="font-bold text-[#0F766E] group-hover:text-[#0D9488] transition-colors">{step.title}</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed mt-0.5">{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== JOIN THE MOVEMENT ===== */}
+      {/* ===== JOIN THE MOVEMENT (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#F0FDF4]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -305,7 +326,7 @@ export default function Healthcare() {
         </div>
       </section>
 
-      {/* ===== FINAL CTA ===== */}
+      {/* ===== FINAL CTA (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#0F766E]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
