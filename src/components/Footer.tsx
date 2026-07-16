@@ -45,8 +45,8 @@ export default function Footer() {
                 </span>
               </div>
             </Link>
-            <p className="text-white/60 text-sm leading-relaxed mt-4 max-w-xs">
-  {t('footer.brand.desc', 'Working together to empower lives, protect the environment, and create opportunities for a brighter and more inclusive future.')}
+        <p className="text-white/60 text-sm leading-relaxed mt-4 max-w-xs">
+  Dedicated to creating lasting social impact through education, healthcare, women empowerment, environmental conservation, and community development across India.
 </p>
           </div>
 
