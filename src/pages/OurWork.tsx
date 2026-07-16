@@ -23,6 +23,8 @@ import {
   UsersRound,
   Leaf,
   Sprout,
+  ShoppingBag,
+  Home,
 } from 'lucide-react'
 
 interface WorkItem {
@@ -56,16 +58,12 @@ export default function OurWork() {
   // ========== ROUTE CONFIGURATION ==========
   const RURAL_CATEGORY_ID = 1
   const RURAL_ROUTE = '/rural-development'
-
   const WOMEN_CATEGORY_ID = 2
   const WOMEN_ROUTE = '/women-empowerment'
-
   const EDUCATION_CATEGORY_ID = 3
   const EDUCATION_ROUTE = '/education'
-
   const HEALTH_CATEGORY_ID = 4
   const HEALTH_ROUTE = '/healthcare'
-
   const ENVIRONMENT_CATEGORY_ID = 5
   const ENVIRONMENT_ROUTE = '/environment'
 
@@ -78,9 +76,9 @@ export default function OurWork() {
     return null
   }
 
-  // ========== CATEGORIES ==========
+  // ========== CATEGORIES (same data as before, but with updated items) ==========
   const categories: WorkCategory[] = [
-    // 1. Rural Development – #849989
+    // 1. Rural Development
     {
       id: 1,
       title: 'Rural Development',
@@ -98,33 +96,29 @@ export default function OurWork() {
           icon: Handshake,
           title: 'Village Adoption',
           description: 'Adopting villages to provide holistic development support.',
-          longDescription:
-            'Under the Village Adoption programme, we select underserved villages and commit to a multi‑year transformation plan. We work with the community to assess needs and priorities – from building roads and schools to setting up health camps and digital literacy centres. Our goal is to make each adopted village self‑sufficient by the end of our engagement, with active community participation and local ownership of all assets created.',
+          longDescription: 'Under the Village Adoption programme, we select underserved villages and commit to a multi‑year transformation plan...',
         },
         {
           icon: Droplets,
           title: 'Water & Sanitation',
           description: 'Ensuring access to clean drinking water and proper sanitation.',
-          longDescription:
-            'Access to clean water and proper sanitation is a fundamental right. Our Water & Sanitation projects include installing deep‑bore hand pumps, constructing rainwater harvesting structures, and building individual household toilets. We also conduct hygiene awareness sessions, especially focusing on women and children, to reduce water‑borne diseases and improve overall health outcomes in the villages.',
+          longDescription: 'Access to clean water and proper sanitation is a fundamental right...',
         },
         {
           icon: Building,
           title: 'Infrastructure',
           description: 'Building and improving rural infrastructure.',
-          longDescription:
-            'We believe that strong infrastructure is the backbone of rural progress. Our infrastructure initiatives range from constructing village community halls and anganwadi centres to laying internal roads and providing solar lighting. These projects not only improve daily life but also create employment opportunities for local labourers and masons, boosting the local economy.',
+          longDescription: 'We believe that strong infrastructure is the backbone of rural progress...',
         },
         {
           icon: Users,
           title: 'Community Development',
           description: 'Empowering communities through capacity building.',
-          longDescription:
-            'True development happens when communities lead it. Our Community Development efforts focus on capacity building – training community members in participatory planning, financial literacy, and local governance. We facilitate the formation of village development committees and help them access government schemes and funds. This ensures that the village itself becomes the driver of its own progress.',
+          longDescription: 'True development happens when communities lead it...',
         },
       ],
     },
-    // 2. Women Empowerment – #777e91
+    // 2. Women Empowerment & Livelihood
     {
       id: 2,
       title: 'Women Empowerment & Livelihood',
@@ -132,36 +126,45 @@ export default function OurWork() {
       description:
         'Empowering women through skill development, financial independence, and sustainable livelihood opportunities.',
       longDescription:
-        'Women are at the heart of every community, and empowering them is key to breaking the cycle of poverty. Our Women Empowerment & Livelihood programmes provide women with vocational skills, financial literacy, and access to micro‑credit through Self‑Help Groups (SHGs). We have established tailoring centres, food processing units, and small‑scale manufacturing hubs that enable women to earn a dignified income. We also work closely with women to build their confidence and leadership abilities, ensuring they have a voice in family and community decisions.',
+        'Women are at the heart of every community, and empowering them is key to breaking the cycle of poverty. Our Women Empowerment & Livelihood programmes provide women with vocational skills, financial literacy, and access to micro‑credit through Self‑Help Groups (SHGs)...',
       image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe2b8b?w=800&h=500&fit=crop',
       color: '#777e91',
       bgColor: 'bg-[#777e91]/20',
       borderColor: 'border-[#777e91]',
       items: [
         {
+          icon: ShoppingBag,
+          title: 'Sabji Wali Didi',
+          description: 'Empowering women vegetable vendors with financial literacy and market access.',
+          longDescription: 'The Sabji Wali Didi programme supports women who sell vegetables in local markets...',
+        },
+        {
           icon: Scissors,
           title: 'Sewing Centres',
           description: 'Vocational training in tailoring and garment‑making.',
-          longDescription:
-            'Our Sewing Centres are equipped with modern sewing machines and staffed by experienced instructors. We offer a comprehensive 6‑month course that covers stitching, cutting, embroidery, and garment finishing. Graduates are able to start their own tailoring businesses or find employment in local garment factories. Many of our trainees have gone on to become master trainers themselves, creating a multiplier effect.',
+          longDescription: 'Our Sewing Centres are equipped with modern sewing machines...',
         },
         {
           icon: Users2,
           title: 'SHGs (Self Help Groups)',
           description: 'Forming and strengthening women self‑help groups.',
-          longDescription:
-            'Self‑Help Groups are the cornerstone of our women empowerment strategy. We facilitate the formation of SHGs, train them in bookkeeping, micro‑savings, and inter‑lending. We also link SHGs to formal banking institutions and government schemes. Beyond finances, SHGs become platforms for women to discuss social issues, health, and legal rights, fostering a strong sense of solidarity and collective action.',
+          longDescription: 'Self‑Help Groups are the cornerstone of our women empowerment strategy...',
         },
         {
           icon: Factory,
-          title: 'Graha Industries',
+          title: 'Entrepreneurship',
+          description: 'Supporting women to start and scale their own businesses.',
+          longDescription: 'Our Entrepreneurship programme guides women through the entire business lifecycle...',
+        },
+        {
+          icon: Home,
+          title: 'Grah Udyog',
           description: 'Promoting home‑based industries for sustainable livelihoods.',
-          longDescription:
-            'Graha Industries supports women to start home‑based enterprises – from pickle making and papad rolling to agarbatti (incense stick) production and handloom weaving. We provide initial raw materials, design training, and market linkages. Our aim is to create sustainable, flexible income opportunities that allow women to work from home while managing their household responsibilities.',
+          longDescription: 'Grah Udyog supports women to start home‑based enterprises...',
         },
       ],
     },
-    // 3. Education – #9eada0
+    // 3. Education & Skill Development
     {
       id: 3,
       title: 'Education & Skill Development',
@@ -169,7 +172,7 @@ export default function OurWork() {
       description:
         'Providing quality education and skill development opportunities to build a brighter future for children and youth.',
       longDescription:
-        'Education is the most powerful tool to break the cycle of poverty and create lasting change. Our Education & Skill Development initiatives go beyond the classroom – we run after‑school tutoring centres, digital literacy labs, and career guidance programmes. We also focus on value‑based education through our Sanskarshala programme, which instils ethics, empathy, and cultural pride in children. For youth, we offer vocational training in computer skills, spoken English, and soft skills to enhance employability.',
+        'Education is the most powerful tool to break the cycle of poverty and create lasting change. Our Education & Skill Development initiatives go beyond the classroom...',
       image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=500&fit=crop',
       color: '#9eada0',
       bgColor: 'bg-[#9eada0]/20',
@@ -179,33 +182,35 @@ export default function OurWork() {
           icon: GraduationCap,
           title: 'Sanskarshala',
           description: 'Value‑based education for holistic development.',
-          longDescription:
-            'Sanskarshala is our flagship programme that integrates moral education with academic learning. We conduct interactive sessions on ethics, environmental stewardship, and civic responsibility, using storytelling, role‑play, and community projects. The programme also includes yoga and meditation to promote mental well‑being. Parents and teachers often report that children become more disciplined, compassionate, and confident after participating in Sanskarshala.',
+          longDescription: 'Sanskarshala is our flagship programme that integrates moral education with academic learning...',
         },
         {
           icon: Laptop,
           title: 'Digital Literacy',
           description: 'Bridging the digital divide with computer education.',
-          longDescription:
-            'In today’s world, digital literacy is as essential as reading and writing. Our Digital Literacy programme sets up computer centres in rural areas, equipped with computers and internet connectivity. We train both children and adults in basic computer operations, internet usage, email, and online safety. We also offer advanced courses in programming, graphic design, and data entry for those who wish to pursue careers in IT.',
+          longDescription: 'In today’s world, digital literacy is as essential as reading and writing...',
         },
         {
           icon: Compass,
           title: 'Career Guidance',
           description: 'Helping youth make informed career choices.',
-          longDescription:
-            'Many young people in rural areas are unaware of the diverse career options available to them. Our Career Guidance programme conducts workshops, aptitude tests, and one‑on‑one counselling sessions. We invite professionals from various fields to speak about their journeys. We also provide information about scholarships, entrance exams, and vocational training institutes, helping youth to make confident decisions about their futures.',
+          longDescription: 'Many young people in rural areas are unaware of the diverse career options...',
         },
         {
           icon: Shield,
           title: 'Self‑Defence',
           description: 'Training for women and children to ensure safety.',
-          longDescription:
-            'We believe that every woman and child has the right to feel safe. Our Self‑Defence programme offers practical martial arts training, situational awareness drills, and legal awareness about rights and protections. The programme has been highly popular among school‑going girls and has significantly boosted their confidence. We also train teachers and parents so that they can reinforce these skills at home and in school.',
+          longDescription: 'We believe that every woman and child has the right to feel safe...',
+        },
+        {
+          icon: Users2,
+          title: 'Youth Leadership',
+          description: 'Developing young leaders for community transformation.',
+          longDescription: 'Our Youth Leadership programme identifies and nurtures young individuals...',
         },
       ],
     },
-    // 4. Health – #8d9159
+    // 4. Health & Social Welfare
     {
       id: 4,
       title: 'Health & Social Welfare',
@@ -213,7 +218,7 @@ export default function OurWork() {
       description:
         'Comprehensive healthcare and social welfare programmes ensuring the well‑being of all community members.',
       longDescription:
-        'Health is the foundation of a prosperous society. Our Health & Social Welfare initiatives cover preventive, curative, and promotive healthcare. We organise free health camps, conduct awareness drives on hygiene and nutrition, and facilitate access to government health schemes. We also have specialised programmes for organ donation awareness, elderly care, and support for persons with disabilities. Our community health workers regularly visit households to monitor health parameters and provide basic first aid.',
+        'Health is the foundation of a prosperous society. Our Health & Social Welfare initiatives cover preventive, curative, and promotive healthcare...',
       image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=500&fit=crop',
       color: '#8d9159',
       bgColor: 'bg-[#8d9159]/20',
@@ -223,47 +228,41 @@ export default function OurWork() {
           icon: HeartPulse,
           title: 'Organ Donation',
           description: 'Creating awareness and facilitating organ donation.',
-          longDescription:
-            'Organ donation is a life‑saving gift, yet awareness remains low. Our Organ Donation campaign educates communities about the importance of donating organs, dispels myths, and simplifies the registration process. We partner with hospitals and transplant coordinators to provide end‑to‑end support for donors and recipients. Through our efforts, we have registered thousands of potential donors and facilitated several successful transplants.',
+          longDescription: 'Organ donation is a life‑saving gift, yet awareness remains low...',
         },
         {
           icon: Stethoscope,
           title: 'Health Camps',
           description: 'Free medical camps for underserved communities.',
-          longDescription:
-            'We organise regular health camps in remote villages, bringing doctors and specialists to people who otherwise have little access to healthcare. Services include general check‑ups, dental, eye, and gynaecological screenings, as well as distribution of free medicines. We also link patients to government hospitals for follow‑up care. Our camps often see hundreds of patients, providing critical early diagnosis and treatment.',
+          longDescription: 'We organise regular health camps in remote villages...',
         },
         {
           icon: Heart,
           title: 'Elderly Care',
           description: 'Support and companionship for senior citizens.',
-          longDescription:
-            'Our elderly population deserves dignity and care. Our Elderly Care programme conducts home visits to provide health check‑ups, medication support, and emotional companionship. We also organise social gatherings and recreational activities to combat loneliness and isolation. Additionally, we help elderly people access government pensions and other entitlements, ensuring they live their golden years with security and respect.',
+          longDescription: 'Our elderly population deserves dignity and care...',
         },
         {
           icon: Accessibility,
           title: 'Support for Persons with Disabilities',
           description: 'Inclusive support and opportunities for persons with disabilities.',
-          longDescription:
-            'Persons with disabilities often face multiple barriers. Our inclusive programme focuses on providing assistive devices, such as wheelchairs and hearing aids, and making public spaces and schools accessible. We also offer skill‑training tailored to different abilities and work with employers to create inclusive job opportunities. We advocate for the rights of people with disabilities and ensure their voices are heard in community decisions.',
+          longDescription: 'Persons with disabilities often face multiple barriers...',
         },
         {
           icon: Baby,
           title: 'Child Welfare',
           description: "Protecting children's rights and well‑being.",
-          longDescription:
-            'Children are the future, and we are committed to protecting their rights. Our Child Welfare programme includes nutrition supplementation, immunisation drives, and early childhood education. We also work to prevent child labour and child marriage through awareness and legal support. We collaborate with schools and anganwadi centres to ensure every child has access to quality education and healthcare from an early age.',
+          longDescription: 'Children are the future, and we are committed to protecting their rights...',
         },
         {
           icon: UsersRound,
           title: 'Community Welfare',
           description: 'Addressing diverse social needs holistically.',
-          longDescription:
-            'Community Welfare is the umbrella under which we address diverse social issues – from food security and legal aid to mental health and disaster relief. We run community kitchens during crises, provide counselling services, and facilitate access to government schemes. Our community‑based approach ensures that we are responsive to emerging needs and that no one is left behind.',
+          longDescription: 'Community Welfare is the umbrella under which we address diverse social issues...',
         },
       ],
     },
-    // 5. Environment – #9e8b70
+    // 5. Environment & Sustainability
     {
       id: 5,
       title: 'Environment & Sustainability',
@@ -271,7 +270,7 @@ export default function OurWork() {
       description:
         'Protecting the environment and promoting sustainable practices for a greener and healthier planet.',
       longDescription:
-        'Environmental degradation is one of the biggest challenges of our time. Our Environment & Sustainability programmes focus on conservation, reforestation, and sustainable resource management. We organise massive tree plantation drives, promote water harvesting, and educate communities about waste management and renewable energy. We also work with schools to instil environmental values in children, ensuring that the next generation inherits a healthier planet.',
+        'Environmental degradation is one of the biggest challenges of our time. Our Environment & Sustainability programmes focus on conservation, reforestation, and sustainable resource management...',
       image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=500&fit=crop',
       color: '#9e8b70',
       bgColor: 'bg-[#9e8b70]/20',
@@ -281,15 +280,19 @@ export default function OurWork() {
           icon: Trees,
           title: 'Plantation',
           description: 'Massive tree plantation drives for ecological balance.',
-          longDescription:
-            'Our Plantation programme is not just about planting trees – it is about creating forests. We select native species, involve local communities in nurturing saplings, and monitor survival rates. We have planted over 50,000 trees across various regions, creating green corridors and improving biodiversity. We also educate farmers about agro‑forestry to enhance soil fertility and provide additional income from timber and fruits.',
+          longDescription: 'Our Plantation programme is not just about planting trees – it is about creating forests...',
+        },
+        {
+          icon: Leaf,
+          title: 'Kargil Vatika',
+          description: 'A tribute forest honouring the brave soldiers of Kargil.',
+          longDescription: 'Kargil Vatika is a special memorial garden dedicated to the martyrs of the Kargil War...',
         },
         {
           icon: Sprout,
           title: 'Water Conservation',
           description: 'Water harvesting and sustainable water management.',
-          longDescription:
-            'Water scarcity affects millions. Our Water Conservation initiatives include constructing check dams, ponds, and rooftop rainwater harvesting systems. We also promote drip irrigation and water‑efficient farming practices. We work with village communities to map water sources and develop sustainable usage plans. Our efforts have significantly raised groundwater levels and reduced water‑borne diseases in many villages.',
+          longDescription: 'Water scarcity affects millions. Our Water Conservation initiatives include constructing check dams...',
         },
       ],
     },
@@ -317,7 +320,7 @@ export default function OurWork() {
 
   // ========== JSX ==========
   return (
-    <div 
+    <div
       className="min-h-screen bg-white pb-16"
       style={{ paddingTop: 'var(--navbar-height, 100px)' }}
     >
@@ -329,7 +332,6 @@ export default function OurWork() {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          {/* Heading in Forte font */}
           <h2
             className="text-5xl sm:text-6xl md:text-7xl font-normal text-[#263238] mb-4"
             style={{ fontFamily: 'Forte, cursive' }}
@@ -363,30 +365,32 @@ export default function OurWork() {
                     isFlipped ? '[transform:rotateY(180deg)]' : ''
                   }`}
                 >
-                  {/* ===== FRONT ===== */}
+                  {/* ===== FRONT – new design (like screenshot) ===== */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-8"
+                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg"
                     style={{
-                      backgroundColor: category.color,
-                      borderColor: `${category.color}4D`,
+                      backgroundImage: `url(${category.image})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
                     }}
                   >
-                    <div className="w-full h-[70%] overflow-hidden">
-                      <img
-                        src={category.image}
-                        alt={category.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="h-[30%] flex flex-col items-center justify-center px-4 text-center text-white">
-                      <h3 className="text-lg sm:text-xl font-bold leading-tight">
+                    {/* Dark overlay */}
+                    <div className="absolute inset-0 bg-black/50" />
+
+                    {/* Content centered */}
+                    <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center text-white">
+                      <h2 className="text-2xl sm:text-3xl font-bold leading-tight mb-1">
                         {category.title}
-                      </h3>
-                      <div
-                        className="mt-1 px-3 py-0.5 text-[#263238] text-[10px] font-bold rounded-full"
-                        style={{ backgroundColor: '#ffffff' }}
-                      >
-                        Click to flip
+                      </h2>
+                      <p className="text-xs font-mono tracking-[0.2em] uppercase text-[#FFF314] mb-3">
+                        WHAT WE DO
+                      </p>
+                      <hr className="w-12 border-t-2 border-white/50 mb-3" />
+                      <p className="text-sm text-white/80 leading-relaxed max-w-xs">
+                        {category.description}
+                      </p>
+                      <div className="mt-4 px-6 py-2 border border-white/30 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-white/10 transition-colors">
+                        Learn More
                       </div>
                     </div>
                   </div>
