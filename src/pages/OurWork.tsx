@@ -387,7 +387,7 @@ export default function OurWork() {
                     isFlipped ? '[transform:rotateY(180deg)]' : ''
                   }`}
                 >
-                  {/* ===== FRONT – New design matching the reference ===== */}
+                  {/* ===== FRONT – clean, simple, no button ===== */}
                   <div
                     className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-8 flex flex-col items-center justify-center p-6 text-center"
                     style={{
@@ -401,18 +401,9 @@ export default function OurWork() {
                     <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
                       {category.title}
                     </h3>
-                    <p className="text-sm sm:text-base text-white/90 mt-3 max-w-xs leading-relaxed">
+                    <p className="text-sm sm:text-base text-white/90 mt-3 max-w-xs leading-relaxed line-clamp-2">
                       {category.description}
                     </p>
-                    <button
-                      className="mt-6 px-6 py-2 bg-white text-[#263238] font-bold rounded-full hover:shadow-lg transition-all text-sm hover:scale-105"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleFlip(category.id)
-                      }}
-                    >
-                      Register Now
-                    </button>
                   </div>
 
                   {/* ===== BACK – unchanged ===== */}
