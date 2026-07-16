@@ -46,8 +46,8 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-white/60 text-sm leading-relaxed mt-4 max-w-xs">
-              {t('footer.brand.desc', 'Empowering communities through education, healthcare, and sustainable development initiative across India')}
-            </p>
+  {t('footer.brand.desc', 'Working together to empower lives, protect the environment, and create opportunities for a brighter and more inclusive future.')}
+</p>
           </div>
 
           {/* Quick Links */}
