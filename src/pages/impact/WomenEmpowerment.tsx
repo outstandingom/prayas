@@ -1,11 +1,61 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import { Play, ChevronRight, Sparkles, Users, Heart, Target } from 'lucide-react'
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Play, ChevronRight, Sparkles, Users, Heart, Target, Scissors, Users2, Factory, ShoppingBag, Home } from 'lucide-react';
+
+// Sub‑category data (matches the items in OurWork → Women Empowerment)
+const subCategories = [
+  {
+    id: 'sabji-wali-didi',
+    title: 'Sabji Wali Didi',
+    icon: ShoppingBag,
+    image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe2b8b?w=800&h=500&fit=crop',
+    description: 'Empowering women vegetable vendors with financial literacy and market access.',
+    longDescription:
+      'The Sabji Wali Didi programme supports women who sell vegetables in local markets. We provide them with financial literacy training, access to micro‑credit, and linkages to better supply chains. They learn to manage their earnings, invest in quality produce, and build a loyal customer base. This initiative has helped hundreds of women double their daily income and gain respect in their communities.',
+  },
+  {
+    id: 'sewing-centres',
+    title: 'Sewing Centres',
+    icon: Scissors,
+    image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe2b8b?w=800&h=500&fit=crop',
+    description: 'Vocational training in tailoring and garment‑making for economic independence.',
+    longDescription:
+      'Our Sewing Centres are equipped with modern machines and staffed by experienced instructors. We offer a comprehensive 6‑month course covering stitching, cutting, embroidery, and garment finishing. Graduates start their own tailoring businesses or find employment in local garment factories. Many trainees become master trainers themselves, creating a multiplier effect that empowers even more women.',
+  },
+  {
+    id: 'shgs',
+    title: 'SHGs (Self Help Groups)',
+    icon: Users2,
+    image: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=800&h=500&fit=crop',
+    description: 'Forming and strengthening women self‑help groups for collective action and savings.',
+    longDescription:
+      'Self‑Help Groups are the cornerstone of our women empowerment strategy. We facilitate the formation of SHGs, train them in bookkeeping, micro‑savings, and inter‑lending. We link SHGs to formal banking institutions and government schemes. Beyond finances, SHGs become platforms for women to discuss social issues, health, and legal rights, fostering solidarity and collective action.',
+  },
+  {
+    id: 'entrepreneurship',
+    title: 'Entrepreneurship',
+    icon: Factory,
+    image: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&h=500&fit=crop',
+    description: 'Supporting women to start and scale their own businesses.',
+    longDescription:
+      'Our Entrepreneurship programme guides women through the entire business lifecycle – from ideation to scaling. We offer mentoring, business plan development, access to seed funding, and connections to markets. We focus on sectors where women have a natural advantage, such as food processing, handicrafts, and beauty services. Many of our entrepreneurs now run successful enterprises and employ other women in their communities.',
+  },
+  {
+    id: 'grah-udyog',
+    title: 'Grah Udyog',
+    icon: Home,
+    image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe2b8b?w=800&h=500&fit=crop',
+    description: 'Promoting home‑based industries for sustainable livelihoods.',
+    longDescription:
+      'Grah Udyog supports women to start home‑based enterprises – from pickle making and papad rolling to agarbatti (incense stick) production and handloom weaving. We provide initial raw materials, design training, and market linkages. Our aim is to create sustainable, flexible income opportunities that allow women to work from home while managing their household responsibilities.',
+  },
+];
 
 export default function WomenEmpowerment() {
   return (
-    <div className="min-h-screen bg-white pt-24 pb-12">
-      {/* ===== HERO SECTION – SINGLE BACKGROUND IMAGE ===== */}
+    <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
+      
+      {/* ===== MAIN HERO – Women Empowerment ===== */}
       <section className="relative overflow-hidden bg-[#0a1628] min-h-[90vh] flex items-center">
         <div className="absolute inset-0">
           <img
@@ -45,7 +95,7 @@ export default function WomenEmpowerment() {
         </div>
       </section>
 
-      {/* ===== WHY JOIN US ===== */}
+      {/* ===== WHY JOIN US (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -112,7 +162,58 @@ export default function WomenEmpowerment() {
         </div>
       </section>
 
-      {/* ===== WHERE WE WORK ===== */}
+      {/* ===== SUB‑CATEGORIES – each with hero + content ===== */}
+      {subCategories.map((sub, index) => (
+        <section key={sub.id} className="py-20 md:py-28 even:bg-[#F8FAFC] odd:bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 * index }}
+              viewport={{ once: true }}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+            >
+              {/* Hero Image (left) */}
+              <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3] lg:aspect-auto lg:h-[400px] w-full">
+                <img
+                  src={sub.image}
+                  alt={sub.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 text-white">
+                  <div className="bg-[#0056B3]/80 inline-block p-2 rounded-full mb-2">
+                    <sub.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-2xl font-bold drop-shadow-lg">{sub.title}</h3>
+                </div>
+              </div>
+
+              {/* Content (right) */}
+              <div>
+                <span className="inline-block text-[#0056B3] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-2">
+                  {sub.title}
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-bold text-[#0a1628] mb-4">
+                  {sub.title}
+                </h2>
+                <p className="text-gray-600 text-base leading-relaxed mb-4">
+                  {sub.description}
+                </p>
+                <p className="text-gray-700 text-base leading-relaxed">
+                  {sub.longDescription}
+                </p>
+                <button className="mt-6 bg-[#0056B3] text-white font-semibold px-8 py-3 rounded-full shadow-md hover:shadow-lg hover:-translate-y-1 transition-all inline-flex items-center gap-2 text-sm">
+                  Learn More
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      ))}
+
+      {/* ===== WHERE WE WORK (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -187,92 +288,7 @@ export default function WomenEmpowerment() {
         </div>
       </section>
 
-      {/* ===== YOUR JOURNEY ===== */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <span className="inline-block text-[#0056B3] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-4">
-              Your Journey
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0a1628] mb-4">
-              One Programme. <span className="text-[#0056B3]">Infinite possibilities.</span>
-            </h2>
-            <p className="text-gray-600 text-lg">Start your journey with us</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Video placeholder */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="relative rounded-2xl overflow-hidden shadow-xl aspect-video bg-gradient-to-br from-[#0a1628] to-[#1a3a6b] group cursor-pointer flex items-center justify-center"
-            >
-              <div className="absolute inset-0 bg-black/20" />
-              <div className="relative z-10 text-center">
-                <div className="bg-[#FFF314] rounded-full p-5 shadow-2xl hover:scale-110 transition-transform inline-block">
-                  <Play className="w-8 h-8 text-[#0a1628] fill-[#0a1628]" />
-                </div>
-                <p className="text-white text-sm font-mono mt-4 opacity-80">Watch our journey</p>
-              </div>
-            </motion.div>
-
-            {/* Steps */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="space-y-4"
-            >
-              {[
-                {
-                  num: '01',
-                  title: 'Skill Assessment',
-                  desc: 'Identify strengths and interests to match with suitable training.'
-                },
-                {
-                  num: '02',
-                  title: 'Vocational Training',
-                  desc: 'Hands‑on workshops in tailoring, computing, food processing, and more.'
-                },
-                {
-                  num: '03',
-                  title: 'Financial Literacy',
-                  desc: 'Learn to manage money, access credit, and build savings.'
-                },
-                {
-                  num: '04',
-                  title: 'Market Linkages',
-                  desc: 'Connect with buyers, cooperatives, and online platforms to sell products.'
-                },
-                {
-                  num: '05',
-                  title: 'Leadership & Advocacy',
-                  desc: 'Become a community leader and advocate for women’s rights.'
-                }
-              ].map((step, i) => (
-                <div key={i} className="group bg-[#F8FAFC] p-5 rounded-xl border border-gray-100 hover:shadow-md transition-all flex items-start gap-4 hover:border-[#0056B3]/20">
-                  <span className="font-mono text-xl font-bold text-[#0056B3] min-w-[44px]">{step.num}</span>
-                  <div>
-                    <h4 className="font-bold text-[#0a1628] group-hover:text-[#0056B3] transition-colors">{step.title}</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed mt-0.5">{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== JOIN THE MOVEMENT ===== */}
+      {/* ===== JOIN THE MOVEMENT (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#F8FAFC]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -303,7 +319,7 @@ export default function WomenEmpowerment() {
         </div>
       </section>
 
-      {/* ===== FINAL CTA ===== */}
+      {/* ===== FINAL CTA (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#0a1628]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -337,5 +353,5 @@ export default function WomenEmpowerment() {
         </div>
       </section>
     </div>
-  )
+  );
 }
