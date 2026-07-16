@@ -1,24 +1,62 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, ChevronRight, Sparkles, Target, Award, Users, MapPin, GraduationCap, BookOpen } from 'lucide-react';
+import { ChevronRight, Sparkles, Target, Award, Users, MapPin, GraduationCap, BookOpen, Handshake, Droplets, Building, Trees } from 'lucide-react';
+
+// Sub‑category data (matches the items in OurWork → Rural Development)
+const subCategories = [
+  {
+    id: 'village-adoption',
+    title: 'Village Adoption',
+    icon: Handshake,
+    image: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=800&h=500&fit=crop',
+    description:
+      'Adopting villages to provide holistic development support.',
+    longDescription:
+      'Under the Village Adoption programme, we select underserved villages and commit to a multi‑year transformation plan. We work with the community to assess needs and priorities – from building roads and schools to setting up health camps and digital literacy centres. Our goal is to make each adopted village self‑sufficient by the end of our engagement, with active community participation and local ownership of all assets created.',
+  },
+  {
+    id: 'water-sanitation',
+    title: 'Water & Sanitation',
+    icon: Droplets,
+    image: 'https://images.unsplash.com/photo-1548839149-27c2b2178e5b?w=800&h=500&fit=crop',
+    description: 'Ensuring access to clean drinking water and proper sanitation.',
+    longDescription:
+      'Access to clean water and proper sanitation is a fundamental right. Our Water & Sanitation projects include installing deep‑bore hand pumps, constructing rainwater harvesting structures, and building individual household toilets. We also conduct hygiene awareness sessions, especially focusing on women and children, to reduce water‑borne diseases and improve overall health outcomes in the villages.',
+  },
+  {
+    id: 'infrastructure',
+    title: 'Infrastructure',
+    icon: Building,
+    image: 'https://images.unsplash.com/photo-1574316345009-1c15a0aab7e3?w=800&h=500&fit=crop',
+    description: 'Building and improving rural infrastructure.',
+    longDescription:
+      'We believe that strong infrastructure is the backbone of rural progress. Our infrastructure initiatives range from constructing village community halls and anganwadi centres to laying internal roads and providing solar lighting. These projects not only improve daily life but also create employment opportunities for local labourers and masons, boosting the local economy.',
+  },
+  {
+    id: 'community-development',
+    title: 'Community Development',
+    icon: Trees,
+    image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&h=500&fit=crop',
+    description: 'Empowering communities through capacity building.',
+    longDescription:
+      'True development happens when communities lead it. Our Community Development efforts focus on capacity building – training community members in participatory planning, financial literacy, and local governance. We facilitate the formation of village development committees and help them access government schemes and funds. This ensures that the village itself becomes the driver of its own progress.',
+  },
+];
 
 export default function RuralDevelopment() {
   return (
-    <div className="min-h-screen bg-white">
-      {/* ===== HERO SECTION – SINGLE FULL-SCREEN IMAGE ===== */}
-      <section className="relative h-screen w-full overflow-hidden">
-        {/* Background image */}
+    <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
+      
+      {/* ===== MAIN HERO – Rural Development ===== */}
+      <section className="relative h-[70vh] w-full overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: `url('https://i.ibb.co/WN2LLm4L/IMG-20191115-115817.jpg')`,
           }}
         >
-          {/* Dark overlay for text readability */}
           <div className="absolute inset-0 bg-black/45" />
         </div>
-
-        {/* Centered content */}
         <div className="relative z-10 flex h-full items-center justify-center px-4 text-center text-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -43,7 +81,7 @@ export default function RuralDevelopment() {
         </div>
       </section>
 
-      {/* ===== WHY RURAL DEVELOPMENT ===== */}
+      {/* ===== WHY RURAL DEVELOPMENT (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -113,7 +151,58 @@ export default function RuralDevelopment() {
         </div>
       </section>
 
-      {/* ===== WHERE WE WORK ===== */}
+      {/* ===== SUB‑CATEGORIES – each with hero + content ===== */}
+      {subCategories.map((sub, index) => (
+        <section key={sub.id} className="py-20 md:py-28 even:bg-[#FEF3C7] odd:bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 * index }}
+              viewport={{ once: true }}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+            >
+              {/* Hero Image (left) */}
+              <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3] lg:aspect-auto lg:h-[400px] w-full">
+                <img
+                  src={sub.image}
+                  alt={sub.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 text-white">
+                  <div className="bg-[#B45309]/80 inline-block p-2 rounded-full mb-2">
+                    <sub.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-2xl font-bold drop-shadow-lg">{sub.title}</h3>
+                </div>
+              </div>
+
+              {/* Content (right) */}
+              <div>
+                <span className="inline-block text-[#B45309] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-2">
+                  {sub.title}
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-bold text-[#78350F] mb-4">
+                  {sub.title}
+                </h2>
+                <p className="text-gray-600 text-base leading-relaxed mb-4">
+                  {sub.description}
+                </p>
+                <p className="text-gray-700 text-base leading-relaxed">
+                  {sub.longDescription}
+                </p>
+                <button className="mt-6 bg-[#B45309] text-white font-semibold px-8 py-3 rounded-full shadow-md hover:shadow-lg hover:-translate-y-1 transition-all inline-flex items-center gap-2 text-sm">
+                  Learn More
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      ))}
+
+      {/* ===== WHERE WE WORK (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#FEF3C7]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -192,123 +281,7 @@ export default function RuralDevelopment() {
         </div>
       </section>
 
-      {/* ===== YOUR JOURNEY ===== */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <span className="inline-block text-[#B45309] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-4">
-              Your Journey
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#78350F] mb-4">
-              One Mission. <span className="text-[#B45309]">Infinite impact.</span>
-            </h2>
-            <p className="text-gray-600 text-lg">Start your journey with us</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Video placeholder – gradient, no image */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="relative rounded-2xl overflow-hidden shadow-xl aspect-video bg-gradient-to-br from-[#78350F] to-[#B45309] group cursor-pointer flex items-center justify-center"
-            >
-              <div className="absolute inset-0 bg-black/20" />
-              <div className="relative z-10 text-center">
-                <div className="bg-[#FEF3C7] rounded-full p-5 shadow-2xl hover:scale-110 transition-transform inline-block">
-                  <Play className="w-8 h-8 text-[#78350F] fill-[#78350F]" />
-                </div>
-                <p className="text-white text-sm font-mono mt-4 opacity-80">Watch our journey</p>
-              </div>
-            </motion.div>
-
-            {/* Steps */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="space-y-4"
-            >
-              {[
-                {
-                  num: '01',
-                  title: 'Community Assessment',
-                  desc: 'Understand the needs and priorities of the village community.'
-                },
-                {
-                  num: '02',
-                  title: 'Infrastructure Projects',
-                  desc: 'Build roads, water systems, and community centres.'
-                },
-                {
-                  num: '03',
-                  title: 'Skill Development',
-                  desc: 'Train youth and women in sustainable livelihoods.'
-                },
-                {
-                  num: '04',
-                  title: 'Health & Sanitation',
-                  desc: 'Set up health camps and clean water facilities.'
-                },
-                {
-                  num: '05',
-                  title: 'Empowerment & Leadership',
-                  desc: 'Develop local leaders to ensure long‑term sustainability.'
-                }
-              ].map((step, i) => (
-                <div key={i} className="group bg-[#FEF3C7] p-5 rounded-xl border border-[#B45309]/20 hover:shadow-md transition-all flex items-start gap-4 hover:border-[#B45309]">
-                  <span className="font-mono text-xl font-bold text-[#B45309] min-w-[44px]">{step.num}</span>
-                  <div>
-                    <h4 className="font-bold text-[#78350F] group-hover:text-[#B45309] transition-colors">{step.title}</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed mt-0.5">{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== JOIN THE MOVEMENT ===== */}
-      <section className="py-20 md:py-28 bg-[#FEF3C7]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <span className="inline-block text-[#B45309] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-4">
-              Join the Movement
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#78350F] mb-6">
-              Be part of a growing community of changemakers
-            </h2>
-            <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-              Help us build stronger villages and create lasting change in rural India.
-            </p>
-            <div className="mt-10 flex flex-wrap justify-center gap-4">
-              <button className="bg-[#B45309] text-white font-bold px-10 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all inline-flex items-center gap-2 text-sm sm:text-base">
-                Join Us
-                <ChevronRight className="w-5 h-5" />
-              </button>
-              <button className="bg-white text-[#B45309] font-bold px-10 py-4 rounded-full shadow-md hover:shadow-lg hover:-translate-y-1 transition-all border border-[#B45309]/30 text-sm sm:text-base">
-                Learn More
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ===== FINAL CTA ===== */}
+      {/* ===== FINAL CTA (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#78350F]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
