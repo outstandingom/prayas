@@ -1,13 +1,62 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, ChevronRight, Sparkles } from 'lucide-react';
+import { Play, ChevronRight, Sparkles, GraduationCap, Laptop, Compass, Shield, Users, BookOpen, Target } from 'lucide-react';
+
+// Sub‑category data (matches items in OurWork → Education)
+const subCategories = [
+  {
+    id: 'sanskarshala',
+    title: 'Sanskarshala',
+    icon: BookOpen,
+    image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=500&fit=crop',
+    description: 'Value‑based education for holistic development of children.',
+    longDescription:
+      'Sanskarshala is our flagship programme that integrates moral education with academic learning. We conduct interactive sessions on ethics, environmental stewardship, and civic responsibility, using storytelling, role‑play, and community projects. The programme also includes yoga and meditation to promote mental well‑being. Parents and teachers often report that children become more disciplined, compassionate, and confident after participating in Sanskarshala.',
+  },
+  {
+    id: 'digital-literacy',
+    title: 'Digital Literacy',
+    icon: Laptop,
+    image: 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800&h=500&fit=crop',
+    description: 'Bridging the digital divide with computer education.',
+    longDescription:
+      'In today’s world, digital literacy is as essential as reading and writing. Our Digital Literacy programme sets up computer centres in rural areas, equipped with computers and internet connectivity. We train both children and adults in basic computer operations, internet usage, email, and online safety. We also offer advanced courses in programming, graphic design, and data entry for those who wish to pursue careers in IT.',
+  },
+  {
+    id: 'career-guidance',
+    title: 'Career Guidance',
+    icon: Compass,
+    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=500&fit=crop',
+    description: 'Helping youth make informed career choices.',
+    longDescription:
+      'Many young people in rural areas are unaware of the diverse career options available to them. Our Career Guidance programme conducts workshops, aptitude tests, and one‑on‑one counselling sessions. We invite professionals from various fields to speak about their journeys. We also provide information about scholarships, entrance exams, and vocational training institutes, helping youth to make confident decisions about their futures.',
+  },
+  {
+    id: 'self-defence',
+    title: 'Self‑Defence',
+    icon: Shield,
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=500&fit=crop',
+    description: 'Training for women and children to ensure safety.',
+    longDescription:
+      'We believe that every woman and child has the right to feel safe. Our Self‑Defence programme offers practical martial arts training, situational awareness drills, and legal awareness about rights and protections. The programme has been highly popular among school‑going girls and has significantly boosted their confidence. We also train teachers and parents so that they can reinforce these skills at home and in school.',
+  },
+  {
+    id: 'youth-leadership',
+    title: 'Youth Leadership',
+    icon: Users,
+    image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&h=500&fit=crop',
+    description: 'Developing young leaders for community transformation.',
+    longDescription:
+      'Our Youth Leadership programme identifies and nurtures young individuals with the potential to lead. We offer training in communication, project management, conflict resolution, and social entrepreneurship. Participants work on real‑world community projects, mentored by experienced professionals. Many of our alumni now hold leadership positions in government, NGOs, and the corporate sector, continuing to drive positive change.',
+  },
+];
 
 export default function Education() {
   return (
-    <div className="min-h-screen bg-white">
-      {/* ===== HERO SECTION – SINGLE BACKGROUND IMAGE ===== */}
+    <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
+      
+      {/* ===== HERO SECTION – Education ===== */}
       <section className="relative overflow-hidden bg-[#0a1628] min-h-[90vh] flex items-center">
-        {/* Only one image – the hero background */}
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1920&q=80"
@@ -15,8 +64,6 @@ export default function Education() {
             className="w-full h-full object-cover opacity-30"
           />
         </div>
-
-        {/* No extra decorative elements – just the image behind */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -48,7 +95,7 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== WHY JOIN US ===== */}
+      {/* ===== WHY JOIN US (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -115,7 +162,58 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== WHERE YOU WILL SERVE ===== */}
+      {/* ===== SUB‑CATEGORIES – each with hero + content ===== */}
+      {subCategories.map((sub, index) => (
+        <section key={sub.id} className="py-20 md:py-28 even:bg-[#F8FAFC] odd:bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 * index }}
+              viewport={{ once: true }}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+            >
+              {/* Hero Image (left) */}
+              <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3] lg:aspect-auto lg:h-[400px] w-full">
+                <img
+                  src={sub.image}
+                  alt={sub.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 text-white">
+                  <div className="bg-[#0056B3]/80 inline-block p-2 rounded-full mb-2">
+                    <sub.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-2xl font-bold drop-shadow-lg">{sub.title}</h3>
+                </div>
+              </div>
+
+              {/* Content (right) */}
+              <div>
+                <span className="inline-block text-[#0056B3] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-2">
+                  {sub.title}
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-bold text-[#0a1628] mb-4">
+                  {sub.title}
+                </h2>
+                <p className="text-gray-600 text-base leading-relaxed mb-4">
+                  {sub.description}
+                </p>
+                <p className="text-gray-700 text-base leading-relaxed">
+                  {sub.longDescription}
+                </p>
+                <button className="mt-6 bg-[#0056B3] text-white font-semibold px-8 py-3 rounded-full shadow-md hover:shadow-lg hover:-translate-y-1 transition-all inline-flex items-center gap-2 text-sm">
+                  Learn More
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      ))}
+
+      {/* ===== WHERE YOU WILL SERVE (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -190,92 +288,7 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== YOUR JOURNEY ===== */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <span className="inline-block text-[#0056B3] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-4">
-              Your Journey
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0a1628] mb-4">
-              One Program. <span className="text-[#0056B3]">Infinite impact.</span>
-            </h2>
-            <p className="text-gray-600 text-lg">Start your journey with us</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Video placeholder – no image, just gradient */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="relative rounded-2xl overflow-hidden shadow-xl aspect-video bg-gradient-to-br from-[#0a1628] to-[#1a3a6b] group cursor-pointer flex items-center justify-center"
-            >
-              <div className="absolute inset-0 bg-black/20" />
-              <div className="relative z-10 text-center">
-                <div className="bg-[#FFF314] rounded-full p-5 shadow-2xl hover:scale-110 transition-transform inline-block">
-                  <Play className="w-8 h-8 text-[#0a1628] fill-[#0a1628]" />
-                </div>
-                <p className="text-white text-sm font-mono mt-4 opacity-80">Watch our journey</p>
-              </div>
-            </motion.div>
-
-            {/* Steps */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="space-y-4"
-            >
-              {[
-                {
-                  num: '01',
-                  title: 'Residential Training',
-                  desc: 'Learn the skills and mindsets to be an effective educator in underserved communities.'
-                },
-                {
-                  num: '02',
-                  title: 'Full-time Placement',
-                  desc: 'Placed as a teacher in a school serving low-income students.'
-                },
-                {
-                  num: '03',
-                  title: 'Learn through Experience',
-                  desc: 'Reflect on your experiences alongside peers and mentors.'
-                },
-                {
-                  num: '04',
-                  title: 'Summer Internship',
-                  desc: 'After your first year, explore a new dimension of educational equity.'
-                },
-                {
-                  num: '05',
-                  title: 'Community Project',
-                  desc: 'Build entrepreneurial skills and create a lasting impact in your community.'
-                }
-              ].map((step, i) => (
-                <div key={i} className="group bg-[#F8FAFC] p-5 rounded-xl border border-gray-100 hover:shadow-md transition-all flex items-start gap-4 hover:border-[#0056B3]/20">
-                  <span className="font-mono text-xl font-bold text-[#0056B3] min-w-[44px]">{step.num}</span>
-                  <div>
-                    <h4 className="font-bold text-[#0a1628] group-hover:text-[#0056B3] transition-colors">{step.title}</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed mt-0.5">{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== JOIN THE MOVEMENT ===== */}
+      {/* ===== JOIN THE MOVEMENT (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#F8FAFC]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -306,7 +319,7 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== FINAL CTA ===== */}
+      {/* ===== FINAL CTA (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#0a1628]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
