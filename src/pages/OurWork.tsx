@@ -80,7 +80,7 @@ export default function OurWork() {
     return null
   }
 
-  // ========== CATEGORIES (full data – unchanged) ==========
+  // ========== CATEGORIES – with all sub‑items ==========
   const categories: WorkCategory[] = [
     // 1. Rural Development
     {
@@ -370,7 +370,7 @@ export default function OurWork() {
           </p>
         </motion.div>
 
-        {/* ===== FLIP CARDS GRID ===== */}
+        {/* ===== FLIP CARDS GRID – square corners ===== */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -392,31 +392,29 @@ export default function OurWork() {
                     isFlipped ? '[transform:rotateY(180deg)]' : ''
                   }`}
                 >
-                  {/* ===== FRONT – frame with image and title ===== */}
+                  {/* ===== FRONT – square frame ===== */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-8 flex flex-col items-center justify-center p-4"
+                    className="absolute inset-0 [backface-visibility:hidden] overflow-hidden shadow-lg border-8 flex flex-col items-center justify-center p-4"
                     style={{
                       backgroundColor: category.color,
                       borderColor: category.color,
                     }}
                   >
-                    {/* Image container – takes most of the space */}
-                    <div className="w-full flex-1 overflow-hidden rounded-lg">
+                    <div className="w-full flex-1 overflow-hidden">
                       <img
                         src={category.image}
                         alt={category.title}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    {/* Category title – displayed below the image */}
                     <h3 className="text-white text-lg font-bold mt-2 text-center">
                       {category.title}
                     </h3>
                   </div>
 
-                  {/* ===== BACK – unchanged ===== */}
+                  {/* ===== BACK – square corners ===== */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl overflow-hidden shadow-lg p-6 flex flex-col justify-between border-4"
+                    className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-hidden shadow-lg p-6 flex flex-col justify-between border-8"
                     style={{
                       backgroundColor: category.color,
                       borderColor: category.color,
