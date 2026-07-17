@@ -19,7 +19,7 @@ export default function DisasterRelief() {
               className="absolute inset-0"
             >
               <img 
-                src="https://images.unsplash.com/photo-1536643155-33d268924c93?w=800&h=800&fit=crop&q=80" 
+                src="/ruraldevelopment.jpeg" 
                 alt="Disaster relief workers" 
                 className="w-full h-full object-cover"
               />
