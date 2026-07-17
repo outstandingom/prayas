@@ -8,10 +8,11 @@ import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaLinkedin } from 'react
 import { supabase } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
 
+// ---------- NAV LINKS WITH UPDATED NAMES ----------
 const navLinks = [
   { name: 'nav.home', path: '/' },
   {
-    name: 'nav.aboutUs',
+    name: 'What We Are',                    // changed from 'nav.aboutUs'
     path: '/about',
     submenu: [
       { name: 'nav.about.story', path: '/about' },
@@ -19,7 +20,7 @@ const navLinks = [
       { name: 'nav.about.certifications', path: '/about/certifications' },
     ]
   },
-  { name: 'nav.ourWork', path: '/our-work' },
+  { name: 'What We Do', path: '/our-work' }, // changed from 'nav.ourWork'
   { name: 'nav.impact', path: '/programs' },
   { 
     name: 'nav.media', 
@@ -164,9 +165,10 @@ export default function Navbar() {
 
   const currentLangLabel = LANGUAGES.find(l => l.code === i18n.language)?.label || 'English';
 
+  // fallback: if translation returns the key, use the key as is
   const safeT = (key: string) => {
     const translated = t(key);
-    return translated === key ? key.replace(/^nav\./, '') : translated;
+    return translated === key ? key : translated;
   };
 
   const donateText = t('nav.donateNow', 'Donate Now');
@@ -365,7 +367,7 @@ export default function Navbar() {
                 })}
               </nav>
 
-              {/* Right side actions */}
+              {/* Right side actions (unchanged) */}
               <div className="flex items-center gap-1 sm:gap-2">
                 {/* Language Switcher */}
                 <div className="relative z-20">
