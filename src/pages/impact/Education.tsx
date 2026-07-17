@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, ChevronRight, Sparkles, GraduationCap, Laptop, Compass, Shield, Users, BookOpen, Target } from 'lucide-react';
+import { ChevronRight, Sparkles, GraduationCap, Laptop, Compass, Shield, Users, BookOpen } from 'lucide-react';
 
-// Sub‑category data (matches items in OurWork → Education)
+// Sub‑category data
 const subCategories = [
   {
     id: 'sanskarshala',
@@ -55,43 +55,20 @@ export default function Education() {
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
       
-      {/* ===== HERO SECTION – Education ===== */}
-      <section className="relative overflow-hidden bg-[#0a1628] min-h-[90vh] flex items-center">
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1920&q=80"
-            alt="Education background"
-            className="w-full h-full object-cover opacity-30"
-          />
-        </div>
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="inline-block text-[#FFF314] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-6">
-              Education & Skill Development
-            </span>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1]">
-              Building leaders
-              <br />
-              <span className="text-[#FFF314]">in our classrooms</span>
-            </h1>
-            <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-              Every child deserves a chance to learn, grow, and dream. We provide access to quality education and holistic development.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <button className="bg-[#FFF314] text-[#0a1628] font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2 text-sm sm:text-base">
-                Get Involved
-                <ChevronRight className="w-5 h-5" />
-              </button>
-              <button className="bg-white/10 backdrop-blur-sm text-white font-bold px-8 py-4 rounded-full border border-white/20 hover:bg-white/20 transition-all flex items-center gap-2 text-sm sm:text-base">
-                <Play className="w-5 h-5 fill-white" />
-                Watch the Video
-              </button>
-            </div>
-          </motion.div>
+      {/* ===== HERO – clean image with centered heading ===== */}
+      <section className="relative h-[70vh] w-full overflow-hidden">
+        <img
+          src="/education.jpeg"
+          alt="Education"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          style={{ imageRendering: '-webkit-optimize-contrast' }}
+        />
+        {/* Centered heading */}
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <h1 className="text-white text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg px-4">
+            Building Leaders,<br />
+            <span className="text-[#FFF314]">One Classroom at a Time</span>
+          </h1>
         </div>
       </section>
 
@@ -162,7 +139,7 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== SUB‑CATEGORIES – each with hero + content ===== */}
+      {/* ===== SUB‑CATEGORIES ===== */}
       {subCategories.map((sub, index) => (
         <section key={sub.id} className="py-20 md:py-28 even:bg-[#F8FAFC] odd:bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -173,7 +150,6 @@ export default function Education() {
               viewport={{ once: true }}
               className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
             >
-              {/* Hero Image (left) */}
               <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3] lg:aspect-auto lg:h-[400px] w-full">
                 <img
                   src={sub.image}
@@ -189,7 +165,6 @@ export default function Education() {
                 </div>
               </div>
 
-              {/* Content (right) */}
               <div>
                 <span className="inline-block text-[#0056B3] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-2">
                   {sub.title}
@@ -288,7 +263,7 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== JOIN THE MOVEMENT (unchanged) ===== */}
+      {/* ===== JOIN THE MOVEMENT ===== */}
       <section className="py-20 md:py-28 bg-[#F8FAFC]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -319,7 +294,7 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== FINAL CTA (unchanged) ===== */}
+      {/* ===== FINAL CTA ===== */}
       <section className="py-20 md:py-28 bg-[#0a1628]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
