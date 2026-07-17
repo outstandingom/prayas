@@ -2,7 +2,7 @@ export default function ScrollStory() {
   return (
     <section className="bg-[#263238]/5 border-y border-[#263238]/10 w-full">
       <div className="max-w-4xl mx-auto px-4 py-16 md:py-24">
-        {/* ── Heading in Forte (forced with !important) ── */}
+        {/* Heading – Forte font applied with inline style + fallback */}
         <h2
           className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#263238] mb-10 text-center"
           style={{
@@ -26,7 +26,7 @@ export default function ScrollStory() {
           />
         </div>
 
-        {/* Paragraphs with dropped capital */}
+        {/* First paragraph with dropped capital */}
         <p className="first-letter:text-6xl first-letter:font-bold first-letter:text-[#FFF314] first-letter:mr-2 first-letter:float-left first-letter:drop-shadow-sm font-medium text-[#263238]">
           Prayas is a non-profit organization dedicated to creating meaningful and sustainable change in society. Established in 2001, we have been working towards empowering communities and improving lives through education, healthcare, social awareness, and community development initiatives.
         </p>
