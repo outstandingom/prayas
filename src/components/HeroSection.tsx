@@ -53,7 +53,7 @@ export default function HeroBanner() {
           'hero.slides.health.desc',
           'Organ Donation · Health Camps · Elderly Care · Support for Persons with Disabilities · Child Welfare · Community Welfare'
         ),
-        image: '/PRAYASHEALTHCAMP.jpeg',
+        image: '/healthhj.jpeg',
         imagePosition: 'center',
         route: '/healthcare',
       },
