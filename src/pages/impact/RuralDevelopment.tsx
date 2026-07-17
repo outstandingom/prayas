@@ -47,37 +47,22 @@ export default function RuralDevelopment() {
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
       
-      {/* ===== MAIN HERO – Rural Development ===== */}
+      {/* ===== NEW HERO – with your image and only a heading ===== */}
       <section className="relative h-[70vh] w-full overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('https://i.ibb.co/WN2LLm4L/IMG-20191115-115817.jpg')`,
+            backgroundImage: `url('https://i.ibb.co/1tJR31YR/Whats-App-Image-2026-07-17-at-5-00-16-PM.jpg')`,
           }}
-        >
-          <div className="absolute inset-0 bg-black/45" />
-        </div>
-        <div className="relative z-10 flex h-full items-center justify-center px-4 text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl"
-          >
-            <span className="inline-block bg-[#B45309]/80 px-4 py-1.5 rounded-full text-sm font-mono tracking-widest uppercase mb-6">
-              Rural Development
-            </span>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              Building <span className="text-[#FEF3C7]">Stronger Villages</span>
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-8">
-              Infrastructure, clean water, and livelihood programs for rural communities.
-            </p>
-            <button className="inline-flex items-center gap-2 bg-[#FEF3C7] text-[#78350F] font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-              Get Involved
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </motion.div>
+        />
+        {/* Subtle dark overlay only for readability (optional) – you can remove if not needed */}
+        <div className="absolute inset-0 bg-black/10" />
+        
+        {/* Heading – top‑left with a slight background for clarity */}
+        <div className="absolute top-6 left-6 sm:top-12 sm:left-12 z-10">
+          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg bg-black/30 px-6 py-3 rounded-xl backdrop-blur-sm inline-block">
+            Building Better Villages, Together
+          </h1>
         </div>
       </section>
 
@@ -151,7 +136,7 @@ export default function RuralDevelopment() {
         </div>
       </section>
 
-      {/* ===== SUB‑CATEGORIES – each with hero + content ===== */}
+      {/* ===== SUB‑CATEGORIES – each with hero + content (unchanged) ===== */}
       {subCategories.map((sub, index) => (
         <section key={sub.id} className="py-20 md:py-28 even:bg-[#FEF3C7] odd:bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
