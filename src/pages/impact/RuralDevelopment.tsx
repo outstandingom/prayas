@@ -54,7 +54,7 @@ export default function RuralDevelopment() {
           style={{ imageRendering: '-webkit-optimize-contrast' }}
         />
         {/* Heading on top‑right */}
-        <h1 className="absolute top-6 right-6 sm:top-12 sm:right-12 z-10 text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg">
+        <h1 className="absolute top-6 right-6 sm:top-12 sm:right-12 z-10 text-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg">
           Building Better Villages, Together
         </h1>
       </section>
