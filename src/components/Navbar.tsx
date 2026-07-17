@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 const navLinks = [
   { name: 'nav.home', path: '/' },
   {
-    name: 'What We Are',                    // changed from 'nav.aboutUs'
+    name: 'What We Are',
     path: '/about',
     submenu: [
       { name: 'nav.about.story', path: '/about' },
@@ -20,10 +20,10 @@ const navLinks = [
       { name: 'nav.about.certifications', path: '/about/certifications' },
     ]
   },
-  { name: 'What We Do', path: '/our-work' }, // changed from 'nav.ourWork'
-  { name: 'nav.impact', path: '/programs' },
+  { name: 'What We Do', path: '/our-work' },
+  { name: 'Impact', path: '/programs' },                    // changed from 'nav.impact'
   { 
-    name: 'nav.media', 
+    name: 'Media',                                          // changed from 'nav.media'
     path: '/media',
     submenu: [
       { name: 'nav.stories', path: '/stories' },
