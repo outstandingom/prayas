@@ -344,7 +344,6 @@ export default function OurWork() {
     },
   }
 
-  // ===== JSX =====
   return (
     <div 
       className="min-h-screen bg-white pb-16"
@@ -389,7 +388,7 @@ export default function OurWork() {
                     isFlipped ? '[transform:rotateY(180deg)]' : ''
                   }`}
                 >
-                  {/* ===== FRONT – border on top, left, right only ===== */}
+                  {/* FRONT – border on top, left, right only (2px) – all devices */}
                   <div
                     className="absolute inset-0 [backface-visibility:hidden] overflow-hidden shadow-lg border-0 border-t-2 border-l-2 border-r-2 flex flex-col items-center justify-center p-4"
                     style={{
@@ -409,7 +408,7 @@ export default function OurWork() {
                     </h3>
                   </div>
 
-                  {/* ===== BACK – border on top, left, right only ===== */}
+                  {/* BACK – border on top, left, right only (2px) – all devices */}
                   <div
                     className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-hidden shadow-lg p-6 flex flex-col justify-between border-0 border-t-2 border-l-2 border-r-2"
                     style={{
