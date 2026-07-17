@@ -54,15 +54,14 @@ export default function Education() {
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
       
-      {/* ===== HERO – taller to show full image ===== */}
+      {/* ===== HERO – right side visible on mobile ===== */}
       <section className="relative h-[85vh] w-full overflow-hidden">
         <img
           src="/education1.jpeg"
           alt="Education"
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-cover object-right sm:object-center"
           style={{ imageRendering: '-webkit-optimize-contrast' }}
         />
-        {/* Heading – top‑left */}
         <h1 className="absolute top-6 left-6 sm:top-12 sm:left-12 z-10 text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg">
           Building Leaders,<br />
           <span className="text-[#FFF314]">One Classroom at a Time</span>
