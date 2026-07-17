@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight, Sparkles } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 // Sub‑category data
 const subCategories = [
@@ -50,44 +50,18 @@ export default function WomenEmpowerment() {
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
       
-      {/* ===== MAIN HERO ===== */}
-      <section className="relative overflow-hidden bg-[#0a1628] min-h-[90vh] flex items-center">
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=1920&q=80"
-            alt="Women empowerment background"
-            className="w-full h-full object-cover opacity-30"
-          />
-        </div>
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="inline-block text-[#FFF314] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-6">
-              Women Empowerment & Livelihood
-            </span>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1]">
-              Empowering women
-              <br />
-              <span className="text-[#FFF314]">to lead and thrive</span>
-            </h1>
-            <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-              Through skill development, financial independence, and collective action, we help women build sustainable livelihoods and shape their own futures.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <button className="bg-[#FFF314] text-[#0a1628] font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2 text-sm sm:text-base">
-                Get Involved
-                <ChevronRight className="w-5 h-5" />
-              </button>
-              <button className="bg-white/10 backdrop-blur-sm text-white font-bold px-8 py-4 rounded-full border border-white/20 hover:bg-white/20 transition-all flex items-center gap-2 text-sm sm:text-base">
-                <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-                Watch the Video
-              </button>
-            </div>
-          </motion.div>
-        </div>
+      {/* ===== HERO – clean image with heading on top‑left ===== */}
+      <section className="relative h-[70vh] w-full overflow-hidden">
+        <img
+          src="/WOMEN.jpeg"
+          alt="Women Empowerment"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          style={{ imageRendering: '-webkit-optimize-contrast' }}
+        />
+        <h1 className="absolute top-6 left-6 sm:top-12 sm:left-12 z-10 text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg">
+          Empowering Women's Potential,<br />
+          <span className="text-[#FFF314]">Shaping a Better World.</span>
+        </h1>
       </section>
 
       {/* ===== SUB‑CATEGORIES – Full‑width hero + content ===== */}
@@ -118,7 +92,7 @@ export default function WomenEmpowerment() {
                 viewport={{ once: true }}
                 className="even:flex-row-reverse flex flex-col lg:flex-row gap-12 items-center"
               >
-                {/* Hero Image (left or right) */}
+                {/* Hero Image */}
                 <div className="lg:w-1/2 relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3] lg:aspect-auto lg:h-[400px] w-full">
                   <img
                     src={sub.image}
@@ -131,7 +105,7 @@ export default function WomenEmpowerment() {
                   </div>
                 </div>
 
-                {/* Content (right or left) */}
+                {/* Content */}
                 <div className="lg:w-1/2">
                   <span className="inline-block text-[#0056B3] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-2">
                     {sub.title}
