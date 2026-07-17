@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, Sparkles, Target, Award, Users, MapPin, GraduationCap, BookOpen, Handshake, Droplets, Building, Trees } from 'lucide-react';
 
-// Sub‑category data
 const subCategories = [
   {
     id: 'village-adoption',
@@ -46,15 +45,14 @@ export default function RuralDevelopment() {
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
       
-      {/* ===== HERO – image with clean text on top‑right ===== */}
+      {/* ===== HERO – using <img> for sharper quality ===== */}
       <section className="relative h-[70vh] w-full overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://i.ibb.co/1tJR31YR/Whats-App-Image-2026-07-17-at-5-00-16-PM.jpg')`,
-          }}
+        <img
+          src="https://i.ibb.co/1tJR31YR/Whats-App-Image-2026-07-17-at-5-00-16-PM.jpg"
+          alt="Rural Development"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          style={{ imageRendering: '-webkit-optimize-contrast' }}
         />
-        {/* Just the text – no background div, no overlay */}
         <h1 className="absolute top-6 right-6 sm:top-12 sm:right-12 z-10 text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg">
           Building Better Villages, Together
         </h1>
