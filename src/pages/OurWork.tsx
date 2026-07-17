@@ -392,33 +392,27 @@ export default function OurWork() {
                     isFlipped ? '[transform:rotateY(180deg)]' : ''
                   }`}
                 >
-                  {/* ===== FRONT – exactly like reference image ===== */}
+                  {/* ===== FRONT – with image and bottom bar ===== */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-8 flex flex-col items-center justify-center p-6 text-center"
+                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-8 flex flex-col"
                     style={{
-                      backgroundColor: category.color,
                       borderColor: `${category.color}4D`,
                     }}
                   >
-                    <span className="text-xs font-mono tracking-[0.2em] uppercase text-white/80 mb-1">
-                      WHAT WE DO
-                    </span>
-                    <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-2">
-                      {category.title}
-                    </h3>
-                    <p className="text-sm sm:text-base text-white/90 max-w-xs leading-relaxed line-clamp-2">
-                      {category.description}
-                    </p>
-                    {/* Register Now button – flips the card */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleFlip(category.id)
-                      }}
-                      className="mt-4 px-6 py-2 bg-white text-[#263238] font-bold rounded-full hover:shadow-lg transition-all hover:scale-105 text-sm"
-                    >
-                      Register Now
-                    </button>
+                    {/* Image section */}
+                    <div
+                      className="flex-1 bg-cover bg-center"
+                      style={{ backgroundImage: `url(${category.image})` }}
+                    />
+                    {/* Bottom bar – solid white with text */}
+                    <div className="bg-white px-4 py-3 text-center border-t border-[#263238]/10 flex flex-col items-center justify-center">
+                      <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#263238]/50">
+                        WHAT WE DO
+                      </span>
+                      <h3 className="text-sm sm:text-base font-bold text-[#263238] leading-tight">
+                        {category.title}
+                      </h3>
+                    </div>
                   </div>
 
                   {/* ===== BACK – unchanged ===== */}
