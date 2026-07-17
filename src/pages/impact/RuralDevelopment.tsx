@@ -45,14 +45,15 @@ export default function RuralDevelopment() {
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
       
-      {/* ===== HERO – using <img> for sharper quality ===== */}
+      {/* ===== HERO – using local image ===== */}
       <section className="relative h-[70vh] w-full overflow-hidden">
         <img
-          src="https://i.ibb.co/1tJR31YR/Whats-App-Image-2026-07-17-at-5-00-16-PM.jpg"
+          src="/ruraldevelopment.jpeg"
           alt="Rural Development"
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ imageRendering: '-webkit-optimize-contrast' }}
         />
+        {/* Heading on top‑right */}
         <h1 className="absolute top-6 right-6 sm:top-12 sm:right-12 z-10 text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg">
           Building Better Villages, Together
         </h1>
