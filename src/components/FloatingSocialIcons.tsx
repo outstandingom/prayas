@@ -10,7 +10,7 @@ const socialLinks = [
 
 export default function FloatingSocialIcons() {
   return (
-    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 sm:gap-3">
+    <div className="fixed right-0.5 sm:right-3 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-1.5">
       {socialLinks.map(({ icon: Icon, href, label }) => (
         <a
           key={label}
@@ -18,9 +18,9 @@ export default function FloatingSocialIcons() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={label}
-          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-700 hover:text-[#FFF314] hover:scale-110 transition-all duration-300 border border-gray-200 hover:border-[#FFF314]"
+          className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white shadow-md flex items-center justify-center text-gray-700 hover:text-[#FFF314] hover:scale-110 transition-all duration-300 border border-gray-200 hover:border-[#FFF314]"
         >
-          <Icon size={14} className="sm:w-[18px] sm:h-[18px]" />
+          <Icon size={12} className="sm:w-[16px] sm:h-[16px]" />
         </a>
       ))}
     </div>
