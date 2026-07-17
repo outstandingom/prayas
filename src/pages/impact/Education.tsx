@@ -57,7 +57,7 @@ export default function Education() {
       {/* ===== HERO – taller to show full image ===== */}
       <section className="relative h-[85vh] w-full overflow-hidden">
         <img
-          src="/education.jpeg"
+          src="/education1.jpeg"
           alt="Education"
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ imageRendering: '-webkit-optimize-contrast' }}
