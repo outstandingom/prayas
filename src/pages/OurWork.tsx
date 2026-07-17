@@ -388,9 +388,9 @@ export default function OurWork() {
                     isFlipped ? '[transform:rotateY(180deg)]' : ''
                   }`}
                 >
-                  {/* FRONT – border on top, left, right only (2px) – all devices */}
+                  {/* FRONT – 1px border on top, left, right only */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] overflow-hidden shadow-lg border-0 border-t-2 border-l-2 border-r-2 flex flex-col items-center justify-center p-4"
+                    className="absolute inset-0 [backface-visibility:hidden] overflow-hidden shadow-lg border-0 border-t border-l border-r flex flex-col items-center justify-center p-4"
                     style={{
                       backgroundColor: category.color,
                       borderColor: category.color,
@@ -408,9 +408,9 @@ export default function OurWork() {
                     </h3>
                   </div>
 
-                  {/* BACK – border on top, left, right only (2px) – all devices */}
+                  {/* BACK – 1px border on top, left, right only */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-hidden shadow-lg p-6 flex flex-col justify-between border-0 border-t-2 border-l-2 border-r-2"
+                    className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-hidden shadow-lg p-6 flex flex-col justify-between border-0 border-t border-l border-r"
                     style={{
                       backgroundColor: category.color,
                       borderColor: category.color,
