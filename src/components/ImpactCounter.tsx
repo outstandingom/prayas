@@ -104,7 +104,8 @@ export default function ImpactCounter() {
           <span className="text-[#FFF314] font-mono text-xs uppercase tracking-widest font-semibold bg-[#FFF314]/10 px-4 py-2 rounded-full inline-block">
             {t('impact.header.subtitle', 'Our Impact in Numbers')}
           </span>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-[#263238] mt-4">
+          {/* Main heading – now using .forte class */}
+          <h2 className="forte text-3xl md:text-4xl lg:text-5xl font-bold text-[#263238] mt-4">
             {t('impact.header.title', 'Making a Difference Together')}
           </h2>
           <div className="w-20 h-1 bg-[#FFF314] mx-auto mt-4 rounded-full"></div>
