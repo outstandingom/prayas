@@ -2,15 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, Sparkles, Target, Award, Users, MapPin, GraduationCap, BookOpen, Handshake, Droplets, Building, Trees } from 'lucide-react';
 
-// Sub‑category data (matches the items in OurWork → Rural Development)
+// Sub‑category data
 const subCategories = [
   {
     id: 'village-adoption',
     title: 'Village Adoption',
     icon: Handshake,
     image: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=800&h=500&fit=crop',
-    description:
-      'Adopting villages to provide holistic development support.',
+    description: 'Adopting villages to provide holistic development support.',
     longDescription:
       'Under the Village Adoption programme, we select underserved villages and commit to a multi‑year transformation plan. We work with the community to assess needs and priorities – from building roads and schools to setting up health camps and digital literacy centres. Our goal is to make each adopted village self‑sufficient by the end of our engagement, with active community participation and local ownership of all assets created.',
   },
@@ -47,7 +46,7 @@ export default function RuralDevelopment() {
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
       
-      {/* ===== HERO – just the image and a clean heading on top‑left ===== */}
+      {/* ===== HERO – image with clean text on top‑right ===== */}
       <section className="relative h-[70vh] w-full overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -55,18 +54,13 @@ export default function RuralDevelopment() {
             backgroundImage: `url('https://i.ibb.co/1tJR31YR/Whats-App-Image-2026-07-17-at-5-00-16-PM.jpg')`,
           }}
         />
-        {/* Subtle dark overlay (optional – you can remove it) */}
-        <div className="absolute inset-0 bg-black/10" />
-        
-        {/* Heading – top‑left, clean, no button */}
-        <div className="absolute top-6 left-6 sm:top-12 sm:left-12 z-10">
-          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg bg-black/30 px-6 py-3 rounded-xl backdrop-blur-sm inline-block">
-            Building Better Villages, Together
-          </h1>
-        </div>
+        {/* Just the text – no background div, no overlay */}
+        <h1 className="absolute top-6 right-6 sm:top-12 sm:right-12 z-10 text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg">
+          Building Better Villages, Together
+        </h1>
       </section>
 
-      {/* ===== WHY RURAL DEVELOPMENT (unchanged) ===== */}
+      {/* ===== WHY RURAL DEVELOPMENT ===== */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -136,7 +130,7 @@ export default function RuralDevelopment() {
         </div>
       </section>
 
-      {/* ===== SUB‑CATEGORIES (unchanged) ===== */}
+      {/* ===== SUB‑CATEGORIES ===== */}
       {subCategories.map((sub, index) => (
         <section key={sub.id} className="py-20 md:py-28 even:bg-[#FEF3C7] odd:bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -185,7 +179,7 @@ export default function RuralDevelopment() {
         </section>
       ))}
 
-      {/* ===== WHERE WE WORK (unchanged) ===== */}
+      {/* ===== WHERE WE WORK ===== */}
       <section className="py-20 md:py-28 bg-[#FEF3C7]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -264,7 +258,7 @@ export default function RuralDevelopment() {
         </div>
       </section>
 
-      {/* ===== FINAL CTA (unchanged) ===== */}
+      {/* ===== FINAL CTA ===== */}
       <section className="py-20 md:py-28 bg-[#78350F]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
