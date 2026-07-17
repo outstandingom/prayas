@@ -2,7 +2,7 @@ export default function ScrollStory() {
   return (
     <section className="bg-[#263238]/5 border-y border-[#263238]/10 w-full">
       <div className="max-w-4xl mx-auto px-4 py-16 md:py-24">
-        {/* Heading in Forte font */}
+        {/* Heading – pure Forte font */}
         <h2
           className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#263238] mb-10 text-center"
           style={{ fontFamily: 'Forte, cursive' }}
