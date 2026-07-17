@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 
-// Sub‑category data
+// Sub‑category data (unchanged)
 const subCategories = [
   {
     id: 'sabji-wali-didi',
@@ -50,7 +50,7 @@ export default function WomenEmpowerment() {
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
       
-      {/* ===== HERO – clean image with heading on top‑left ===== */}
+      {/* ===== HERO – centered heading over image ===== */}
       <section className="relative h-[70vh] w-full overflow-hidden">
         <img
           src="/WOMEN.jpeg"
@@ -58,13 +58,16 @@ export default function WomenEmpowerment() {
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ imageRendering: '-webkit-optimize-contrast' }}
         />
-        <h1 className="absolute top-6 left-6 sm:top-12 sm:left-12 z-10 text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg">
-          Empowering Women's Potential,<br />
-          <span className="text-[#FFF314]">Shaping a Better World.</span>
-        </h1>
+        {/* Centered heading – both axes */}
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <h1 className="text-white text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg px-4">
+            Empowering Women's Potential,<br />
+            <span className="text-[#FFF314]">Shaping a Better World.</span>
+          </h1>
+        </div>
       </section>
 
-      {/* ===== SUB‑CATEGORIES – Full‑width hero + content ===== */}
+      {/* ===== SUB‑CATEGORIES (unchanged) ===== */}
       <section className="py-16 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -92,7 +95,6 @@ export default function WomenEmpowerment() {
                 viewport={{ once: true }}
                 className="even:flex-row-reverse flex flex-col lg:flex-row gap-12 items-center"
               >
-                {/* Hero Image */}
                 <div className="lg:w-1/2 relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3] lg:aspect-auto lg:h-[400px] w-full">
                   <img
                     src={sub.image}
@@ -105,7 +107,6 @@ export default function WomenEmpowerment() {
                   </div>
                 </div>
 
-                {/* Content */}
                 <div className="lg:w-1/2">
                   <span className="inline-block text-[#0056B3] font-mono text-xs tracking-[0.2em] uppercase font-bold mb-2">
                     {sub.title}
