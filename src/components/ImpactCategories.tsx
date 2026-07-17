@@ -175,8 +175,12 @@ export default function ImpactCategories() {
         <p className="text-[#263238]/70 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
           {t('categories.donationAppeal', 'Your smallest contribution makes a big difference to children’s lives. We count on the generosity of people like you to be able to create real change for India’s children!')}
         </p>
-        <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-[#263238] mt-3">
-          {t('categories.donationTitle', 'Donate For Happier Childhoods!')}
+        {/* Main heading – now static, using Forte font */}
+        <h2
+          className="text-2xl sm:text-4xl md:text-5xl text-[#263238] mt-3"
+          style={{ fontFamily: 'Forte, cursive' }}
+        >
+          Donate For Happier Childhoods!
         </h2>
       </div>
 
@@ -238,7 +242,11 @@ export default function ImpactCategories() {
                         )}
                       </div>
 
-                      <h3 className="text-[#263238] text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+                      {/* Category title – now in Forte font */}
+                      <h3
+                        className="text-[#263238] text-2xl sm:text-3xl md:text-4xl leading-tight"
+                        style={{ fontFamily: 'Forte, cursive' }}
+                      >
                         {cat.title}
                       </h3>
 
@@ -337,4 +345,4 @@ export default function ImpactCategories() {
       </div>
     </div>
   )
-                            }
+}
