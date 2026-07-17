@@ -55,7 +55,6 @@ export default function OurWork() {
     setFlipped((prev) => ({ ...prev, [id]: !prev[id] }))
   }
 
-  // ========== ROUTE CONFIGURATION ==========
   const RURAL_CATEGORY_ID = 1
   const RURAL_ROUTE = '/rural-development'
 
@@ -80,7 +79,6 @@ export default function OurWork() {
     return null
   }
 
-  // ========== CATEGORIES – with all sub‑items ==========
   const categories: WorkCategory[] = [
     // 1. Rural Development
     {
@@ -325,7 +323,6 @@ export default function OurWork() {
     },
   ]
 
-  // ========== ANIMATION VARIANTS ==========
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -345,13 +342,11 @@ export default function OurWork() {
     },
   }
 
-  // ========== JSX ==========
   return (
     <div 
       className="min-h-screen bg-white pb-16"
       style={{ paddingTop: 'var(--navbar-height, 100px)' }}
     >
-      {/* ===== WHAT WE DO SECTION ===== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -370,7 +365,6 @@ export default function OurWork() {
           </p>
         </motion.div>
 
-        {/* ===== FLIP CARDS GRID – square corners ===== */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -392,9 +386,9 @@ export default function OurWork() {
                     isFlipped ? '[transform:rotateY(180deg)]' : ''
                   }`}
                 >
-                  {/* ===== FRONT – square frame ===== */}
+                  {/* FRONT – border-4 (reduced from 8) */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] overflow-hidden shadow-lg border-8 flex flex-col items-center justify-center p-4"
+                    className="absolute inset-0 [backface-visibility:hidden] overflow-hidden shadow-lg border-4 flex flex-col items-center justify-center p-4"
                     style={{
                       backgroundColor: category.color,
                       borderColor: category.color,
@@ -412,9 +406,9 @@ export default function OurWork() {
                     </h3>
                   </div>
 
-                  {/* ===== BACK – square corners ===== */}
+                  {/* BACK – border-4 (reduced from 8) */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-hidden shadow-lg p-6 flex flex-col justify-between border-8"
+                    className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-hidden shadow-lg p-6 flex flex-col justify-between border-4"
                     style={{
                       backgroundColor: category.color,
                       borderColor: category.color,
