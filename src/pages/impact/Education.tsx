@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, Sparkles, GraduationCap, Laptop, Compass, Shield, Users, BookOpen } from 'lucide-react';
 
-// Sub‑category data (unchanged)
 const subCategories = [
   {
     id: 'sanskarshala',
@@ -55,8 +54,8 @@ export default function Education() {
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 100px)' }}>
       
-      {/* ===== HERO – full image with heading on top‑left ===== */}
-      <section className="relative h-[70vh] w-full overflow-hidden">
+      {/* ===== HERO – taller to show full image ===== */}
+      <section className="relative h-[85vh] w-full overflow-hidden">
         <img
           src="/education.jpeg"
           alt="Education"
@@ -70,7 +69,7 @@ export default function Education() {
         </h1>
       </section>
 
-      {/* ===== WHY JOIN US (unchanged) ===== */}
+      {/* ===== Rest of the page – unchanged ===== */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -137,7 +136,6 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== SUB‑CATEGORIES (unchanged) ===== */}
       {subCategories.map((sub, index) => (
         <section key={sub.id} className="py-20 md:py-28 even:bg-[#F8FAFC] odd:bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -186,7 +184,6 @@ export default function Education() {
         </section>
       ))}
 
-      {/* ===== WHERE YOU WILL SERVE (unchanged) ===== */}
       <section className="py-20 md:py-28 bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -261,7 +258,6 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== JOIN THE MOVEMENT ===== */}
       <section className="py-20 md:py-28 bg-[#F8FAFC]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -292,7 +288,6 @@ export default function Education() {
         </div>
       </section>
 
-      {/* ===== FINAL CTA ===== */}
       <section className="py-20 md:py-28 bg-[#0a1628]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
