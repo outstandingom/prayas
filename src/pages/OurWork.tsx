@@ -80,7 +80,7 @@ export default function OurWork() {
     return null
   }
 
-  // ========== CATEGORIES – with all sub‑items (full data) ==========
+  // ========== CATEGORIES (full data – unchanged) ==========
   const categories: WorkCategory[] = [
     // 1. Rural Development
     {
@@ -392,27 +392,26 @@ export default function OurWork() {
                     isFlipped ? '[transform:rotateY(180deg)]' : ''
                   }`}
                 >
-                  {/* ===== FRONT – with image and bottom bar ===== */}
+                  {/* ===== FRONT – frame with image and title ===== */}
                   <div
-                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-8 flex flex-col"
+                    className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-lg border-8 flex flex-col items-center justify-center p-4"
                     style={{
-                      borderColor: `${category.color}4D`,
+                      backgroundColor: category.color,
+                      borderColor: category.color,
                     }}
                   >
-                    {/* Image section */}
-                    <div
-                      className="flex-1 bg-cover bg-center"
-                      style={{ backgroundImage: `url(${category.image})` }}
-                    />
-                    {/* Bottom bar – solid white with text */}
-                    <div className="bg-white px-4 py-3 text-center border-t border-[#263238]/10 flex flex-col items-center justify-center">
-                      <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#263238]/50">
-                        WHAT WE DO
-                      </span>
-                      <h3 className="text-sm sm:text-base font-bold text-[#263238] leading-tight">
-                        {category.title}
-                      </h3>
+                    {/* Image container – takes most of the space */}
+                    <div className="w-full flex-1 overflow-hidden rounded-lg">
+                      <img
+                        src={category.image}
+                        alt={category.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
+                    {/* Category title – displayed below the image */}
+                    <h3 className="text-white text-lg font-bold mt-2 text-center">
+                      {category.title}
+                    </h3>
                   </div>
 
                   {/* ===== BACK – unchanged ===== */}
