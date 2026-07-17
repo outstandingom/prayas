@@ -3,16 +3,28 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
 
+/* ─── Forte font ─── */
+@font-face {
+  font-family: 'Forte';
+  src: url('/fonts/forte.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  /* Fredoka is now the primary font */
+  /* Fredoka is the primary sans font */
   --font-sans: "Fredoka", "Inter", "Outfit", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Fredoka", "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Space Mono", ui-monospace, monospace;
+
+  /* Add Forte as a custom font family */
+  --font-forte: "Forte", cursive;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -62,7 +74,8 @@
 @layer base {
   * { 
     border-color: var(--color-border); 
-    font-family: "Fredoka", sans-serif !important;
+    /* ❌ Removed !important so that Forte can override */
+    font-family: "Fredoka", sans-serif;
   }
 
   html {
@@ -94,7 +107,7 @@
   }
 }
 
-/* Keyframes */
+/* Keyframes (unchanged) */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
@@ -125,7 +138,7 @@
   50% { transform: translateY(-4px); }
 }
 
-/* Custom Utility Classes */
+/* Custom Utility Classes (unchanged) */
 @utility animate-fade-up { animation: fade-up 0.9s var(--ease-out-expo) both; }
 @utility animate-float-slow { animation: float-slow 14s ease-in-out infinite; }
 @utility animate-float-slower { animation: float-slower 18s ease-in-out infinite; }
@@ -176,7 +189,6 @@
   }
 }
 
-/* Input focus styles */
 @utility input-focus {
   @apply transition-all duration-300 ease-out;
   
@@ -187,7 +199,6 @@
   }
 }
 
-/* Button hover effect */
 @utility btn-hover {
   @apply transition-all duration-300 ease-out;
   
@@ -199,4 +210,9 @@
   &:active {
     transform: translateY(0);
   }
+}
+
+/* ─── Add a utility class for Forte ─── */
+.forte {
+  font-family: 'Forte', cursive;
 }
