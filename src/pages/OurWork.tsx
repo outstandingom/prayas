@@ -236,7 +236,7 @@ export default function OurWork() {
         'Comprehensive healthcare and social welfare programmes ensuring the well‑being of all community members.',
       longDescription:
         'Health is the foundation of a prosperous society. Our Health & Social Welfare initiatives cover preventive, curative, and promotive healthcare. We organise free health camps, conduct awareness drives on hygiene and nutrition, and facilitate access to government health schemes. We also have specialised programmes for organ donation awareness, elderly care, and support for persons with disabilities. Our community health workers regularly visit households to monitor health parameters and provide basic first aid.',
-      image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=500&fit=crop',
+      image: '/healthcaret.jpg',
       color: '#8d9159',
       bgColor: 'bg-[#8d9159]/20',
       borderColor: 'border-[#8d9159]',
