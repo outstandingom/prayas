@@ -149,7 +149,8 @@ export default function Navbar() {
 
   // ALWAYS use dark text on white background
   const textColor = 'text-[#263238]';
-  const textColorHover = 'hover:text-[#FFF314]';
+  // ↓↓↓ RED text on hover (instead of yellow)
+  const textColorHover = 'hover:text-red-600';
   const borderColor = 'border-[#263238]/30';
   const bgButton = 'bg-[#263238]/5 hover:bg-[#263238]/10';
 
@@ -212,12 +213,12 @@ export default function Navbar() {
             className="flex flex-col leading-tight"
           >
             <span
-              className="font-display font-bold text-2xl sm:text-4xl tracking-tight group-hover:text-[#FFF314] transition drop-shadow-md text-[#263238]"
+              className="font-display font-bold text-2xl sm:text-4xl tracking-tight group-hover:text-red-600 transition drop-shadow-md text-[#263238]"
             >
               {brandFirstLine[brandLangIndex]}
             </span>
             <span
-              className="font-display text-xs sm:text-base font-medium opacity-90 group-hover:text-[#FFF314] transition text-[#263238]"
+              className="font-display text-xs sm:text-base font-medium opacity-90 group-hover:text-red-600 transition text-[#263238]"
             >
               {brandSecondLine[brandLangIndex]}
             </span>
@@ -242,7 +243,7 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
-                  className="hover:text-[#FFF314] transition"
+                  className="hover:text-red-600 transition"
                 >
                   <FaFacebook size={14} />
                 </a>
@@ -251,7 +252,7 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="X (Twitter)"
-                  className="hover:text-[#FFF314] transition"
+                  className="hover:text-red-600 transition"
                 >
                   <FaTwitter size={14} />
                 </a>
@@ -260,7 +261,7 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="hover:text-[#FFF314] transition"
+                  className="hover:text-red-600 transition"
                 >
                   <FaInstagram size={14} />
                 </a>
@@ -269,7 +270,7 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="YouTube"
-                  className="hover:text-[#FFF314] transition"
+                  className="hover:text-red-600 transition"
                 >
                   <FaYoutube size={14} />
                 </a>
@@ -278,7 +279,7 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn"
-                  className="hover:text-[#FFF314] transition"
+                  className="hover:text-red-600 transition"
                 >
                   <FaLinkedin size={14} />
                 </a>
@@ -317,13 +318,15 @@ export default function Navbar() {
                       >
                         <button
                           className={`text-xs font-medium transition-colors relative py-2 group flex items-center gap-1 whitespace-nowrap ${
-                            isActive ? 'text-[#FFF314]' : `${textColor} ${textColorHover}`
+                            // active text = red; default = dark, hover = red
+                            isActive ? 'text-red-600' : `${textColor} ${textColorHover}`
                           }`}
                         >
                           {safeT(link.name)}
                           <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
+                          {/* Underline – now red */}
                           <span
-                            className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                            className={`absolute -bottom-1 left-0 h-[2px] bg-red-600 transition-all ${
                               isActive ? 'w-full' : 'w-0 group-hover:w-full'
                             }`}
                           />
@@ -343,8 +346,8 @@ export default function Navbar() {
                                   to={sub.path}
                                   className={`block px-5 py-2.5 text-xs transition-colors ${
                                     location.pathname === sub.path
-                                      ? 'text-[#FFF314] bg-[#FFF314]/10'
-                                      : `text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]`
+                                      ? 'text-red-600 bg-red-600/10'   // red text + red background highlight
+                                      : `text-[#263238] dark:text-white hover:bg-red-600/10 hover:text-red-600`
                                   }`}
                                 >
                                   {safeT(sub.name)}
@@ -363,13 +366,13 @@ export default function Navbar() {
                       to={link.path}
                       className={`text-xs font-medium transition-colors relative py-2 group whitespace-nowrap ${
                         location.pathname === link.path
-                          ? 'text-[#FFF314]'
+                          ? 'text-red-600'
                           : `${textColor} ${textColorHover}`
                       }`}
                     >
                       {safeT(link.name)}
                       <span
-                        className={`absolute -bottom-1 left-0 h-[2px] bg-[#FFF314] transition-all ${
+                        className={`absolute -bottom-1 left-0 h-[2px] bg-red-600 transition-all ${
                           location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
                         }`}
                       />
@@ -387,7 +390,7 @@ export default function Navbar() {
                       e.stopPropagation();
                       setLangDropdownOpen(!langDropdownOpen);
                     }}
-                    className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-xs font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
+                    className={`flex items-center gap-1 px-2 sm:px-3 py-2 text-xs font-medium rounded-full border transition-all hover:scale-105 cursor-pointer ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-red-600 hover:text-red-600`}
                   >
                     <Globe className="w-4 h-4" />
                     <span className="hidden sm:inline">{currentLangLabel}</span>
@@ -407,8 +410,8 @@ export default function Navbar() {
                             onClick={() => changeLanguage(lang.code)}
                             className={`block w-full text-left px-5 py-2.5 text-sm transition-colors cursor-pointer ${
                               i18n.language === lang.code
-                                ? 'text-[#FFF314] bg-[#FFF314]/10'
-                                : 'text-[#263238] dark:text-white hover:bg-[#FFF314]/10 hover:text-[#FFF314]'
+                                ? 'text-red-600 bg-red-600/10'
+                                : 'text-[#263238] dark:text-white hover:bg-red-600/10 hover:text-red-600'
                             }`}
                           >
                             {lang.label}
@@ -419,7 +422,7 @@ export default function Navbar() {
                   </AnimatePresence>
                 </div>
 
-                {/* Donate Now button */}
+                {/* Donate Now button – background stays YELLOW */}
                 <Link
                   to="/donate"
                   className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
@@ -428,7 +431,7 @@ export default function Navbar() {
                   <span className="hidden sm:inline">{donateText}</span>
                 </Link>
 
-                {/* Volunteer button */}
+                {/* Volunteer button – background stays YELLOW */}
                 <Link
                   to="/volunteer"
                   className="inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all shadow-lg hover:shadow-[#FFF314]/30 hover:scale-105 bg-[#FFF314] text-[#263238] shadow-[#FFF314]/40 hover:bg-[#FFF314]/90"
@@ -441,7 +444,7 @@ export default function Navbar() {
                 {showAuthLink && !loading && (
                   <Link
                     to={isAuthenticated ? "/profile" : "/auth"}
-                    className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-[#FFF314] hover:text-[#FFF314]`}
+                    className={`inline-flex items-center gap-1.5 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition-all hover:scale-105 ${borderColor} ${textColor} hover:bg-[#263238]/5 hover:border-red-600 hover:text-red-600`}
                   >
                     <User className="w-4 h-4" />
                     <span className="hidden sm:inline">
@@ -487,8 +490,8 @@ export default function Navbar() {
                         onClick={() => toggleMobileSubmenu(link.name)}
                         className={`w-full text-left text-lg font-medium py-3 px-2 rounded-lg transition-colors flex items-center justify-between ${
                           isActive
-                            ? 'text-[#FFF314] bg-[#FFF314]/10'
-                            : 'text-[#263238] hover:text-[#FFF314] hover:bg-[#263238]/5'
+                            ? 'text-red-600 bg-red-600/10'
+                            : 'text-[#263238] hover:text-red-600 hover:bg-[#263238]/5'
                         }`}
                       >
                         {safeT(link.name)}
@@ -510,8 +513,8 @@ export default function Navbar() {
                                   to={sub.path}
                                   className={`py-2 px-2 rounded-lg text-sm transition-colors ${
                                     location.pathname === sub.path
-                                      ? 'text-[#FFF314] bg-[#FFF314]/10'
-                                      : 'text-[#263238]/70 hover:text-[#FFF314] hover:bg-[#263238]/5'
+                                      ? 'text-red-600 bg-red-600/10'
+                                      : 'text-[#263238]/70 hover:text-red-600 hover:bg-[#263238]/5'
                                   }`}
                                 >
                                   {safeT(sub.name)}
@@ -531,8 +534,8 @@ export default function Navbar() {
                     to={link.path}
                     className={`text-lg font-medium py-3 px-2 rounded-lg transition-colors ${
                       location.pathname === link.path
-                        ? 'text-[#FFF314] bg-[#FFF314]/10'
-                        : 'text-[#263238] hover:text-[#FFF314] hover:bg-[#263238]/5'
+                        ? 'text-red-600 bg-red-600/10'
+                        : 'text-[#263238] hover:text-red-600 hover:bg-[#263238]/5'
                     }`}
                   >
                     {safeT(link.name)}
@@ -553,8 +556,8 @@ export default function Navbar() {
                       }}
                       className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                         i18n.language === lang.code
-                          ? 'bg-[#FFF314] text-[#263238]'
-                          : 'bg-[#263238]/5 text-[#263238] hover:bg-[#263238]/10'
+                          ? 'bg-red-600 text-white'   // active language – red background + white text
+                          : 'bg-[#263238]/5 text-[#263238] hover:bg-red-600/10 hover:text-red-600'
                       }`}
                     >
                       {lang.label}
@@ -563,7 +566,7 @@ export default function Navbar() {
                 </div>
               </div>
 
-              {/* Donate Now – Mobile */}
+              {/* Donate Now – Mobile (background stays YELLOW) */}
               <Link
                 to="/donate"
                 className="mt-3 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
@@ -571,7 +574,7 @@ export default function Navbar() {
                 {donateText} <Heart className="w-5 h-5" />
               </Link>
 
-              {/* Volunteer – Mobile */}
+              {/* Volunteer – Mobile (background stays YELLOW) */}
               <Link
                 to="/volunteer"
                 className="mt-2 w-full text-center rounded-full bg-[#FFF314] px-6 py-3.5 font-semibold text-[#263238] flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-transform"
@@ -583,7 +586,7 @@ export default function Navbar() {
               {showAuthLink && !loading && (
                 <Link
                   to={isAuthenticated ? "/profile" : "/auth"}
-                  className="mt-2 w-full text-center rounded-full border border-[#263238]/30 px-6 py-3.5 font-semibold text-[#263238] hover:text-[#FFF314] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+                  className="mt-2 w-full text-center rounded-full border border-[#263238]/30 px-6 py-3.5 font-semibold text-[#263238] hover:text-red-600 flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
                 >
                   <User className="w-5 h-5" />
                   {isAuthenticated ? safeT('nav.profile') : safeT('nav.signin')}
