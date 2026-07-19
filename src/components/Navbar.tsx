@@ -8,7 +8,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaLinkedin } from 'react
 import { supabase } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
 
-// ---------- NAV LINKS WITH UPDATED NAMES ----------
+// ---------- NAV LINKS WITH UPDATED "What We Do" SUBMENU ----------
 const navLinks = [
   { name: 'nav.home', path: '/' },
   {
@@ -20,10 +20,21 @@ const navLinks = [
       { name: 'nav.about.certifications', path: '/about/certifications' },
     ]
   },
-  { name: 'What We Do', path: '/our-work' },
-  { name: 'Impact', path: '/programs' },                    // changed from 'nav.impact'
-  { 
-    name: 'Media',                                          // changed from 'nav.media'
+  {
+    name: 'What We Do',
+    path: '/our-work',
+    submenu: [
+      { name: 'Overview', path: '/our-work' },
+      { name: 'Rural Development', path: '/rural-development' },
+      { name: 'Women Empowerment & Livelihood', path: '/women-empowerment' },
+      { name: 'Education & Skill Development', path: '/education' },
+      { name: 'Health & Social Welfare', path: '/healthcare' },
+      { name: 'Environment & Sustainability', path: '/environment' },
+    ]
+  },
+  { name: 'Impact', path: '/programs' },
+  {
+    name: 'Media',
     path: '/media',
     submenu: [
       { name: 'nav.stories', path: '/stories' },
