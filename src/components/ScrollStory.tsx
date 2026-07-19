@@ -9,9 +9,7 @@ export default function ScrollStory() {
           className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#263238] mb-10 text-center"
           style={{ fontFamily: '"Comic Sans MS", cursive' }}
         >
-          {t('story.header.part1', 'Our ')}
-          <span className="text-[#FFF314] drop-shadow-md">{t('story.header.part2', 'Journey')}</span>
-          {t('story.header.part3', ' & Mission')}
+          {t('story.header.about', 'About Us')}
         </h2>
         <div className="space-y-8 text-[#263238]/80 text-base sm:text-lg md:text-xl leading-relaxed">
           <p className="first-letter:text-6xl first-letter:font-bold first-letter:text-[#FFF314] first-letter:mr-2 first-letter:float-left first-letter:drop-shadow-sm font-medium text-[#263238]">
