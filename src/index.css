@@ -4,12 +4,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
-/* ─── Forte font – multiple formats for universal support ─── */
+/* ─── Forte font – served from public/fonts/forte.ttf for ALL devices ─── */
 @font-face {
   font-family: 'Forte';
-  src: url('/fonts/forte.woff2') format('woff2'),
-       url('/fonts/forte.woff') format('woff'),
-       url('/fonts/forte.ttf') format('truetype');
+  src: url('/fonts/forte.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -106,6 +104,11 @@
   ::selection {
     background-color: color-mix(in srgb, var(--color-teal) 20%, transparent);
     color: var(--color-foreground);
+  }
+
+  /* ─── Forte on ALL headings – consistent across every device ─── */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Forte', 'Pacifico', cursive !important;
   }
 }
 
