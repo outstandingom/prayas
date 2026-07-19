@@ -79,7 +79,7 @@ export default function OurWork() {
     return null
   }
 
-  // ========== CATEGORIES (unchanged – keep your full data) ==========
+  // ========== CATEGORIES (with WOMEN.jpeg added) ==========
   const categories: WorkCategory[] = [
     // 1. Rural Development
     {
@@ -125,7 +125,7 @@ export default function OurWork() {
         },
       ],
     },
-    // 2. Women Empowerment & Livelihood
+    // 2. Women Empowerment & Livelihood  ← IMAGE ADDED HERE
     {
       id: 2,
       title: 'Women Empowerment & Livelihood',
@@ -134,7 +134,7 @@ export default function OurWork() {
         'Empowering women through skill development, financial independence, and sustainable livelihood opportunities.',
       longDescription:
         'Women are at the heart of every community, and empowering them is key to breaking the cycle of poverty. Our Women Empowerment & Livelihood programmes provide women with vocational skills, financial literacy, and access to micro‑credit through Self‑Help Groups (SHGs). We have established tailoring centres, food processing units, and small‑scale manufacturing hubs that enable women to earn a dignified income. We also work closely with women to build their confidence and leadership abilities, ensuring they have a voice in family and community decisions.',
-      image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe2b8b?w=800&h=500&fit=crop',
+      image: '/WOMEN.jpeg',   // <-- This line ensures the image is used on the front of the card
       color: '#777e91',
       bgColor: 'bg-[#777e91]/20',
       borderColor: 'border-[#777e91]',
