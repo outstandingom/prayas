@@ -216,7 +216,7 @@ function CarouselItem({ index, item, xOffset, itemWidth, totalWidth }: {
           />
         </div>
         <motion.div
-          className="text-xs sm:text-sm font-medium text-[#FFF314] whitespace-nowrap bg-[#263238]/95 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#263238]/20 pointer-events-none shadow-sm"
+          className="text-xs sm:text-sm font-medium text-[#EF4444] whitespace-nowrap bg-[#263238]/95 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#263238]/20 pointer-events-none shadow-sm"
           style={{ maxWidth: cardWidth + 20, overflow: 'hidden', textOverflow: 'ellipsis' }}
         >
           {item.title}
