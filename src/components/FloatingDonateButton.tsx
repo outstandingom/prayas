@@ -33,7 +33,7 @@ const MARQUEE_MESSAGES = [
   { 
     id: 'health',
     text: 'Donate for Healthcare',
-    imageUrl: 'https://i.ibb.co/your-health-image.png'
+    imageUrl: '/Donatehealth.png'
   },
   { 
     id: 'shelter',
