@@ -4,7 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
-/* ─── Forte font – served from public/fonts/forte.ttf for ALL devices ─── */
+/* ─── Comic Sans MS font – served from public/fonts/comic-sans-ms.ttf ─── */
 @font-face {
   font-family: 'ComicSans';
   src: url('/fonts/comic-sans-ms.ttf') format('truetype');
@@ -24,8 +24,8 @@
   --font-display: "Fredoka", "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Space Mono", ui-monospace, monospace;
 
-  /* Forte with fallback to Pacifico (Google Font) */
-  --font-forte: "Forte", "Pacifico", cursive;
+  /* Comic Sans MS as the heading font (replaces Forte) */
+  --font-heading: "ComicSans", "Comic Sans MS", cursive;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -106,9 +106,9 @@
     color: var(--color-foreground);
   }
 
-  /* ─── Forte on ALL headings – consistent across every device ─── */
+  /* ─── Comic Sans MS on ALL headings – consistent across every device ─── */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Forte', 'Pacifico', cursive !important;
+    font-family: var(--font-heading) !important;
   }
 }
 
@@ -217,7 +217,7 @@
   }
 }
 
-/* ─── Utility class for Forte (uses variable with fallback) ─── */
-.forte {
-  font-family: var(--font-forte) !important;
+/* ─── Utility class for Comic Sans MS ─── */
+.comic-sans {
+  font-family: var(--font-heading) !important;
 }
