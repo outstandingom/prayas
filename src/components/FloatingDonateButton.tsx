@@ -38,7 +38,7 @@ const MARQUEE_MESSAGES = [
   { 
     id: 'shelter',
     text: 'Donate for Shelter',
-    imageUrl: 'https://i.ibb.co/your-shelter-image.png'
+    imageUrl: '/InShot_20260721_094914841.png'
   },
 ]
 
