@@ -102,20 +102,27 @@ export default function ImpactCategories() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goTo])
 
+  // ---- FIXED WHEEL HANDLER ----
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
+
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault()
-      const now = Date.now()
-      if (now - lastWheelTime.current < 500) return
-      lastWheelTime.current = now
       const deltaX = Math.abs(e.deltaX)
       const deltaY = Math.abs(e.deltaY)
-      const delta = deltaX > deltaY ? e.deltaX : e.deltaY
-      if (delta === 0) return
-      goTo(delta > 0 ? 1 : -1)
+
+      // Only handle horizontal swipes (where horizontal delta is dominant)
+      if (deltaX > deltaY && deltaX > 10) {
+        e.preventDefault()
+        const now = Date.now()
+        if (now - lastWheelTime.current < 500) return
+        lastWheelTime.current = now
+        const direction = e.deltaX > 0 ? 1 : -1
+        goTo(direction)
+      }
+      // Otherwise, let the page scroll vertically (do nothing)
     }
+
     container.addEventListener('wheel', handleWheel, { passive: false })
     return () => container.removeEventListener('wheel', handleWheel)
   }, [goTo])
@@ -170,12 +177,11 @@ export default function ImpactCategories() {
   return (
     <div className="w-full bg-white min-h-screen flex flex-col">
 
-      {/* ── HEADER – matches your reference image ── */}
+      {/* ── HEADER ── */}
       <div className="flex-shrink-0 bg-white px-4 sm:px-8 pt-6 pb-4 text-center">
         <p className="text-[#263238]/70 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
           {t('categories.donationAppeal', 'Your smallest contribution makes a big difference to children’s lives. We count on the generosity of people like you to be able to create real change for India’s children!')}
         </p>
-        {/* Main heading – now static, using Forte font */}
         <h2
           className="text-2xl sm:text-4xl md:text-5xl text-[#263238] mt-3"
           style={{ fontFamily: 'Forte, cursive' }}
@@ -196,7 +202,10 @@ export default function ImpactCategories() {
           onTouchStart={handleDragStart}
           onTouchMove={handleDragMove}
           onTouchEnd={handleDragEnd}
-          style={{ touchAction: 'none', cursor: isDragging ? 'grabbing' : 'grab' }}
+          style={{
+            touchAction: 'pan-y', // allow vertical scrolling, horizontal drag still works
+            cursor: isDragging ? 'grabbing' : 'grab'
+          }}
         >
           <div
             ref={trackRef}
