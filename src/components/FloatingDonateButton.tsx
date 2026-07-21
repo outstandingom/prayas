@@ -23,7 +23,7 @@ const MARQUEE_MESSAGES = [
   { 
     id: 'nature',
     text: 'Donate for Nature',
-    imageUrl: 'hhttps://i.ibb.co/VcgfFyrG/In-Shot-20260713-121034613-1.png'
+    imageUrl: '/Tree.png'
   },
   { 
     id: 'food',
