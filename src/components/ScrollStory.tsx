@@ -11,6 +11,19 @@ export default function ScrollStory() {
         >
           About Us
         </h2>
+
+        {/* YouTube Video Embed */}
+        <div className="max-w-3xl mx-auto mb-12 rounded-lg overflow-hidden shadow-lg aspect-video">
+          <iframe
+            className="w-full h-full"
+            src="https://www.youtube.com/embed/8fA5MBs4mr0"
+            title="Prayas - About Us"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+
         <div className="space-y-8 text-[#263238]/80 text-base sm:text-lg md:text-xl leading-relaxed">
           <p className="first-letter:text-6xl first-letter:font-bold first-letter:text-[#FFF314] first-letter:mr-2 first-letter:float-left first-letter:drop-shadow-sm font-medium text-[#263238]">
             {t('story.paragraphs.p1', 'Prayas is a non-profit organization dedicated to creating meaningful and sustainable change in society. Established in 2001, we have been working towards empowering communities and improving lives through education, healthcare, social awareness, and community development initiatives.')}
