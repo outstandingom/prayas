@@ -102,7 +102,7 @@ export default function ImpactCategories() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goTo])
 
-  // ---- FIXED WHEEL HANDLER ----
+  // Wheel handler – horizontal only, vertical scroll works
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -111,7 +111,6 @@ export default function ImpactCategories() {
       const deltaX = Math.abs(e.deltaX)
       const deltaY = Math.abs(e.deltaY)
 
-      // Only handle horizontal swipes (where horizontal delta is dominant)
       if (deltaX > deltaY && deltaX > 10) {
         e.preventDefault()
         const now = Date.now()
@@ -120,7 +119,6 @@ export default function ImpactCategories() {
         const direction = e.deltaX > 0 ? 1 : -1
         goTo(direction)
       }
-      // Otherwise, let the page scroll vertically (do nothing)
     }
 
     container.addEventListener('wheel', handleWheel, { passive: false })
@@ -154,7 +152,7 @@ export default function ImpactCategories() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh] bg-white">
+      <div className="flex items-center justify-center min-h-[50vh] bg-white">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#FFF314] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-[#263238]/60">Loading impact categories...</p>
@@ -165,7 +163,7 @@ export default function ImpactCategories() {
 
   if (translatedCategories.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh] bg-white">
+      <div className="flex items-center justify-center min-h-[50vh] bg-white">
         <p className="text-[#263238]/60">No impact categories available.</p>
       </div>
     )
@@ -175,23 +173,23 @@ export default function ImpactCategories() {
   const transformValue = -(currentIndex * 100) + (dragOffset / containerWidth) * 100
 
   return (
-    <div className="w-full bg-white min-h-screen flex flex-col">
+    <div className="w-full bg-white min-h-[90vh] flex flex-col">
 
-      {/* ── HEADER ── */}
-      <div className="flex-shrink-0 bg-white px-4 sm:px-8 pt-6 pb-4 text-center">
+      {/* ── HEADER – reduced spacing ── */}
+      <div className="flex-shrink-0 bg-white px-4 sm:px-8 pt-4 pb-3 text-center">
         <p className="text-[#263238]/70 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
           {t('categories.donationAppeal', 'Your smallest contribution makes a big difference to children’s lives. We count on the generosity of people like you to be able to create real change for India’s children!')}
         </p>
         <h2
-          className="text-2xl sm:text-4xl md:text-5xl text-[#263238] mt-3"
+          className="text-2xl sm:text-4xl md:text-5xl text-[#263238] mt-2"
           style={{ fontFamily: 'Forte, cursive' }}
         >
           Donate For Happier Childhoods!
         </h2>
       </div>
 
-      {/* ── CAROUSEL AREA ── */}
-      <div className="flex-1 min-h-0 relative px-2 sm:px-6 py-3 sm:py-4">
+      {/* ── CAROUSEL AREA – reduced vertical padding ── */}
+      <div className="flex-1 min-h-0 relative px-2 sm:px-6 py-2 sm:py-3">
         <div
           ref={containerRef}
           className="w-full h-full overflow-hidden rounded-xl sm:rounded-2xl select-none"
@@ -203,7 +201,7 @@ export default function ImpactCategories() {
           onTouchMove={handleDragMove}
           onTouchEnd={handleDragEnd}
           style={{
-            touchAction: 'pan-y', // allow vertical scrolling, horizontal drag still works
+            touchAction: 'pan-y',
             cursor: isDragging ? 'grabbing' : 'grab'
           }}
         >
@@ -216,8 +214,8 @@ export default function ImpactCategories() {
               <div key={cat.id} className="w-full flex-shrink-0 h-full">
                 <div className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-xl border border-[#263238]/10 h-full flex flex-col md:flex-row">
 
-                  {/* Image – reduced height on mobile */}
-                  <div className="md:w-[42%] h-48 sm:h-56 md:h-full relative flex-shrink-0">
+                  {/* Image – reduced height on all screens */}
+                  <div className="md:w-[40%] h-40 sm:h-48 md:h-full relative flex-shrink-0">
                     <img
                       src={cat.image_url}
                       alt={cat.title}
@@ -235,9 +233,9 @@ export default function ImpactCategories() {
                     </div>
                   </div>
 
-                  {/* Content */}
-                  <div className="flex-1 flex flex-col justify-between p-5 sm:p-7 md:p-10 overflow-y-auto">
-                    <div className="space-y-3 sm:space-y-4">
+                  {/* Content – reduced padding */}
+                  <div className="flex-1 flex flex-col justify-between p-4 sm:p-6 md:p-8 overflow-y-auto">
+                    <div className="space-y-2 sm:space-y-3">
                       {/* Category badge */}
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="inline-block w-2 h-2 rounded-full bg-[#FFF314]" />
@@ -251,15 +249,15 @@ export default function ImpactCategories() {
                         )}
                       </div>
 
-                      {/* Category title – now in Forte font */}
+                      {/* Category title – smaller on mobile */}
                       <h3
-                        className="text-[#263238] text-2xl sm:text-3xl md:text-4xl leading-tight"
+                        className="text-[#263238] text-xl sm:text-3xl md:text-3xl leading-tight"
                         style={{ fontFamily: 'Forte, cursive' }}
                       >
                         {cat.title}
                       </h3>
 
-                      <p className="text-[#263238]/70 text-sm sm:text-base md:text-lg leading-relaxed">
+                      <p className="text-[#263238]/70 text-sm sm:text-base md:text-base leading-relaxed line-clamp-3 md:line-clamp-4">
                         {cat.description}
                       </p>
 
@@ -281,20 +279,20 @@ export default function ImpactCategories() {
                         </div>
                       )}
 
-                      {/* Initiative tags */}
+                      {/* Initiative tags – reduce gap */}
                       {cat.initiatives && cat.initiatives.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-1">
+                        <div className="flex flex-wrap gap-1 sm:gap-1.5 pt-1">
                           {cat.initiatives.slice(0, 4).map((init, idx) => (
                             <span
                               key={idx}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 bg-[#263238]/5 border border-[#263238]/10 rounded-full text-[#263238]/70 text-[11px] sm:text-sm"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 bg-[#263238]/5 border border-[#263238]/10 rounded-full text-[#263238]/70 text-[10px] sm:text-sm"
                             >
                               <span>{init.icon || '📌'}</span>
                               {init.title}
                             </span>
                           ))}
                           {cat.initiatives.length > 4 && (
-                            <span className="text-[#263238]/40 text-[11px] sm:text-sm px-2 py-1">
+                            <span className="text-[#263238]/40 text-[10px] sm:text-sm px-2 py-0.5">
                               +{cat.initiatives.length - 4} more
                             </span>
                           )}
@@ -302,10 +300,10 @@ export default function ImpactCategories() {
                       )}
                     </div>
 
-                    {/* CTA – full width on mobile, “Send” style */}
+                    {/* CTA – smaller padding, full width on mobile */}
                     <button
                       onClick={() => navigate(`/impact/${cat.slug}`)}
-                      className="mt-5 sm:mt-6 w-full sm:w-auto self-start inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#FFF314] text-[#263238] font-bold text-sm uppercase tracking-wider rounded-full hover:bg-[#f0e000] transition-colors shadow-md"
+                      className="mt-4 sm:mt-5 w-full sm:w-auto self-start inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#FFF314] text-[#263238] font-bold text-sm uppercase tracking-wider rounded-full hover:bg-[#f0e000] transition-colors shadow-md"
                     >
                       {t('categories.send', 'Send')}
                       <span className="text-base">→</span>
@@ -317,11 +315,11 @@ export default function ImpactCategories() {
           </div>
         </div>
 
-        {/* Navigation arrows */}
+        {/* Navigation arrows – slightly smaller */}
         <button
           onClick={() => goTo(-1)}
           disabled={currentIndex === 0}
-          className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-all disabled:opacity-25 disabled:cursor-not-allowed text-[#263238]"
+          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-all disabled:opacity-25 disabled:cursor-not-allowed text-[#263238]"
           aria-label="Previous"
         >
           <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -330,22 +328,22 @@ export default function ImpactCategories() {
         <button
           onClick={() => goTo(1)}
           disabled={currentIndex === total - 1}
-          className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-all disabled:opacity-25 disabled:cursor-not-allowed text-[#263238]"
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-all disabled:opacity-25 disabled:cursor-not-allowed text-[#263238]"
           aria-label="Next"
         >
           <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
 
-        {/* Dot indicators */}
-        <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+        {/* Dot indicators – adjust bottom spacing */}
+        <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-20">
           {translatedCategories.map((_, i) => (
             <button
               key={i}
               onClick={() => goToIndex(i)}
               className={`transition-all duration-300 rounded-full ${
                 i === currentIndex
-                  ? 'w-5 sm:w-6 h-2 sm:h-2.5 bg-[#FFF314] shadow-[0_0_8px_rgba(255,243,20,0.6)]'
-                  : 'w-2 sm:w-2.5 h-2 sm:h-2.5 bg-[#263238]/30 hover:bg-[#263238]/50'
+                  ? 'w-5 sm:w-6 h-1.5 sm:h-2 bg-[#FFF314] shadow-[0_0_8px_rgba(255,243,20,0.6)]'
+                  : 'w-2 sm:w-2.5 h-1.5 sm:h-2 bg-[#263238]/30 hover:bg-[#263238]/50'
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />
