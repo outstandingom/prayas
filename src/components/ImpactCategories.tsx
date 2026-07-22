@@ -181,8 +181,8 @@ export default function ImpactCategories() {
           {t('categories.donationAppeal', 'Your smallest contribution makes a big difference to children’s lives. We count on the generosity of people like you to be able to create real change for India’s children!')}
         </p>
         <h2
-          className="text-2xl sm:text-4xl md:text-5xl text-[#263238] mt-2"
-          style={{ fontFamily: 'Forte, cursive' }}
+          className="text-2xl sm:text-4xl md:text-5xl text-[#263238] mt-3"
+          style={{ fontFamily: 'var(--font-heading)' }}
         >
           Donate For Happier Childhoods!
         </h2>
@@ -251,8 +251,8 @@ export default function ImpactCategories() {
 
                       {/* Category title – smaller on mobile */}
                       <h3
-                        className="text-[#263238] text-xl sm:text-3xl md:text-3xl leading-tight"
-                        style={{ fontFamily: 'Forte, cursive' }}
+                        className="text-[#263238] text-2xl sm:text-3xl md:text-4xl leading-tight"
+                        style={{ fontFamily: 'var(--font-heading)' }}
                       >
                         {cat.title}
                       </h3>

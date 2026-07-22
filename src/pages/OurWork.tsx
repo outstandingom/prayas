@@ -358,7 +358,7 @@ export default function OurWork() {
         >
           <h2
             className="text-5xl sm:text-6xl md:text-7xl font-normal text-[#263238] mb-4"
-            style={{ fontFamily: 'Forte, cursive' }}
+            style={{ fontFamily: 'var(--font-heading)' }}
           >
             what we do
           </h2>

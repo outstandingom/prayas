@@ -154,10 +154,10 @@ export default function HeroBanner() {
                   {SLIDES[currentSlide].description}
                 </p>
 
-                {/* Read More – Forte font style */}
+                {/* Read More - ComicSans font style */}
                 <button
                   onClick={handleReadMore}
-                  className="inline-flex items-center gap-2 text-[#FFF314] text-base sm:text-lg md:text-xl font-forte transition-all duration-300 hover:underline underline-offset-4"
+                  className="inline-flex items-center gap-2 text-[#FFF314] text-base sm:text-lg md:text-xl font-heading transition-all duration-300 hover:underline underline-offset-4"
                 >
                   Read More
                   <ArrowRight className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-1" />
