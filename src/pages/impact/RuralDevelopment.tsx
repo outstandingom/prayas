@@ -34,7 +34,7 @@ const subCategories = [
     id: 'community-development',
     title: 'Community Development',
     icon: Trees,
-    image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&h=500&fit=crop',
+    image: '/P1039322.JPG',
     description: 'Empowering communities through capacity building.',
     longDescription:
       'True development happens when communities lead it. Our Community Development efforts focus on capacity building – training community members in participatory planning, financial literacy, and local governance. We facilitate the formation of village development committees and help them access government schemes and funds. This ensures that the village itself becomes the driver of its own progress.',
