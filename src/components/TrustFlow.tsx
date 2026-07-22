@@ -5,12 +5,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
+// ─── YOUR LOCAL IMAGES (6 images, will cycle through them) ───
 const TRUST_IMAGES = [
-  'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1523050854058-8df90110c7f1?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=400&q=80',
+  '/HEALTH.jpg',
+  '/PRAYASHEALTHCAMP.jpeg',
+  '/WOMEN.jpeg',
+  '/education1.jpeg',
+  '/healthhj.jpeg',
+  '/CHILDRENGROUP.jpg',
 ]
 
 const cards = [
@@ -137,11 +139,7 @@ export default function TrustFlow() {
                     </p>
                   </div>
                 </div>
-                <div className="p-4 flex justify-between text-xs text-[#263238] bg-[#FFF314]/10">
-                  <span>👤 {Math.floor(Math.random() * 80) + 20}</span>
-                  <span>👁️ {Math.floor(Math.random() * 60) + 20}</span>
-                  <span>✅ {Math.floor(Math.random() * 50) + 10}</span>
-                </div>
+                {/* ─── REMOVED THE RANDOM VIEW COUNTS BAR ─── */}
               </div>
             </div>
           </div>
