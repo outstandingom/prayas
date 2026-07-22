@@ -11,18 +11,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-[#263238] text-white relative">
-      {/* Back to top button */}
-      <div className="absolute -top-5 left-1/2 -translate-x-1/2">
-        <button
-          onClick={scrollToTop}
-          className="w-10 h-10 bg-[#FFF314] text-[#263238] rounded-full flex items-center justify-center shadow-lg hover:bg-[#FFF314]/90 transition-all hover:scale-110 animate-subtle-float"
-          aria-label="Back to top"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 19V5M5 12l7-7 7 7" />
-          </svg>
-        </button>
-      </div>
+      {/* Fixed back-to-top button is now handled globally in Layout.tsx */}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">

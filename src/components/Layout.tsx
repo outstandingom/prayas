@@ -6,7 +6,8 @@ import Footer from './Footer'
 import SmoothLoader from './SmoothLoader'
 import FloatingDonateButton from './FloatingDonateButton'
 import FloatingVolunteerButton from './FloatingVolunteerButton'
-import FloatingSocialIcons from './FloatingSocialIcons'   // <-- Import
+import FloatingSocialIcons from './FloatingSocialIcons'
+import ScrollToTopButton from './ScrollToTopButton'
 
 export default function Layout() {
   const { pathname } = useLocation()
@@ -50,9 +51,10 @@ export default function Layout() {
       <Footer />
       
       {/* Floating elements */}
-      <FloatingSocialIcons />            {/* <-- Added */}
+      <FloatingSocialIcons />
       <FloatingDonateButton />
-     <FloatingVolunteerButton />
+      <FloatingVolunteerButton />
+      <ScrollToTopButton />
     </div>
   )
 }
