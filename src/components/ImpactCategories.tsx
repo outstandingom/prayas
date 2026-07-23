@@ -62,7 +62,7 @@ export default function ImpactCategories() {
           id: 'project-sindoda',
           title: 'Project Sindoda (Plastic Mukti)',
           description: 'Our dedicated campaign to transform Sindoda into a completely plastic-free zone. Through community engagement, sustainable alternatives, and rigorous waste management, we are restoring the natural beauty of the region.',
-          image_url: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&h=600&fit=crop',
+          image_url: '/Sindoda/IMG_20191022_121001 (1).jpg',
           slug: 'project-sindoda', // This will route to /impact/project-sindoda which we mapped to ProjectSindoda.tsx!
           display_order: -1, 
           is_active: true,

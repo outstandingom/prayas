@@ -76,7 +76,7 @@ export default function Programs() {
             <div className="flex flex-col md:flex-row">
               <div className="md:w-1/2 relative h-64 md:h-auto overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&h=600&fit=crop"
+                  src="/Sindoda/IMG_20191022_121001 (1).jpg"
                   alt="Project Sindoda"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />

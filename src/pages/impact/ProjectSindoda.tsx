@@ -45,7 +45,7 @@ export default function ProjectSindoda() {
               className="absolute inset-0"
             >
               <img
-                src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&h=1200&fit=crop"
+                src="/Sindoda/IMG_20191022_121001 (1).jpg"
                 alt="Plastic Free Sindoda"
                 className="w-full h-full object-cover"
               />
@@ -102,6 +102,45 @@ export default function ProjectSindoda() {
                 Conducting door-to-door educational campaigns to teach families about the long-term dangers of plastic pollution.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-12 bg-[#F1F8F5]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-[#263238] mb-4">
+              Project Gallery
+            </h2>
+            <p className="font-mono text-[#263238]/70 max-w-2xl mx-auto text-lg">
+              Glimpses of our ongoing efforts to make Sindoda plastic-free.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {[
+              "/Sindoda/IMG_20191030_112427.jpg",
+              "/Sindoda/IMG_20191104_162653.jpg",
+              "/Sindoda/IMG_20191106_104516.jpg",
+              "/Sindoda/IMG_20191113_121346.jpg",
+              "/Sindoda/IMG_20191213_152317.jpg",
+              "/Sindoda/IMG_20191217_140306.jpg"
+            ].map((src, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+                className="relative h-64 rounded-2xl overflow-hidden shadow-lg group border border-[#15803D]/10"
+              >
+                <img
+                  src={src}
+                  alt={`Sindoda Campaign ${idx + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
