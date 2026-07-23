@@ -5,12 +5,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
+// ─── YOUR LOCAL IMAGES ───
 const TRUST_IMAGES = [
-  'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1523050854058-8df90110c7f1?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=400&q=80',
+  '/HEALTH.jpg',
+  '/PRAYASHEALTHCAMP.jpeg',
+  '/WOMEN.jpeg',
+  '/education1.jpeg',
+  '/healthhj.jpeg',
+  '/CHILDRENGROUP.jpg',
 ]
 
 const cards = [
@@ -99,22 +101,14 @@ export default function TrustFlow() {
             <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#FFF314] border-4 border-[#263238] shadow-lg z-10 mx-4 md:mx-8" />
 
             <div className="flex-1 md:w-5/12">
-              <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#FFF314]/30 transition-transform hover:scale-[1.02] duration-300">
+              <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-[1.02] duration-300">
                 <div className="relative h-48 md:h-56">
                   <img
                     src={TRUST_IMAGES[index % TRUST_IMAGES.length]}
                     alt={card.title}
                     className="w-full h-full object-cover"
                   />
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        index % 2 === 0
-                          ? 'rgba(255, 243, 20, 0.35)'
-                          : 'rgba(38, 50, 56, 0.40)',
-                    }}
-                  />
+                  {/* ─── NO YELLOW OVERLAY – only the image ─── */}
                   <div className="absolute top-3 left-3 right-3 flex justify-between">
                     <div className="flex gap-2">
                       <span className="bg-[#263238] text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -137,11 +131,7 @@ export default function TrustFlow() {
                     </p>
                   </div>
                 </div>
-                <div className="p-4 flex justify-between text-xs text-[#263238] bg-[#FFF314]/10">
-                  <span>👤 {Math.floor(Math.random() * 80) + 20}</span>
-                  <span>👁️ {Math.floor(Math.random() * 60) + 20}</span>
-                  <span>✅ {Math.floor(Math.random() * 50) + 10}</span>
-                </div>
+                {/* ─── REMOVED THE RANDOM VIEW COUNTS BAR ─── */}
               </div>
             </div>
           </div>
