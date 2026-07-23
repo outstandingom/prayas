@@ -24,7 +24,8 @@ import Education from './pages/impact/Education';
 import WomenEmpowerment from './pages/impact/WomenEmpowerment';
 import RuralDevelopment from './pages/impact/RuralDevelopment';
 import Healthcare from './pages/impact/Healthcare';
-import Environment from './pages/impact/Environment';   // <-- NEW import
+import Environment from './pages/impact/Environment';
+import ProjectSindoda from './pages/impact/ProjectSindoda';
 import VolunteerPopup from './components/VolunteerPopup';
 
 export default function App() {
@@ -62,7 +63,8 @@ export default function App() {
             <Route path="/education" element={<Education />} />
             <Route path="/women-empowerment" element={<WomenEmpowerment />} />
             <Route path="/healthcare" element={<Healthcare />} />
-            <Route path="/environment" element={<Environment />} />   {/* <-- NEW ROUTE */}
+            <Route path="/environment" element={<Environment />} />
+            <Route path="/project-sindoda" element={<ProjectSindoda />} />
           </Route>
         </Routes>
       </AnimatePresence>

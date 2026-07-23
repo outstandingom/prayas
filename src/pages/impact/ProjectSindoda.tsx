@@ -1,0 +1,130 @@
+// src/pages/impact/ProjectSindoda.tsx
+import { motion } from 'framer-motion'
+import { Leaf, Recycle, Trash2, Users, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
+
+export default function ProjectSindoda() {
+  return (
+    <div className="min-h-screen bg-white pt-24 pb-12">
+      {/* Hero Section */}
+      <section className="px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto mb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+        >
+          <div>
+            <span className="font-mono text-sm tracking-widest uppercase font-bold mb-4 block text-[#15803D]">
+              Special Initiative
+            </span>
+            <h1 className="font-display text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+              Project Sindoda
+            </h1>
+            <h2 className="text-3xl font-bold text-[#15803D] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
+              Plastic Mukti (Plastic Free)
+            </h2>
+            <p className="text-gray-700 text-lg md:text-xl font-mono mb-8 max-w-md leading-relaxed">
+              Our dedicated campaign to transform Sindoda into a completely plastic-free zone. Through community engagement, sustainable alternatives, and rigorous waste management, we are restoring the natural beauty of the region.
+            </p>
+            
+            <Link
+              to="/donate?cause=sindoda"
+              className="inline-flex items-center gap-2 text-white font-mono font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
+              style={{ backgroundColor: '#15803D' }}
+            >
+              Support Project Sindoda <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+
+          <div className="relative h-[400px] md:h-[600px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/50">
+            <motion.div
+              initial={{ scale: 1.1 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+              className="absolute inset-0"
+            >
+              <img
+                src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&h=1200&fit=crop"
+                alt="Plastic Free Sindoda"
+                className="w-full h-full object-cover"
+              />
+              <div
+                className="absolute inset-0 mix-blend-multiply"
+                style={{ background: `linear-gradient(to top, #15803D40, transparent)` }}
+              />
+            </motion.div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Key Initiatives */}
+      <section className="py-20 px-4 sm:px-6 lg:px-12 bg-[#15803D]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+              Our Action Plan
+            </h2>
+            <p className="font-mono text-white/80 max-w-2xl mx-auto text-lg">
+              The steps we are taking to achieve complete Plastic Mukti in Sindoda.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="bg-white/10 p-8 rounded-2xl border border-white/20 backdrop-blur-sm hover:bg-white/20 transition-all hover:-translate-y-2">
+              <Trash2 className="w-12 h-12 text-[#FFF314] mb-6" />
+              <h3 className="font-display text-2xl font-bold text-white mb-3">Waste Collection</h3>
+              <p className="font-mono text-white/80 text-sm leading-relaxed">
+                Organizing massive community-led cleanup drives to remove existing plastic waste from streets and water bodies.
+              </p>
+            </div>
+
+            <div className="bg-white/10 p-8 rounded-2xl border border-white/20 backdrop-blur-sm hover:bg-white/20 transition-all hover:-translate-y-2">
+              <Recycle className="w-12 h-12 text-[#FFF314] mb-6" />
+              <h3 className="font-display text-2xl font-bold text-white mb-3">Recycling Setup</h3>
+              <p className="font-mono text-white/80 text-sm leading-relaxed">
+                Establishing local recycling centers to properly process gathered plastic and prevent it from returning to the environment.
+              </p>
+            </div>
+
+            <div className="bg-white/10 p-8 rounded-2xl border border-white/20 backdrop-blur-sm hover:bg-white/20 transition-all hover:-translate-y-2">
+              <Leaf className="w-12 h-12 text-[#FFF314] mb-6" />
+              <h3 className="font-display text-2xl font-bold text-white mb-3">Eco-Alternatives</h3>
+              <p className="font-mono text-white/80 text-sm leading-relaxed">
+                Distributing cloth bags and biodegradable materials to shopkeepers and residents to replace single-use plastics.
+              </p>
+            </div>
+
+            <div className="bg-white/10 p-8 rounded-2xl border border-white/20 backdrop-blur-sm hover:bg-white/20 transition-all hover:-translate-y-2">
+              <Users className="w-12 h-12 text-[#FFF314] mb-6" />
+              <h3 className="font-display text-2xl font-bold text-white mb-3">Awareness</h3>
+              <p className="font-mono text-white/80 text-sm leading-relaxed">
+                Conducting door-to-door educational campaigns to teach families about the long-term dangers of plastic pollution.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 px-4 sm:px-6 lg:px-12 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-gray-900 mb-6">
+            Join the Plastic Mukti Movement
+          </h2>
+          <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+            Sindoda is just the beginning. With your support, we can scale this model to more villages and towns.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/volunteer"
+              className="px-8 py-4 rounded-full font-bold transition-all border-2 border-[#15803D] text-[#15803D] hover:bg-[#15803D] hover:text-white"
+            >
+              Volunteer in Sindoda
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}

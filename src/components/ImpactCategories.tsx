@@ -57,8 +57,31 @@ export default function ImpactCategories() {
             : item.initiatives || []
         })) || []
 
-        setCategories(parsedData)
-        if (parsedData.length > 0) setCurrentIndex(0)
+        // Artificially inject Project Sindoda so it appears in the slider
+        const projectSindoda = {
+          id: 'project-sindoda',
+          title: 'Project Sindoda (Plastic Mukti)',
+          description: 'Our dedicated campaign to transform Sindoda into a completely plastic-free zone. Through community engagement, sustainable alternatives, and rigorous waste management, we are restoring the natural beauty of the region.',
+          image_url: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&h=600&fit=crop',
+          slug: 'project-sindoda', // This will route to /impact/project-sindoda which we mapped to ProjectSindoda.tsx!
+          display_order: -1, 
+          is_active: true,
+          initiatives: [
+            { icon: '🗑️', title: 'Waste Collection', description: 'Community cleanup drives' },
+            { icon: '♻️', title: 'Recycling Setup', description: 'Local processing centers' },
+            { icon: '🌱', title: 'Eco-Alternatives', description: 'Cloth bags distribution' },
+            { icon: '👥', title: 'Awareness', description: 'Door-to-door education' }
+          ],
+          funds_collected: 0,
+          goal_funds: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+
+        const fullData = [projectSindoda, ...parsedData].sort((a, b) => a.display_order - b.display_order)
+
+        setCategories(fullData)
+        if (fullData.length > 0) setCurrentIndex(0)
       } catch (err) {
         console.error('Error:', err)
       } finally {
@@ -302,7 +325,13 @@ export default function ImpactCategories() {
 
                     {/* CTA – smaller padding, full width on mobile */}
                     <button
-                      onClick={() => navigate(`/impact/${cat.slug}`)}
+                      onClick={() => {
+                        if (cat.slug === 'project-sindoda') {
+                          navigate('/project-sindoda')
+                        } else {
+                          navigate(`/impact/${cat.slug}`)
+                        }
+                      }}
                       className="mt-4 sm:mt-5 w-full sm:w-auto self-start inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#FFF314] text-[#263238] font-bold text-sm uppercase tracking-wider rounded-full hover:bg-[#f0e000] transition-colors shadow-md"
                     >
                       {t('categories.send', 'Send')}

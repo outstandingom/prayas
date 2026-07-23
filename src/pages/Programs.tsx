@@ -64,6 +64,57 @@ export default function Programs() {
       {/* Programs Grid */}
       <section className="py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          
+          {/* Highlighted Project Sindoda */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mb-12 group bg-gradient-to-br from-[#15803D]/5 to-[#FFF314]/10 rounded-3xl border-2 border-[#15803D]/40 shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300"
+          >
+            <div className="flex flex-col md:flex-row">
+              <div className="md:w-1/2 relative h-64 md:h-auto overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&h=600&fit=crop"
+                  alt="Project Sindoda"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute top-4 left-4">
+                  <span className="px-4 py-1.5 bg-[#FFF314] text-[#263238] text-xs font-bold rounded-full uppercase tracking-wider shadow-md">
+                    Special Initiative
+                  </span>
+                </div>
+              </div>
+              <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-[#15803D] flex items-center justify-center shadow-md">
+                    <Leaf className="w-6 h-6 text-[#FFF314]" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#263238]">Project Sindoda</h3>
+                    <p className="text-[#15803D] font-bold" style={{ fontFamily: 'var(--font-heading)' }}>Plastic Mukti</p>
+                  </div>
+                </div>
+                <p className="text-[#263238]/70 text-base md:text-lg leading-relaxed mb-6">
+                  Our dedicated campaign to transform Sindoda into a completely plastic-free zone. Through community engagement, sustainable alternatives, and rigorous waste management, we are restoring the natural beauty of the region.
+                </p>
+                <div className="flex items-center justify-between mt-auto">
+                  <span className="text-sm font-bold text-[#15803D] bg-[#15803D]/10 px-4 py-2 rounded-full">
+                    Target: 100% Plastic Free
+                  </span>
+                  <Link
+                    to="/project-sindoda"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#15803D] text-white rounded-full font-bold hover:bg-[#15803D]/90 transition-colors shadow-md hover:scale-105"
+                  >
+                    View Project <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Regular Programs Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {programs.map((program, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }} className="group bg-white rounded-2xl border border-[#FFF314]/10 shadow-lg hover:shadow-xl hover:shadow-[#FFF314]/5 transition-all duration-300 overflow-hidden hover:-translate-y-1">
