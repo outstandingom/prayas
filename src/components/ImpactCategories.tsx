@@ -1,6 +1,5 @@
 // src/components/ImpactCategories.tsx
-import { useRef, useState, useEffect, useMemo, useCallback } from 'react'
-import { motion } from 'framer-motion'
+import { useRef, useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '@/lib/supabase'
@@ -26,14 +25,7 @@ export default function ImpactCategories() {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const trackRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-
-  const [isDragging, setIsDragging] = useState(false)
-  const [startX, setStartX] = useState(0)
-  const [dragOffset, setDragOffset] = useState(0)
-  const lastWheelTime = useRef(0)
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -61,17 +53,12 @@ export default function ImpactCategories() {
         const projectSindoda = {
           id: 'project-sindoda',
           title: 'Project Sindoda (Plastic Mukti)',
-          description: 'Our dedicated campaign to transform Sindoda into a completely plastic-free zone. Through community engagement, sustainable alternatives, and rigorous waste management, we are restoring the natural beauty of the region.',
+          description: 'Transforming Sindoda into a completely plastic-free zone.',
           image_url: '/Sindoda/IMG_20191022_121001 (1).jpg',
-          slug: 'project-sindoda', // This will route to /impact/project-sindoda which we mapped to ProjectSindoda.tsx!
+          slug: 'project-sindoda',
           display_order: -1, 
           is_active: true,
-          initiatives: [
-            { icon: '🗑️', title: 'Waste Collection', description: 'Community cleanup drives' },
-            { icon: '♻️', title: 'Recycling Setup', description: 'Local processing centers' },
-            { icon: '🌱', title: 'Eco-Alternatives', description: 'Cloth bags distribution' },
-            { icon: '👥', title: 'Awareness', description: 'Door-to-door education' }
-          ],
+          initiatives: [],
           funds_collected: 0,
           goal_funds: 0,
           created_at: new Date().toISOString(),
@@ -79,9 +66,7 @@ export default function ImpactCategories() {
         }
 
         const fullData = [projectSindoda, ...parsedData].sort((a, b) => a.display_order - b.display_order)
-
         setCategories(fullData)
-        if (fullData.length > 0) setCurrentIndex(0)
       } catch (err) {
         console.error('Error:', err)
       } finally {
@@ -99,77 +84,15 @@ export default function ImpactCategories() {
     }))
   }, [categories, t])
 
-  const total = translatedCategories.length
-
-  const goTo = useCallback((dir: number) => {
-    const newIndex = currentIndex + dir
-    if (newIndex >= 0 && newIndex < total) {
-      setCurrentIndex(newIndex)
-      setDragOffset(0)
+  const scrollLeft = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({ left: -320, behavior: 'smooth' })
     }
-  }, [currentIndex, total])
-
-  const goToIndex = useCallback((index: number) => {
-    if (index >= 0 && index < total) {
-      setCurrentIndex(index)
-      setDragOffset(0)
-    }
-  }, [total])
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') goTo(-1)
-      if (e.key === 'ArrowRight') goTo(1)
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [goTo])
-
-  // Wheel handler – horizontal only, vertical scroll works
-  useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
-
-    const handleWheel = (e: WheelEvent) => {
-      const deltaX = Math.abs(e.deltaX)
-      const deltaY = Math.abs(e.deltaY)
-
-      if (deltaX > deltaY && deltaX > 10) {
-        e.preventDefault()
-        const now = Date.now()
-        if (now - lastWheelTime.current < 500) return
-        lastWheelTime.current = now
-        const direction = e.deltaX > 0 ? 1 : -1
-        goTo(direction)
-      }
-    }
-
-    container.addEventListener('wheel', handleWheel, { passive: false })
-    return () => container.removeEventListener('wheel', handleWheel)
-  }, [goTo])
-
-  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
-    setIsDragging(true)
-    setStartX(clientX)
-    setDragOffset(0)
-    if ('touches' in e) e.preventDefault()
   }
 
-  const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDragging) return
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
-    setDragOffset(clientX - startX)
-    if ('touches' in e) e.preventDefault()
-  }
-
-  const handleDragEnd = () => {
-    if (!isDragging) return
-    setIsDragging(false)
-    if (Math.abs(dragOffset) > 80) {
-      goTo(dragOffset < 0 ? 1 : -1)
-    } else {
-      setDragOffset(0)
+  const scrollRight = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({ left: 320, behavior: 'smooth' })
     }
   }
 
@@ -192,190 +115,93 @@ export default function ImpactCategories() {
     )
   }
 
-  const containerWidth = containerRef.current?.offsetWidth || 1
-  const transformValue = -(currentIndex * 100) + (dragOffset / containerWidth) * 100
-
   return (
-    <div className="w-full bg-white min-h-[90vh] flex flex-col">
+    <div className="w-full bg-white py-12 sm:py-16 flex flex-col">
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
 
-      {/* ── HEADER – reduced spacing ── */}
-      <div className="flex-shrink-0 bg-white px-4 sm:px-8 pt-4 pb-3 text-center">
-        <p className="text-[#263238]/70 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+      {/* HEADER */}
+      <div className="flex-shrink-0 bg-white px-4 sm:px-8 pb-8 text-center max-w-4xl mx-auto">
+        <p className="text-[#263238]/70 text-sm sm:text-base leading-relaxed mb-4">
           {t('categories.donationAppeal', 'Your smallest contribution makes a big difference to children’s lives. We count on the generosity of people like you to be able to create real change for India’s children!')}
         </p>
         <h2
-          className="text-2xl sm:text-4xl md:text-5xl text-[#263238] mt-3"
+          className="text-3xl sm:text-4xl md:text-5xl text-[#263238] font-bold mt-2"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
           Donate For Happier Childhoods!
         </h2>
       </div>
 
-      {/* ── CAROUSEL AREA – reduced vertical padding ── */}
-      <div className="flex-1 min-h-0 relative px-2 sm:px-6 py-2 sm:py-3">
+      {/* CAROUSEL AREA */}
+      <div className="relative w-full max-w-7xl mx-auto mt-4 group">
+        
+        {/* Navigation arrows */}
+        <button
+          onClick={scrollLeft}
+          className="absolute left-2 sm:left-4 top-[35%] -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-transform text-[#263238] border border-gray-100 opacity-90 hover:opacity-100"
+          aria-label="Scroll left"
+        >
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} />
+        </button>
+
+        <button
+          onClick={scrollRight}
+          className="absolute right-2 sm:right-4 top-[35%] -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-transform text-[#263238] border border-gray-100 opacity-90 hover:opacity-100"
+          aria-label="Scroll right"
+        >
+          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} />
+        </button>
+
+        {/* Carousel Container */}
         <div
           ref={containerRef}
-          className="w-full h-full overflow-hidden rounded-xl sm:rounded-2xl select-none"
-          onMouseDown={handleDragStart}
-          onMouseMove={handleDragMove}
-          onMouseUp={handleDragEnd}
-          onMouseLeave={handleDragEnd}
-          onTouchStart={handleDragStart}
-          onTouchMove={handleDragMove}
-          onTouchEnd={handleDragEnd}
-          style={{
-            touchAction: 'pan-y',
-            cursor: isDragging ? 'grabbing' : 'grab'
-          }}
+          className="flex overflow-x-auto gap-4 sm:gap-6 px-4 sm:px-12 snap-x snap-mandatory no-scrollbar pb-8 pt-4"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          <div
-            ref={trackRef}
-            className="flex h-full transition-transform duration-300 ease-out will-change-transform"
-            style={{ transform: `translateX(${transformValue}%)` }}
-          >
-            {translatedCategories.map((cat) => (
-              <div key={cat.id} className="w-full flex-shrink-0 h-full">
-                <div className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-xl border border-[#263238]/10 h-full flex flex-col md:flex-row">
+          {translatedCategories.map((cat) => (
+            <div
+              key={cat.id}
+              onClick={() => {
+                if (cat.slug === 'project-sindoda') navigate('/project-sindoda')
+                else navigate(`/impact/${cat.slug}`)
+              }}
+              className="w-[85vw] sm:w-[320px] md:w-[350px] flex-shrink-0 snap-center cursor-pointer group/card"
+            >
+              <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col border-b-[6px] border-[#FFF314]">
+                
+                {/* Image */}
+                <div className="h-56 sm:h-64 w-full relative overflow-hidden">
+                  <img
+                    src={cat.image_url}
+                    alt={cat.title}
+                    className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-700"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        'https://placehold.co/800x600/263238/FFF314?text=Prayas'
+                    }}
+                  />
+                  {/* Subtle overlay */}
+                  <div className="absolute inset-0 bg-black/10 group-hover/card:bg-transparent transition-colors duration-300" />
+                </div>
 
-                  {/* Image – reduced height on all screens */}
-                  <div className="md:w-[40%] h-40 sm:h-48 md:h-full relative flex-shrink-0">
-                    <img
-                      src={cat.image_url}
-                      alt={cat.title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          'https://placehold.co/800x600/263238/FFF314?text=Prayas'
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent md:hidden" />
-                    <div className="absolute bottom-3 left-4 md:hidden">
-                      <span className="text-white text-xs font-bold tracking-widest uppercase bg-[#263238]/60 px-3 py-1 rounded-full">
-                        {cat.title}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Content – reduced padding */}
-                  <div className="flex-1 flex flex-col justify-between p-4 sm:p-6 md:p-8 overflow-y-auto">
-                    <div className="space-y-2 sm:space-y-3">
-                      {/* Category badge */}
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="inline-block w-2 h-2 rounded-full bg-[#FFF314]" />
-                        <span className="text-[#FFF314] bg-[#263238] text-[11px] sm:text-sm font-bold uppercase tracking-wider px-3 py-1 rounded-full">
-                          {cat.title}
-                        </span>
-                        {(cat.initiatives?.length ?? 0) > 0 && (
-                          <span className="text-[#263238]/40 text-[11px] sm:text-sm">
-                            · {cat.initiatives.length} initiative{cat.initiatives.length !== 1 ? 's' : ''}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Category title – smaller on mobile */}
-                      <h3
-                        className="text-[#263238] text-2xl sm:text-3xl md:text-4xl leading-tight"
-                        style={{ fontFamily: 'var(--font-heading)' }}
-                      >
-                        {cat.title}
-                      </h3>
-
-                      <p className="text-[#263238]/70 text-sm sm:text-base md:text-base leading-relaxed line-clamp-3 md:line-clamp-4">
-                        {cat.description}
-                      </p>
-
-                      {/* Funds progress */}
-                      {cat.goal_funds > 0 && (
-                        <div className="space-y-1 pt-1">
-                          <div className="flex justify-between text-[11px] sm:text-sm text-[#263238]/60">
-                            <span>₹{cat.funds_collected?.toLocaleString() || 0} raised</span>
-                            <span>Goal: ₹{cat.goal_funds?.toLocaleString()}</span>
-                          </div>
-                          <div className="w-full h-1.5 sm:h-2 bg-[#263238]/10 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-[#FFF314] rounded-full transition-all duration-700"
-                              style={{
-                                width: `${Math.min((cat.funds_collected || 0) / (cat.goal_funds || 1) * 100, 100)}%`,
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Initiative tags – reduce gap */}
-                      {cat.initiatives && cat.initiatives.length > 0 && (
-                        <div className="flex flex-wrap gap-1 sm:gap-1.5 pt-1">
-                          {cat.initiatives.slice(0, 4).map((init, idx) => (
-                            <span
-                              key={idx}
-                              className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 bg-[#263238]/5 border border-[#263238]/10 rounded-full text-[#263238]/70 text-[10px] sm:text-sm"
-                            >
-                              <span>{init.icon || '📌'}</span>
-                              {init.title}
-                            </span>
-                          ))}
-                          {cat.initiatives.length > 4 && (
-                            <span className="text-[#263238]/40 text-[10px] sm:text-sm px-2 py-0.5">
-                              +{cat.initiatives.length - 4} more
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* CTA – smaller padding, full width on mobile */}
-                    <button
-                      onClick={() => {
-                        if (cat.slug === 'project-sindoda') {
-                          navigate('/project-sindoda')
-                        } else {
-                          navigate(`/impact/${cat.slug}`)
-                        }
-                      }}
-                      className="mt-4 sm:mt-5 w-full sm:w-auto self-start inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#FFF314] text-[#263238] font-bold text-sm uppercase tracking-wider rounded-full hover:bg-[#f0e000] transition-colors shadow-md"
-                    >
-                      {t('categories.send', 'Send')}
-                      <span className="text-base">→</span>
-                    </button>
-                  </div>
+                {/* Content */}
+                <div className="flex-1 flex flex-col items-center text-center p-6 sm:p-8 bg-white">
+                  <h3
+                    className="text-[#263238] text-lg sm:text-xl font-bold uppercase tracking-wider mb-3 leading-snug"
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                  >
+                    {cat.title}
+                  </h3>
+                  <p className="text-[#263238]/80 text-sm sm:text-base font-medium line-clamp-2">
+                    {cat.description}
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Navigation arrows – slightly smaller */}
-        <button
-          onClick={() => goTo(-1)}
-          disabled={currentIndex === 0}
-          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-all disabled:opacity-25 disabled:cursor-not-allowed text-[#263238]"
-          aria-label="Previous"
-        >
-          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-        </button>
-
-        <button
-          onClick={() => goTo(1)}
-          disabled={currentIndex === total - 1}
-          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full bg-white shadow-lg hover:scale-110 transition-all disabled:opacity-25 disabled:cursor-not-allowed text-[#263238]"
-          aria-label="Next"
-        >
-          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-        </button>
-
-        {/* Dot indicators – adjust bottom spacing */}
-        <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-          {translatedCategories.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => goToIndex(i)}
-              className={`transition-all duration-300 rounded-full ${
-                i === currentIndex
-                  ? 'w-5 sm:w-6 h-1.5 sm:h-2 bg-[#FFF314] shadow-[0_0_8px_rgba(255,243,20,0.6)]'
-                  : 'w-2 sm:w-2.5 h-1.5 sm:h-2 bg-[#263238]/30 hover:bg-[#263238]/50'
-              }`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
+            </div>
           ))}
         </div>
       </div>
