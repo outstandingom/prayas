@@ -119,12 +119,24 @@ export default function ProjectSindoda() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {[
+              "/Sindoda/IMG_20191022_121001 (1).jpg",
               "/Sindoda/IMG_20191030_112427.jpg",
               "/Sindoda/IMG_20191104_162653.jpg",
               "/Sindoda/IMG_20191106_104516.jpg",
+              "/Sindoda/IMG_20191106_111020.jpg",
               "/Sindoda/IMG_20191113_121346.jpg",
+              "/Sindoda/IMG_20191115_115816.jpg",
+              "/Sindoda/IMG_20191115_115817.jpg",
+              "/Sindoda/IMG_20191127_112906.jpg",
+              "/Sindoda/IMG_20191127_125013.jpg",
               "/Sindoda/IMG_20191213_152317.jpg",
-              "/Sindoda/IMG_20191217_140306.jpg"
+              "/Sindoda/IMG_20191213_152320.jpg",
+              "/Sindoda/IMG_20191213_152330.jpg",
+              "/Sindoda/IMG_20191217_133958.jpg",
+              "/Sindoda/IMG_20191217_134103.jpg",
+              "/Sindoda/IMG_20191217_134432.jpg",
+              "/Sindoda/IMG_20191217_140306.jpg",
+              "/Sindoda/IMG_20191217_144413.jpg"
             ].map((src, idx) => (
               <motion.div
                 key={idx}
