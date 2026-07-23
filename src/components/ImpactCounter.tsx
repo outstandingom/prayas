@@ -101,7 +101,7 @@ export default function ImpactCounter() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <span className="text-[#FFF314] font-mono text-xs uppercase tracking-widest font-semibold bg-[#FFF314]/10 px-4 py-2 rounded-full inline-block">
+          <span className="text-[#000000] font-mono text-xs uppercase tracking-widest font-semibold bg-[#FFF314]/10 px-4 py-2 rounded-full inline-block">
             {t('impact.header.subtitle', 'Our Impact in Numbers')}
           </span>
           {/* Main heading - now using .font-heading class */}
