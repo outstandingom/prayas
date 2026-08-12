@@ -1,0 +1,367 @@
+// src/components/admin/AdminGallery.tsx
+import { useState, useEffect, useRef } from 'react';
+import { supabase } from '@/lib/supabase';
+import { Loader2, Plus, Edit, Trash2, X, ArrowUp, ArrowDown, Eye, EyeOff, Upload } from 'lucide-react';
+
+type GalleryItem = {
+  id: string;
+  image_url: string;
+  title: string;
+  description: string;
+  category: string;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export default function AdminGallery() {
+  const [items, setItems] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [editing, setEditing] = useState<GalleryItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [formData, setFormData] = useState<Partial<GalleryItem>>({
+    image_url: '',
+    title: '',
+    description: '',
+    category: '',
+    display_order: 0,
+    is_active: true,
+  });
+
+  // Fetch gallery items
+  const fetchItems = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('gallery')
+        .select('*')
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setItems(data || []);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  // Upload image to Supabase Storage
+  const uploadImage = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}.${fileExt}`;
+    const filePath = `public/${fileName}`; // You can organise into folders
+
+    const { error: uploadError } = await supabase.storage
+      .from('gallery')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+
+    if (uploadError) throw uploadError;
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('gallery')
+      .getPublicUrl(filePath);
+
+    return urlData.publicUrl;
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const publicUrl = await uploadImage(file);
+      setFormData({ ...formData, image_url: publicUrl });
+      // Optionally show a success message
+    } catch (err: any) {
+      alert('Upload failed: ' + err.message);
+    } finally {
+      setUploading(false);
+      // Reset input so same file can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.image_url) {
+      alert('Please provide an image (upload a file or enter a URL).');
+      return;
+    }
+    setLoading(true);
+    try {
+      if (editing) {
+        const { error } = await supabase
+          .from('gallery')
+          .update(formData)
+          .eq('id', editing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('gallery')
+          .insert([formData]);
+        if (error) throw error;
+      }
+      await fetchItems();
+      closeModal();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Delete this image?')) return;
+    try {
+      const { error } = await supabase.from('gallery').delete().eq('id', id);
+      if (error) throw error;
+      await fetchItems();
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  const toggleActive = async (id: string, current: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('gallery')
+        .update({ is_active: !current })
+        .eq('id', id);
+      if (error) throw error;
+      await fetchItems();
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  const moveOrder = async (id: string, direction: 'up' | 'down') => {
+    const index = items.findIndex(i => i.id === id);
+    if (index === -1) return;
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= items.length) return;
+    
+    const current = items[index];
+    const target = items[targetIndex];
+    try {
+      const { error: e1 } = await supabase
+        .from('gallery')
+        .update({ display_order: target.display_order })
+        .eq('id', current.id);
+      if (e1) throw e1;
+      const { error: e2 } = await supabase
+        .from('gallery')
+        .update({ display_order: current.display_order })
+        .eq('id', target.id);
+      if (e2) throw e2;
+      await fetchItems();
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  const openModal = (item?: GalleryItem) => {
+    if (item) {
+      setEditing(item);
+      setFormData(item);
+    } else {
+      setEditing(null);
+      setFormData({ image_url: '', title: '', description: '', category: '', display_order: 0, is_active: true });
+    }
+    setIsModalOpen(true);
+    setError('');
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditing(null);
+    setFormData({ image_url: '', title: '', description: '', category: '', display_order: 0, is_active: true });
+    setError('');
+  };
+
+  if (loading && items.length === 0) {
+    return <div className="flex justify-center py-8"><Loader2 className="w-8 h-8 animate-spin text-emerald-600" /></div>;
+  }
+
+  return (
+    <div className="pt-20 px-4 md:px-6 pb-8">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <h2 className="text-2xl font-bold">Gallery Images</h2>
+        <button
+          onClick={() => openModal()}
+          className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white font-semibold rounded-lg shadow hover:bg-emerald-700 transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          Add New Image
+        </button>
+      </div>
+
+      {error && <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md border border-red-200">{error}</div>}
+
+      {items.length === 0 ? (
+        <div className="text-center py-12 text-gray-500">
+          <p className="text-lg">No images in the gallery yet.</p>
+          <p className="text-sm">Click the <strong>"Add New Image"</strong> button above to get started.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {items.map((item) => (
+            <div key={item.id} className="relative bg-white border rounded-lg overflow-hidden shadow-sm group">
+              <div className="relative aspect-square">
+                <img src={item.image_url} alt={item.title || 'Gallery image'} className="w-full h-full object-cover" />
+                {!item.is_active && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <span className="text-white text-sm font-medium px-2 py-1 bg-black/70 rounded">Hidden</span>
+                  </div>
+                )}
+              </div>
+              <div className="p-3">
+                <p className="font-medium text-sm truncate">{item.title || 'Untitled'}</p>
+                {item.category && <p className="text-xs text-gray-500 truncate">{item.category}</p>}
+                <div className="flex flex-wrap items-center gap-1 mt-2">
+                  <button onClick={() => moveOrder(item.id, 'up')} className="p-1 rounded hover:bg-gray-100" title="Move up">
+                    <ArrowUp className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => moveOrder(item.id, 'down')} className="p-1 rounded hover:bg-gray-100" title="Move down">
+                    <ArrowDown className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => toggleActive(item.id, item.is_active)} className="p-1 rounded hover:bg-gray-100" title={item.is_active ? 'Hide' : 'Show'}>
+                    {item.is_active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                  </button>
+                  <button onClick={() => openModal(item)} className="p-1 rounded hover:bg-gray-100" title="Edit">
+                    <Edit className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => handleDelete(item.id)} className="p-1 rounded hover:bg-red-50 text-red-600" title="Delete">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* MODAL */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold">{editing ? 'Edit Image' : 'Add New Image'}</h3>
+              <button onClick={closeModal} className="p-1 rounded hover:bg-gray-100">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleSave} className="space-y-4">
+              {/* File Upload */}
+              <div>
+                <label className="block text-sm font-medium mb-1">Upload Image *</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
+                    disabled={uploading}
+                  />
+                  {uploading && <Loader2 className="w-5 h-5 animate-spin text-emerald-600" />}
+                </div>
+                <p className="text-xs text-gray-400 mt-1">Or paste a URL below</p>
+              </div>
+
+              {/* Image URL (manual entry or after upload) */}
+              <div>
+                <label className="block text-sm font-medium mb-1">Image URL</label>
+                <input
+                  type="text"
+                  value={formData.image_url || ''}
+                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
+
+              {/* Preview */}
+              {formData.image_url && (
+                <div className="mt-2 aspect-video rounded border overflow-hidden">
+                  <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              {/* Other fields */}
+              <div>
+                <label className="block text-sm font-medium mb-1">Title</label>
+                <input
+                  type="text"
+                  value={formData.title || ''}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Description</label>
+                <textarea
+                  value={formData.description || ''}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Category</label>
+                <input
+                  type="text"
+                  value={formData.category || ''}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  placeholder="e.g., Education, Healthcare"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Display Order (lower = higher priority)</label>
+                <input
+                  type="number"
+                  value={formData.display_order || 0}
+                  onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={formData.is_active ?? true}
+                  onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+                  className="w-4 h-4"
+                />
+                <label className="text-sm font-medium">Active (visible on site)</label>
+              </div>
+              {error && <div className="text-red-600 text-sm">{error}</div>}
+              <div className="flex justify-end gap-2">
+                <button type="button" onClick={closeModal} className="px-4 py-2 border rounded-md hover:bg-gray-50">
+                  Cancel
+                </button>
+                <button type="submit" disabled={loading || uploading} className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 disabled:opacity-50">
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin inline mr-1" /> : 'Save'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

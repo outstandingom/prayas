@@ -1,0 +1,731 @@
+// src/components/admin/AdminImpactCategories.tsx
+import { useState, useEffect, useRef } from 'react'
+import { supabase } from '@/lib/supabase'
+import { 
+  Plus, Edit, Trash2, RefreshCw, ArrowUp, ArrowDown, X, Save, AlertCircle, Layers, Loader2, 
+  GripVertical, DollarSign, Target, Link as LinkIcon, Eye
+} from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
+
+interface Initiative {
+  icon: string
+  title: string
+  description: string
+}
+
+interface Category {
+  id: string
+  title: string
+  description: string
+  image_url: string
+  slug: string
+  display_order: number
+  is_active: boolean
+  initiatives: Initiative[]
+  funds_collected: number
+  goal_funds: number
+  redirect_url?: string
+  created_at?: string
+  updated_at?: string
+}
+
+type CategoryForm = Omit<Category, 'id' | 'display_order' | 'created_at' | 'updated_at'> & { display_order?: number }
+
+export default function AdminImpactCategories() {
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [modalOpen, setModalOpen] = useState(false)
+  const [editing, setEditing] = useState<Category | null>(null)
+  const [uploading, setUploading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const navigate = useNavigate()
+
+  const [formData, setFormData] = useState<CategoryForm>({
+    title: '',
+    description: '',
+    image_url: '',
+    slug: '',
+    is_active: true,
+    initiatives: [],
+    funds_collected: 0,
+    goal_funds: 0,
+    redirect_url: '',
+  })
+
+  const [initiativeInput, setInitiativeInput] = useState<Initiative>({ icon: '', title: '', description: '' })
+  const [editingInitiativeIndex, setEditingInitiativeIndex] = useState<number | null>(null)
+
+  const fetchCategories = async () => {
+    setLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('impact_categories')
+        .select('*')
+        .order('display_order', { ascending: true })
+      
+      if (error) {
+        setError(error.message)
+      } else {
+        const parsed = data?.map(item => ({
+          ...item,
+          initiatives: typeof item.initiatives === 'string' ? JSON.parse(item.initiatives) : item.initiatives || []
+        })) || []
+        setCategories(parsed)
+      }
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}.${fileExt}`
+    const filePath = `impact-categories/${fileName}`
+    const { error: uploadError } = await supabase.storage
+      .from('gallery')
+      .upload(filePath, file, { cacheControl: '3600', upsert: false })
+    if (uploadError) throw uploadError
+    const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(filePath)
+    return urlData.publicUrl
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    try {
+      const publicUrl = await uploadImage(file)
+      setFormData({ ...formData, image_url: publicUrl })
+      setSuccessMessage('Image uploaded successfully!')
+      setTimeout(() => setSuccessMessage(''), 3000)
+    } catch (err: any) {
+      alert('Upload failed: ' + err.message)
+    } finally {
+      setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      image_url: '',
+      slug: '',
+      is_active: true,
+      initiatives: [],
+      funds_collected: 0,
+      goal_funds: 0,
+      redirect_url: '',
+    })
+    setEditing(null)
+    setInitiativeInput({ icon: '', title: '', description: '' })
+    setEditingInitiativeIndex(null)
+    setSuccessMessage('')
+  }
+
+  const openAddModal = () => {
+    resetForm()
+    setModalOpen(true)
+  }
+
+  const openEditModal = (cat: Category) => {
+    setEditing(cat)
+    setFormData({
+      title: cat.title,
+      description: cat.description,
+      image_url: cat.image_url,
+      slug: cat.slug,
+      is_active: cat.is_active,
+      initiatives: cat.initiatives || [],
+      funds_collected: cat.funds_collected || 0,
+      goal_funds: cat.goal_funds || 0,
+      redirect_url: cat.redirect_url || '',
+    })
+    setModalOpen(true)
+  }
+
+  const addInitiative = () => {
+    if (!initiativeInput.title || !initiativeInput.description) {
+      alert('Please fill in title and description for the initiative.')
+      return
+    }
+    const newInit = { ...initiativeInput, icon: initiativeInput.icon || '📌' }
+    if (editingInitiativeIndex !== null) {
+      const updated = [...(formData.initiatives || [])]
+      updated[editingInitiativeIndex] = newInit
+      setFormData({ ...formData, initiatives: updated })
+      setEditingInitiativeIndex(null)
+    } else {
+      setFormData({
+        ...formData,
+        initiatives: [...(formData.initiatives || []), newInit]
+      })
+    }
+    setInitiativeInput({ icon: '', title: '', description: '' })
+    setSuccessMessage('Initiative added successfully!')
+    setTimeout(() => setSuccessMessage(''), 3000)
+  }
+
+  const removeInitiative = (index: number) => {
+    const updated = (formData.initiatives || []).filter((_, i) => i !== index)
+    setFormData({ ...formData, initiatives: updated })
+    if (editingInitiativeIndex === index) {
+      setEditingInitiativeIndex(null)
+      setInitiativeInput({ icon: '', title: '', description: '' })
+    }
+  }
+
+  const editInitiative = (index: number) => {
+    const item = formData.initiatives?.[index]
+    if (item) {
+      setInitiativeInput(item)
+      setEditingInitiativeIndex(index)
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const { title, description, image_url, slug, is_active, initiatives, funds_collected, goal_funds, redirect_url } = formData
+    if (!title || !description || !image_url || !slug) {
+      alert('All fields are required.')
+      return
+    }
+
+    const payload = {
+      title,
+      description,
+      image_url,
+      slug,
+      is_active,
+      initiatives: initiatives || [],
+      funds_collected: funds_collected || 0,
+      goal_funds: goal_funds || 0,
+      redirect_url: redirect_url || '',
+      updated_at: new Date().toISOString(),
+    }
+
+    try {
+      if (editing) {
+        const { error } = await supabase
+          .from('impact_categories')
+          .update(payload)
+          .eq('id', editing.id)
+        if (!error) {
+          setSuccessMessage('Category updated successfully!')
+          setTimeout(() => setSuccessMessage(''), 3000)
+          fetchCategories()
+          setModalOpen(false)
+          resetForm()
+        } else {
+          alert('Error updating: ' + error.message)
+        }
+      } else {
+        const maxOrder = categories.reduce((max, c) => Math.max(max, c.display_order), 0)
+        const { error } = await supabase
+          .from('impact_categories')
+          .insert([{ ...payload, display_order: maxOrder + 1 }])
+        if (!error) {
+          setSuccessMessage('Category created successfully!')
+          setTimeout(() => setSuccessMessage(''), 3000)
+          fetchCategories()
+          setModalOpen(false)
+          resetForm()
+        } else {
+          alert('Error creating: ' + error.message)
+        }
+      }
+    } catch (err: any) {
+      alert('Error: ' + err.message)
+    }
+  }
+
+  const deleteCategory = async (id: string) => {
+    if (!confirm('Delete this category permanently?')) return
+    try {
+      const { error } = await supabase.from('impact_categories').delete().eq('id', id)
+      if (!error) {
+        setSuccessMessage('Category deleted successfully!')
+        setTimeout(() => setSuccessMessage(''), 3000)
+        fetchCategories()
+      } else {
+        alert('Error deleting: ' + error.message)
+      }
+    } catch (err: any) {
+      alert('Error: ' + err.message)
+    }
+  }
+
+  const moveCategory = async (id: string, direction: 'up' | 'down') => {
+    const index = categories.findIndex(c => c.id === id)
+    if (direction === 'up' && index === 0) return
+    if (direction === 'down' && index === categories.length - 1) return
+    const targetIndex = direction === 'up' ? index - 1 : index + 1
+    const current = categories[index]
+    const target = categories[targetIndex]
+    const tempOrder = current.display_order
+    current.display_order = target.display_order
+    target.display_order = tempOrder
+    try {
+      const { error } = await supabase
+        .from('impact_categories')
+        .upsert([
+          { id: current.id, display_order: current.display_order },
+          { id: target.id, display_order: target.display_order },
+        ])
+      if (!error) {
+        setSuccessMessage('Order updated successfully!')
+        setTimeout(() => setSuccessMessage(''), 3000)
+        fetchCategories()
+      } else {
+        alert('Error reordering: ' + error.message)
+      }
+    } catch (err: any) {
+      alert('Error: ' + err.message)
+    }
+  }
+
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+  }
+
+  const handleTitleChange = (title: string) => {
+    setFormData({ 
+      ...formData, 
+      title,
+      slug: formData.slug || generateSlug(title)
+    })
+  }
+
+  return (
+    <div className="space-y-4 sm:space-y-6 pb-24 pt-20 sm:pt-24 px-3 sm:px-4 md:px-6">
+      {/* Success Message */}
+      {successMessage && (
+        <div className="fixed top-20 right-4 z-50 bg-green-50 text-green-700 px-4 py-3 rounded-lg shadow-lg border border-green-200 max-w-sm animate-slide-in">
+          <div className="flex items-center gap-2">
+            <Check className="w-5 h-5" />
+            <span className="text-sm font-medium">{successMessage}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Sticky Header */}
+      <div className="sticky top-[88px] md:top-0 z-30 bg-white/95 backdrop-blur-sm -mx-3 sm:-mx-4 px-3 sm:px-4 py-3 sm:py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
+            <Layers className="w-5 h-5 sm:w-6 sm:h-6 text-primary flex-shrink-0" />
+            <span className="truncate">Impact Categories</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+            {categories.length} categories • Manage your impact areas
+          </p>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
+          <button 
+            onClick={fetchCategories} 
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition text-xs sm:text-sm font-medium whitespace-nowrap"
+          >
+            <RefreshCw className="w-4 h-4" /> 
+            <span className="hidden xs:inline">Refresh</span>
+          </button>
+          <button 
+            onClick={openAddModal} 
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#263238] text-white rounded-lg hover:bg-[#263238]/90 transition text-xs sm:text-sm font-medium whitespace-nowrap"
+          >
+            <Plus className="w-4 h-4" /> 
+            <span>Add</span>
+          </button>
+        </div>
+      </div>
+
+      {error && (
+        <div className="bg-red-50 text-red-600 p-3 sm:p-4 rounded-xl flex items-center gap-2 border border-red-200 text-sm">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" /> {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="flex items-center justify-center py-20 text-muted-foreground">
+          <Loader2 className="w-6 h-6 animate-spin text-primary mr-2" /> Loading...
+        </div>
+      ) : categories.length === 0 ? (
+        <div className="text-center py-20 text-muted-foreground border border-dashed rounded-xl bg-muted/20">
+          <Layers className="w-10 h-10 mx-auto mb-3 opacity-30" />
+          <p className="text-sm">No categories found. Add your first one!</p>
+        </div>
+      ) : (
+        <div className="bg-card rounded-2xl border border-border overflow-hidden">
+          <div className="overflow-x-auto -mx-3 sm:mx-0">
+            <table className="w-full text-sm min-w-[768px]">
+              <thead className="bg-muted/30 border-b border-border">
+                <tr>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider w-12">#</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Title</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider hidden sm:table-cell">Slug</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider hidden md:table-cell">Redirect URL</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider w-12">Image</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider hidden lg:table-cell">Status</th>
+                  <th className="text-center p-3 sm:p-4 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categories.map((cat, idx) => (
+                  <tr key={cat.id} className="border-b border-border last:border-0 hover:bg-muted/10 transition">
+                    <td className="p-3 sm:p-4 text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <span className="font-mono text-xs">{idx + 1}</span>
+                        <div className="flex flex-col ml-1 sm:ml-2">
+                          <button 
+                            onClick={() => moveCategory(cat.id, 'up')} 
+                            disabled={idx === 0} 
+                            className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20 p-0.5"
+                          >
+                            <ArrowUp className="w-3 h-3" />
+                          </button>
+                          <button 
+                            onClick={() => moveCategory(cat.id, 'down')} 
+                            disabled={idx === categories.length - 1} 
+                            className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20 p-0.5"
+                          >
+                            <ArrowDown className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-3 sm:p-4">
+                      <div>
+                        <div className="font-medium text-foreground text-sm truncate max-w-[150px]">{cat.title}</div>
+                        <div className="text-xs text-muted-foreground truncate max-w-[150px]">{cat.description}</div>
+                      </div>
+                    </td>
+                    <td className="p-3 sm:p-4 text-muted-foreground text-xs font-mono hidden sm:table-cell">{cat.slug}</td>
+                    <td className="p-3 sm:p-4 hidden md:table-cell">
+                      {cat.redirect_url ? (
+                        <a 
+                          href={cat.redirect_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary hover:text-primary/80 text-xs font-mono truncate max-w-[150px] block flex items-center gap-1"
+                        >
+                          <LinkIcon className="w-3 h-3 flex-shrink-0" />
+                          <span className="truncate">{cat.redirect_url}</span>
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground/40 text-xs">Not set</span>
+                      )}
+                    </td>
+                    <td className="p-3 sm:p-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                        <img src={cat.image_url} alt={cat.title} className="w-full h-full object-cover" />
+                      </div>
+                    </td>
+                    <td className="p-3 sm:p-4 hidden lg:table-cell">
+                      <span className={`px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${cat.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                        {cat.is_active ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td className="p-3 sm:p-4 text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <button 
+                          onClick={() => navigate(`/impact/${cat.slug}`)} 
+                          className="p-1.5 rounded-lg hover:bg-blue-50 text-muted-foreground hover:text-blue-600 transition"
+                          title="View on site"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => openEditModal(cat)} 
+                          className="p-1.5 rounded-lg hover:bg-primary/10 text-muted-foreground hover:text-primary transition"
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => deleteCategory(cat.id)} 
+                          className="p-1.5 rounded-lg hover:bg-red-50 text-muted-foreground hover:text-red-600 transition"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Fixed Bottom Action Bar (mobile) */}
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-sm border-t border-border/50 p-3 sm:p-4 flex justify-center md:hidden">
+        <button 
+          onClick={openAddModal} 
+          className="flex items-center justify-center gap-2 w-full max-w-xs px-6 py-3 bg-[#263238] text-white rounded-xl shadow-lg hover:bg-[#263238]/90 transition font-medium text-sm"
+        >
+          <Plus className="w-5 h-5" /> Add New Category
+        </button>
+      </div>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {modalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+            onClick={() => setModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-card rounded-2xl shadow-2xl border border-border w-full max-w-3xl p-4 sm:p-6 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg sm:text-xl font-bold text-foreground">
+                  {editing ? 'Edit Category' : 'Add New Category'}
+                </h2>
+                <button onClick={() => setModalOpen(false)} className="p-1 rounded-lg hover:bg-muted transition">
+                  <X className="w-5 h-5 text-muted-foreground" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* File Upload & Image URL */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Upload Image *</label>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mt-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      ref={fileInputRef}
+                      className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                      disabled={uploading}
+                    />
+                    {uploading && <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0" />}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">Or paste a URL below</p>
+                  <input
+                    type="url"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                  {formData.image_url && (
+                    <div className="mt-2 aspect-video rounded-lg border border-border overflow-hidden max-h-48 sm:max-h-64">
+                      <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Title & Slug */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Title *</label>
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => handleTitleChange(e.target.value)}
+                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Slug (URL) *</label>
+                    <input
+                      type="text"
+                      value={formData.slug}
+                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                      placeholder="e.g., education"
+                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                      required
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">URL: /impact/{formData.slug || 'slug'}</p>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Description *</label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={3}
+                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    required
+                  />
+                </div>
+
+                {/* Redirect URL */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                    <LinkIcon className="w-4 h-4" /> Redirect URL (Optional)
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.redirect_url || ''}
+                    onChange={(e) => setFormData({ ...formData, redirect_url: e.target.value })}
+                    placeholder="https://example.com/your-page"
+                    className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Leave empty to use the default page. Users clicking "Learn More" will be redirected to this URL.
+                  </p>
+                </div>
+
+                {/* Initiatives Management */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Initiatives (3 recommended)</label>
+                  <div className="mt-2 space-y-2">
+                    {formData.initiatives?.map((init, idx) => (
+                      <div key={idx} className="flex flex-wrap items-center gap-2 bg-muted/30 p-2 sm:p-3 rounded-lg">
+                        <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                        <span className="text-2xl flex-shrink-0">{init.icon}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{init.title}</p>
+                          <p className="text-xs text-muted-foreground truncate">{init.description}</p>
+                        </div>
+                        <div className="flex items-center gap-1 ml-auto">
+                          <button type="button" onClick={() => editInitiative(idx)} className="p-1.5 rounded hover:bg-primary/10">
+                            <Edit className="w-4 h-4 text-primary" />
+                          </button>
+                          <button type="button" onClick={() => removeInitiative(idx)} className="p-1.5 rounded hover:bg-red-50">
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    {/* Add / Edit Initiative Form */}
+                    <div className="border border-dashed border-border rounded-lg p-3 space-y-2">
+                      <div className="flex flex-wrap gap-2">
+                        <input
+                          type="text"
+                          placeholder="Icon"
+                          value={initiativeInput.icon}
+                          onChange={(e) => setInitiativeInput({ ...initiativeInput, icon: e.target.value })}
+                          className="w-16 px-2 py-1.5 rounded border border-border bg-background text-sm text-center"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Title"
+                          value={initiativeInput.title}
+                          onChange={(e) => setInitiativeInput({ ...initiativeInput, title: e.target.value })}
+                          className="flex-1 min-w-[120px] px-3 py-1.5 rounded border border-border bg-background text-sm"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Description"
+                        value={initiativeInput.description}
+                        onChange={(e) => setInitiativeInput({ ...initiativeInput, description: e.target.value })}
+                        className="w-full px-3 py-1.5 rounded border border-border bg-background text-sm"
+                      />
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={addInitiative}
+                          className="text-sm font-medium text-primary hover:text-primary/80"
+                        >
+                          {editingInitiativeIndex !== null ? 'Update Initiative' : 'Add Initiative'}
+                        </button>
+                        {editingInitiativeIndex !== null && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setInitiativeInput({ icon: '', title: '', description: '' })
+                              setEditingInitiativeIndex(null)
+                            }}
+                            className="text-sm text-muted-foreground"
+                          >
+                            Cancel
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Funds */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <DollarSign className="w-4 h-4" /> Funds Collected
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={formData.funds_collected || 0}
+                      onChange={(e) => setFormData({ ...formData, funds_collected: parseFloat(e.target.value) || 0 })}
+                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <Target className="w-4 h-4" /> Goal Funds
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={formData.goal_funds || 0}
+                      onChange={(e) => setFormData({ ...formData, goal_funds: parseFloat(e.target.value) || 0 })}
+                      className="w-full mt-1 px-3 sm:px-4 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    />
+                  </div>
+                </div>
+
+                {/* Status */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</label>
+                  <div className="flex items-center gap-3 mt-1">
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" checked={formData.is_active === true} onChange={() => setFormData({ ...formData, is_active: true })} /> Active
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" checked={formData.is_active === false} onChange={() => setFormData({ ...formData, is_active: false })} /> Inactive
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-border">
+                  <button type="button" onClick={() => setModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition">
+                    Cancel
+                  </button>
+                  <button type="submit" disabled={loading || uploading} className="px-6 py-2 bg-[#263238] text-white rounded-lg text-sm font-semibold hover:bg-[#263238]/90 transition flex items-center justify-center gap-2 disabled:opacity-50">
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    {loading ? 'Saving...' : (editing ? 'Update' : 'Create')}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+// Add Check icon for success message
+const Check = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+  </svg>
+)
