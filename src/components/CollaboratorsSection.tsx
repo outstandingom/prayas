@@ -3,18 +3,27 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
-// ─── EXISTING LOGO COMPONENTS ───
+// ─── EXISTING LOGOS ───────────────────────────────────────────────────────────
 
 function MPNewsLogo() {
   return (
     <div className="flex items-center gap-2 px-3 py-1">
       <svg className="w-10 h-10 shrink-0" viewBox="0 0 100 100" fill="none">
-        <path d="M20 30 C30 10, 70 10, 80 30 C90 50, 80 80, 50 85 C20 85, 10 50, 20 30 Z" fill="#D97706" stroke="#92400E" strokeWidth="3" />
+        <path
+          d="M20 30 C30 10, 70 10, 80 30 C90 50, 80 80, 50 85 C20 85, 10 50, 20 30 Z"
+          fill="#D97706"
+          stroke="#92400E"
+          strokeWidth="3"
+        />
         <path d="M30 40 L50 25 L70 40 L60 65 L40 65 Z" fill="#F59E0B" />
       </svg>
       <div className="flex flex-col leading-none">
-        <span className="text-2xl font-black text-red-700 tracking-tighter">mp<span className="text-yellow-600">news</span></span>
-        <span className="text-[9px] font-bold text-red-800 tracking-wider">www.mpnews.com</span>
+        <span className="text-2xl font-black text-red-700 tracking-tighter">
+          mp<span className="text-yellow-600">news</span>
+        </span>
+        <span className="text-[9px] font-bold text-red-800 tracking-wider">
+          www.mpnews.com
+        </span>
       </div>
     </div>
   )
@@ -23,7 +32,13 @@ function MPNewsLogo() {
 function SOSInfrabullsLogo() {
   return (
     <div className="flex items-center gap-3.5 px-3 py-1">
-      <svg className="w-9 h-9 shrink-0 text-blue-600" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="4">
+      <svg
+        className="w-9 h-9 shrink-0 text-blue-600"
+        viewBox="0 0 100 100"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="4"
+      >
         <circle cx="50" cy="50" r="42" strokeWidth="6" />
         <ellipse cx="50" cy="50" rx="42" ry="18" />
         <ellipse cx="50" cy="50" rx="18" ry="42" />
@@ -32,7 +47,9 @@ function SOSInfrabullsLogo() {
       </svg>
       <div className="flex flex-col leading-tight text-left">
         <span className="text-xl font-extrabold text-blue-900 tracking-wider">SOS</span>
-        <span className="text-[9px] font-bold text-blue-700 tracking-widest uppercase">INFRABULLS INTERNATIONAL PVT. LTD.</span>
+        <span className="text-[9px] font-bold text-blue-700 tracking-widest uppercase">
+          INFRABULLS INTERNATIONAL PVT. LTD.
+        </span>
       </div>
     </div>
   )
@@ -41,7 +58,9 @@ function SOSInfrabullsLogo() {
 function RakutenLogo() {
   return (
     <div className="flex flex-col items-center justify-center px-4 py-1">
-      <span className="text-3xl font-black text-[#BF0000] tracking-tight font-sans">Rakuten</span>
+      <span className="text-3xl font-black text-[#BF0000] tracking-tight font-sans">
+        Rakuten
+      </span>
       <div className="w-full h-1 bg-[#BF0000] rounded-full transform -skew-x-12 mt-0.5" />
     </div>
   )
@@ -50,7 +69,9 @@ function RakutenLogo() {
 function GlobantLogo() {
   return (
     <div className="flex items-center gap-1.5 px-4 py-1">
-      <span className="text-3xl font-extrabold text-black tracking-tight font-sans">Globant</span>
+      <span className="text-3xl font-extrabold text-black tracking-tight font-sans">
+        Globant
+      </span>
       <svg className="w-6 h-6 text-[#A3E635] shrink-0" fill="currentColor" viewBox="0 0 24 24">
         <path d="M8 5l9 7-9 7V5z" />
       </svg>
@@ -61,8 +82,12 @@ function GlobantLogo() {
 function AllIndiaNGOLogo() {
   return (
     <div className="flex flex-col items-center text-center px-4 py-1 leading-tight">
-      <span className="text-base font-extrabold text-[#B91C1C] tracking-wider uppercase font-sans">ALL INDIA</span>
-      <span className="text-lg font-black text-[#991B1B] tracking-widest uppercase font-sans">NGO ASSOCIATION</span>
+      <span className="text-base font-extrabold text-[#B91C1C] tracking-wider uppercase font-sans">
+        ALL INDIA
+      </span>
+      <span className="text-lg font-black text-[#991B1B] tracking-widest uppercase font-sans">
+        NGO ASSOCIATION
+      </span>
     </div>
   )
 }
@@ -73,7 +98,9 @@ function NabardLogo() {
       <div className="w-9 h-9 rounded-full bg-emerald-700 text-white font-bold flex items-center justify-center text-xs tracking-tighter shadow-xs">
         NABARD
       </div>
-      <span className="text-base font-extrabold text-emerald-900 tracking-wide font-sans">NABARD</span>
+      <span className="text-base font-extrabold text-emerald-900 tracking-wide font-sans">
+        NABARD
+      </span>
     </div>
   )
 }
@@ -92,137 +119,282 @@ function HDFCParivartanLogo() {
   )
 }
 
-// ─── NEW COLLABORATOR COMPONENTS ───
+// ─── NEW LOGOS ────────────────────────────────────────────────────────────────
 
+/** NRLM — National Rural Livelihoods Mission */
 function NRLMLogo() {
   return (
-    <div className="flex items-center gap-2 px-3 py-1">
-      <svg className="w-9 h-9 text-green-700 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M17 8C17 5.24 14.76 3 12 3S7 5.24 7 8c0 2.21 1.43 4.08 3.42 4.74L9 21h6l-1.42-8.26C15.57 12.08 17 10.21 17 8z" />
+    <div className="flex items-center gap-2.5 px-3 py-1">
+      {/* Hands / community icon */}
+      <svg className="w-9 h-9 shrink-0" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="44" fill="#166534" />
+        {/* Wheat stalk left */}
+        <path d="M35 72 Q30 55 38 42" stroke="#FDE68A" strokeWidth="3" fill="none" strokeLinecap="round" />
+        <ellipse cx="34" cy="38" rx="5" ry="8" fill="#FDE68A" transform="rotate(-20 34 38)" />
+        <ellipse cx="30" cy="48" rx="5" ry="7" fill="#FDE68A" transform="rotate(-30 30 48)" />
+        {/* Wheat stalk right */}
+        <path d="M65 72 Q70 55 62 42" stroke="#FDE68A" strokeWidth="3" fill="none" strokeLinecap="round" />
+        <ellipse cx="66" cy="38" rx="5" ry="8" fill="#FDE68A" transform="rotate(20 66 38)" />
+        <ellipse cx="70" cy="48" rx="5" ry="7" fill="#FDE68A" transform="rotate(30 70 48)" />
+        {/* People silhouette centre */}
+        <circle cx="50" cy="40" r="7" fill="#FDE68A" />
+        <path d="M38 72 Q42 55 50 52 Q58 55 62 72" fill="#FDE68A" />
       </svg>
-      <div className="flex flex-col text-left leading-none">
-        <span className="text-xl font-black text-green-800 tracking-tight">NRLM</span>
-        <span className="text-[9px] font-bold text-green-600 uppercase tracking-widest">Aajeevika</span>
+      <div className="flex flex-col leading-tight text-left">
+        <span className="text-xl font-black text-green-800 tracking-wider">NRLM</span>
+        <span className="text-[8px] font-bold text-green-700 tracking-wide uppercase leading-tight">
+          Nat. Rural Livelihoods<br />Mission
+        </span>
       </div>
     </div>
   )
 }
 
+/** NULM — National Urban Livelihoods Mission */
 function NULMLogo() {
   return (
-    <div className="flex items-center gap-2 px-3 py-1">
-      <svg className="w-9 h-9 text-blue-700 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 2.7l5.5 5.5H16v6H8v-6H6.5L12 5.7z" />
+    <div className="flex items-center gap-2.5 px-3 py-1">
+      {/* City skyline icon */}
+      <svg className="w-9 h-9 shrink-0" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="44" fill="#1D4ED8" />
+        {/* Buildings */}
+        <rect x="20" y="55" width="14" height="25" rx="1" fill="white" opacity="0.9" />
+        <rect x="22" y="45" width="10" height="10" rx="1" fill="white" opacity="0.9" />
+        <rect x="36" y="42" width="18" height="38" rx="1" fill="white" />
+        <rect x="40" y="32" width="10" height="10" rx="1" fill="white" />
+        <rect x="56" y="50" width="16" height="30" rx="1" fill="white" opacity="0.9" />
+        <rect x="58" y="40" width="12" height="10" rx="1" fill="white" opacity="0.9" />
+        {/* Windows */}
+        <rect x="39" y="50" width="4" height="5" rx="0.5" fill="#1D4ED8" opacity="0.5" />
+        <rect x="47" y="50" width="4" height="5" rx="0.5" fill="#1D4ED8" opacity="0.5" />
+        <rect x="39" y="60" width="4" height="5" rx="0.5" fill="#1D4ED8" opacity="0.5" />
+        <rect x="47" y="60" width="4" height="5" rx="0.5" fill="#1D4ED8" opacity="0.5" />
       </svg>
-      <div className="flex flex-col text-left leading-none">
-        <span className="text-xl font-black text-blue-800 tracking-tight">NULM</span>
-        <span className="text-[9px] font-bold text-blue-600 uppercase tracking-widest">Urban Livelihoods</span>
+      <div className="flex flex-col leading-tight text-left">
+        <span className="text-xl font-black text-blue-800 tracking-wider">NULM</span>
+        <span className="text-[8px] font-bold text-blue-700 tracking-wide uppercase leading-tight">
+          Nat. Urban Livelihoods<br />Mission
+        </span>
       </div>
     </div>
   )
 }
 
-function IndorePrashasanLogo() {
+/** Indore Prasashan — District Administration */
+function IndorePrasashanLogo() {
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-1 leading-tight border-l-2 border-r-2 border-slate-300">
-      <span className="text-lg font-extrabold text-slate-800 tracking-wider font-serif uppercase">
-        Indore
-      </span>
-      <span className="text-xs font-bold text-slate-600 tracking-widest font-serif uppercase">
-        Prashasan
-      </span>
+    <div className="flex items-center gap-2.5 px-3 py-1">
+      {/* Government seal / lion */}
+      <svg className="w-10 h-10 shrink-0" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="44" fill="#7C3AED" stroke="#6D28D9" strokeWidth="2" />
+        {/* Ashoka wheel simplified */}
+        <circle cx="50" cy="50" r="20" stroke="white" strokeWidth="2.5" fill="none" />
+        <circle cx="50" cy="50" r="4" fill="white" />
+        {/* Spokes */}
+        {Array.from({ length: 12 }).map((_, i) => {
+          const angle = (i * 30 * Math.PI) / 180
+          const x1 = 50 + 6 * Math.cos(angle)
+          const y1 = 50 + 6 * Math.sin(angle)
+          const x2 = 50 + 18 * Math.cos(angle)
+          const y2 = 50 + 18 * Math.sin(angle)
+          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="white" strokeWidth="1.5" />
+        })}
+        {/* Text arc hint */}
+        <text x="50" y="83" textAnchor="middle" fill="white" fontSize="8" fontWeight="bold" fontFamily="sans-serif">
+          INDORE
+        </text>
+        <text x="50" y="22" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" fontFamily="sans-serif">
+          PRASASHAN
+        </text>
+      </svg>
+      <div className="flex flex-col leading-tight text-left">
+        <span className="text-sm font-black text-purple-900 tracking-wide">Indore</span>
+        <span className="text-sm font-black text-purple-700 tracking-wide">Prasashan</span>
+        <span className="text-[8px] font-semibold text-purple-500 uppercase tracking-wider">
+          District Administration
+        </span>
+      </div>
     </div>
   )
 }
 
+/** IMC — Indore Municipal Corporation */
 function IMCLogo() {
   return (
-    <div className="flex items-center gap-2 px-3 py-1">
-      <div className="w-9 h-9 rounded-full border-[3px] border-emerald-600 flex items-center justify-center shrink-0">
-        <span className="text-[10px] font-black text-emerald-700">IMC</span>
-      </div>
-      <div className="flex flex-col text-left leading-none">
-        <span className="text-sm font-extrabold text-emerald-800 uppercase">Indore Municipal</span>
-        <span className="text-[10px] font-bold text-emerald-600 tracking-widest">CORPORATION</span>
+    <div className="flex items-center gap-2.5 px-3 py-1">
+      {/* Municipal building icon */}
+      <svg className="w-10 h-10 shrink-0" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="44" fill="#0F766E" />
+        {/* Building columns */}
+        <rect x="20" y="65" width="60" height="5" rx="1" fill="white" />
+        {/* Pediment / triangle roof */}
+        <path d="M30 65 L50 30 L70 65 Z" fill="white" opacity="0.9" />
+        {/* Columns */}
+        <rect x="28" y="50" width="5" height="15" rx="1" fill="white" />
+        <rect x="40" y="50" width="5" height="15" rx="1" fill="white" />
+        <rect x="52" y="50" width="5" height="15" rx="1" fill="white" />
+        <rect x="64" y="50" width="5" height="15" rx="1" fill="white" />
+        {/* Star on pediment */}
+        <circle cx="50" cy="48" r="5" fill="#0F766E" />
+        <text x="50" y="51.5" textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">★</text>
+        {/* Base text */}
+        <text x="50" y="85" textAnchor="middle" fill="white" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
+          IMC
+        </text>
+      </svg>
+      <div className="flex flex-col leading-tight text-left">
+        <span className="text-xl font-black text-teal-800 tracking-widest">IMC</span>
+        <span className="text-[8px] font-bold text-teal-600 tracking-wide uppercase leading-tight">
+          Indore Municipal<br />Corporation
+        </span>
       </div>
     </div>
   )
 }
 
+/** Madhya Pradesh Govt. */
 function MPGovtLogo() {
   return (
-    <div className="flex items-center gap-2 px-3 py-1">
-      <svg className="w-9 h-9 text-red-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10" strokeWidth="2" />
-        <circle cx="12" cy="12" r="7" strokeWidth="1" strokeDasharray="2 2"/>
-        <path d="M12 8v4l2 2" strokeWidth="2" strokeLinecap="round"/>
+    <div className="flex items-center gap-2.5 px-3 py-1">
+      {/* MP state icon with saffron–white–green tricolor band */}
+      <svg className="w-10 h-10 shrink-0" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="44" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="2" />
+        {/* Tricolor top band */}
+        <path d="M13 38 Q50 28 87 38 Q50 32 13 38 Z" fill="#FF9933" />
+        <rect x="8" y="38" width="84" height="10" fill="#FF9933" />
+        <rect x="8" y="48" width="84" height="10" fill="white" />
+        <rect x="8" y="58" width="84" height="10" fill="#138808" />
+        {/* Clip circle */}
+        <circle cx="50" cy="50" r="44" fill="none" stroke="#E2E8F0" strokeWidth="2" />
+        {/* Ashoka Chakra */}
+        <circle cx="50" cy="50" r="8" stroke="#000080" strokeWidth="2" fill="none" />
+        <circle cx="50" cy="50" r="2" fill="#000080" />
+        {Array.from({ length: 24 }).map((_, i) => {
+          const angle = (i * 15 * Math.PI) / 180
+          const x1 = 50 + 3 * Math.cos(angle)
+          const y1 = 50 + 3 * Math.sin(angle)
+          const x2 = 50 + 7.5 * Math.cos(angle)
+          const y2 = 50 + 7.5 * Math.sin(angle)
+          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#000080" strokeWidth="0.8" />
+        })}
+        {/* MP text below */}
+        <text x="50" y="84" textAnchor="middle" fill="#1E293B" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
+          मध्यप्रदेश
+        </text>
       </svg>
-      <div className="flex flex-col text-left leading-none">
-        <span className="text-[10px] font-black text-red-800 uppercase tracking-wider">Govt. of</span>
-        <span className="text-base font-extrabold text-red-700 uppercase">Madhya Pradesh</span>
+      <div className="flex flex-col leading-tight text-left">
+        <span className="text-sm font-black text-slate-800 tracking-wide">Madhya Pradesh</span>
+        <span className="text-sm font-bold text-orange-600 tracking-wide">Government</span>
+        <span className="text-[8px] font-semibold text-slate-500 uppercase tracking-wider">
+          State of India
+        </span>
       </div>
     </div>
   )
 }
 
-function RuralDevLogo() {
+/** Ministry of Rural Development */
+function RuralDevelopmentLogo() {
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-1 text-center">
-      <span className="text-[10px] font-bold text-amber-700 tracking-widest uppercase font-sans">
-        Department of
-      </span>
-      <span className="text-sm font-extrabold text-amber-900 tracking-wider uppercase font-sans">
-        Rural Development
-      </span>
-    </div>
-  )
-}
-
-function WCDMinistryLogo() {
-  return (
-    <div className="flex items-center gap-2 px-3 py-1">
-      <svg className="w-8 h-8 text-pink-600 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    <div className="flex items-center gap-2.5 px-3 py-1">
+      {/* Village / rural landscape icon */}
+      <svg className="w-10 h-10 shrink-0" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="44" fill="#92400E" />
+        {/* Sun */}
+        <circle cx="50" cy="28" r="10" fill="#FDE68A" />
+        {Array.from({ length: 8 }).map((_, i) => {
+          const angle = (i * 45 * Math.PI) / 180
+          const x1 = 50 + 12 * Math.cos(angle)
+          const y1 = 28 + 12 * Math.sin(angle)
+          const x2 = 50 + 17 * Math.cos(angle)
+          const y2 = 28 + 17 * Math.sin(angle)
+          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#FDE68A" strokeWidth="2.5" strokeLinecap="round" />
+        })}
+        {/* Hill / land */}
+        <path d="M10 70 Q35 45 50 55 Q65 65 90 45 L90 85 L10 85 Z" fill="#16A34A" />
+        {/* Hut */}
+        <path d="M38 70 L50 52 L62 70 Z" fill="#D97706" />
+        <rect x="44" y="62" width="12" height="8" rx="1" fill="#78350F" />
+        {/* Road path */}
+        <path d="M45 85 Q47 75 50 70 Q53 75 55 85" fill="#D97706" opacity="0.6" />
       </svg>
-      <div className="flex flex-col text-left leading-none">
-        <span className="text-[10px] font-bold text-pink-700 uppercase tracking-wider">Mahila & Bal Vikas</span>
-        <span className="text-sm font-extrabold text-pink-900 uppercase tracking-widest">Mantralaya</span>
+      <div className="flex flex-col leading-tight text-left">
+        <span className="text-sm font-black text-amber-900 tracking-wide">Rural</span>
+        <span className="text-sm font-black text-green-700 tracking-wide">Development</span>
+        <span className="text-[8px] font-semibold text-amber-700 uppercase tracking-wider">
+          Govt. of India
+        </span>
       </div>
     </div>
   )
 }
 
-// ─── COMPONENT REGISTRY ───
+/** Mahila & Bal Vikas Mantralaya — Ministry of Women & Child Dev. */
+function MahilaBalVikasLogo() {
+  return (
+    <div className="flex items-center gap-2.5 px-3 py-1">
+      {/* Mother & child icon */}
+      <svg className="w-10 h-10 shrink-0" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="44" fill="#BE185D" />
+        {/* Woman silhouette */}
+        <circle cx="42" cy="30" r="10" fill="#FDE68A" />
+        <path d="M28 75 Q32 50 42 47 Q52 50 56 75 Z" fill="#FDE68A" />
+        {/* Child silhouette */}
+        <circle cx="63" cy="37" r="7" fill="#FEF3C7" />
+        <path d="M54 75 Q57 57 63 55 Q69 57 72 75 Z" fill="#FEF3C7" />
+        {/* Heart */}
+        <path
+          d="M48 43 C48 41, 46 39, 44 40 C42 41, 42 43, 44 46 L48 50 L52 46 C54 43, 54 41, 52 40 C50 39, 48 41, 48 43 Z"
+          fill="#FB7185"
+        />
+        {/* Star / lotus petals at bottom */}
+        <path d="M50 78 L52 74 L56 76 L53 72 L57 70 L53 70 L52 66 L50 70 L48 66 L47 70 L43 70 L47 72 L44 76 L48 74 Z" fill="#FDE68A" opacity="0.8" />
+      </svg>
+      <div className="flex flex-col leading-tight text-left">
+        <span className="text-sm font-black text-pink-800 tracking-wide">Mahila & Bal</span>
+        <span className="text-sm font-black text-pink-600 tracking-wide">Vikas</span>
+        <span className="text-[8px] font-semibold text-pink-500 uppercase tracking-wider leading-tight">
+          Mantralaya
+        </span>
+      </div>
+    </div>
+  )
+}
+
+// ─── COLLABORATORS REGISTRY ───────────────────────────────────────────────────
 
 const COLLABORATORS = [
-  { id: 'mpnews', component: MPNewsLogo },
-  { id: 'sos', component: SOSInfrabullsLogo },
-  { id: 'rakuten', component: RakutenLogo },
-  { id: 'globant', component: GlobantLogo },
+  // Existing
+  { id: 'mpnews',    component: MPNewsLogo },
+  { id: 'sos',       component: SOSInfrabullsLogo },
+  { id: 'rakuten',   component: RakutenLogo },
+  { id: 'globant',   component: GlobantLogo },
   { id: 'ngo-assoc', component: AllIndiaNGOLogo },
-  { id: 'nabard', component: NabardLogo },
-  { id: 'hdfc', component: HDFCParivartanLogo },
-  { id: 'nrlm', component: NRLMLogo },
-  { id: 'nulm', component: NULMLogo },
-  { id: 'indore-prashasan', component: IndorePrashasanLogo },
-  { id: 'imc', component: IMCLogo },
-  { id: 'mp-govt', component: MPGovtLogo },
-  { id: 'rural-dev', component: RuralDevLogo },
-  { id: 'wcd-ministry', component: WCDMinistryLogo },
+  { id: 'nabard',    component: NabardLogo },
+  { id: 'hdfc',      component: HDFCParivartanLogo },
+  // New — Government & Scheme collaborators
+  { id: 'nrlm',            component: NRLMLogo },
+  { id: 'nulm',            component: NULMLogo },
+  { id: 'indore-prasashan',component: IndorePrasashanLogo },
+  { id: 'imc',             component: IMCLogo },
+  { id: 'mp-govt',         component: MPGovtLogo },
+  { id: 'rural-dev',       component: RuralDevelopmentLogo },
+  { id: 'mahila-bal-vikas',component: MahilaBalVikasLogo },
 ]
+
+// ─── MAIN SECTION ─────────────────────────────────────────────────────────────
 
 export default function CollaboratorsSection() {
   const { t } = useTranslation()
   const [isPaused, setIsPaused] = useState(false)
 
-  // Double the array for seamless infinite right-scrolling loop
-  // Note: Since the array is much longer now, we might only need to duplicate it twice, but three ensures wide screens never break.
+  // Triple the array for a perfectly seamless infinite loop
   const marqueeItems = [...COLLABORATORS, ...COLLABORATORS, ...COLLABORATORS]
 
   return (
     <section className="w-full py-10 sm:py-14 bg-white overflow-hidden select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* ─── SECTION HEADER ─── */}
         <div className="text-center mb-8 sm:mb-12">
           <h2
@@ -234,22 +406,22 @@ export default function CollaboratorsSection() {
           <div className="w-20 h-1 bg-gradient-to-r from-amber-500 to-yellow-400 mx-auto mt-4 rounded-full shadow-xs" />
         </div>
 
-        {/* ─── AUTO ROTATE RIGHT MOVING LOGOS MARQUEE ─── */}
+        {/* ─── MARQUEE ─── */}
         <div
           className="relative w-full overflow-hidden flex items-center py-4"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Subtle Left Gradient Blur Fade */}
+          {/* Left fade */}
           <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
 
-          {/* Infinite Motion Container moving RIGHT (-50% to 0%) */}
+          {/* Scrolling strip — moves right (from -50% to 0%) */}
           <motion.div
             className="flex items-center gap-12 sm:gap-16 md:gap-20 whitespace-nowrap min-w-full"
             animate={isPaused ? { x: undefined } : { x: ['-50%', '0%'] }}
             transition={{
               ease: 'linear',
-              duration: 15, // Increased duration slightly so it doesn't spin too fast with more items
+              duration: 35,   // slightly slower to accommodate more items
               repeat: Infinity,
             }}
           >
@@ -258,7 +430,7 @@ export default function CollaboratorsSection() {
               return (
                 <div
                   key={`${item.id}-${index}`}
-                  className="inline-flex items-center justify-center shrink-0 grayscale opacity-85 hover:grayscale-0 hover:opacity-100 hover:scale-105 transition-all duration-300 cursor-pointer"
+                  className="inline-flex items-center justify-center shrink-0 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 hover:scale-105 transition-all duration-300 cursor-pointer"
                 >
                   <LogoComp />
                 </div>
@@ -266,11 +438,12 @@ export default function CollaboratorsSection() {
             })}
           </motion.div>
 
-          {/* Subtle Right Gradient Blur Fade */}
+          {/* Right fade */}
           <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
         </div>
 
       </div>
     </section>
   )
-}
+          }
+      
