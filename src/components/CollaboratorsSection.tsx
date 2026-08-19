@@ -249,7 +249,7 @@ export default function CollaboratorsSection() {
             animate={isPaused ? { x: undefined } : { x: ['-50%', '0%'] }}
             transition={{
               ease: 'linear',
-              duration: 35, // Increased duration slightly so it doesn't spin too fast with more items
+              duration: 15, // Increased duration slightly so it doesn't spin too fast with more items
               repeat: Infinity,
             }}
           >
