@@ -57,7 +57,7 @@ export default function BrandLogo({
       {/* Logo */}
       <div className={`rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20 ${logoSizeClasses}`}>
         <img
-          src="/Logo.svg"
+          src="/prayas-logo.png"
           alt="Prayas Logo"
           className="w-full h-full object-cover"
         />

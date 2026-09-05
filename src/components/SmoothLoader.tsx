@@ -92,7 +92,7 @@ export default function SmoothLoader() {
                   <span className="text-2xl sm:text-3xl font-bold text-[#263238]">P</span>
                 ) : (
                   <img
-                    src="/Logo.svg"
+                    src="/prayas-logo.png"
                     alt="Prayas Logo"
                     className="w-full h-full object-cover"
                     onError={() => setLogoError(true)}

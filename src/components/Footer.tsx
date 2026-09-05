@@ -21,7 +21,7 @@ export default function Footer() {
             <Link to="/" className="inline-flex items-center gap-2.5 group mb-4">
               <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                 <img
-                  src="/Logo.svg"
+                  src="/prayas-logo.png"
                   alt="Prayas Logo"
                   className="w-full h-full object-cover"
                 />

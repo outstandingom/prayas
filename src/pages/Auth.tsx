@@ -102,9 +102,9 @@ export default function Auth() {
         {/* Brand header */}
         <div className="text-center mb-6">
           <Link to="/" className="inline-flex items-center gap-2 mb-3 group">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform border border-white/20">
               <img
-                src="https://i.ibb.co/N6Cft6S3/IMG-20260614-015637.jpg"
+                src="/prayas-logo.png"
                 alt="Prayas Logo"
                 className="w-full h-full object-cover"
               />
