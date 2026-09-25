@@ -388,8 +388,8 @@ export default function Navbar() {
                           key={lang.code}
                           onClick={() => changeLanguage(lang.code)}
                           className={`block w-full text-left px-5 py-2.5 text-sm font-medium transition-colors cursor-pointer ${i18n.language === lang.code
-                            ? 'text-amber-800 bg-amber-500/10 font-semibold'
-                            : 'text-gray-800 hover:bg-amber-50 hover:text-amber-800'
+                            ? 'text-red-600 bg-red-50 font-semibold'
+                            : 'text-gray-800 hover:bg-red-50 hover:text-red-600'
                             }`}
                         >
                           {lang.label}
@@ -401,7 +401,7 @@ export default function Navbar() {
               </div>
 
               <button
-                className={`lg:hidden p-2.5 -m-1 rounded-full transition-colors ${textColor} ${textColorHover} ${bgButton}`}
+                className={`lg:hidden p-2.5 -m-1 rounded-full transition-colors text-red-600 ${bgButton}`}
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
                 aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
               >

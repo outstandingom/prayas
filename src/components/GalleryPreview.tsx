@@ -89,7 +89,7 @@ const galleryItems: MasonryItem[] = [
   },
   {
     id: '11',
-    img: '/assets/relief/dry-ration-drive.jpg',
+    img: '/assets/relief/volunteer-leadership.jpeg',
     url: '/gallery',
     height: 560,
     title: 'Nutritious Meal & Dry Ration Drive',

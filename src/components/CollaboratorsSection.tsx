@@ -10,7 +10,7 @@ function NRLMLogo() {
       <img
         src="/nrlm-logo.png"
         alt="NRLM - National Rural Livelihoods Mission"
-        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 drop-shadow-sm"
+        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 mix-blend-multiply brightness-110 contrast-125"
       />
       <div className="flex flex-col leading-tight text-left">
         <span className="text-base sm:text-xl font-extrabold tracking-wide text-gray-900 font-sans">
@@ -30,7 +30,7 @@ function NULMLogo() {
       <img
         src="/nulm-logo.png"
         alt="NULM-MP"
-        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 drop-shadow-sm"
+        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 mix-blend-multiply brightness-110 contrast-125"
       />
       <div className="flex flex-col leading-tight text-left">
         <span className="text-base sm:text-xl font-extrabold tracking-wide text-gray-900 font-sans">
@@ -50,7 +50,7 @@ function IndorePrasashanLogo() {
       <img
         src="/indore-prasashan-logo.png"
         alt="Indore Prasashan"
-        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 drop-shadow-sm"
+        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 mix-blend-multiply brightness-110 contrast-125"
       />
       <div className="flex flex-col leading-tight text-left">
         <span className="text-base sm:text-xl font-extrabold tracking-wide text-gray-900 font-sans">
@@ -70,7 +70,7 @@ function IMCLogo() {
       <img
         src="/imc-logo.png"
         alt="Indore Municipal Corporation"
-        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 drop-shadow-sm"
+        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 mix-blend-multiply brightness-110 contrast-125"
       />
       <div className="flex flex-col leading-tight text-left">
         <span className="text-base sm:text-xl font-extrabold tracking-wide text-gray-900 font-sans">
@@ -90,7 +90,7 @@ function MPGovtLogo() {
       <img
         src="/mp-govt-logo.png"
         alt="Madhya Pradesh Government"
-        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 drop-shadow-sm"
+        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 mix-blend-multiply invert"
       />
       <div className="flex flex-col leading-tight text-left">
         <span className="text-base sm:text-xl font-extrabold tracking-wide text-gray-900 font-sans">
@@ -110,7 +110,7 @@ function RuralDevelopmentLogo() {
       <img
         src="/rural-dev-logo.png"
         alt="Ministry of Rural Development"
-        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 drop-shadow-sm"
+        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 mix-blend-multiply invert"
       />
       <div className="flex flex-col leading-tight text-left">
         <span className="text-base sm:text-xl font-extrabold tracking-wide text-gray-900 font-sans">
@@ -130,7 +130,7 @@ function MahilaBalVikasLogo() {
       <img
         src="/mahila-bal-vikas-logo.png"
         alt="Mahila and Bal Vikas Mantralaya"
-        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 drop-shadow-sm"
+        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0 mix-blend-multiply brightness-110 contrast-125"
       />
       <div className="flex flex-col leading-tight text-left">
         <span className="text-base sm:text-xl font-extrabold tracking-wide text-gray-900 font-sans">

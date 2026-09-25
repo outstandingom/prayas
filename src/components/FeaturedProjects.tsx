@@ -24,7 +24,7 @@ const projects = [
   },
   {
     id: 3,
-    title: 'Health Camp in Rural Uttar Pradesh',
+    title: 'Rural Health Camp',
     description: 'Organizing free specialized medical check‑ups, diagnostic care, free medicines, and health awareness drives for over 500+ underserved villagers.',
     image: '/healthhj.jpeg',
     date: 'January 2025',
