@@ -94,8 +94,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/auth';
+    localStorage.removeItem('prayas_admin_session');
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      // ignore network error
+    }
+    window.location.href = '/admin';
   };
 
   const toggleExpand = (itemName: string) => {
@@ -211,7 +216,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 p-4 md:p-6 ${isMobile ? 'mt-16' : ''}`}>
+      <main className="flex-1 p-4 md:p-6 pt-20 md:pt-24 min-h-screen">
         {/* Breadcrumb */}
         <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 mb-4">
           <Home className="w-4 h-4" />

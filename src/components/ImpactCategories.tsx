@@ -28,57 +28,85 @@ export default function ImpactCategories() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const loadCategories = async () => {
       setLoading(true)
+      let parsedData: Category[] = []
+
+      // Read from localStorage first
       try {
-        const { data, error } = await supabase
-          .from('impact_categories')
-          .select('*')
-          .eq('is_active', true)
-          .order('display_order', { ascending: true })
-
-        if (error) {
-          console.error('Error fetching categories:', error)
-          return
+        const saved = localStorage.getItem('prayas_impact_categories')
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            parsedData = parsed.filter((c: Category) => c.is_active !== false)
+          }
         }
-
-        const parsedData = data?.map(item => ({
-          ...item,
-          initiatives: typeof item.initiatives === 'string'
-            ? JSON.parse(item.initiatives)
-            : item.initiatives || []
-        })) || []
-
-        // Project Sindoda – injected at the second position in the slider
-        const projectSindoda: Category = {
-          id: 'project-sindoda',
-          title: 'Project Sindoda (Plastic Mukti)',
-          description: 'Transforming Sindoda into a completely plastic-free zone.',
-          image_url: '/Sindoda/IMG_20191022_121001 (1).jpg',
-          slug: 'project-sindoda',
-          display_order: 0,
-          is_active: true,
-          initiatives: [],
-          funds_collected: 0,
-          goal_funds: 0,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }
-
-        const fullData = [
-          ...parsedData.slice(0, 1),
-          projectSindoda,
-          ...parsedData.slice(1)
-        ]
-
-        setCategories(fullData)
-      } catch (err) {
-        console.error('Error:', err)
-      } finally {
-        setLoading(false)
+      } catch (e) {
+        console.error('Failed to read local categories:', e)
       }
+
+      // If no local categories found, query Supabase
+      if (parsedData.length === 0) {
+        try {
+          const { data, error } = await supabase
+            .from('impact_categories')
+            .select('*')
+            .eq('is_active', true)
+            .order('display_order', { ascending: true })
+
+          if (!error && data && data.length > 0) {
+            parsedData = data.map(item => ({
+              ...item,
+              initiatives: typeof item.initiatives === 'string'
+                ? JSON.parse(item.initiatives)
+                : item.initiatives || []
+            }))
+          }
+        } catch (err) {
+          console.log('Supabase fetch skipped, using default categories')
+        }
+      }
+
+      // Default fallback if both are empty
+      if (parsedData.length === 0) {
+        parsedData = [
+          { id: 'c1', title: 'Education & Skills', description: 'Sanskarshala moral & digital education.', image_url: '/EDUCATION.JPG', slug: 'education', display_order: 1, is_active: true, initiatives: [], funds_collected: 450000, goal_funds: 600000, created_at: '', updated_at: '' },
+          { id: 'c2', title: 'Healthcare & Medical', description: 'Free medical camps & eye surgery drives.', image_url: '/HEALTH.jpg', slug: 'healthcare', display_order: 2, is_active: true, initiatives: [], funds_collected: 380000, goal_funds: 500000, created_at: '', updated_at: '' },
+          { id: 'c3', title: 'Women Empowerment', description: 'Sabji Wali Didi micro-finance & sewing centers.', image_url: '/WOMEN.jpeg', slug: 'women-empowerment', display_order: 3, is_active: true, initiatives: [], funds_collected: 520000, goal_funds: 700000, created_at: '', updated_at: '' },
+          { id: 'c4', title: 'Kargil Vatika Reforestation', description: 'Mass tree plantation & tribute forest.', image_url: '/TREEGROW.jpg', slug: 'kargil-vatika', display_order: 4, is_active: true, initiatives: [], funds_collected: 610000, goal_funds: 800000, created_at: '', updated_at: '' },
+          { id: 'c5', title: 'Rural Development', description: 'Village adoption, clean water & solar lights.', image_url: '/ruraldevelopment.jpeg', slug: 'rural-development', display_order: 5, is_active: true, initiatives: [], funds_collected: 750000, goal_funds: 1000000, created_at: '', updated_at: '' },
+        ]
+      }
+
+      // Project Sindoda – injected at the second position in the slider
+      const projectSindoda: Category = {
+        id: 'project-sindoda',
+        title: 'Project Sindoda (Plastic Mukti)',
+        description: 'Transforming Sindoda into a completely plastic-free zone.',
+        image_url: '/Sindoda/IMG_20191022_121001 (1).jpg',
+        slug: 'project-sindoda',
+        display_order: 0,
+        is_active: true,
+        initiatives: [],
+        funds_collected: 0,
+        goal_funds: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
+
+      const fullData = [
+        ...parsedData.slice(0, 1),
+        projectSindoda,
+        ...parsedData.slice(1)
+      ]
+
+      setCategories(fullData)
+      setLoading(false)
     }
-    fetchCategories()
+
+    loadCategories()
+    window.addEventListener('prayas-categories-updated', loadCategories)
+    return () => window.removeEventListener('prayas-categories-updated', loadCategories)
   }, [])
 
   const translatedCategories = useMemo(() => {

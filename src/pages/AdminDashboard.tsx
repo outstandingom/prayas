@@ -1,20 +1,20 @@
 // src/pages/AdminDashboard.tsx
 import { useState, useEffect } from 'react';
-import { useNavigate, Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminVolunteers from '@/components/admin/AdminVolunteers';
 import AdminUsers from '@/components/admin/AdminUsers';
 import AdminContacts from '@/components/admin/AdminContacts';
-import AdminGallery from '@/components/admin/AdminGallery';
+import AdminSanityGallery from '@/components/admin/AdminSanityGallery';
 import AdminImpactCategories from '@/components/admin/AdminImpactCategories';
-import AdminStories from '@/components/admin/AdminStories'; // ✅ Import this
+import AdminStories from '@/components/admin/AdminStories';
+import Auth from './Auth';
 import { Loader2 } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
-  const [role, setRole] = useState<'super_admin' | 'sub_admin' | null>(null);
-  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
     checkAdmin();
@@ -22,26 +22,29 @@ export default function AdminDashboard() {
 
   const checkAdmin = async () => {
     try {
+      // 1. Check local admin session
+      const savedSession = localStorage.getItem('prayas_admin_session');
+      if (savedSession) {
+        const parsed = JSON.parse(savedSession);
+        if (parsed?.email) {
+          setIsAuthenticated(true);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // 2. Check Supabase auth
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate('/auth');
-        return;
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
       }
-
-      const { data, error } = await supabase
-        .from('admin_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error || !data) {
-        navigate('/');
-        return;
-      }
-
-      setRole(data.role as 'super_admin' | 'sub_admin');
     } catch (err) {
-      navigate('/');
+      console.warn('Admin auth check fallback:', err);
+      // Check local session again
+      const savedSession = localStorage.getItem('prayas_admin_session');
+      setIsAuthenticated(!!savedSession);
     } finally {
       setLoading(false);
     }
@@ -49,29 +52,28 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="flex items-center justify-center min-h-screen bg-[#FAF9F6]">
+        <Loader2 className="w-8 h-8 animate-spin text-[#263238]" />
       </div>
     );
   }
 
-  if (!role) {
-    return null;
+  // If not authenticated, render dedicated Admin Login interface
+  if (!isAuthenticated) {
+    return <Auth />;
   }
-
-  const isSuperAdmin = role === 'super_admin';
 
   return (
     <AdminLayout>
       <Routes>
-        <Route path="/" element={<Navigate to="/admin/volunteers" replace />} />
-        <Route path="/volunteers" element={<AdminVolunteers isSuperAdmin={isSuperAdmin} />} />
+        <Route path="/" element={<Navigate to="/admin/gallery" replace />} />
+        <Route path="/gallery" element={<AdminSanityGallery />} />
+        <Route path="/volunteers" element={<AdminVolunteers isSuperAdmin={true} />} />
         <Route path="/users" element={<AdminUsers />} />
         <Route path="/contacts" element={<AdminContacts />} />
-        <Route path="/gallery" element={<AdminGallery />} />
         <Route path="/categories" element={<AdminImpactCategories />} />
-        <Route path="/stories" element={<AdminStories />} /> {/* ✅ Add this route */}
-        <Route path="*" element={<Navigate to="/admin/volunteers" />} />
+        <Route path="/stories" element={<AdminStories />} />
+        <Route path="*" element={<Navigate to="/admin/gallery" replace />} />
       </Routes>
     </AdminLayout>
   );
