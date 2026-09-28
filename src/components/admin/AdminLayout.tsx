@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Heart, LogOut, Menu, X, MessageSquare, 
   ImageIcon, Layers, BookOpen, Settings, Shield, Home, 
-  ChevronDown, ChevronRight, FileText, Calendar, Award
+  ChevronDown, ChevronRight, FileText, Calendar, Award, FolderKanban, UserCheck
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
@@ -23,9 +23,19 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { 
-    name: 'Dashboard', 
-    path: '/admin', 
-    icon: LayoutDashboard 
+    name: 'Website CMS (Photos & Videos)', 
+    path: '/admin/gallery', 
+    icon: ImageIcon 
+  },
+  {
+    name: 'Projects & Initiatives',
+    path: '/admin/projects',
+    icon: FolderKanban
+  },
+  {
+    name: 'Team Members',
+    path: '/admin/team',
+    icon: UserCheck
   },
   { 
     name: 'Volunteers', 
@@ -43,11 +53,6 @@ const navItems: NavItem[] = [
     icon: MessageSquare 
   },
   { 
-    name: 'Gallery', 
-    path: '/admin/gallery', 
-    icon: ImageIcon 
-  },
-  { 
     name: 'Impact Categories', 
     path: '/admin/categories', 
     icon: Layers 
@@ -56,11 +61,6 @@ const navItems: NavItem[] = [
     name: 'Impact Stories', 
     path: '/admin/stories', 
     icon: BookOpen 
-  },
-  { 
-    name: 'Settings', 
-    path: '/admin/settings', 
-    icon: Settings 
   },
 ];
 
@@ -103,14 +103,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     window.location.href = '/admin';
   };
 
-  const toggleExpand = (itemName: string) => {
-    setExpandedItems(prev => 
-      prev.includes(itemName) 
-        ? prev.filter(name => name !== itemName)
-        : [...prev, itemName]
-    );
-  };
-
   const isPathActive = (path: string) => {
     return location.pathname === path || location.pathname.startsWith(path + '/');
   };
@@ -118,45 +110,46 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <div className="flex min-h-screen bg-gray-50/80">
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#263238] rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-[#263238] rounded-lg flex items-center justify-center shadow-xs">
             <LayoutDashboard className="w-4 h-4 text-[#FFF314]" />
           </div>
-          <span className="font-bold text-lg text-[#263238]">Admin Panel</span>
+          <span className="font-bold text-base text-[#263238]">Admin Panel</span>
         </div>
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 rounded-lg hover:bg-gray-100 transition"
+          className="p-2 rounded-lg hover:bg-gray-100 transition active:scale-95"
+          aria-label="Toggle Navigation Menu"
         >
-          {isMobileMenuOpen ? <X className="w-5 h-5 text-[#263238]" /> : <Menu className="w-5 h-5 text-[#263238]" />}
+          {isMobileMenuOpen ? <X className="w-6 h-6 text-[#263238]" /> : <Menu className="w-6 h-6 text-[#263238]" />}
         </button>
       </div>
 
-      {/* Sidebar - Desktop */}
-      <aside className={`fixed md:relative z-40 w-64 bg-white border-r border-gray-200 h-full transition-transform duration-300 shadow-sm ${
+      {/* Sidebar - Desktop Fixed & Mobile Drawer */}
+      <aside className={`fixed top-0 left-0 bottom-0 z-50 w-64 bg-white border-r border-gray-200 h-screen overflow-y-auto transition-transform duration-300 shadow-2xl md:shadow-sm ${
         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
       }`}>
-        <div className="p-4 h-full flex flex-col">
-          {/* Logo - Desktop only */}
-          <div className="hidden md:flex items-center gap-3 mb-6 pb-6 border-b border-gray-200">
-            <div className="w-10 h-10 bg-[#263238] rounded-xl flex items-center justify-center">
-              <LayoutDashboard className="w-5 h-5 text-[#FFF314]" />
+        <div className="p-4 h-full flex flex-col justify-between min-h-screen">
+          <div>
+            {/* Logo - Desktop only */}
+            <div className="hidden md:flex items-center gap-3 mb-6 pb-6 border-b border-gray-200">
+              <div className="w-10 h-10 bg-[#263238] rounded-xl flex items-center justify-center shadow-sm">
+                <LayoutDashboard className="w-5 h-5 text-[#FFF314]" />
+              </div>
+              <div>
+                <span className="font-extrabold text-base text-[#263238] block leading-tight">Prayas Admin</span>
+                <span className="text-[11px] font-mono text-emerald-600 font-bold">CMS Active</span>
+              </div>
             </div>
-            <div>
-              <span className="font-bold text-lg text-[#263238] block">Admin Panel</span>
-              <span className="text-xs text-gray-500">Impact Dashboard</span>
-            </div>
-          </div>
 
-          {/* Mobile - Close button inside sidebar */}
-          {isMobile && (
-            <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+            {/* Mobile - Close button inside sidebar */}
+            <div className="flex md:hidden items-center justify-between mb-4 pb-4 border-b border-gray-200">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-[#263238] rounded-lg flex items-center justify-center">
                   <LayoutDashboard className="w-4 h-4 text-[#FFF314]" />
                 </div>
-                <span className="font-bold text-lg text-[#263238]">Admin Panel</span>
+                <span className="font-bold text-base text-[#263238]">Admin Menu</span>
               </div>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -165,78 +158,78 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <X className="w-5 h-5 text-[#263238]" />
               </button>
             </div>
-          )}
 
-          {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto py-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = isPathActive(item.path);
-              
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
-                    isActive
-                      ? 'bg-[#FFF314]/20 text-[#263238] font-medium shadow-sm'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-[#263238]'
-                  }`}
-                >
-                  <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-[#263238]' : 'text-gray-400 group-hover:text-[#263238]'}`} />
-                  <span className="text-sm">{item.name}</span>
-                  {item.badge && (
-                    <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
+            {/* Navigation */}
+            <nav className="space-y-1 py-2">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = isPathActive(item.path);
+                
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all duration-200 group font-medium text-xs sm:text-sm ${
+                      isActive
+                        ? 'bg-[#263238] text-[#FFF314] font-bold shadow-sm'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-[#263238]'
+                    }`}
+                  >
+                    <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-[#FFF314]' : 'text-gray-400 group-hover:text-[#263238]'}`} />
+                    <span className="truncate">{item.name}</span>
+                    {item.badge && (
+                      <span className="ml-auto bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
 
           {/* User Info & Logout */}
-          <div className="border-t border-gray-200 pt-4 space-y-3">
-            <div className="px-4 py-2 bg-gray-50 rounded-lg">
-              <p className="text-xs text-gray-500">Signed in as</p>
-              <p className="text-sm font-medium text-[#263238] truncate">
-                {userEmail || 'Admin User'}
+          <div className="border-t border-gray-200 pt-4 pb-4 space-y-3 mt-auto">
+            <div className="px-3.5 py-2 bg-gray-50 rounded-xl border border-gray-100">
+              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Signed in as</p>
+              <p className="text-xs font-bold text-[#263238] truncate mt-0.5">
+                {userEmail || 'prayas20269@gmail.com'}
               </p>
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-red-50 text-gray-600 hover:text-red-600 w-full transition-all duration-200 group"
+              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-red-50 text-gray-600 hover:text-red-600 w-full transition-all duration-200 group font-bold text-xs"
             >
               <LogOut className="w-4 h-4 text-gray-400 group-hover:text-red-500" />
-              <span className="text-sm">Sign Out</span>
+              <span>Sign Out</span>
             </button>
           </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-6 pt-20 md:pt-24 min-h-screen">
+      <main className="flex-1 md:pl-64 p-3 sm:p-4 md:p-6 pt-16 sm:pt-20 md:pt-6 min-h-screen w-full max-w-full overflow-x-hidden">
         {/* Breadcrumb */}
-        <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 mb-4">
-          <Home className="w-4 h-4" />
+        <div className="hidden md:flex items-center gap-2 text-xs text-gray-500 mb-4">
+          <Home className="w-3.5 h-3.5" />
           <span className="text-gray-300">/</span>
-          <span className="text-[#263238] font-medium">Admin</span>
+          <span className="text-[#263238] font-bold">Admin</span>
           <span className="text-gray-300">/</span>
-          <span className="text-gray-600">
+          <span className="text-gray-600 font-semibold">
             {navItems.find(item => item.path === location.pathname)?.name || 'Dashboard'}
           </span>
         </div>
         
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto w-full">
           {children}
         </div>
       </main>
 
-      {/* Mobile Overlay */}
+      {/* Mobile Overlay Backdrop */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-30 md:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 md:hidden transition-opacity"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

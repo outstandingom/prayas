@@ -22,7 +22,12 @@ export default function Layout() {
   }, [])
 
   useEffect(() => {
-    window.scrollTo(0, 0)
+    if ((window as any).__lenis) {
+      (window as any).__lenis.scrollTo(0, { immediate: true });
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, [pathname])
 
   useEffect(() => {
@@ -30,11 +35,13 @@ export default function Layout() {
     return () => clearTimeout(timer)
   }, [])
 
+  const isAdminRoute = pathname.startsWith('/admin') || pathname === '/auth' || pathname === '/login';
+
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#263238] font-sans flex flex-col relative overflow-x-clip">
-      {loaderVisible && <SmoothLoader />}
+      {loaderVisible && !isAdminRoute && <SmoothLoader />}
       
-      <Navbar />
+      {!isAdminRoute && <Navbar />}
       <motion.main
         key={pathname}
         initial={{ opacity: 0 }}
@@ -48,12 +55,11 @@ export default function Layout() {
       >
         <Outlet />
       </motion.main>
-      {pathname !== '/contact' && <Footer />}
+      {pathname !== '/contact' && !isAdminRoute && <Footer />}
       
       {/* Floating elements */}
-      <FloatingDonateButton />
-      {/* <FloatingVolunteerButton /> removed */}
-      <ScrollToTopButton />
+      {!isAdminRoute && <FloatingDonateButton />}
+      {!isAdminRoute && <ScrollToTopButton />}
     </div>
   )
 }

@@ -9,6 +9,8 @@ import AdminContacts from '@/components/admin/AdminContacts';
 import AdminSanityGallery from '@/components/admin/AdminSanityGallery';
 import AdminImpactCategories from '@/components/admin/AdminImpactCategories';
 import AdminStories from '@/components/admin/AdminStories';
+import AdminProjectsManager from '@/components/admin/AdminProjectsManager';
+import AdminTeamManager from '@/components/admin/AdminTeamManager';
 import Auth from './Auth';
 import { Loader2 } from 'lucide-react';
 
@@ -68,6 +70,8 @@ export default function AdminDashboard() {
       <Routes>
         <Route path="/" element={<Navigate to="/admin/gallery" replace />} />
         <Route path="/gallery" element={<AdminSanityGallery />} />
+        <Route path="/projects" element={<AdminProjectsManager />} />
+        <Route path="/team" element={<AdminTeamManager />} />
         <Route path="/volunteers" element={<AdminVolunteers isSuperAdmin={true} />} />
         <Route path="/users" element={<AdminUsers />} />
         <Route path="/contacts" element={<AdminContacts />} />

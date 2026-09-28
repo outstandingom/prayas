@@ -1,6 +1,6 @@
 // src/App.tsx
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
 import Layout from './components/Layout';
@@ -47,6 +47,8 @@ const RouteFallback = () => (
 
 export default function App() {
   const [isVolunteerPopupOpen, setIsVolunteerPopupOpen] = useState(false);
+  const location = useLocation();
+  const isAdminOrAuth = location.pathname.startsWith('/admin') || location.pathname === '/auth' || location.pathname === '/login';
 
   // Initialize Lenis Smooth Scrolling & Sync with GSAP ScrollTrigger
   useEffect(() => {
@@ -57,6 +59,8 @@ export default function App() {
       touchMultiplier: 1.5,
     });
 
+    (window as any).__lenis = lenis;
+
     lenis.on('scroll', ScrollTrigger.update);
 
     const updateTicker = (time: number) => {
@@ -66,14 +70,29 @@ export default function App() {
     gsap.ticker.add(updateTicker);
     gsap.ticker.lagSmoothing(0);
 
-    const timer = setTimeout(() => setIsVolunteerPopupOpen(true), 15000);
+    const timer = setTimeout(() => {
+      if (!isAdminOrAuth) {
+        setIsVolunteerPopupOpen(true);
+      }
+    }, 15000);
 
     return () => {
       clearTimeout(timer);
       gsap.ticker.remove(updateTicker);
       lenis.destroy();
+      delete (window as any).__lenis;
     };
-  }, []);
+  }, [isAdminOrAuth]);
+
+  // Always reset scroll to top (0, 0) whenever route changes (e.g. opening projects from landing page)
+  useEffect(() => {
+    if ((window as any).__lenis) {
+      (window as any).__lenis.scrollTo(0, { immediate: true });
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [location.pathname]);
 
   return (
     <>
@@ -126,10 +145,12 @@ export default function App() {
         </Suspense>
       </AnimatePresence>
 
-      <VolunteerPopup
-        isOpen={isVolunteerPopupOpen}
-        onClose={() => setIsVolunteerPopupOpen(false)}
-      />
+      {!isAdminOrAuth && (
+        <VolunteerPopup
+          isOpen={isVolunteerPopupOpen}
+          onClose={() => setIsVolunteerPopupOpen(false)}
+        />
+      )}
     </>
   );
 }

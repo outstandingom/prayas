@@ -1,30 +1,27 @@
-// src/components/TeamPreview.tsx
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-
-// ─── Only the three actual team members ───
-const teamMembers = [
-  {
-    name: 'Rekha Thakkar',
-    role: 'President',
-    image: '/images/team/rekha.jpg',
-  },
-  {
-    name: 'Pooja Dave',
-    role: 'Secretary',
-    image: '/images/team/pooja.jpg',
-  },
-  {
-    name: 'Harsh Upadhyay',
-    role: 'Executive Member',
-    image: '/images/team/harsh.jpg',
-  },
-]
+import type { MemberItem } from '@/data/teamData'
+import { getStoredTeamMembers } from '@/data/teamData'
 
 export default function TeamPreview() {
   const { t } = useTranslation()
+  const [teamMembers, setTeamMembers] = useState<MemberItem[]>([])
+
+  useEffect(() => {
+    setTeamMembers(getStoredTeamMembers());
+
+    const handleTeamUpdated = () => {
+      setTeamMembers(getStoredTeamMembers());
+    };
+
+    window.addEventListener('prayas-team-updated', handleTeamUpdated);
+    return () => {
+      window.removeEventListener('prayas-team-updated', handleTeamUpdated);
+    };
+  }, []);
 
   return (
     <section className="bg-white py-16 md:py-24">
@@ -46,11 +43,11 @@ export default function TeamPreview() {
 
         </motion.div>
 
-        {/* ─── Centered row of 3 members ─── */}
+        {/* ─── Centered row of leadership members ─── */}
         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
-          {teamMembers.map((member, idx) => (
+          {teamMembers.slice(0, 6).map((member, idx) => (
             <motion.div
-              key={idx}
+              key={member.id || idx}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: idx * 0.1 }}
@@ -59,18 +56,17 @@ export default function TeamPreview() {
             >
               <div className="w-28 h-28 sm:w-36 sm:h-36 mx-auto rounded-full overflow-hidden border-4 border-red-600/20 shadow-lg mb-3 bg-[#263238]/10 flex items-center justify-center">
                 <img
-                  src={member.image || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"%3E%3Crect width="128" height="128" fill="%23263238"/%3E%3Ccircle cx="64" cy="48" r="24" fill="%23DC2626"/%3E%3Cpath d="M24 112c0-24 16-36 40-36s40 12 40 36" fill="%23DC2626"/%3E%3C/svg%3E'}
+                  src={member.photo || '/images/team/rekha.jpg'}
                   alt={member.name}
                   className="w-full h-full object-cover"
                   loading="lazy"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"%3E%3Crect width="128" height="128" fill="%23263238"/%3E%3Ccircle cx="64" cy="48" r="24" fill="%23DC2626"/%3E%3Cpath d="M24 112c0-24 16-36 40-36s40 12 40 36" fill="%23DC2626"/%3E%3C/svg%3E'
+                    (e.target as HTMLImageElement).src = '/images/team/rekha.jpg';
                   }}
                 />
               </div>
-              <h4 className="font-extrabold text-[#263238] text-base sm:text-lg">{member.name}</h4>
-              <p className="text-red-600 font-semibold text-xs sm:text-sm font-mono mt-0.5">{member.role}</p>
+              <h4 className="font-extrabold text-[#263238] text-base sm:text-lg truncate">{member.name}</h4>
+              <p className="text-red-600 font-semibold text-xs sm:text-sm font-mono mt-0.5 truncate">{member.role}</p>
             </motion.div>
           ))}
         </div>

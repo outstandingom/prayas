@@ -3,18 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, ArrowRight, X, ShieldCheck, Mail, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import type { MemberItem } from '@/data/teamData';
+import { getStoredTeamMembers } from '@/data/teamData';
 
-export interface MemberItem {
-  id: string;
-  name: string;
-  role: string;
-  photo: string;
-  badge: string;
-  badgeColor: string;
-  bio: string;
-  achievements: string[];
-  focusAreas: string[];
-}
+export type { MemberItem };
 
 const MEMBERS: MemberItem[] = [
   {
@@ -112,8 +104,22 @@ const MEMBERS: MemberItem[] = [
 export default function Members() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [membersList, setMembersList] = useState<MemberItem[]>([]);
   const [selectedMember, setSelectedMember] = useState<MemberItem | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    setMembersList(getStoredTeamMembers());
+
+    const handleTeamUpdated = () => {
+      setMembersList(getStoredTeamMembers());
+    };
+
+    window.addEventListener('prayas-team-updated', handleTeamUpdated);
+    return () => {
+      window.removeEventListener('prayas-team-updated', handleTeamUpdated);
+    };
+  }, []);
 
   // Background Scroll Lock when Modal is Open
   useEffect(() => {
@@ -177,7 +183,7 @@ export default function Members() {
 
         {/* ─── Leadership Cards Grid ─── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16 justify-center">
-          {MEMBERS.map((member, index) => (
+          {membersList.map((member, index) => (
             <motion.div
               key={member.id}
               initial={{ opacity: 0, y: 30 }}

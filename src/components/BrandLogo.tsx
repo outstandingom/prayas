@@ -26,7 +26,7 @@ export default function BrandLogo({
   }, []);
 
   const isEnglish = brandLangIndex === 0;
-  const imageSrc = isEnglish ? '/Prayas english.jpg' : '/Prayashindi.jpg';
+  const imageSrc = isEnglish ? '/Prayas english.png' : '/Prayashindi.png';
 
   // ─── Size classes per variant ───
   let logoSizeClasses = 'w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12';
