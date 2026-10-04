@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle, AlertCircle } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { addContactMessage } from '@/data/contactsData'
 import { useTranslation } from 'react-i18next'
 
 interface FormData { name: string; email: string; phone: string; subject: string; message: string; }
@@ -26,8 +26,13 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); setLoading(true); setStatus('idle'); setErrorMsg('')
     try {
-      const { error } = await supabase.from('contact_messages').insert([{ name: form.name.trim(), email: form.email.trim(), phone: form.phone.trim() || null, subject: form.subject.trim(), message: form.message.trim(), status: 'unread' }])
-      if (error) throw error
+      await addContactMessage({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim() || null,
+        subject: form.subject.trim() || 'General Inquiry',
+        message: form.message.trim(),
+      })
       setStatus('success'); setForm(initialForm)
     } catch (err: any) {
       setStatus('error'); setErrorMsg(err?.message || t('contact.form.errorFallback', 'Something went wrong. Please try again.'))

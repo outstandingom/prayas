@@ -18,7 +18,6 @@ const navLinks = [
     path: '/about',
     submenu: [
       { name: 'About Us', path: '/aboutus' },
-      { name: 'nav.about.story', path: '/about' },
       { name: 'nav.about.members', path: '/about/members' },
       { name: 'nav.about.certifications', path: '/about/certifications' },
     ]
@@ -187,14 +186,33 @@ export default function Navbar() {
         {/* ---------- TOP STRIP ---------- */}
         {isStripVisible && (
           <div className="hidden sm:flex bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white py-2 px-4 sm:px-8 items-center justify-between w-full shadow-md text-xs z-50">
-            <div className="flex items-center gap-4">
-              <span className="font-semibold text-[#FFF314] hidden md:inline">Prayas NGO:</span>
+            <div className="flex items-center gap-2 sm:gap-2.5">
               <img 
                 src="/assets/brand/certifications-banner.png" 
                 alt="Certifications - 80G, 12A Registered" 
                 className="h-5 md:h-7 object-contain rounded-sm"
                 style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
               />
+              <div 
+                className="h-5 md:h-7 px-2 py-0.5 bg-white rounded-sm flex items-center justify-center shadow-xs"
+                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+              >
+                <img 
+                  src="/assets/brand/niti-aayog.png" 
+                  alt="NITI Aayog" 
+                  className="h-full object-contain max-h-5 md:max-h-6"
+                />
+              </div>
+              <div 
+                className="h-5 md:h-7 px-2 py-0.5 bg-white rounded-sm flex items-center justify-center shadow-xs"
+                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+              >
+                <img 
+                  src="/assets/brand/csr-logo.png" 
+                  alt="CSR - Corporate Social Responsibility" 
+                  className="h-full object-contain max-h-5 md:max-h-6"
+                />
+              </div>
             </div>
             <div className="flex items-center gap-4 shrink-0">
               {/* Social icons */}

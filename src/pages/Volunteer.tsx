@@ -1,9 +1,81 @@
-import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { Heart, Send, CheckCircle, Loader2, User, Mail, Phone, MapPin, Calendar, ArrowRight } from 'lucide-react';
+import { useState, memo } from 'react';
+import { Heart, CheckCircle, Loader2, User, Mail, Phone, MapPin, Calendar, ArrowRight, Award, Briefcase, Users, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { addVolunteerApplication } from '@/data/volunteersData';
+
+const VOLUNTEER_PERKS = [
+  {
+    icon: Award,
+    title: 'Verified Certificates',
+    desc: 'Government & NGO-recognized volunteering certificate and official Letter of Recommendation.',
+  },
+  {
+    icon: Briefcase,
+    title: 'Real-World Experience',
+    desc: 'Direct hands-on experience in grassroots education centers, medical camps, and social drives.',
+  },
+  {
+    icon: Users,
+    title: 'Networking & Mentorship',
+    desc: 'Collaborate with passionate changemakers, social activists, educators, and industry mentors.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Leadership & Impact',
+    desc: 'Lead meaningful initiatives and develop project management, public speaking & teamwork skills.',
+  },
+];
+
+const LeftSidebar = memo(() => (
+  <div className="hidden lg:flex lg:w-[45%] relative bg-gray-900 fixed lg:sticky top-0 h-screen overflow-hidden">
+    <img src="/CHILDRENGROUP.jpg" className="absolute inset-0 w-full h-full object-cover opacity-70" alt="Volunteer" />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+    
+    <div className="relative z-10 flex flex-col justify-end p-8 xl:p-12 text-white h-full w-full">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md mb-4 border border-white/30 shadow-lg">
+          <Heart className="w-4 h-4 text-red-400 fill-red-400" />
+          <span className="text-sm font-bold tracking-wide">Join Our Community</span>
+        </div>
+        <h1 className="text-3xl xl:text-4xl font-extrabold tracking-tight mb-2 leading-tight">
+          Be the reason someone smiles today.
+        </h1>
+        <p className="text-sm xl:text-base text-gray-200 font-medium max-w-lg leading-relaxed mb-6">
+          Your time and skills can create a lasting impact. Join Prayas in our mission to empower lives across rural and urban India.
+        </p>
+
+        {/* Volunteer Perks Boxes */}
+        <div className="space-y-2.5">
+          <p className="text-xs font-bold uppercase tracking-wider text-white/80">Volunteer Perks & Benefits</p>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-2.5">
+            {VOLUNTEER_PERKS.map((perk, idx) => {
+              const Icon = perk.icon;
+              return (
+                <div
+                  key={idx}
+                  className="p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 hover:bg-white/15 transition-all shadow-xs"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="p-1 rounded-md bg-white/15 text-amber-300 shrink-0">
+                      <Icon className="w-3.5 h-3.5" />
+                    </div>
+                    <h4 className="text-xs font-bold text-white tracking-wide">{perk.title}</h4>
+                  </div>
+                  <p className="text-[11px] text-gray-200 leading-snug">
+                    {perk.desc}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  </div>
+));
+
 
 export default function Volunteer() {
   const { t } = useTranslation();
@@ -17,48 +89,31 @@ export default function Volunteer() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); e.stopPropagation(); setLoading(true); setError('');
+    e.preventDefault(); 
+    e.stopPropagation(); 
+    setLoading(true); 
+    setError('');
+
     try {
-      const { error } = await supabase.from('volunteers').insert([{ 
-        full_name: formData.full_name.trim(), 
-        email: formData.email.trim(), 
-        phone: formData.phone.trim(), 
-        address: formData.address.trim(), 
-        availability: formData.availability.trim(), 
-        skills: formData.skills.trim(), 
-        message: formData.message.trim() 
-      }]);
-      if (error) throw error;
+      // 1. Save directly into localStorage and sync with universal server API
+      await addVolunteerApplication({
+        full_name: formData.full_name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        address: formData.address.trim() || 'Indore, MP',
+        availability: formData.availability.trim() || 'Flexible',
+        skills: formData.skills.trim() || 'General Volunteering',
+        message: formData.message.trim() || '',
+      });
+
       setSuccess(true); 
       setFormData({ full_name: '', email: '', phone: '', address: '', availability: '', skills: '', message: '' });
     } catch (err: any) { 
-      setError(err.message || t('volunteer.form.errorFallback', 'Submission failed. Please try again.')); 
+      setError(err?.message || t('volunteer.form.errorFallback', 'Submission failed. Please try again.')); 
     } finally { 
       setLoading(false); 
     }
   };
-
-  const LeftSidebar = () => (
-    <div className="hidden lg:flex lg:w-[45%] relative bg-gray-900 fixed lg:sticky top-0 h-screen overflow-hidden">
-      <img src="/CHILDRENGROUP.jpg" className="absolute inset-0 w-full h-full object-cover opacity-70" alt="Volunteer" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-      
-      <div className="relative z-10 flex flex-col justify-end p-12 text-white h-full w-full">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md mb-6 border border-white/30 shadow-lg">
-            <Heart className="w-4 h-4 text-red-400 fill-red-400" />
-            <span className="text-sm font-bold tracking-wide">Join Our Community</span>
-            </div>
-            <h1 className="text-4xl xl:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
-            Be the reason someone smiles today.
-            </h1>
-            <p className="text-lg text-gray-200 font-medium max-w-md leading-relaxed">
-            Your time and skills can create a lasting impact. Join Prayas in our mission to empower lives across rural and urban India.
-            </p>
-        </motion.div>
-      </div>
-    </div>
-  );
 
   if (success) {
     return (
@@ -101,8 +156,45 @@ export default function Volunteer() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="w-full max-w-xl mx-auto mt-10 lg:mt-12"
         >
+          {/* Mobile Hero & Perks */}
+          <div className="lg:hidden mb-8">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 text-red-600 text-xs font-bold mb-3 border border-red-100">
+              <Heart className="w-3.5 h-3.5 fill-red-500" />
+              <span>Join Our Community</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+              Be the reason someone smiles today.
+            </h1>
+            <p className="text-sm text-gray-600 mb-4">
+              Your time and skills can create a lasting impact. Join Prayas in our mission to empower lives across rural and urban India.
+            </p>
+
+            <div className="space-y-2 mb-6">
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Volunteer Perks & Benefits</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {VOLUNTEER_PERKS.map((perk, idx) => {
+                  const Icon = perk.icon;
+                  return (
+                    <div
+                      key={idx}
+                      className="p-3 rounded-xl bg-gray-50 border border-gray-200/80 flex items-start gap-2.5"
+                    >
+                      <div className="p-1.5 rounded-lg bg-red-50 text-red-600 shrink-0 mt-0.5">
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-gray-900">{perk.title}</h4>
+                        <p className="text-[11px] text-gray-500 mt-0.5 leading-snug">{perk.desc}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
           <div className="mb-5">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-1.5">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mb-1.5">
               {t('volunteer.form.title', 'Become a Volunteer')}
             </h2>
           </div>

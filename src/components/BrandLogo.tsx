@@ -29,10 +29,10 @@ export default function BrandLogo({
   const imageSrc = isEnglish ? '/Prayas english.png' : '/Prayashindi.png';
 
   // ─── Size classes per variant ───
-  let logoSizeClasses = 'w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12';
+  let logoSizeClasses = 'w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14';
   let brandImageMaxHeight = 'h-7 sm:h-9 lg:h-10';
   let containerClasses = 'min-w-[60px] sm:min-w-[100px] lg:min-w-[140px]';
-  let gapClasses = 'gap-2 sm:gap-2.5';
+  let gapClasses = 'gap-1 sm:gap-1.5';
 
   if (variant === 'footer') {
     logoSizeClasses = 'w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16';
@@ -55,27 +55,38 @@ export default function BrandLogo({
   const content = (
     <>
       {/* Logo */}
-      <div className={`rounded-full overflow-hidden flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/20 ${logoSizeClasses}`}>
+      <div 
+        className={`rounded-full overflow-hidden flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105 ${logoSizeClasses}`}
+        style={{
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
+        }}
+      >
         <img
           src="/prayas-logo.png"
           alt="Prayas Logo"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
+          style={{
+            imageRendering: '-webkit-optimize-contrast',
+            transform: 'translateZ(0)',
+          }}
         />
       </div>
 
-      {/* Animated brand name as image – slightly lowered with mt-1 */}
+      {/* Animated brand name as image – positioned slightly closer to logo */}
       <motion.div
         key={brandLangIndex}
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -5 }}
         transition={{ duration: 0.4 }}
-        className={`flex-1 flex items-center ${containerClasses}`}
+        className={`flex-1 flex items-center justify-start -ml-1 sm:-ml-1.5 ${containerClasses}`}
       >
         <img
           src={imageSrc}
           alt={isEnglish ? 'Prayas Samaj Sevi Sanstha' : 'प्रयास समाज सेवी संस्था'}
-          className={`w-full object-contain ${brandImageMaxHeight} mt-1`}
+          className={`w-full object-contain object-left ${brandImageMaxHeight} mt-0.5`}
           style={{ maxWidth: '100%' }}
         />
       </motion.div>

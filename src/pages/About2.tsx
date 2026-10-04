@@ -154,17 +154,6 @@ export default function About2() {
                 </div>
               </div>
             </div>
-
-            {/* Read Full Story Action Button */}
-            <div className="pt-2">
-              <button
-                onClick={() => navigate('/about')}
-                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-bold bg-[#263238] hover:bg-red-600 text-white transition-all shadow-md hover:shadow-xl cursor-pointer"
-              >
-                <span>Read Full Story</span>
-                <ArrowRight size={16} />
-              </button>
-            </div>
           </motion.div>
 
         </div>

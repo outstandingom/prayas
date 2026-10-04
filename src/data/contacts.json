@@ -1,0 +1,62 @@
+[
+  {
+    "id": "msg-1791116135177",
+    "name": "mohit",
+    "email": "jhaderajat@gmail.com",
+    "phone": "08989693739",
+    "subject": "Volunteering",
+    "message": "",
+    "status": "unread",
+    "created_at": "2026-10-04T12:15:35.177Z"
+  },
+  {
+    "id": "msg-1791116089197",
+    "name": "vedant",
+    "email": "jhaderajat@gmail.com",
+    "phone": "08989693739",
+    "subject": "Volunteering",
+    "message": "",
+    "status": "unread",
+    "created_at": "2026-10-04T12:14:49.197Z"
+  },
+  {
+    "id": "msg-1791116061273",
+    "name": "Rajat Jhade",
+    "email": "jhaderajat@gmail.com",
+    "phone": "08989693739",
+    "subject": "Donation",
+    "message": "",
+    "status": "read",
+    "created_at": "2026-10-04T12:14:21.273Z"
+  },
+  {
+    "id": "msg-1",
+    "name": "Rajesh Sharma",
+    "email": "rajesh.sharma@example.com",
+    "phone": "+91 98260 11223",
+    "subject": "Inquiry regarding Village Adoption in MP",
+    "message": "Hello Prayas Team, we are interested in sponsoring solar lighting for a village near Indore. Please send us CSR proposal details.",
+    "status": "unread",
+    "created_at": "2026-10-04T10:00:00.000Z"
+  },
+  {
+    "id": "msg-2",
+    "name": "Dr. Meenakshi Joshi",
+    "email": "meenakshi.j@example.com",
+    "phone": "+91 98930 44556",
+    "subject": "Volunteering for Free Eye Surgery Camps",
+    "message": "Greetings! I am an ophthalmologist. I would love to join your upcoming health camp in Dhar district.",
+    "status": "read",
+    "created_at": "2026-10-03T10:00:00.000Z"
+  },
+  {
+    "id": "msg-3",
+    "name": "Kavita Chawla",
+    "email": "kavita.c@example.com",
+    "phone": "+91 97520 77889",
+    "subject": "Donation of Computer Systems for Digital Labs",
+    "message": "We have 15 refurbished desktop PCs ready for donation to your Sanskarshala digital literacy centers.",
+    "status": "replied",
+    "created_at": "2026-10-02T10:00:00.000Z"
+  }
+]

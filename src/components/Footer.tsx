@@ -19,11 +19,22 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/" className="inline-flex items-center gap-2.5 group mb-4">
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <div 
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gradient-to-br from-[#FFF314] to-[#FFF314]/80 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105"
+                style={{
+                  transform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden',
+                }}
+              >
                 <img
                   src="/prayas-logo.png"
                   alt="Prayas Logo"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
+                  style={{
+                    imageRendering: '-webkit-optimize-contrast',
+                    transform: 'translateZ(0)',
+                  }}
                 />
               </div>
               <div>

@@ -1,19 +1,16 @@
 // src/components/admin/AdminContacts.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
+import type { ContactMessage } from '@/data/contactsData'
+import {
+  getStoredContacts,
+  saveStoredContacts,
+  fetchContactsFromServer,
+  updateContactStatus as updateStoredContactStatus,
+  deleteStoredContact
+} from '@/data/contactsData'
 import { Mail, Phone, Clock, CheckCircle, Eye, Trash2, RefreshCw, AlertCircle, Search, Filter } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-
-interface ContactMessage {
-  id: string
-  name: string
-  email: string
-  phone: string | null
-  subject: string
-  message: string
-  status: 'unread' | 'read' | 'replied'
-  created_at: string
-}
 
 const STATUS_COLORS = {
   unread: 'bg-red-100 text-red-700 border-red-200',
@@ -28,91 +25,88 @@ const STATUS_LABELS = {
 }
 
 export default function AdminContacts() {
-  const [messages, setMessages] = useState<ContactMessage[]>([])
-  const [loading, setLoading] = useState(true)
+  const [messages, setMessages] = useState<ContactMessage[]>(() => getStoredContacts())
+  const [loading, setLoading] = useState(false)
   const [selectedMsg, setSelectedMsg] = useState<ContactMessage | null>(null)
   const [filterStatus, setFilterStatus] = useState<'all' | 'unread' | 'read' | 'replied'>('all')
   const [search, setSearch] = useState('')
   const [deleting, setDeleting] = useState<string | null>(null)
 
-  const DEFAULT_CONTACTS: ContactMessage[] = [
-    {
-      id: 'msg-1',
-      name: 'Rajesh Sharma',
-      email: 'rajesh.sharma@example.com',
-      phone: '+91 98260 11223',
-      subject: 'Inquiry regarding Village Adoption in MP',
-      message: 'Hello Prayas Team, we are interested in sponsoring solar lighting for a village near Indore. Please send us CSR proposal details.',
-      status: 'unread',
-      created_at: new Date().toISOString()
-    },
-    {
-      id: 'msg-2',
-      name: 'Dr. Meenakshi Joshi',
-      email: 'meenakshi.j@example.com',
-      phone: '+91 98930 44556',
-      subject: 'Volunteering for Free Eye Surgery Camps',
-      message: 'Greetings! I am an ophthalmologist. I would love to join your upcoming health camp in Dhar district.',
-      status: 'read',
-      created_at: new Date(Date.now() - 86400000).toISOString()
-    },
-    {
-      id: 'msg-3',
-      name: 'Kavita Chawla',
-      email: 'kavita.c@example.com',
-      phone: '+91 97520 77889',
-      subject: 'Donation of Computer Systems for Digital Labs',
-      message: 'We have 15 refurbished desktop PCs ready for donation to your Sanskarshala digital literacy centers.',
-      status: 'replied',
-      created_at: new Date(Date.now() - 172800000).toISOString()
-    }
-  ]
-
-  const saveLocalMessages = (items: ContactMessage[]) => {
-    setMessages(items)
-    localStorage.setItem('prayas_contact_messages', JSON.stringify(items))
-  }
-
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     setLoading(true)
+    // 1. Load local immediately
+    setMessages(getStoredContacts())
+
+    // 2. Fetch from server API
     try {
-      const saved = localStorage.getItem('prayas_contact_messages')
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setMessages(parsed)
-        } else {
-          saveLocalMessages(DEFAULT_CONTACTS)
-        }
-      } else {
-        saveLocalMessages(DEFAULT_CONTACTS)
+      const serverList = await fetchContactsFromServer()
+      if (serverList && serverList.length > 0) {
+        setMessages(serverList)
       }
     } catch (e) {
-      setMessages(DEFAULT_CONTACTS)
+      console.warn('API fetch contacts skipped:', e)
     }
 
+    // 3. Fallback background Supabase sync if connected
     try {
       const { data, error } = await supabase
         .from('contact_messages')
         .select('*')
         .order('created_at', { ascending: false })
       if (!error && data && data.length > 0) {
-        saveLocalMessages(data)
+        saveStoredContacts(data)
+        setMessages(data)
       }
     } catch (err: any) {
-      console.log('Supabase contacts fetch skipped:', err?.message)
+      // Supabase optional
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     fetchMessages()
-  }, [])
+
+    const poll = setInterval(() => {
+      fetchContactsFromServer().then((data) => {
+        if (data && data.length > 0) {
+          setMessages(data)
+        }
+      })
+    }, 3000)
+
+    const handleStorageChange = () => {
+      setMessages(getStoredContacts())
+    }
+
+    const handleCustomUpdate = (e: any) => {
+      if (e?.detail && Array.isArray(e.detail)) {
+        setMessages(e.detail)
+      } else {
+        handleStorageChange()
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('focus', () => {
+      handleStorageChange()
+      fetchMessages()
+    })
+    window.addEventListener('prayas-contacts-updated', handleCustomUpdate)
+    window.addEventListener('prayas_contacts_updated', handleCustomUpdate)
+
+    return () => {
+      clearInterval(poll)
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('focus', handleStorageChange)
+      window.removeEventListener('prayas-contacts-updated', handleCustomUpdate)
+      window.removeEventListener('prayas_contacts_updated', handleCustomUpdate)
+    }
+  }, [fetchMessages])
 
   const markAs = async (id: string, status: 'read' | 'replied') => {
-    const updated = messages.map((m) => (m.id === id ? { ...m, status } : m))
-    saveLocalMessages(updated)
+    const updated = await updateStoredContactStatus(id, status)
+    setMessages(updated)
     if (selectedMsg?.id === id) setSelectedMsg((prev) => prev ? { ...prev, status } : prev)
 
     try {
@@ -125,8 +119,8 @@ export default function AdminContacts() {
   const deleteMsg = async (id: string) => {
     if (!confirm('Delete this message permanently?')) return
     setDeleting(id)
-    const updated = messages.filter((m) => m.id !== id)
-    saveLocalMessages(updated)
+    const updated = await deleteStoredContact(id)
+    setMessages(updated)
     if (selectedMsg?.id === id) setSelectedMsg(null)
     setDeleting(null)
 
