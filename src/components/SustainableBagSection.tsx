@@ -326,7 +326,7 @@ export default function SustainableBagSection() {
 
               {/* SECONDARY PARTNER/INQUIRY BUTTON */}
               <Link
-                to="/sustainable-bag-production#partnerships"
+                to="/contact?subject=Sustainable%20Bag%20CSR%20%26%20Bulk%20Inquiry"
                 className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full text-sm font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 shadow-md transition-all duration-300 hover:scale-105 active:scale-95 text-center"
               >
                 <Handshake className="w-4 h-4 text-amber-400" />

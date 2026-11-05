@@ -424,13 +424,13 @@ export default function SustainableBagProduction() {
                   <span>Explore Product Catalog</span>
                 </a>
 
-                <a
-                  href="#inquiry-form"
+                <Link
+                  to="/contact?subject=Sustainable%20Bag%20CSR%20%26%20Bulk%20Inquiry"
                   className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-bold bg-[#263238] hover:bg-gray-800 text-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95"
                 >
                   <Mail className="w-4 h-4 text-amber-400" />
                   <span>Bulk Order / CSR Inquiry</span>
-                </a>
+                </Link>
 
                 <a
                   href="/document/Prayas_Rural-Women-Sewing-and-Sustainable-Bag-Production.pdf"
@@ -827,20 +827,13 @@ export default function SustainableBagProduction() {
                 <span className="text-[11px] font-mono text-gray-500 font-semibold truncate max-w-[140px]">
                   {prod.material}
                 </span>
-                <a
-                  href="#inquiry-form"
-                  onClick={() => {
-                    setFormData(prev => ({
-                      ...prev,
-                      inquiryType: 'Bulk Bag Order',
-                      message: `Inquiry regarding: ${prod.title}`
-                    }));
-                  }}
-                  className="inline-flex items-center gap-1 text-xs font-mono font-bold text-amber-800 hover:text-amber-900 bg-amber-100 hover:bg-amber-200 px-3 py-1.5 rounded-lg transition-colors"
+                <Link
+                  to={`/contact?subject=${encodeURIComponent(`Inquiry: ${prod.title}`)}&message=${encodeURIComponent(`Hello Prayas Team, I am interested in inquiring about the ${prod.title} (${prod.categoryName}) produced by rural women artisans at the Simrol centre.`)}`}
+                  className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[#263238] bg-[#F5B800] hover:bg-[#E5AA00] hover:scale-105 active:scale-95 px-3.5 py-1.5 rounded-lg shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer"
                 >
                   <span>Inquire</span>
-                  <ArrowRight className="w-3 h-3" />
-                </a>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
             </div>
           ))}
@@ -1274,20 +1267,13 @@ export default function SustainableBagProduction() {
                       {pt.desc}
                     </p>
                   </div>
-                  <a
-                    href="#inquiry-form"
-                    onClick={() => {
-                      setFormData(prev => ({
-                        ...prev,
-                        inquiryType: pt.title,
-                        message: `We are interested in exploring ${pt.title} opportunities.`
-                      }));
-                    }}
+                  <Link
+                    to={`/contact?subject=${encodeURIComponent(`Partnership Inquiry: ${pt.title}`)}&message=${encodeURIComponent(`We are interested in exploring ${pt.title} with Prayas Samaj Sevi Sanstha for the Sustainable Bag Production initiative.`)}`}
                     className="mt-4 pt-3 border-t border-gray-200 text-xs font-mono font-bold text-amber-800 flex items-center gap-1 group-hover:translate-x-1 transition-transform"
                   >
                     <span>Connect</span>
                     <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
+                  </Link>
                 </div>
               );
             })}
@@ -1543,42 +1529,54 @@ export default function SustainableBagProduction() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-0 z-[100000] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
             onClick={() => setActiveModalImage(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl relative"
+              exit={{ scale: 0.92, opacity: 0 }}
+              className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative flex flex-col my-auto max-h-[92vh] border border-gray-200"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setActiveModalImage(null)}
-                className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                className="absolute top-3.5 right-3.5 z-30 w-10 h-10 rounded-full bg-white/95 hover:bg-white text-gray-700 hover:text-black border border-gray-200 shadow-md flex items-center justify-center transition-all cursor-pointer"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="relative aspect-[4/3] bg-gray-900 flex items-center justify-center">
+              <div className="relative w-full max-h-[58vh] bg-[#F8FAFC] flex items-center justify-center p-4 sm:p-6 overflow-hidden border-b border-gray-100">
                 <img 
                   src={activeModalImage.src} 
                   alt={activeModalImage.title}
-                  className="w-full h-full object-contain"
+                  className="max-h-[52vh] max-w-full object-contain drop-shadow-md rounded-lg"
                 />
               </div>
 
-              <div className="p-6 bg-white space-y-1">
-                <h4 className="text-xl font-bold text-[#263238]">
-                  {activeModalImage.title}
-                </h4>
-                <p className="text-sm text-gray-600 font-sans">
-                  {activeModalImage.caption}
-                </p>
-                <div className="pt-2 text-xs font-mono text-emerald-800 font-bold">
-                  Simrol Centre • Prayas Samaj Sevi Sanstha
+              <div className="p-5 sm:p-6 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <h4 className="text-lg sm:text-xl font-bold text-[#263238] leading-snug">
+                    {activeModalImage.title}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-gray-600 font-sans leading-relaxed">
+                    {activeModalImage.caption}
+                  </p>
+                  <div className="text-[11px] font-mono text-emerald-800 font-bold flex items-center gap-1.5 pt-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Simrol Centre • Handcrafted by Rural Women Artisans</span>
+                  </div>
                 </div>
+
+                <Link
+                  to={`/contact?subject=${encodeURIComponent(`Inquiry: ${activeModalImage.title}`)}&message=${encodeURIComponent(`Hello Prayas Team, I am interested in inquiring about ${activeModalImage.title} from the Sustainable Bag Production project.`)}`}
+                  onClick={() => setActiveModalImage(null)}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#F5B800] hover:bg-[#E5AA00] text-[#263238] font-bold text-xs font-mono shadow-md hover:shadow-lg transition-all shrink-0 active:scale-95 cursor-pointer"
+                >
+                  <span>Inquire Now</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
             </motion.div>
           </motion.div>

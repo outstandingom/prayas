@@ -14,6 +14,24 @@ export default function Contact() {
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
+  // Pre-fill subject and message from query parameters if available
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search)
+      const subjectParam = params.get('subject')
+      const messageParam = params.get('message')
+      if (subjectParam || messageParam) {
+        setForm(prev => ({
+          ...prev,
+          subject: subjectParam || prev.subject,
+          message: messageParam || prev.message
+        }))
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, [])
+
   const contactInfo = useMemo(() => [
     { icon: MapPin, title: t('contact.info.address.title', 'Our Address'), details: [t('contact.info.address.line1', 'SAHAJ RESIDENCY, SCHEME NO.103, KESARBAGH,'), t('contact.info.address.line2', 'Indore- 452009, Madhya Pradesh, India')] },
     { icon: Phone, title: t('contact.info.phone.title', 'Call Us'), details: ['+91 98765 43210', '+91 11 2345 6789'] },
