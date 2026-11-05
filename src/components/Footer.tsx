@@ -57,6 +57,7 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {[
                 { name: t('footer.quickLinks.about', 'About Us'), path: '/about' },
+                { name: 'Sustainable Bag Production', path: '/sustainable-bag-production' },
                 { name: t('footer.quickLinks.programs', 'Programs'), path: '/programs' },
                 { name: t('footer.quickLinks.gallery', 'Gallery'), path: '/gallery' },
                 { name: t('footer.quickLinks.stories', 'Success Stories'), path: '/stories' },

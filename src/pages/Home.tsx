@@ -4,6 +4,7 @@ import ImpactCounter from '../components/ImpactCounter';
 import FocusAreas from '../components/FocusAreas';
 import TrustFlow from '../components/TrustFlow';
 import FeaturedProjects from '../components/FeaturedProjects';
+import SustainableBagSection from '../components/SustainableBagSection';
 import GalleryPreview from '../components/GalleryPreview';
 import CollaboratorsSection from '../components/CollaboratorsSection';
 
@@ -28,6 +29,9 @@ export default function Home() {
 
       {/* ─── SECTION 6: Featured Projects Deck ─── */}
       <FeaturedProjects />
+
+      {/* ─── SECTION 6.5: Flagship Social Enterprise - Rural Women Sewing & Sustainable Bag Production ─── */}
+      <SustainableBagSection />
 
       {/* ─── SECTION 7: Community Gallery Moments ─── */}
       <GalleryPreview />

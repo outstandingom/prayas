@@ -29,6 +29,7 @@ const navLinks = [
 
       { name: 'Overview', path: '/overview' },
       { name: 'Our work', path: '/our-work' },
+      { name: 'Sustainable Bag Production', path: '/sustainable-bag-production' },
       { name: 'Rural Development', path: '/rural-development' },
       { name: 'Women Empowerment & Livelihood', path: '/women-empowerment' },
       { name: 'Education & Skill Development', path: '/education' },
@@ -80,8 +81,22 @@ export default function Navbar() {
     updateNavbarHeight();
     window.addEventListener('resize', updateNavbarHeight);
 
+    // Watch for header layout or image dimension changes
+    const header = document.querySelector('header');
+    let observer: ResizeObserver | null = null;
+    if (header && typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(() => {
+        updateNavbarHeight();
+      });
+      observer.observe(header);
+    }
+
+    const timer = setTimeout(updateNavbarHeight, 150);
+
     return () => {
       window.removeEventListener('resize', updateNavbarHeight);
+      clearTimeout(timer);
+      if (observer) observer.disconnect();
     };
   }, [isStripVisible]);
 
@@ -183,84 +198,84 @@ export default function Navbar() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-[9999]">
-        {/* ---------- TOP STRIP ---------- */}
+        {/* ---------- TOP STRIP (Visible on Desktop and Mobile) ---------- */}
         {isStripVisible && (
-          <div className="hidden sm:flex bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white py-2 px-4 sm:px-8 items-center justify-between w-full shadow-md text-xs z-50">
-            <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="flex bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white py-1 sm:py-2 px-2 sm:px-6 lg:px-8 items-center justify-between w-full shadow-md text-xs z-50 overflow-x-auto hide-scrollbar gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
               <img 
                 src="/assets/brand/certifications-banner.png" 
                 alt="Certifications - 80G, 12A Registered" 
-                className="h-5 md:h-7 object-contain rounded-sm"
+                className="h-4 sm:h-5 md:h-7 object-contain rounded-sm"
                 style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
               />
               <div 
-                className="h-5 md:h-7 px-2 py-0.5 bg-white rounded-sm flex items-center justify-center shadow-xs"
+                className="h-4 sm:h-5 md:h-7 px-1.5 sm:px-2 py-0.5 bg-white rounded-sm flex items-center justify-center shadow-xs"
                 style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
               >
                 <img 
                   src="/assets/brand/niti-aayog.png" 
                   alt="NITI Aayog" 
-                  className="h-full object-contain max-h-5 md:max-h-6"
+                  className="h-full object-contain max-h-3.5 sm:max-h-5 md:max-h-6"
                 />
               </div>
               <div 
-                className="h-5 md:h-7 px-2 py-0.5 bg-white rounded-sm flex items-center justify-center shadow-xs"
+                className="h-4 sm:h-5 md:h-7 px-1.5 sm:px-2 py-0.5 bg-white rounded-sm flex items-center justify-center shadow-xs"
                 style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
               >
                 <img 
                   src="/assets/brand/csr-logo.png" 
                   alt="CSR - Corporate Social Responsibility" 
-                  className="h-full object-contain max-h-5 md:max-h-6"
+                  className="h-full object-contain max-h-3.5 sm:max-h-5 md:max-h-6"
                 />
               </div>
             </div>
-            <div className="flex items-center gap-4 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
               {/* Social icons */}
-              <div className="flex items-center gap-3 text-white/70">
+              <div className="flex items-center gap-1.5 sm:gap-3 text-white/80">
                 <a
                   href="https://www.facebook.com/prayassamajiksanstha"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
-                  className="hover:text-red-500 transition"
+                  className="hover:text-red-500 transition p-0.5"
                 >
-                  <FaFacebook size={14} />
+                  <FaFacebook size={12} className="sm:w-3.5 sm:h-3.5" />
                 </a>
                 <a
                   href="https://x.com/pryasaa?s=11"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="X (Twitter)"
-                  className="hover:text-red-500 transition"
+                  className="hover:text-red-500 transition p-0.5"
                 >
-                  <FaTwitter size={14} />
+                  <FaTwitter size={12} className="sm:w-3.5 sm:h-3.5" />
                 </a>
                 <a
                   href="https://www.instagram.com/prayas_samajik_sanstha"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="hover:text-red-500 transition"
+                  className="hover:text-red-500 transition p-0.5"
                 >
-                  <FaInstagram size={14} />
+                  <FaInstagram size={12} className="sm:w-3.5 sm:h-3.5" />
                 </a>
                 <a
                   href="https://www.youtube.com/channel/UC16ZbLnP1qJxrKQoKsss12w"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="YouTube"
-                  className="hover:text-red-500 transition"
+                  className="hover:text-red-500 transition p-0.5"
                 >
-                  <FaYoutube size={14} />
+                  <FaYoutube size={12} className="sm:w-3.5 sm:h-3.5" />
                 </a>
                 <a
                   href="https://www.linkedin.com/in/prayas-samaj-sevi-sastha-undefined-0a468b418/"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn"
-                  className="hover:text-red-500 transition"
+                  className="hover:text-red-500 transition p-0.5"
                 >
-                  <FaLinkedin size={14} />
+                  <FaLinkedin size={12} className="sm:w-3.5 sm:h-3.5" />
                 </a>
               </div>
             </div>

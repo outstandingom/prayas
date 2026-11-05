@@ -31,6 +31,7 @@ const RuralDevelopment = lazy(() => import('./pages/impact/RuralDevelopment'));
 const Healthcare = lazy(() => import('./pages/impact/Healthcare'));
 const Environment = lazy(() => import('./pages/impact/Environment'));
 const ProjectSindoda = lazy(() => import('./pages/impact/ProjectSindoda'));
+const SustainableBagProduction = lazy(() => import('./pages/SustainableBagProduction'));
 const LearnMoreDetail = lazy(() => import('./pages/LearnMoreDetail'));
 import VolunteerPopup from './components/VolunteerPopup';
 import Lenis from 'lenis';
@@ -129,6 +130,8 @@ export default function App() {
               <Route path="/healthcare" element={<Healthcare />} />
               <Route path="/environment" element={<Environment />} />
               <Route path="/project-sindoda" element={<ProjectSindoda />} />
+              <Route path="/sustainable-bag-production" element={<SustainableBagProduction />} />
+              <Route path="/rural-women-sewing" element={<SustainableBagProduction />} />
 
               {/* Dedicated Learn More sub-field detail pages */}
               <Route path="/:categorySlug/learn-more/:itemSlug" element={<LearnMoreDetail />} />
